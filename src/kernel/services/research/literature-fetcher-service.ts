@@ -83,6 +83,49 @@ export class WebStubProvider implements ILiteratureProvider {
     }
 }
 
+export class PerplexityProvider implements ILiteratureProvider {
+    readonly id = 'perplexity';
+    readonly label = 'Perplexity (sonar-deep-research)';
+
+    constructor(
+        private apiKey = process.env.PERPLEXITY_API_KEY ?? '',
+        private model = 'sonar-deep-research',
+    ) {}
+
+    async fetch(query: string, opts: LiteratureFetchOptions = {}): Promise<LiteraturePaper[]> {
+        if (!this.apiKey) return [];
+        const res = await fetch('https://api.perplexity.ai/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.apiKey}`,
+            },
+            body: JSON.stringify({
+                model: this.model,
+                messages: [{ role: 'user', content: query }],
+                max_tokens: opts.maxResults ? opts.maxResults * 800 : 4000,
+            }),
+        });
+        if (!res.ok) throw new Error(`perplexity http ${res.status}`);
+        const data = (await res.json()) as {
+            choices?: Array<{ message?: { content?: string } }>;
+        };
+        const content = data.choices?.[0]?.message?.content ?? '';
+        if (!content) return [];
+        const url = `perplexity:${encodeURIComponent(query.slice(0, 80))}`;
+        return [
+            {
+                id: genId('lit'),
+                title: `Perplexity deep research: ${query.slice(0, 120)}`,
+                summary: content.slice(0, 2000),
+                url,
+                authors: ['Perplexity'],
+                source: 'web',
+            },
+        ];
+    }
+}
+
 export interface LiteratureFetchResult {
     provider: string;
     providerLabel: string;
@@ -113,7 +156,11 @@ export class LiteratureFetcherService {
 
     constructor(
         private deps: LiteratureFetcherServiceDeps = {},
-        providers: ILiteratureProvider[] = [new ArxivProvider(), new WebStubProvider()],
+        providers: ILiteratureProvider[] = [
+            new ArxivProvider(),
+            new PerplexityProvider(),
+            new WebStubProvider(),
+        ],
     ) {
         for (const p of providers) this.providers.set(p.id, p);
     }

@@ -2,6 +2,7 @@ import { describe, expect, it, vi, afterEach } from 'vitest';
 import {
     ArxivProvider,
     LiteratureFetcherService,
+    PerplexityProvider,
     WebStubProvider,
 } from './literature-fetcher-service';
 
@@ -99,5 +100,26 @@ describe('LiteratureFetcherService (F5b)', () => {
     it('WebStubProvider возвращает пусто', async () => {
         const p = new WebStubProvider();
         expect(await p.fetch('q')).toEqual([]);
+    });
+
+    it('PerplexityProvider без ключа возвращает пусто', async () => {
+        const p = new PerplexityProvider('');
+        expect(await p.fetch('q')).toEqual([]);
+    });
+
+    it('PerplexityProvider с ключом парсит ответ', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => ({
+                ok: true,
+                json: async () => ({
+                    choices: [{ message: { content: 'Deep research result.' } }],
+                }),
+            })),
+        );
+        const p = new PerplexityProvider('test-key');
+        const papers = await p.fetch('agents survey');
+        expect(papers).toHaveLength(1);
+        expect(papers[0]?.summary).toContain('Deep research result.');
     });
 });
