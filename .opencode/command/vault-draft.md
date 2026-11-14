@@ -2,7 +2,7 @@
 description: Создать новую заметку-черновик в Obsidian Vault
 ---
 
-Создай новую заметку в папке `inbox/` (или `drafts/`) Vault с YAML frontmatter:
+Создай новую заметку в папке `inbox/` (или `drafts/`) Vault `C:\ObsidianData\ObsidianOpenCode\opencode` (или `$env:VAULT_ROOT`) с YAML frontmatter:
 
 - `id` — slug из заголовка
 - `source` — что породило заметку (session/checkpoint/research/...)

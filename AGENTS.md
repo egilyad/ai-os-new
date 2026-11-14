@@ -17,7 +17,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 326 contracts, 810 serv
 ## Obsidian Vault (рабочий буфер пользователя)
 
 - Vault — локальная папка с `.md`-файлами (Obsidian), **read-only reference** для агента.
-- Путь к Vault: переменная окружения `VAULT_ROOT` (если не задана — спросить пользователя).
+- Путь к Vault: `C:\ObsidianData\ObsidianOpenCode\opencode` (переменная `VAULT_ROOT` может переопределять).
 - Команды: `/vault` (поиск/чтение), `/vault-draft` (создать черновик в `inbox/`), `/vault-saving` (сохранить результат сессии).
 - Правила: не редактировать существующие заметки; только создание новых в `inbox/`/`drafts/`; цитировать пути.
 - Перед записью в Vault — подтверждать у пользователя.

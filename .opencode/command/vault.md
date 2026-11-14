@@ -2,7 +2,7 @@
 description: Найти и прочитать заметки из Obsidian Vault
 ---
 
-Vault — это локальная папка с .md-файлами (Obsidian). Найди релевантные заметки: сначала grep по папке Vault (путь — из `vault_root` в AGENTS.md или переменной окружения `VAULT_ROOT`), затем прочитай 1–3 заметки целиком.
+Vault — это локальная папка с .md-файлами (Obsidian): `C:\ObsidianData\ObsidianOpenCode\opencode` (или `$env:VAULT_ROOT`, если задана). Найди релевантные заметки: сначала grep по папке Vault, затем прочитай 1–3 заметки целиком.
 
 Правила:
 
