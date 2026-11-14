@@ -323,6 +323,67 @@ export const registerPhase78: Phase = ({ register }) => {
                 agentsExecute: agentService
                     ? { executeGroup: (id, input) => agentService.executeGroup(id, input) }
                     : undefined,
+                projects: c.has('projectManagerService')
+                    ? {
+                          list: () =>
+                              c
+                                  .get<{
+                                      list(): Promise<
+                                          Array<{
+                                              id: string;
+                                              name: string;
+                                              description: string;
+                                              status: string;
+                                              type: string;
+                                          }>
+                                      >;
+                                  }>('projectManagerService')
+                                  .list(),
+                          get: (id) =>
+                              c
+                                  .get<{
+                                      get(
+                                          id: string,
+                                      ): Promise<
+                                          | {
+                                                id: string;
+                                                name: string;
+                                                description: string;
+                                                status: string;
+                                                type: string;
+                                            }
+                                          | undefined
+                                      >;
+                                  }>('projectManagerService')
+                                  .get(id),
+                      }
+                    : undefined,
+                forum: c.has('forumService')
+                    ? {
+                          listTopics: (filter) =>
+                              c
+                                  .get<{
+                                      listTopics(filter?: {
+                                          category?: string;
+                                          limit?: number;
+                                      }): Promise<
+                                          Array<{ id: string; title: string; category: string }>
+                                      >;
+                                  }>('forumService')
+                                  .listTopics(filter),
+                          getThread: (topicId) =>
+                              c
+                                  .get<{
+                                      getThread(
+                                          topicId: string,
+                                      ): Promise<{
+                                          topic: { id: string; title: string };
+                                          posts: Array<{ id: string; body: string }>;
+                                      } | null>;
+                                  }>('forumService')
+                                  .getThread(topicId),
+                      }
+                    : undefined,
                 graph: c.has('projectGraphService')
                     ? c.get<{
                           listProject(projectId: string): Promise<{

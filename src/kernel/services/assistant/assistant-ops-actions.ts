@@ -2,9 +2,9 @@
  * The assistant's operational hands and eyes: what the system is doing right
  * now and the work the assistant can start on it.
  *
- * Reads are observations of runtime state — topology, metrics, traces, pending
+ * Reads are observations of runtime state â€” topology, metrics, traces, pending
  * approvals and the task board. They exist so the assistant can answer
- * "почему тормозит", "что сейчас выполняется" and "кого ждёт система" from
+ * "Ð¿Ð¾Ñ‡ÐµÐ¼Ñƒ Ñ‚Ð¾Ñ€Ð¼Ð¾Ð·Ð¸Ñ‚", "Ñ‡Ñ‚Ð¾ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÑ‚ÑÑ" and "ÐºÐ¾Ð³Ð¾ Ð¶Ð´Ñ‘Ñ‚ ÑÐ¸ÑÑ‚ÐµÐ¼Ð°" from
  * numbers instead of guessing. Writes are scheduled automation and task
  * delegation; both go through the permission gate.
  */
@@ -98,7 +98,7 @@ export interface AssistantOpsDeps {
             creatorId?: string;
         }): Promise<{ id: string; title: string; status: string; assigneeId?: string }>;
     };
-    /** M2.1 — agent→agent handoff protocol. */
+    /** M2.1 â€” agentâ†’agent handoff protocol. */
     handoff?: {
         handoff(opts: {
             fromAgent: string;
@@ -109,7 +109,7 @@ export interface AssistantOpsDeps {
             priority?: 'critical' | 'high' | 'normal' | 'low';
         }): Promise<{ id: string; status: string }>;
     };
-    /** M2.3 — Invocation Engine. */
+    /** M2.3 â€” Invocation Engine. */
     invocation?: {
         invoke(req: {
             source: string;
@@ -120,9 +120,34 @@ export interface AssistantOpsDeps {
             constraints?: { mode?: string; maxTurns?: number; ttlMs?: number };
         }): Promise<{ id: string; status: string; rejectionReason?: string }>;
     };
-    /** M2.4 — agent group execution. */
+    /** M2.4 â€” agent group execution. */
     agentsExecute?: {
         executeGroup(groupId: string, input: string): Promise<string[]>;
+    };
+    /** M3.1 â€” Projects subsystem (read). */
+    projects?: {
+        list(): Promise<
+            Array<{ id: string; name: string; description: string; status: string; type: string }>
+        >;
+        get(
+            id: string,
+        ): Promise<
+            | { id: string; name: string; description: string; status: string; type: string }
+            | undefined
+        >;
+    };
+    /** M3.2 â€” Forum subsystem (read). */
+    forum?: {
+        listTopics(filter?: {
+            category?: string;
+            limit?: number;
+        }): Promise<Array<{ id: string; title: string; category: string }>>;
+        getThread(
+            topicId: string,
+        ): Promise<{
+            topic: { id: string; title: string };
+            posts: Array<{ id: string; body: string }>;
+        } | null>;
     };
     /** Universal project graph (entity-relationship). */
     graph?: {
@@ -253,7 +278,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 };
             }
             const line = (r: (typeof rows)[number]): string =>
-                `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request — ${r.recommendation}`;
+                `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request â€” ${r.recommendation}`;
             // The empty-guard above guarantees a first row here.
             const top = rows[0]!;
             return {
@@ -438,7 +463,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const fresh = listed.find((t) => t.id === created.id);
             if (!fresh) return { ok: false, detail: `Task ${created.id} was not stored` };
 
-            // M2.1 — initiate a handoff when a specific agent was picked.
+            // M2.1 â€” initiate a handoff when a specific agent was picked.
             let handoffEvidence = '';
             if (agentId && deps.handoff) {
                 try {
@@ -849,7 +874,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                     const edges = await graph.findByRelation(projectId, relation as never);
                     const summary = edges
                         .slice(0, 30)
-                        .map((e) => `${e.from} —${e.relation}→ ${e.to}`)
+                        .map((e) => `${e.from} â€”${e.relation}â†’ ${e.to}`)
                         .join(' | ');
                     return {
                         ok: true,
@@ -898,5 +923,133 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         },
     });
 
+    actions.push({
+        id: 'projects.list',
+        group: 'research',
+        description: 'List projects from the Projects subsystem.',
+        parameters: { type: 'object', properties: {}, required: [] },
+        action: 'tool:read',
+        run: async () => {
+            if (!deps.projects) return { ok: false, detail: 'projects subsystem is not available' };
+            try {
+                const projects = await deps.projects.list();
+                const summary = projects
+                    .slice(0, 30)
+                    .map((p) => `${p.name} [${p.id}] (${p.type}/${p.status})`)
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: `${projects.length} project(s)`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `projects.list failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'projects.detail',
+        group: 'research',
+        description: 'Show a single project by id.',
+        parameters: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.projects) return { ok: false, detail: 'projects subsystem is not available' };
+            const id = text(args['id']);
+            if (!id) return { ok: false, detail: 'id is required' };
+            try {
+                const project = await deps.projects.get(id);
+                if (!project) return { ok: false, detail: `project not found: ${id}` };
+                return {
+                    ok: true,
+                    detail: `${project.name} (${project.type}/${project.status})`,
+                    evidence: project.description || 'no description',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `projects.detail failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'forum.list',
+        group: 'research',
+        description: 'List forum topics.',
+        parameters: {
+            type: 'object',
+            properties: { category: { type: 'string' }, limit: { type: 'number' } },
+            required: [],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.forum) return { ok: false, detail: 'forum subsystem is not available' };
+            try {
+                const topics = await deps.forum.listTopics({
+                    category: text(args['category']) || undefined,
+                    limit: Number(args['limit'] ?? 20),
+                });
+                const summary = topics
+                    .slice(0, 30)
+                    .map((t) => `${t.title} [${t.id}] (${t.category})`)
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: `${topics.length} topic(s)`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `forum.list failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'forum.read',
+        group: 'research',
+        description: 'Read a forum thread by topic id.',
+        parameters: {
+            type: 'object',
+            properties: { topicId: { type: 'string' } },
+            required: ['topicId'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.forum) return { ok: false, detail: 'forum subsystem is not available' };
+            const topicId = text(args['topicId']);
+            if (!topicId) return { ok: false, detail: 'topicId is required' };
+            try {
+                const thread = await deps.forum.getThread(topicId);
+                if (!thread) return { ok: false, detail: `topic not found: ${topicId}` };
+                const body = thread.posts
+                    .slice(0, 20)
+                    .map((p) => p.body.slice(0, 200))
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: thread.topic.title,
+                    evidence: body || 'empty thread',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `forum.read failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
     return actions;
 }
