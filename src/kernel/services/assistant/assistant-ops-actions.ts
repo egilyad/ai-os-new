@@ -158,6 +158,14 @@ export interface AssistantOpsDeps {
         promoteEdge(id: string): Promise<{ id: string; status?: string } | undefined>;
     };
 
+    /** Read-only system observer (health, errors, stuck runs). */
+    observer?: {
+        status(): Promise<{
+            health: 'ok' | 'degraded' | 'error';
+            summary: string;
+            fields: Record<string, unknown>;
+        }>;
+    };
     /** M4 — structured planner & plan-execution loop. */
     planner?: {
         createPlan(
@@ -1500,6 +1508,33 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `plan.step failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'observer.status',
+        group: 'research',
+        description:
+            'Read-only system health: metrics, traces, approvals, audit integrity, scheduler health.',
+        parameters: { type: 'object', properties: {}, required: [] },
+        action: 'tool:read',
+        run: async () => {
+            const observer = deps.observer;
+            if (!observer) return { ok: false, detail: 'observer is not available' };
+            try {
+                const status = await observer.status();
+                return {
+                    ok: true,
+                    detail: `health: ${status.health}`,
+                    evidence: status.summary,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `observer.status failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },

@@ -327,6 +327,53 @@ export const registerPhase78: Phase = ({ register }) => {
                               c.get<AssistantPlannerService>('assistantPlannerService').step(id),
                       }
                     : undefined,
+                observer: {
+                    status: async () => {
+                        const fields: Record<string, unknown> = {};
+                        let health: 'ok' | 'degraded' | 'error' = 'ok';
+                        const grab = (name: string, fn: () => unknown) => {
+                            try {
+                                fields[name] = fn();
+                            } catch {
+                                fields[name] = 'unavailable';
+                                health = 'degraded';
+                            }
+                        };
+                        if (c.has('metricsService')) {
+                            grab('metrics', () =>
+                                c
+                                    .get<{ generateAggregated(): unknown }>('metricsService')
+                                    .generateAggregated(),
+                            );
+                        }
+                        if (c.has('traceService')) {
+                            grab('traces', () =>
+                                c.get<{ getTraceStats(): unknown }>('traceService').getTraceStats(),
+                            );
+                        }
+                        if (c.has('toolApprovalService')) {
+                            grab(
+                                'pendingApprovals',
+                                () =>
+                                    c
+                                        .get<{ listPending(): Array<{ id: string }> }>(
+                                            'toolApprovalService',
+                                        )
+                                        .listPending().length,
+                            );
+                        }
+                        if (c.has('auditService')) {
+                            grab('auditVerified', () =>
+                                c.get<{ verify(): unknown }>('auditService').verify(),
+                            );
+                        }
+                        const lines: string[] = [];
+                        for (const [k, v] of Object.entries(fields)) {
+                            lines.push(`${k}=${JSON.stringify(v).slice(0, 160)}`);
+                        }
+                        return { health, summary: lines.join(' | '), fields };
+                    },
+                },
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),
