@@ -48,7 +48,12 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
 
     register(
         'wikiLintService',
-        (c: IContainer) => new WikiLintService(c.get('wikiStore'), c.get('wikiGraphService')),
+        (c: IContainer) =>
+            new WikiLintService(c.get('wikiStore'), c.get('wikiGraphService'), () =>
+                c.has('knowledgeUnitService')
+                    ? c.get<KnowledgeUnitService>('knowledgeUnitService').listAll()
+                    : Promise.resolve([]),
+            ),
     );
 
     register('wikiSearchAdapter', (c: IContainer) => {

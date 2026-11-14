@@ -1,7 +1,11 @@
 import type { IWikiLintService } from '../../contracts/wiki-brain/wiki-lint.service';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
 import type { IWikiGraphService } from '../../contracts/wiki-brain/wiki-graph.service';
-import type { TWikiLintIssue, TWikiPage } from '../../contracts/wiki-brain/types';
+import type {
+    TWikiLintIssue,
+    TWikiPage,
+    TWikiKnowledgeUnit,
+} from '../../contracts/wiki-brain/types';
 import { wikiId } from './wiki-brain-dexie';
 
 const LOW_COHESION_THRESHOLD = 0.5;
@@ -21,6 +25,7 @@ export class WikiLintService implements IWikiLintService {
     constructor(
         private store: IWikiStore,
         private graph?: IWikiGraphService,
+        private units?: () => Promise<TWikiKnowledgeUnit[]>,
     ) {}
 
     async runAll(): Promise<TWikiLintIssue[]> {
@@ -139,6 +144,25 @@ export class WikiLintService implements IWikiLintService {
             }
         }
 
+        if (this.units) {
+            const unitList = await this.units();
+            for (const u of unitList) {
+                if (
+                    (u.kind === 'observation' || u.kind === 'hypothesis') &&
+                    u.evidence.length === 0
+                ) {
+                    issues.push({
+                        id: wikiId('lint'),
+                        rule: 'missing-evidence-citation',
+                        severity: 'warn',
+                        pageId: u.pageId,
+                        message: `knowledge unit ${u.id} (${u.kind}) has no evidence citations`,
+                        detectedAt: now,
+                    });
+                }
+            }
+        }
+
         if (this.graph) {
             const communities = await this.graph.detectCommunities();
             for (const community of communities) {
@@ -156,7 +180,16 @@ export class WikiLintService implements IWikiLintService {
             }
         }
 
-        const rules = ['dead-wikilink', 'orphan-page', 'missing-frontmatter', 'circular-link', 'duplicate-entity', 'stale-source', 'low-cohesion-cluster'] as const;
+        const rules = [
+            'dead-wikilink',
+            'orphan-page',
+            'missing-frontmatter',
+            'circular-link',
+            'duplicate-entity',
+            'stale-source',
+            'low-cohesion-cluster',
+            'missing-evidence-citation',
+        ] as const;
         for (const rule of rules) await this.store.clearIssuesForRule(rule);
         for (const issue of issues) await this.store.putIssue(issue);
         return issues;

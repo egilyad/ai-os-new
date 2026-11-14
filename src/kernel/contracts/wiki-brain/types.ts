@@ -116,6 +116,7 @@ export const WikiLintIssueSchema = z.object({
         'stale-source',
         'circular-link',
         'low-cohesion-cluster',
+        'missing-evidence-citation',
     ]),
     severity: z.enum(['info', 'warn', 'error']),
     pageId: z.string().optional(),

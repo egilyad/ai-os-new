@@ -56,6 +56,10 @@ export class KnowledgeUnitService {
             TWikiKnowledgeUnit | undefined;
     }
 
+    async listAll(): Promise<TWikiKnowledgeUnit[]> {
+        return (await getWikiBrainDB().knowledgeUnits.toArray()) as unknown as TWikiKnowledgeUnit[];
+    }
+
     async listUnitsByPage(pageId: string): Promise<TWikiKnowledgeUnit[]> {
         const rows = (await getWikiBrainDB()
             .knowledgeUnits.where('pageId')
