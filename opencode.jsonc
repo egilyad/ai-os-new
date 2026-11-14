@@ -14,6 +14,12 @@
         "AIOS_SYNC_TOKEN": "{env:AIOS_SYNC_TOKEN}"
       },
       "enabled": true
+    },
+    "desk-mcp": {
+      "type": "local",
+      "command": ["node", "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/server.mjs"],
+      "enabled": true,
+      "timeout": 60000
     }
   },
   "permission": {
@@ -36,6 +42,7 @@
       "*opencode.db*": "deny"
     },
     "playwright_*": "allow",
-    "aios-tasks_*": "allow"
+    "aios-tasks_*": "allow",
+    "computer_*": "allow"
   }
 }
