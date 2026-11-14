@@ -26,13 +26,16 @@
     "webfetch": "allow",
     "websearch": "allow",
     "bash": {
-      "node scripts/opencode/*.mjs*": "allow",
-      "git status*": "allow",
-      "git log*": "allow",
-      "git diff*": "allow",
-      "git stash list*": "allow"
+      "*": "allow",
+      "git reset --hard*": "deny",
+      "git clean*": "deny",
+      "git push --force*": "deny",
+      "rm -rf*": "deny",
+      "rm -r /*": "deny",
+      "format *": "deny",
+      "*opencode.db*": "deny"
     },
-    "playwright_*": "ask",
+    "playwright_*": "allow",
     "aios-tasks_*": "allow"
   }
 }
