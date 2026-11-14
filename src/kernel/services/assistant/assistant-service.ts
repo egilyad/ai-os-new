@@ -104,6 +104,8 @@ export interface AssistantServiceDeps {
     audit?: {
         append(actor: string, action: string, target?: string, detail?: string): Promise<unknown>;
     };
+    /** Load recent dialog history for a session (M1.1). */
+    sessionHistory?: (sessionId: string) => Promise<Array<{ role: string; text: string }>>;
     /** The LLM-compiled wiki (Wiki Brain), queried as an extra knowledge layer. */
     wiki?: {
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
@@ -207,6 +209,24 @@ export class AssistantService {
             }
         }
 
+        // M1.1 — session history injection (token-budgeted, last 6 turns).
+        if (sessionId && this.deps.sessionHistory) {
+            try {
+                const history = await this.deps.sessionHistory(sessionId);
+                const turns = history.slice(-6);
+                if (turns.length > 0) {
+                    blocks.push(
+                        '[SESSION HISTORY — recent turns]',
+                        turns.map((t) => `- ${t.role}: ${t.text.slice(0, 300)}`).join('\n'),
+                    );
+                }
+            } catch (e) {
+                LOGGER.warn('Assistant', 'context: session history failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
+
         blocks.push(
             '[LIVE STATE]',
             `- assistant agent id: ${this.deps.agentId}`,
@@ -243,7 +263,21 @@ export class AssistantService {
             }
         }
 
-        return blocks.join('\n\n');
+        // M1.2 — token budget: cap the assembled context (~12k chars ≈ 3k
+        // tokens). Lower-priority layers (knowledge/wiki/memory) come first, so
+        // the live state/self tail is preserved when trimming.
+        const CONTEXT_BUDGET_CHARS = 12_000;
+        let used = 0;
+        const budgeted: string[] = [];
+        for (const b of blocks) {
+            if (used + b.length > CONTEXT_BUDGET_CHARS) {
+                budgeted.push('[CONTEXT TRUNCATED — budget reached]');
+                break;
+            }
+            used += b.length;
+            budgeted.push(b);
+        }
+        return budgeted.join('\n\n');
     }
 
     /**

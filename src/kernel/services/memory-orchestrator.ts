@@ -135,6 +135,26 @@ export class MemoryOrchestrator {
         return all.slice(0, limit);
     }
 
+    /**
+     * M1.3 — prefer BM25/vector MemoryService.search when available; fall back
+     * to the substring `recall` path otherwise.
+     */
+    async recallSmart(context: string, limit = 10): Promise<MemoryEntry[]> {
+        const svc = this.getService();
+        if (svc && typeof svc.search === 'function') {
+            try {
+                const found = await svc.search(context, limit);
+                const entries = found.map((r) => r.entry).filter(Boolean);
+                if (entries.length > 0) return entries.slice(0, limit);
+            } catch (e) {
+                LOGGER.warn('MemoryOrchestrator', 'recallSmart search failed, falling back', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
+        return this.recall(context, limit);
+    }
+
     async consolidateAll(): Promise<ConsolidationReport[]> {
         const reports: ConsolidationReport[] = [];
         for (const [, store] of this.stores) {

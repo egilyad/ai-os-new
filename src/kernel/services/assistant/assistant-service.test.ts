@@ -510,6 +510,28 @@ describe('AssistantService', () => {
         expect(String(calledWith?.[1])).toContain('agents.spawn');
     });
 
+    it('M1.1 — injects recent session history into the context', async () => {
+        const llm = llmStub([{ content: 'продолжаю обсуждение' }]);
+        const sessionHistory = vi.fn(async () => [
+            { role: 'user', text: 'начнём' },
+            { role: 'assistant', text: 'с чего начнём?' },
+        ]);
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            sessionHistory,
+        });
+
+        await service.ask({ text: 'давай про память', sessionId: 's1' });
+        expect(sessionHistory).toHaveBeenCalledWith('s1');
+        const userMessage = llm.calls[0]!.messages[1] as { content: string };
+        expect(userMessage.content).toContain('[SESSION HISTORY');
+        expect(userMessage.content).toContain('начнём');
+    });
+
     it('M0.4 — records interrupted turn on abort', async () => {
         const llm = llmStub([{ content: 'незакончено' }]);
         const diary = {

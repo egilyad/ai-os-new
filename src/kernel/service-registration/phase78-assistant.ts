@@ -481,8 +481,23 @@ export const registerPhase78: Phase = ({ register }) => {
                 ? c.get<ToolApprovalService>('toolApprovalService')
                 : undefined,
             memory: c.has('memoryOrchestrator')
-                ? c.get<MemoryOrchestrator>('memoryOrchestrator')
+                ? {
+                      recall: (q: string, limit?: number) =>
+                          c.get<MemoryOrchestrator>('memoryOrchestrator').recallSmart(q, limit),
+                  }
                 : undefined,
+            sessionHistory: async (sessionId: string) => {
+                try {
+                    const { getDexieDb } = await import('../services/database-service');
+                    const session = await getDexieDb().sessions.get(sessionId);
+                    if (!session || !Array.isArray(session.history)) return [];
+                    return (session.history as Array<{ role: string; text: string }>)
+                        .filter((e) => e.role === 'user' || e.role === 'assistant')
+                        .map((e) => ({ role: e.role, text: e.text }));
+                } catch {
+                    return [];
+                }
+            },
             wiki: c.has('wikiBrainService')
                 ? {
                       search: async (query: string) => {
