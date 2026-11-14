@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 69
+      "articles": 70
     }
   ],
   "articles": [
@@ -7460,6 +7460,32 @@
         "dev-obsidian-vault",
         "dev-tasks-agems-progress",
         "dev-overview"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-computer-use",
+      "type": "article",
+      "slug": "dev-computer-use",
+      "title": "Computer Use: управление рабочим столом Windows (desk-mcp)",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "computer-use",
+        "desktop",
+        "mcp",
+        "windows"
+      ],
+      "sources": [
+        "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
+        "opencode.jsonc"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-opencode-memory",
+        "dev-deepwiki"
       ],
       "reviewed": null,
       "tests": []

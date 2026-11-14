@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1628,
-    "edges": 2935,
+    "nodes": 1631,
+    "edges": 2940,
     "byType": {
       "audit": 25,
-      "code": 722,
+      "code": 724,
       "test": 242,
       "panel": 269,
-      "article": 370
+      "article": 371
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 353,
-      "source": 1024,
-      "related": 1219
+      "source": 1026,
+      "related": 1222
     }
   },
   "nodes": [
@@ -253,6 +253,11 @@
       "label": "AGENTS.md"
     },
     {
+      "id": "file:C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
+      "type": "code",
+      "label": "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md"
+    },
+    {
       "id": "file:cli/tasks-mcp-server.mjs",
       "type": "code",
       "label": "cli/tasks-mcp-server.mjs"
@@ -341,6 +346,11 @@
       "id": "file:git log --since=\"7 days ago\"",
       "type": "code",
       "label": "git log --since=\"7 days ago\""
+    },
+    {
+      "id": "file:opencode.jsonc",
+      "type": "code",
+      "label": "opencode.jsonc"
     },
     {
       "id": "file:package.json",
@@ -7725,6 +7735,13 @@
       "label": "Разработчикам: компоненты и панели",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-computer-use",
+      "type": "article",
+      "label": "Computer Use: управление рабочим столом Windows (desk-mcp)",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-contracts",
@@ -17630,6 +17647,31 @@
     {
       "from": "wiki:dev-components",
       "to": "wiki:panel-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-computer-use",
+      "to": "file:C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-computer-use",
+      "to": "file:opencode.jsonc",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-computer-use",
+      "to": "wiki:dev-deepwiki",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-computer-use",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-computer-use",
+      "to": "wiki:dev-overview",
       "kind": "related"
     },
     {
