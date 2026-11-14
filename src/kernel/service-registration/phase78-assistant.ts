@@ -35,6 +35,7 @@ import { PanelActionRegistry } from '../services/assistant/panel-action-registry
 import { agemsTaskService } from '../services/agems-task-service';
 import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
+import { AssistantPlannerService } from '../services/assistant/assistant-planner-service';
 import type { OrchestrationService } from '../services/orchestration-service';
 import type { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import type { MetricsService } from '../services/metrics-service';
@@ -243,6 +244,24 @@ export const registerPhase78: Phase = ({ register }) => {
                 recommendation: string;
             }>;
         }>('providerTracker');
+        register('assistantPlannerService', () => {
+            const llmRaw = c.has('llmClientService')
+                ? c.get<ILLMClientService>('llmClientService')
+                : null;
+            return new AssistantPlannerService({
+                runAction: (id, args) =>
+                    c.get<AssistantActionRegistry>('assistantActionRegistry').run(id, args),
+                llm: llmRaw
+                    ? {
+                          chat: async (messages) => {
+                              const res = await llmRaw.sendMessage(messages as never);
+                              return { content: res.content };
+                          },
+                      }
+                    : undefined,
+            });
+        });
+
         registry.registerAll(
             createAssistantOpsActions({
                 topology: orchestrator
@@ -286,6 +305,26 @@ export const registerPhase78: Phase = ({ register }) => {
                           toggle: (id, enabled) => schedulerService.toggle(id, enabled),
                           remove: (id) => schedulerService.delete(id),
                           validateCron: (cron) => schedulerService.validateCron?.(cron) ?? true,
+                      }
+                    : undefined,
+                planner: c.has('assistantPlannerService')
+                    ? {
+                          createPlan: (goal, steps, projectId) =>
+                              c
+                                  .get<AssistantPlannerService>('assistantPlannerService')
+                                  .createPlan(goal, steps, projectId),
+                          list: (projectId) =>
+                              c
+                                  .get<AssistantPlannerService>('assistantPlannerService')
+                                  .list(projectId),
+                          get: (id) =>
+                              c.get<AssistantPlannerService>('assistantPlannerService').get(id),
+                          run: (id) =>
+                              c.get<AssistantPlannerService>('assistantPlannerService').run(id),
+                          pause: (id) =>
+                              c.get<AssistantPlannerService>('assistantPlannerService').pause(id),
+                          step: (id) =>
+                              c.get<AssistantPlannerService>('assistantPlannerService').step(id),
                       }
                     : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,

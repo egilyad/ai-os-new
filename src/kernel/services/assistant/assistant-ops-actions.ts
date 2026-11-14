@@ -158,6 +158,59 @@ export interface AssistantOpsDeps {
         promoteEdge(id: string): Promise<{ id: string; status?: string } | undefined>;
     };
 
+    /** M4 — structured planner & plan-execution loop. */
+    planner?: {
+        createPlan(
+            goal: string,
+            steps?: Array<{ title: string; actionId?: string; args?: Record<string, unknown> }>,
+            projectId?: string,
+        ): Promise<{
+            id: string;
+            goal: string;
+            status: string;
+            steps: Array<{ id: string; order: number; title: string; status: string }>;
+        }>;
+        list(projectId?: string): Array<{
+            id: string;
+            goal: string;
+            status: string;
+            steps: Array<{ id: string; title: string; status: string }>;
+        }>;
+        get(id: string):
+            | {
+                  id: string;
+                  goal: string;
+                  status: string;
+                  steps: Array<{ id: string; title: string; status: string; result?: string }>;
+              }
+            | undefined;
+        run(id: string): Promise<
+            | {
+                  id: string;
+                  goal: string;
+                  status: string;
+                  steps: Array<{
+                      id: string;
+                      title: string;
+                      status: string;
+                      result?: string;
+                      error?: string;
+                  }>;
+              }
+            | undefined
+        >;
+        pause(id: string): boolean;
+        step(id: string): Promise<
+            | {
+                  id: string;
+                  goal: string;
+                  status: string;
+                  steps: Array<{ id: string; title: string; status: string; result?: string }>;
+              }
+            | undefined
+        >;
+    };
+
     /** M3.1 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Projects subsystem (read). */
     projects?: {
         list(): Promise<
@@ -1266,6 +1319,187 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `graph.supersede failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'plan.create',
+        group: 'work',
+        description:
+            'Create a structured execution plan from a goal (steps may be auto-decomposed).',
+        parameters: {
+            type: 'object',
+            properties: {
+                goal: { type: 'string' },
+                projectId: { type: 'string' },
+                steps: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            title: { type: 'string' },
+                            actionId: { type: 'string' },
+                        },
+                    },
+                },
+            },
+            required: ['goal'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const planner = deps.planner;
+            if (!planner) return { ok: false, detail: 'planner is not available' };
+            try {
+                const rawSteps = Array.isArray(args['steps'])
+                    ? (args['steps'] as unknown[])
+                    : undefined;
+                const steps = rawSteps?.map((s) => {
+                    const o = s as Record<string, unknown>;
+                    return { title: text(o['title']), actionId: text(o['actionId']) || undefined };
+                });
+                const plan = await planner.createPlan(
+                    text(args['goal']),
+                    steps,
+                    text(args['projectId']) || undefined,
+                );
+                const stepList = plan.steps.map((s) => `${s.order}. ${s.title}`).join(' | ');
+                return {
+                    ok: true,
+                    detail: `plan ${plan.id} created (${plan.steps.length} steps)`,
+                    evidence: stepList,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `plan.create failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'plan.list',
+        group: 'work',
+        description: 'List known plans (optionally scoped by project).',
+        parameters: {
+            type: 'object',
+            properties: { projectId: { type: 'string' } },
+            required: [],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const planner = deps.planner;
+            if (!planner) return { ok: false, detail: 'planner is not available' };
+            const plans = planner.list(text(args['projectId']) || undefined);
+            const summary = plans
+                .slice(0, 20)
+                .map((p) => `${p.goal} [${p.id}] (${p.status})`)
+                .join(' | ');
+            return {
+                ok: true,
+                detail: `${plans.length} plan(s)`,
+                evidence: summary || 'none',
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'plan.run',
+        group: 'work',
+        description: 'Execute all steps of a plan sequentially.',
+        parameters: {
+            type: 'object',
+            properties: { planId: { type: 'string' } },
+            required: ['planId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const planner = deps.planner;
+            if (!planner) return { ok: false, detail: 'planner is not available' };
+            try {
+                const plan = await planner.run(text(args['planId']));
+                if (!plan) return { ok: false, detail: 'plan not found' };
+                const stepList = plan.steps.map((s) => `${s.title}:${s.status}`).join(' | ');
+                return {
+                    ok: plan.status !== 'failed',
+                    detail: `plan ${plan.id} -> ${plan.status}`,
+                    evidence: stepList,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `plan.run failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'plan.pause',
+        group: 'work',
+        description: 'Pause a running plan.',
+        parameters: {
+            type: 'object',
+            properties: { planId: { type: 'string' } },
+            required: ['planId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const planner = deps.planner;
+            if (!planner) return { ok: false, detail: 'planner is not available' };
+            try {
+                const paused = planner.pause(text(args['planId']));
+                return {
+                    ok: paused,
+                    detail: paused ? 'plan paused' : 'plan not running or missing',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `plan.pause failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'plan.step',
+        group: 'work',
+        description: 'Execute a single next step of a plan.',
+        parameters: {
+            type: 'object',
+            properties: { planId: { type: 'string' } },
+            required: ['planId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const planner = deps.planner;
+            if (!planner) return { ok: false, detail: 'planner is not available' };
+            try {
+                const plan = await planner.step(text(args['planId']));
+                if (!plan) return { ok: false, detail: 'plan not found' };
+                const stepList = plan.steps.map((s) => `${s.title}:${s.status}`).join(' | ');
+                return {
+                    ok: true,
+                    detail: `plan ${plan.id} -> ${plan.status}`,
+                    evidence: stepList,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `plan.step failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
