@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1634,
+    "nodes": 1631,
     "edges": 2949,
     "byType": {
       "audit": 25,
-      "code": 726,
+      "code": 723,
       "test": 242,
       "panel": 269,
       "article": 372
@@ -251,21 +251,6 @@
       "id": "file:AGENTS.md",
       "type": "code",
       "label": "AGENTS.md"
-    },
-    {
-      "id": "file:C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md",
-      "type": "code",
-      "label": "C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md"
-    },
-    {
-      "id": "file:C:/Users/evgeny/.config/opencode/opencode.jsonc",
-      "type": "code",
-      "label": "C:/Users/evgeny/.config/opencode/opencode.jsonc"
-    },
-    {
-      "id": "file:C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
-      "type": "code",
-      "label": "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md"
     },
     {
       "id": "file:cli/tasks-mcp-server.mjs",
@@ -17668,7 +17653,7 @@
     },
     {
       "from": "wiki:dev-computer-use",
-      "to": "file:C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
+      "to": "file:AGENTS.md",
       "kind": "source"
     },
     {
@@ -18123,12 +18108,12 @@
     },
     {
       "from": "wiki:dev-mcp-tools",
-      "to": "file:C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md",
+      "to": "file:.opencode/command/",
       "kind": "source"
     },
     {
       "from": "wiki:dev-mcp-tools",
-      "to": "file:C:/Users/evgeny/.config/opencode/opencode.jsonc",
+      "to": "file:AGENTS.md",
       "kind": "source"
     },
     {

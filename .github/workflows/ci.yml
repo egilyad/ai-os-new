@@ -82,20 +82,7 @@ jobs:
                   npm run gen:docs-graph
                   npm run gen:wiki-checks
                   npm run gen:wiki-coverage
-                  # DEBUG: показать, какие файлы расходятся (временный шаг)
-                  git status --short -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated | tee /tmp/wiki-diff.txt
-                  git diff --stat -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated | tee -a /tmp/wiki-diff.txt
                   git diff --exit-code -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated
-                  # загрузить diff как artifact для диагностики
-                  if [ -s /tmp/wiki-diff.txt ]; then echo "diff found"; else echo "no diff"; fi
-
-            - name: Upload wiki diff diagnostic
-              if: always()
-              uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-              with:
-                name: wiki-diff
-                path: /tmp/wiki-diff.txt
-                if-no-files-found: ignore
 
             - name: Documentation health
               # Objective checks over the committed wiki mirror: declared source

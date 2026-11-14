@@ -7479,8 +7479,8 @@
         "windows"
       ],
       "sources": [
-        "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
-        "opencode.jsonc"
+        "opencode.jsonc",
+        "AGENTS.md"
       ],
       "related": [
         "dev-overview",
@@ -7506,8 +7506,8 @@
       ],
       "sources": [
         "opencode.jsonc",
-        "C:/Users/evgeny/.config/opencode/opencode.jsonc",
-        "C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md"
+        "AGENTS.md",
+        ".opencode/command/"
       ],
       "related": [
         "dev-codebase-memory-mcp",

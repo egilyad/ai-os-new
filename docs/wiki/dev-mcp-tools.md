@@ -4,7 +4,7 @@
 
 > Раздел: **Разработчикам** · Статус: documented · Теги: dev, mcp, инструменты, opencode, каталог
 
-Источники: `opencode.jsonc`, `C:/Users/evgeny/.config/opencode/opencode.jsonc`, `C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md`
+Источники: `opencode.jsonc`, `AGENTS.md`, `.opencode/command/`
 
 ## Подключённые MCP-серверы
 

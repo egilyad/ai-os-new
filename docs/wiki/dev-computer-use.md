@@ -4,7 +4,7 @@
 
 > Раздел: **Разработчикам** · Статус: documented · Теги: dev, computer-use, desktop, mcp, windows
 
-Источники: `C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md`, `opencode.jsonc`
+Источники: `opencode.jsonc`, `AGENTS.md`
 
 ## Что это
 

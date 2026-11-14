@@ -868,7 +868,7 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
         section: 'dev',
         tags: ['dev', 'computer-use', 'desktop', 'mcp', 'windows'],
         freshness: 'documented',
-        sources: ['C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md', 'opencode.jsonc'],
+        sources: ['opencode.jsonc', 'AGENTS.md'],
         related: ['dev-overview', 'dev-opencode-memory', 'dev-deepwiki'],
         body: `## Что это
 
@@ -912,11 +912,7 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
         section: 'dev',
         tags: ['dev', 'mcp', 'инструменты', 'opencode', 'каталог'],
         freshness: 'documented',
-        sources: [
-            'opencode.jsonc',
-            'C:/Users/evgeny/.config/opencode/opencode.jsonc',
-            'C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md',
-        ],
+        sources: ['opencode.jsonc', 'AGENTS.md', '.opencode/command/'],
         related: [
             'dev-codebase-memory-mcp',
             'dev-computer-use',

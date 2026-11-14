@@ -2167,8 +2167,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Computer Use: управление рабочим столом Windows (desk-mcp)",
-      "bytes": 3435,
-      "hash": "0636fa95777078d6870a983d2b77648de809a53b"
+      "bytes": 3384,
+      "hash": "93c8fa86fa3cbe4fe07946d8d334225402b2a2b2"
     },
     {
       "path": "docs/wiki/dev-contracts.md",
@@ -2287,8 +2287,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "MCP-инструменты OpenCode: сводный каталог",
-      "bytes": 4108,
-      "hash": "d51b99d7445dee300dfa8237a6c0a99a0cba76aa"
+      "bytes": 4036,
+      "hash": "167abea6632097ceaf483aa6a321263b619c8d33"
     },
     {
       "path": "docs/wiki/dev-obsidian-vault.md",
