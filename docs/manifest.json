@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 67
+      "articles": 68
     }
   ],
   "articles": [
@@ -7404,6 +7404,34 @@
         "src/kernel/services/task-executor-dispatcher.test.ts",
         "src/kernel/services/assistant/assistant-ops-actions.test.ts"
       ]
+    },
+    {
+      "id": "wiki:dev-obsidian-vault",
+      "type": "article",
+      "slug": "dev-obsidian-vault",
+      "title": "Obsidian Vault: рабочий буфер пользователя (интеграция)",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "obsidian",
+        "vault",
+        "заметки",
+        "интеграция"
+      ],
+      "sources": [
+        ".opencode/command/vault.md",
+        ".opencode/command/vault-draft.md",
+        ".opencode/command/vault-saving.md",
+        "AGENTS.md"
+      ],
+      "related": [
+        "dev-opencode-memory",
+        "dev-deepwiki",
+        "dev-overview"
+      ],
+      "reviewed": null,
+      "tests": []
     },
     {
       "id": "wiki:dev-deepwiki",

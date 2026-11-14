@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1616,
-    "edges": 2918,
+    "nodes": 1621,
+    "edges": 2925,
     "byType": {
       "audit": 25,
-      "code": 712,
+      "code": 716,
       "test": 242,
       "panel": 269,
-      "article": 368
+      "article": 369
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 353,
-      "source": 1014,
-      "related": 1212
+      "source": 1018,
+      "related": 1215
     }
   },
   "nodes": [
@@ -213,9 +213,29 @@
       "label": ".opencode/command/"
     },
     {
+      "id": "file:.opencode/command/vault-draft.md",
+      "type": "code",
+      "label": ".opencode/command/vault-draft.md"
+    },
+    {
+      "id": "file:.opencode/command/vault-saving.md",
+      "type": "code",
+      "label": ".opencode/command/vault-saving.md"
+    },
+    {
+      "id": "file:.opencode/command/vault.md",
+      "type": "code",
+      "label": ".opencode/command/vault.md"
+    },
+    {
       "id": "file:.superagents/memory/",
       "type": "code",
       "label": ".superagents/memory/"
+    },
+    {
+      "id": "file:AGENTS.md",
+      "type": "code",
+      "label": "AGENTS.md"
     },
     {
       "id": "file:cli/tasks-mcp-server.mjs",
@@ -7766,6 +7786,13 @@
       "label": "Внешние библиотеки",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-obsidian-vault",
+      "type": "article",
+      "label": "Obsidian Vault: рабочий буфер пользователя (интеграция)",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-opencode-memory",
@@ -17946,6 +17973,41 @@
     {
       "from": "wiki:dev-libraries",
       "to": "wiki:dev-scripts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "file:.opencode/command/vault-draft.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "file:.opencode/command/vault-saving.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "file:.opencode/command/vault.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "file:AGENTS.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "wiki:dev-deepwiki",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-obsidian-vault",
+      "to": "wiki:dev-overview",
       "kind": "related"
     },
     {

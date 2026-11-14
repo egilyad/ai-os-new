@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **368** в 13 разделах.
+Всего материалов: **369** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -25,7 +25,7 @@
 | Компоненты и сервисы | 75 |
 | Заметки | 5 |
 | Состояние разработки | 11 |
-| Разработчикам | 67 |
+| Разработчикам | 68 |
 
 ## Руководство (10)
 
@@ -364,7 +364,7 @@
 - [MD и другие файлы от разработки](./dev-status-files.md) — _needs-check_
 - [Отложенные работы и фичи](./deferred-works-features.md) — _needs-check_
 
-## Разработчикам (67)
+## Разработчикам (68)
 
 - [Аудит: запуск и выживание UI](./audit-type-bootstrap.md) — _verified_
 - [Аудит: сборка и целостность репозитория](./audit-type-build.md) — _verified_
@@ -407,6 +407,7 @@
 - [Память OpenCode: команды и скрипты непрерывности сессий](./dev-opencode-memory.md) — _verified_
 - [AGEMS Tasks: статус реализации (M0–M5)](./dev-tasks-agems-progress.md) — _documented_
 - [Assistant: статус реализации (M0–M2)](./dev-assistant-progress.md) — _documented_
+- [Obsidian Vault: рабочий буфер пользователя (интеграция)](./dev-obsidian-vault.md) — _documented_
 - [DeepWiki: облачная техническая документация на английском](./dev-deepwiki.md) — _documented_
 - [Codebase Memory MCP: граф кода для агентов](./dev-codebase-memory-mcp.md) — _verified_
 - [Каталог компонентов OS](./dev-component-catalog.md) — _verified_
