@@ -44,6 +44,10 @@ export interface AssistantPlannerDeps {
             opts?: { model?: string },
         ): Promise<{ content: string }>;
     };
+    store?: {
+        loadAll(): Promise<WorkPlan[]>;
+        save(plan: WorkPlan): Promise<void>;
+    };
 }
 
 export interface PlanStepInput {
@@ -71,10 +75,24 @@ const PLAN_ID = (() => {
  */
 export class AssistantPlannerService {
     private plans = new Map<string, WorkPlan>();
+    private hydrated = false;
 
     constructor(private deps: AssistantPlannerDeps = {}) {}
 
+    private async ensureHydrated(): Promise<void> {
+        if (this.hydrated || !this.deps.store) return;
+        const all = await this.deps.store.loadAll();
+        for (const p of all) this.plans.set(p.id, p);
+        this.hydrated = true;
+    }
+
+    private async persist(plan: WorkPlan): Promise<void> {
+        if (!this.deps.store) return;
+        await this.deps.store.save(plan);
+    }
+
     async createPlan(goal: string, steps?: PlanStepInput[], projectId?: string): Promise<WorkPlan> {
+        await this.ensureHydrated();
         const own = steps ?? (await this.decompose(goal));
         const plan: WorkPlan = {
             id: PLAN_ID(),
@@ -93,6 +111,7 @@ export class AssistantPlannerService {
             updatedAt: Date.now(),
         };
         this.plans.set(plan.id, plan);
+        await this.persist(plan);
         return plan;
     }
 
@@ -121,12 +140,14 @@ export class AssistantPlannerService {
         return [{ title: 'execute goal as a single step' }];
     }
 
-    list(projectId?: string): WorkPlan[] {
+    async list(projectId?: string): Promise<WorkPlan[]> {
+        await this.ensureHydrated();
         const all = [...this.plans.values()];
         return projectId ? all.filter((p) => p.projectId === projectId) : all;
     }
 
-    get(planId: string): WorkPlan | undefined {
+    async get(planId: string): Promise<WorkPlan | undefined> {
+        await this.ensureHydrated();
         return this.plans.get(planId);
     }
 
@@ -162,6 +183,7 @@ export class AssistantPlannerService {
         const failed = plan.steps.some((s) => s.status === 'failed');
         plan.status = failed ? 'failed' : 'completed';
         plan.updatedAt = Date.now();
+        await this.persist(plan);
         return plan;
     }
 
@@ -170,6 +192,7 @@ export class AssistantPlannerService {
         if (!plan || plan.status !== 'running') return false;
         plan.status = 'paused';
         plan.updatedAt = Date.now();
+        void this.persist(plan).catch(() => {});
         return true;
     }
 
@@ -202,6 +225,7 @@ export class AssistantPlannerService {
             plan.status = plan.steps.some((s) => s.status === 'failed') ? 'failed' : 'completed';
             plan.currentStep = undefined;
         }
+        await this.persist(plan);
         return plan;
     }
 }

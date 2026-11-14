@@ -178,20 +178,23 @@ export interface AssistantOpsDeps {
             status: string;
             steps: Array<{ id: string; order: number; title: string; status: string }>;
         }>;
-        list(projectId?: string): Array<{
-            id: string;
-            goal: string;
-            status: string;
-            steps: Array<{ id: string; title: string; status: string }>;
-        }>;
-        get(id: string):
+        list(projectId?: string): Promise<
+            Array<{
+                id: string;
+                goal: string;
+                status: string;
+                steps: Array<{ id: string; title: string; status: string }>;
+            }>
+        >;
+        get(id: string): Promise<
             | {
                   id: string;
                   goal: string;
                   status: string;
                   steps: Array<{ id: string; title: string; status: string; result?: string }>;
               }
-            | undefined;
+            | undefined
+        >;
         run(id: string): Promise<
             | {
                   id: string;
@@ -1403,7 +1406,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             const planner = deps.planner;
             if (!planner) return { ok: false, detail: 'planner is not available' };
-            const plans = planner.list(text(args['projectId']) || undefined);
+            const plans = await planner.list(text(args['projectId']) || undefined);
             const summary = plans
                 .slice(0, 20)
                 .map((p) => `${p.goal} [${p.id}] (${p.status})`)

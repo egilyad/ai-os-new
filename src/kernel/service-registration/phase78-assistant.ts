@@ -35,7 +35,11 @@ import { PanelActionRegistry } from '../services/assistant/panel-action-registry
 import { agemsTaskService } from '../services/agems-task-service';
 import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
-import { AssistantPlannerService } from '../services/assistant/assistant-planner-service';
+import {
+    AssistantPlannerService,
+    type WorkPlan,
+} from '../services/assistant/assistant-planner-service';
+import { createAssistantPlannerDB } from '../services/assistant/assistant-planner-dexie';
 import type { OrchestrationService } from '../services/orchestration-service';
 import type { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import type { MetricsService } from '../services/metrics-service';
@@ -244,6 +248,12 @@ export const registerPhase78: Phase = ({ register }) => {
                 recommendation: string;
             }>;
         }>('providerTracker');
+        const plannerStore = {
+            loadAll: async () => createAssistantPlannerDB().plans.toArray(),
+            save: async (plan: WorkPlan) => {
+                await createAssistantPlannerDB().plans.put(plan);
+            },
+        };
         register('assistantPlannerService', () => {
             const llmRaw = c.has('llmClientService')
                 ? c.get<ILLMClientService>('llmClientService')
@@ -259,6 +269,7 @@ export const registerPhase78: Phase = ({ register }) => {
                           },
                       }
                     : undefined,
+                store: plannerStore,
             });
         });
 
