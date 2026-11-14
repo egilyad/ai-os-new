@@ -24,13 +24,17 @@ import { WikiIngestService } from '../services/wiki-brain/wiki-ingest.service';
 import { WikiBrainService } from '../services/wiki-brain/wiki-brain.service';
 import { WikiBrainContextProvider } from '../services/wiki-brain/wiki-context-provider';
 import { WikiVaultSyncService } from '../services/wiki-brain/wiki-vault-sync.service';
+import { WikiEditService } from '../services/wiki-brain/wiki-edit.service';
+import {
+    KnowledgeUnitService,
+    knowledgeUnitService,
+} from '../services/wiki-brain/wiki-knowledge-unit.service';
 
 function wikiLlm(c: IContainer): WikiLlmClient | null {
     if (!c.has('llmClientService')) return null;
     const llm = c.get<ILLMClientService>('llmClientService');
     return {
-        chat: (messages, opts) =>
-            llm.chat(messages as AdapterMessage[], { model: opts?.model }),
+        chat: (messages, opts) => llm.chat(messages as AdapterMessage[], { model: opts?.model }),
     };
 }
 
@@ -38,13 +42,12 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
     register('wikiStore', (_c: IContainer) => new WikiDexieStore());
 
     register('wikiLogService', (c: IContainer) => new WikiLogService(c.get('wikiStore')));
-    register('wikiIndexService', (c: IContainer) =>
-        new WikiIndexService(c.get('wikiStore')),
-    );
+    register('wikiIndexService', (c: IContainer) => new WikiIndexService(c.get('wikiStore')));
     register('wikiGraphService', (c: IContainer) => new WikiGraphService(c.get('wikiStore')));
 
-    register('wikiLintService', (c: IContainer) =>
-        new WikiLintService(c.get('wikiStore'), c.get('wikiGraphService')),
+    register(
+        'wikiLintService',
+        (c: IContainer) => new WikiLintService(c.get('wikiStore'), c.get('wikiGraphService')),
     );
 
     register('wikiSearchAdapter', (c: IContainer) => {
@@ -53,8 +56,9 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
         return new WikiSearchAdapter(c.get('wikiStore'), embedder);
     });
 
-    register('wikiQueryService', (c: IContainer) =>
-        new WikiQueryService(c.get('wikiStore'), c.get('wikiSearchAdapter')),
+    register(
+        'wikiQueryService',
+        (c: IContainer) => new WikiQueryService(c.get('wikiStore'), c.get('wikiSearchAdapter')),
     );
 
     register('wikiIngestService', (c: IContainer) => {
@@ -72,24 +76,44 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
         return ingest;
     });
 
-    register('wikiVaultSyncService', (c: IContainer) =>
-        new WikiVaultSyncService(c.get('wikiStore')),
+    register(
+        'wikiVaultSyncService',
+        (c: IContainer) => new WikiVaultSyncService(c.get('wikiStore')),
     );
 
-    register('wikiBrainService', (c: IContainer) =>
-        new WikiBrainService(
-            c.get('wikiStore'),
-            c.get('wikiIngestService'),
-            c.get('wikiQueryService'),
-            c.get('wikiLintService'),
-            c.get('wikiIndexService'),
-            c.get('wikiLogService'),
-            c.get('wikiGraphService'),
-            c.get('wikiVaultSyncService'),
-        ),
+    register(
+        'wikiEditService',
+        (c: IContainer) =>
+            new WikiEditService(
+                c.get('wikiStore'),
+                {
+                    get: (id) => c.get('database')?.getKv?.(id) ?? null,
+                    set: (id, v) => c.get('database')?.setKv?.(id, v),
+                },
+                { eventBus: c.get<IEventBus>('eventBus') },
+            ),
     );
 
-    register('wikiBrainContextProvider', (c: IContainer) =>
-        new WikiBrainContextProvider(c.get('wikiQueryService')),
+    register(
+        'wikiBrainService',
+        (c: IContainer) =>
+            new WikiBrainService(
+                c.get('wikiStore'),
+                c.get('wikiIngestService'),
+                c.get('wikiQueryService'),
+                c.get('wikiLintService'),
+                c.get('wikiIndexService'),
+                c.get('wikiLogService'),
+                c.get('wikiGraphService'),
+                c.get('wikiVaultSyncService'),
+            ),
     );
+
+    register(
+        'wikiBrainContextProvider',
+        (c: IContainer) => new WikiBrainContextProvider(c.get('wikiQueryService')),
+    );
+
+    register('knowledgeUnitService', () => new KnowledgeUnitService());
+    register('wikiKnowledgeUnitService', () => knowledgeUnitService);
 };

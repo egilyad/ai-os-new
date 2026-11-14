@@ -121,6 +121,8 @@ export interface AssistantServiceDeps {
             slug: string,
             opts?: { depth?: number; maxNodes?: number },
         ): Promise<Array<{ slug: string; title: string }>>;
+        /** F2 — always-loaded Core page markdown. */
+        core?(): Promise<string | undefined>;
     };
     /** Provider/model of the assistant; the session may override it. */
     provider?: string;
@@ -161,6 +163,11 @@ export class AssistantService {
 
         if (this.deps.wiki) {
             try {
+                // F2 — SoMem Core page always first (bounded).
+                if (this.deps.wiki.core) {
+                    const core = await this.deps.wiki.core();
+                    if (core) blocks.push('[WIKI CORE]', core.slice(0, 3000));
+                }
                 const wikiHits = await this.deps.wiki.search(question);
                 if (wikiHits.length > 0) {
                     blocks.push(

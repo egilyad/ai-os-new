@@ -6,6 +6,9 @@ import type {
     TWikiLogEntry,
     TWikiQueueTask,
     TWikiLintIssue,
+    TWikiEmbedding,
+    TWikiKnowledgeUnit,
+    TWikiKnowledgeRelation,
 } from '../../contracts/wiki-brain/types';
 
 /**
@@ -19,6 +22,9 @@ export class WikiBrainDB extends Dexie {
     log!: Table<TWikiLogEntry, string>;
     queue!: Table<TWikiQueueTask, string>;
     issues!: Table<TWikiLintIssue, string>;
+    wikiEmbeddings!: Table<TWikiEmbedding, string>;
+    knowledgeUnits!: Table<TWikiKnowledgeUnit, string>;
+    knowledgeRelations!: Table<TWikiKnowledgeRelation, string>;
 
     constructor(dbName = 'aios-wiki-brain') {
         super(dbName);
@@ -29,6 +35,26 @@ export class WikiBrainDB extends Dexie {
             log: 'id, ts, op, [op+ts]',
             queue: 'id, status, priority, [status+priority]',
             issues: 'id, rule, severity, pageId, detectedAt',
+        });
+        this.version(2).stores({
+            sources: 'id, sha256, importedAt, kind, [kind+importedAt]',
+            pages: 'id, &slug, [frontmatter.type], frontmatter.updatedAt, *frontmatter.tags, sha256',
+            links: 'id, fromSlug, toSlug, [fromSlug+toSlug], kind',
+            log: 'id, ts, op, [op+ts]',
+            queue: 'id, status, priority, [status+priority]',
+            issues: 'id, rule, severity, pageId, detectedAt',
+            wikiEmbeddings: 'pageId, model, createdAt',
+        });
+        this.version(3).stores({
+            sources: 'id, sha256, importedAt, kind, [kind+importedAt]',
+            pages: 'id, &slug, [frontmatter.type], frontmatter.updatedAt, *frontmatter.tags, sha256',
+            links: 'id, fromSlug, toSlug, [fromSlug+toSlug], kind',
+            log: 'id, ts, op, [op+ts]',
+            queue: 'id, status, priority, [status+priority]',
+            issues: 'id, rule, severity, pageId, detectedAt',
+            wikiEmbeddings: 'pageId, model, createdAt',
+            knowledgeUnits: 'id, pageId, kind, projectId, createdAt',
+            knowledgeRelations: 'id, fromUnitId, toUnitId, relation, createdAt',
         });
     }
 }

@@ -1202,4 +1202,29 @@ export const EVENT_REGISTRY_GROUP_1 = {
             target: z.string().optional(),
         }),
     ),
+    WIKI_PAGE_WRITTEN: event(
+        'wiki:page:written',
+        z.object({
+            pageId: z.string(),
+            slug: z.string(),
+            projectId: z.string().optional(),
+        }),
+    ),
+    WIKI_PAGE_DELETED: event(
+        'wiki:page:deleted',
+        z.object({ pageId: z.string(), slug: z.string() }),
+    ),
+    WIKI_SOURCE_INGESTED: event(
+        'wiki:source:ingested',
+        z.object({
+            sourceId: z.string(),
+            title: z.string(),
+            status: z.string(),
+            projectId: z.string().optional(),
+        }),
+    ),
+    WIKI_EDIT_COMMITTED: event(
+        'wiki:edit:committed',
+        z.object({ editId: z.string(), pageId: z.string() }),
+    ),
 } as const;

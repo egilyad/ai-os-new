@@ -568,6 +568,11 @@ export const registerPhase78: Phase = ({ register }) => {
                               title: n.frontmatter.title,
                           }));
                       },
+                      core: async () => {
+                          const brain = c.get<IWikiBrainService>('wikiBrainService');
+                          const core = await brain.getCore();
+                          return core ? `${core.frontmatter.title}\n\n${core.body}` : undefined;
+                      },
                   }
                 : undefined,
             trust: c.has('capabilityTrustService')

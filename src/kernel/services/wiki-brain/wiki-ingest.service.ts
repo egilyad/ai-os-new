@@ -14,6 +14,7 @@ import type { TWikiSource, TWikiPage, TWikiLink } from '../../contracts/wiki-bra
 import { IngestAnalyzeOperation } from './operations/ingest-analyze.operation';
 import { IngestGenerateOperation } from './operations/ingest-generate.operation';
 import { wikiId } from './wiki-brain-dexie';
+import { EVENTS } from '../../events/event-names';
 
 export interface WikiEventSink {
     emit(event: string, payload?: unknown): void;
@@ -116,6 +117,27 @@ export class WikiIngestService implements IWikiIngestService {
             pageIds: pages.map((p) => p.id),
             pageSlugs: pages.map((p) => p.slug),
         });
+        if (this.events) {
+            this.events.emit(
+                EVENTS.WIKI_SOURCE_INGESTED as never,
+                {
+                    sourceId: source.id,
+                    title: source.title,
+                    status: 'completed',
+                    projectId: source.projectId,
+                } as never,
+            );
+            for (const p of pages) {
+                this.events.emit(
+                    EVENTS.WIKI_PAGE_WRITTEN as never,
+                    {
+                        pageId: p.id,
+                        slug: p.slug,
+                        projectId: p.frontmatter.projectId,
+                    } as never,
+                );
+            }
+        }
 
         return { pages, links, logEntry };
     }
