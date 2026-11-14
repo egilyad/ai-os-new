@@ -22,4 +22,9 @@ export interface IWikiQueryService {
         slug: string,
         opts?: { depth?: number; maxNodes?: number },
     ): Promise<{ nodes: TWikiPage[]; links: TWikiLink[] }>;
+    /** M1.5 — multi-hop traversal from a starting slug. */
+    traverse(
+        slug: string,
+        opts?: { depth?: number; maxNodes?: number },
+    ): Promise<{ nodes: TWikiPage[]; links: TWikiLink[] }>;
 }

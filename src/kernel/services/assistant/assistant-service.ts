@@ -111,6 +111,11 @@ export interface AssistantServiceDeps {
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
         /** Related pages from the knowledge graph around a page. */
         neighbors?(slug: string): Promise<Array<{ slug: string; title: string }>>;
+        /** M1.5 — multi-hop traversal. */
+        traverse?(
+            slug: string,
+            opts?: { depth?: number; maxNodes?: number },
+        ): Promise<Array<{ slug: string; title: string }>>;
     };
     /** Provider/model of the assistant; the session may override it. */
     provider?: string;
@@ -177,6 +182,30 @@ export class AssistantService {
                         }
                     } catch (e) {
                         LOGGER.warn('Assistant', 'context: wiki graph neighbors failed', {
+                            error: e instanceof Error ? e.message : String(e),
+                        });
+                    }
+                }
+                if (this.deps.wiki.traverse) {
+                    try {
+                        const top = wikiHits[0];
+                        if (top) {
+                            const trail = await this.deps.wiki.traverse(top.slug, {
+                                depth: 2,
+                                maxNodes: 10,
+                            });
+                            if (trail.length > 1) {
+                                blocks.push(
+                                    '[WIKI GRAPH — multi-hop trail]',
+                                    trail
+                                        .slice(0, 10)
+                                        .map((n) => `- [[${n.slug}]] ${n.title}`)
+                                        .join('\n'),
+                                );
+                            }
+                        }
+                    } catch (e) {
+                        LOGGER.warn('Assistant', 'context: wiki traverse failed', {
                             error: e instanceof Error ? e.message : String(e),
                         });
                     }

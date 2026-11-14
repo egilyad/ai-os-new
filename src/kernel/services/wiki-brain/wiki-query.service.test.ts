@@ -42,7 +42,9 @@ beforeEach(async () => {
 describe('wiki query service', () => {
     it('returns the page that best matches the query', async () => {
         const store = new WikiDexieStore();
-        await store.putPage(page('quantum', 'Quantum theory', 'About quantum mechanics and superposition.'));
+        await store.putPage(
+            page('quantum', 'Quantum theory', 'About quantum mechanics and superposition.'),
+        );
         await store.putPage(page('gardening', 'Gardening', 'About soil and compost.'));
 
         const query = new WikiQueryService(store, new WikiSearchAdapter(store));
@@ -68,5 +70,21 @@ describe('wiki query service', () => {
         const results = await query.search('compost', { mode: 'semantic-only' });
         expect(results.length).toBeGreaterThan(0);
         expect(results[0].matchedOn).toBe('semantic');
+    });
+
+    it('traverse walks multi-hop links (M1.5)', async () => {
+        const store = new WikiDexieStore();
+        await store.putPage(page('a', 'A', 'body'));
+        await store.putPage(page('b', 'B', 'body'));
+        await store.putPage(page('c', 'C', 'body'));
+        await store.putLink({ id: 'l1', fromSlug: 'a', toSlug: 'b', kind: 'wikilink', weight: 1 });
+        await store.putLink({ id: 'l2', fromSlug: 'b', toSlug: 'c', kind: 'wikilink', weight: 1 });
+
+        const query = new WikiQueryService(store, new WikiSearchAdapter(store));
+        const { nodes, links } = await query.traverse('a', { depth: 2 });
+
+        const slugs = nodes.map((n) => n.slug).sort();
+        expect(slugs).toEqual(['a', 'b', 'c']);
+        expect(links.length).toBeGreaterThanOrEqual(2);
     });
 });

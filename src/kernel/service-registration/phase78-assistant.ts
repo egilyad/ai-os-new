@@ -520,6 +520,20 @@ export const registerPhase78: Phase = ({ register }) => {
                               title: n.frontmatter.title,
                           }));
                       },
+                      traverse: async (
+                          slug: string,
+                          opts?: { depth?: number; maxNodes?: number },
+                      ) => {
+                          const brain = c.get<IWikiBrainService>('wikiBrainService');
+                          const { nodes } = await brain.query.traverse(slug, {
+                              depth: opts?.depth ?? 2,
+                              maxNodes: opts?.maxNodes ?? 10,
+                          });
+                          return nodes.map((n) => ({
+                              slug: n.slug,
+                              title: n.frontmatter.title,
+                          }));
+                      },
                   }
                 : undefined,
             trust: c.has('capabilityTrustService')
