@@ -82,6 +82,9 @@ jobs:
                   npm run gen:docs-graph
                   npm run gen:wiki-checks
                   npm run gen:wiki-coverage
+                  # DEBUG: показать, какие файлы расходятся (временный шаг)
+                  git status --short -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated
+                  git diff --stat -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated
                   git diff --exit-code -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated
 
             - name: Documentation health
