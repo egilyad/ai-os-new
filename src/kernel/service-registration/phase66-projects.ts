@@ -25,6 +25,7 @@ import { AutonomyOrchestrator } from '../services/autonomy-orchestrator';
 import { AutonomyRunner } from '../services/autonomy-runner';
 import { ProjectInvocationBridge } from '../services/project-invocation-bridge';
 import { ProjectGraphService } from '../services/project-graph/project-graph-service';
+import { ProjectGraphProjection } from '../services/project-graph/project-graph-projection';
 import { rootLogger } from '../services/logger-service';
 
 const LOGGER = rootLogger.child('Phase66Projects');
@@ -36,6 +37,14 @@ export const registerPhase66: Phase = ({ register }) => {
 
     register('projectGraphService', () => {
         return new ProjectGraphService();
+    });
+
+    register('projectGraphProjection', (c: IContainer) => {
+        const projection = new ProjectGraphProjection(
+            c.get<ProjectGraphService>('projectGraphService'),
+        );
+        projection.start();
+        return projection;
     });
 
     register('projectManagerService', (c: IContainer) => {
