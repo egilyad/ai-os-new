@@ -433,6 +433,65 @@ export const registerPhase78: Phase = ({ register }) => {
                               },
                           }
                         : undefined,
+                ops: {
+                    restartAgent: async (agentId: string) => {
+                        if (!c.has('agentService')) return false;
+                        try {
+                            await c
+                                .get<{ activate(id: string): Promise<unknown> }>('agentService')
+                                .activate(agentId);
+                            return true;
+                        } catch {
+                            return false;
+                        }
+                    },
+                    retryTask: async (taskId: string) => {
+                        try {
+                            const updated = await c
+                                .get<{
+                                    updateStatus(id: string, status: string): Promise<unknown>;
+                                }>('agemsTaskService')
+                                .updateStatus(taskId, 'QUEUED');
+                            return updated !== undefined;
+                        } catch {
+                            return false;
+                        }
+                    },
+                    switchProfile: (profileId: string) => {
+                        if (!c.has('settingsService')) return false;
+                        try {
+                            return c
+                                .get<{ loadProfile(id: string): boolean }>('settingsService')
+                                .loadProfile(profileId);
+                        } catch {
+                            return false;
+                        }
+                    },
+                },
+                images: c.has('imageGenerationService')
+                    ? {
+                          generate: (prompt, opts) =>
+                              c
+                                  .get<{
+                                      generate(
+                                          prompt: string,
+                                          opts?: { size?: string; provider?: string },
+                                      ): Promise<{
+                                          dataB64: string;
+                                          mimeType: string;
+                                          width?: number;
+                                          height?: number;
+                                          provider: string;
+                                          note?: string;
+                                      }>;
+                                  }>('imageGenerationService')
+                                  .generate(prompt, opts),
+                          listProviders: () =>
+                              c
+                                  .get<{ listProviders(): string[] }>('imageGenerationService')
+                                  .listProviders(),
+                      }
+                    : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),

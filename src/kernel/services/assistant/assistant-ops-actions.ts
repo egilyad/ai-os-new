@@ -200,6 +200,27 @@ export interface AssistantOpsDeps {
     vision?: {
         describe(attachmentId: string, prompt?: string): Promise<string>;
     };
+    /** Privileged operations (approval-gated via tool:exec). */
+    ops?: {
+        restartAgent(agentId: string): Promise<boolean>;
+        retryTask(taskId: string): Promise<boolean>;
+        switchProfile(profileId: string): boolean;
+    };
+    /** Image generation facade. */
+    images?: {
+        generate(
+            prompt: string,
+            opts?: { size?: string; provider?: string },
+        ): Promise<{
+            dataB64: string;
+            mimeType: string;
+            width?: number;
+            height?: number;
+            provider: string;
+            note?: string;
+        }>;
+        listProviders(): string[];
+    };
     /** M4 — structured planner & plan-execution loop. */
     planner?: {
         createPlan(
@@ -1752,6 +1773,152 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `attachment.describe failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'agent.restart',
+        group: 'work',
+        description: 'Restart an agent (privileged; goes through approval).',
+        parameters: {
+            type: 'object',
+            properties: { agentId: { type: 'string' } },
+            required: ['agentId'],
+        },
+        action: 'tool:exec',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const ops = deps.ops;
+            if (!ops) return { ok: false, detail: 'ops are not available' };
+            try {
+                const ok = await ops.restartAgent(text(args['agentId']));
+                return {
+                    ok,
+                    detail: ok ? 'agent restarted' : 'restart failed',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `agent.restart failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'task.retry',
+        group: 'work',
+        description: 'Retry a failed task (privileged; goes through approval).',
+        parameters: {
+            type: 'object',
+            properties: { taskId: { type: 'string' } },
+            required: ['taskId'],
+        },
+        action: 'tool:exec',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const ops = deps.ops;
+            if (!ops) return { ok: false, detail: 'ops are not available' };
+            try {
+                const ok = await ops.retryTask(text(args['taskId']));
+                return {
+                    ok,
+                    detail: ok ? 'task re-queued' : 'retry failed',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `task.retry failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'profile.switch',
+        group: 'work',
+        description: 'Switch active settings profile (privileged; goes through approval).',
+        parameters: {
+            type: 'object',
+            properties: { profileId: { type: 'string' } },
+            required: ['profileId'],
+        },
+        action: 'tool:exec',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const ops = deps.ops;
+            if (!ops) return { ok: false, detail: 'ops are not available' };
+            try {
+                const ok = ops.switchProfile(text(args['profileId']));
+                return {
+                    ok,
+                    detail: ok ? 'profile switched' : 'profile switch failed',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `profile.switch failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'image.generate',
+        group: 'work',
+        description: 'Generate an image from a prompt and store it as a sidecar attachment.',
+        parameters: {
+            type: 'object',
+            properties: {
+                prompt: { type: 'string' },
+                size: { type: 'string', enum: ['256x256', '512x512', '1024x1024', '2048x2048'] },
+                provider: { type: 'string' },
+            },
+            required: ['prompt'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const images = deps.images;
+            const attachments = deps.attachments;
+            if (!images) return { ok: false, detail: 'image generation is not available' };
+            try {
+                const generated = await images.generate(text(args['prompt']), {
+                    size: text(args['size']) || undefined,
+                    provider: text(args['provider']) || undefined,
+                });
+                if (!attachments) {
+                    return {
+                        ok: true,
+                        detail: `image generated (${generated.provider}) but attachments unavailable`,
+                        evidence: generated.note,
+                        verification: 'verified',
+                    };
+                }
+                const att = await attachments.register({
+                    sourceKind: 'note',
+                    sourceRef: 'generated',
+                    caption: text(args['prompt']).slice(0, 120),
+                    mimeType: generated.mimeType,
+                    dataB64: generated.dataB64,
+                    width: generated.width,
+                    height: generated.height,
+                });
+                return {
+                    ok: true,
+                    detail: `image generated (${generated.provider}) -> attachment ${att.id}`,
+                    evidence: generated.note ?? '',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `image.generate failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
