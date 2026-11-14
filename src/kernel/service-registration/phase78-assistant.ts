@@ -492,6 +492,35 @@ export const registerPhase78: Phase = ({ register }) => {
                                   .listProviders(),
                       }
                     : undefined,
+                wikiContext: c.has('wikiBrainContextProvider')
+                    ? {
+                          retrieve: (query, opts) =>
+                              c
+                                  .get<{
+                                      retrieve(
+                                          query: string,
+                                          opts?: { topK?: number; maxTokens?: number },
+                                      ): Promise<{
+                                          snippets: Array<{
+                                              pageSlug: string;
+                                              title: string;
+                                              markdown: string;
+                                              sources: string[];
+                                          }>;
+                                          totalTokens: number;
+                                      }>;
+                                  }>('wikiBrainContextProvider')
+                                  .retrieve(query, opts),
+                          retrieveBySlugs: (slugs) =>
+                              c
+                                  .get<{
+                                      retrieveBySlugs(
+                                          slugs: string[],
+                                      ): Promise<Array<{ slug: string }>>;
+                                  }>('wikiBrainContextProvider')
+                                  .retrieveBySlugs(slugs),
+                      }
+                    : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),

@@ -221,6 +221,22 @@ export interface AssistantOpsDeps {
         }>;
         listProviders(): string[];
     };
+    /** QW2 — live Wiki brain context provider (Core + snippets). */
+    wikiContext?: {
+        retrieve(
+            query: string,
+            opts?: { topK?: number; maxTokens?: number },
+        ): Promise<{
+            snippets: Array<{
+                pageSlug: string;
+                title: string;
+                markdown: string;
+                sources: string[];
+            }>;
+            totalTokens: number;
+        }>;
+        retrieveBySlugs(slugs: string[]): Promise<Array<{ slug: string }>>;
+    };
     /** M4 — structured planner & plan-execution loop. */
     planner?: {
         createPlan(
@@ -1919,6 +1935,50 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `image.generate failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'wiki.context',
+        group: 'research',
+        description:
+            'Retrieve bounded wiki context (Core snippets) for a question via the live context provider.',
+        parameters: {
+            type: 'object',
+            properties: {
+                query: { type: 'string' },
+                topK: { type: 'number' },
+                maxTokens: { type: 'number' },
+            },
+            required: ['query'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const ctx = deps.wikiContext;
+            if (!ctx) return { ok: false, detail: 'wiki context is not available' };
+            try {
+                const result = await ctx.retrieve(text(args['query']), {
+                    topK: typeof args['topK'] === 'number' ? args['topK'] : 5,
+                    maxTokens:
+                        typeof args['maxTokens'] === 'number' ? args['maxTokens'] : undefined,
+                });
+                const summary = result.snippets
+                    .slice(0, 10)
+                    .map((s) => `[[${s.pageSlug}]] ${s.title}`)
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: `${result.snippets.length} snippet(s), ${result.totalTokens} tokens`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `wiki.context failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
