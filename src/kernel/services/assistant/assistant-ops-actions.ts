@@ -2,9 +2,9 @@
  * The assistant's operational hands and eyes: what the system is doing right
  * now and the work the assistant can start on it.
  *
- * Reads are observations of runtime state â€” topology, metrics, traces, pending
+ * Reads are observations of runtime state ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â topology, metrics, traces, pending
  * approvals and the task board. They exist so the assistant can answer
- * "Ð¿Ð¾Ñ‡ÐµÐ¼Ñƒ Ñ‚Ð¾Ñ€Ð¼Ð¾Ð·Ð¸Ñ‚", "Ñ‡Ñ‚Ð¾ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ñ‹Ð¿Ð¾Ð»Ð½ÑÐµÑ‚ÑÑ" and "ÐºÐ¾Ð³Ð¾ Ð¶Ð´Ñ‘Ñ‚ ÑÐ¸ÑÑ‚ÐµÐ¼Ð°" from
+ * "ÃƒÂÃ‚Â¿ÃƒÂÃ‚Â¾Ãƒâ€˜Ã¢â‚¬Â¡ÃƒÂÃ‚ÂµÃƒÂÃ‚Â¼Ãƒâ€˜Ã†â€™ Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚Â¾Ãƒâ€˜Ã¢â€šÂ¬ÃƒÂÃ‚Â¼ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â·ÃƒÂÃ‚Â¸Ãƒâ€˜Ã¢â‚¬Å¡", "Ãƒâ€˜Ã¢â‚¬Â¡Ãƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚Â¾ Ãƒâ€˜Ã‚ÂÃƒÂÃ‚ÂµÃƒÂÃ‚Â¹Ãƒâ€˜Ã¢â‚¬Â¡ÃƒÂÃ‚Â°Ãƒâ€˜Ã‚Â ÃƒÂÃ‚Â²Ãƒâ€˜Ã¢â‚¬Â¹ÃƒÂÃ‚Â¿ÃƒÂÃ‚Â¾ÃƒÂÃ‚Â»ÃƒÂÃ‚Â½Ãƒâ€˜Ã‚ÂÃƒÂÃ‚ÂµÃƒâ€˜Ã¢â‚¬Å¡Ãƒâ€˜Ã‚ÂÃƒâ€˜Ã‚Â" and "ÃƒÂÃ‚ÂºÃƒÂÃ‚Â¾ÃƒÂÃ‚Â³ÃƒÂÃ‚Â¾ ÃƒÂÃ‚Â¶ÃƒÂÃ‚Â´Ãƒâ€˜Ã¢â‚¬ËœÃƒâ€˜Ã¢â‚¬Å¡ Ãƒâ€˜Ã‚ÂÃƒÂÃ‚Â¸Ãƒâ€˜Ã‚ÂÃƒâ€˜Ã¢â‚¬Å¡ÃƒÂÃ‚ÂµÃƒÂÃ‚Â¼ÃƒÂÃ‚Â°" from
  * numbers instead of guessing. Writes are scheduled automation and task
  * delegation; both go through the permission gate.
  */
@@ -98,7 +98,7 @@ export interface AssistantOpsDeps {
             creatorId?: string;
         }): Promise<{ id: string; title: string; status: string; assigneeId?: string }>;
     };
-    /** M2.1 â€” agentâ†’agent handoff protocol. */
+    /** M2.1 — agent→agent handoff protocol. */
     handoff?: {
         handoff(opts: {
             fromAgent: string;
@@ -109,7 +109,7 @@ export interface AssistantOpsDeps {
             priority?: 'critical' | 'high' | 'normal' | 'low';
         }): Promise<{ id: string; status: string }>;
     };
-    /** M2.3 â€” Invocation Engine. */
+    /** M2.3 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Invocation Engine. */
     invocation?: {
         invoke(req: {
             source: string;
@@ -120,11 +120,21 @@ export interface AssistantOpsDeps {
             constraints?: { mode?: string; maxTurns?: number; ttlMs?: number };
         }): Promise<{ id: string; status: string; rejectionReason?: string }>;
     };
-    /** M2.4 â€” agent group execution. */
+    /** M2.4 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â agent group execution. */
     agentsExecute?: {
         executeGroup(groupId: string, input: string): Promise<string[]>;
     };
-    /** M3.1 â€” Projects subsystem (read). */
+    /** F5 â€” Wiki closed-loop research. */
+    wikiResearch?: {
+        research(question: string): Promise<{
+            sources: Array<{ slug: string; title: string; snippet: string }>;
+            hypothesisId?: string;
+            summary?: string;
+            status: string;
+        }>;
+        checkHypothesis(id: string): Promise<{ ok: boolean; evidence: string[]; message: string }>;
+    };
+    /** M3.1 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Projects subsystem (read). */
     projects?: {
         list(): Promise<
             Array<{ id: string; name: string; description: string; status: string; type: string }>
@@ -136,15 +146,13 @@ export interface AssistantOpsDeps {
             | undefined
         >;
     };
-    /** M3.2 â€” Forum subsystem (read). */
+    /** M3.2 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Forum subsystem (read). */
     forum?: {
         listTopics(filter?: {
             category?: string;
             limit?: number;
         }): Promise<Array<{ id: string; title: string; category: string }>>;
-        getThread(
-            topicId: string,
-        ): Promise<{
+        getThread(topicId: string): Promise<{
             topic: { id: string; title: string };
             posts: Array<{ id: string; body: string }>;
         } | null>;
@@ -278,7 +286,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 };
             }
             const line = (r: (typeof rows)[number]): string =>
-                `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request â€” ${r.recommendation}`;
+                `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ${r.recommendation}`;
             // The empty-guard above guarantees a first row here.
             const top = rows[0]!;
             return {
@@ -463,7 +471,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const fresh = listed.find((t) => t.id === created.id);
             if (!fresh) return { ok: false, detail: `Task ${created.id} was not stored` };
 
-            // M2.1 â€” initiate a handoff when a specific agent was picked.
+            // M2.1 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â initiate a handoff when a specific agent was picked.
             let handoffEvidence = '';
             if (agentId && deps.handoff) {
                 try {
@@ -874,7 +882,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                     const edges = await graph.findByRelation(projectId, relation as never);
                     const summary = edges
                         .slice(0, 30)
-                        .map((e) => `${e.from} â€”${e.relation}â†’ ${e.to}`)
+                        .map((e) => `${e.from} → ${e.relation} → ${e.to}`)
                         .join(' | ');
                     return {
                         ok: true,
@@ -1047,6 +1055,41 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `forum.read failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+    actions.push({
+        id: 'wiki.research',
+        group: 'research',
+        description:
+            'Run a closed-loop research query over Wiki-Brain: search, synthesize, persist knowledge units.',
+        parameters: {
+            type: 'object',
+            properties: { question: { type: 'string' } },
+            required: ['question'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.wikiResearch) return { ok: false, detail: 'wiki research is not available' };
+            const question = text(args['question']);
+            if (!question) return { ok: false, detail: 'question is required' };
+            try {
+                const result = await deps.wikiResearch.research(question);
+                const sourceList = result.sources
+                    .slice(0, 10)
+                    .map((s) => `[[${s.slug}]] ${s.title}`)
+                    .join(' | ');
+                return {
+                    ok: result.status === 'completed',
+                    detail: result.summary ? result.summary.slice(0, 400) : esearch,
+                    evidence: sourceList || 'no sources',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `wiki.research failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },

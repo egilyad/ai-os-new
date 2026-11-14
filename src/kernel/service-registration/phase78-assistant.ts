@@ -1,12 +1,12 @@
 /**
- * Phase 78 — the project assistant.
+ * Phase 78 â€” the project assistant.
  *
  * Registers the assistant's knowledge (A/B layers), its navigation channel,
  * its action registry (the toolbelt) and the service that assembles a turn.
  *
  * Only kernel-owned services are wired here. UI-owned capabilities (keys,
  * MCP, skills, scheduler, tasks) register their actions from the composition
- * root — they are part of the interface, not of the kernel.
+ * root â€” they are part of the interface, not of the kernel.
  */
 import type { Phase } from './helpers';
 import type { IContainer } from '../container';
@@ -98,7 +98,7 @@ export const registerPhase78: Phase = ({ register }) => {
             }),
         );
         // The exam and the diary depend on the registry, so they are resolved
-        // lazily — the actions only touch them when they actually run.
+        // lazily â€” the actions only touch them when they actually run.
         let exam: AssistantExamService | undefined;
         let diary: AssistantDiaryService | undefined;
         const diagnosis = new AssistantDiagnosisService();
@@ -323,6 +323,36 @@ export const registerPhase78: Phase = ({ register }) => {
                 agentsExecute: agentService
                     ? { executeGroup: (id, input) => agentService.executeGroup(id, input) }
                     : undefined,
+
+                wikiResearch: c.has('wikiResearchService')
+                    ? {
+                          research: (question) =>
+                              c
+                                  .get<{
+                                      research(q: string): Promise<{
+                                          sources: Array<{
+                                              slug: string;
+                                              title: string;
+                                              snippet: string;
+                                          }>;
+                                          hypothesisId?: string;
+                                          summary?: string;
+                                          status: string;
+                                      }>;
+                                  }>('wikiResearchService')
+                                  .research(question),
+                          checkHypothesis: (id) =>
+                              c
+                                  .get<{
+                                      checkHypothesis(i: string): Promise<{
+                                          ok: boolean;
+                                          evidence: string[];
+                                          message: string;
+                                      }>;
+                                  }>('wikiResearchService')
+                                  .checkHypothesis(id),
+                      }
+                    : undefined,
                 projects: c.has('projectManagerService')
                     ? {
                           list: () =>
@@ -342,9 +372,7 @@ export const registerPhase78: Phase = ({ register }) => {
                           get: (id) =>
                               c
                                   .get<{
-                                      get(
-                                          id: string,
-                                      ): Promise<
+                                      get(id: string): Promise<
                                           | {
                                                 id: string;
                                                 name: string;
@@ -374,9 +402,7 @@ export const registerPhase78: Phase = ({ register }) => {
                           getThread: (topicId) =>
                               c
                                   .get<{
-                                      getThread(
-                                          topicId: string,
-                                      ): Promise<{
+                                      getThread(topicId: string): Promise<{
                                           topic: { id: string; title: string };
                                           posts: Array<{ id: string; body: string }>;
                                       } | null>;
@@ -487,7 +513,7 @@ export const registerPhase78: Phase = ({ register }) => {
                         frequency: 'daily',
                         cronExpression: '0 3 * * *',
                         taskParams: {
-                            prompt: 'Проведи ночной самоанализ: system.review, затем system.improve, запиши итог в дневник.',
+                            prompt: 'ÐŸÑ€Ð¾Ð²ÐµÐ´Ð¸ Ð½Ð¾Ñ‡Ð½Ð¾Ð¹ ÑÐ°Ð¼Ð¾Ð°Ð½Ð°Ð»Ð¸Ð·: system.review, Ð·Ð°Ñ‚ÐµÐ¼ system.improve, Ð·Ð°Ð¿Ð¸ÑˆÐ¸ Ð¸Ñ‚Ð¾Ð³ Ð² Ð´Ð½ÐµÐ²Ð½Ð¸Ðº.',
                         },
                     })
                     .catch(() => {
@@ -526,8 +552,8 @@ export const registerPhase78: Phase = ({ register }) => {
         return registry;
     });
 
-    // The exam is stateless — it only reads the trust ledger and the action
-    // registry — so the container may hold its own instance for the assistant.
+    // The exam is stateless â€” it only reads the trust ledger and the action
+    // registry â€” so the container may hold its own instance for the assistant.
     register('assistantExamService', (c: IContainer) => {
         const trust = c.get<CapabilityTrustService>('capabilityTrustService');
         const actions = c.get<AssistantActionRegistry>('assistantActionRegistry');
@@ -544,7 +570,7 @@ export const registerPhase78: Phase = ({ register }) => {
     });
 
     register('projectAssistantService', (c: IContainer) => {
-        // M0.7 — seed explicit authorization rules for the assistant agent.
+        // M0.7 â€” seed explicit authorization rules for the assistant agent.
         // Reads are allowed; non-read actions ask the user (fail-closed).
         if (c.has('authorizationService')) {
             try {

@@ -29,6 +29,7 @@ import {
     KnowledgeUnitService,
     knowledgeUnitService,
 } from '../services/wiki-brain/wiki-knowledge-unit.service';
+import { WikiResearchService } from '../services/wiki-brain/wiki-research.service';
 
 function wikiLlm(c: IContainer): WikiLlmClient | null {
     if (!c.has('llmClientService')) return null;
@@ -116,4 +117,13 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
 
     register('knowledgeUnitService', () => new KnowledgeUnitService());
     register('wikiKnowledgeUnitService', () => knowledgeUnitService);
+
+    register('wikiResearchService', (c: IContainer) => {
+        const llm = wikiLlm(c);
+        return new WikiResearchService({
+            query: c.get('wikiQueryService'),
+            units: c.get('knowledgeUnitService'),
+            llm: llm ?? undefined,
+        });
+    });
 };
