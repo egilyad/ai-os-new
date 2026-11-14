@@ -23,12 +23,20 @@ export interface VisGraphEdge {
 }
 
 interface Props {
-    nodes: VisGraphNode[];
-    edges: VisGraphEdge[];
-    onClickNode: (node: VisGraphNode) => void;
+    nodes: VisNode[];
+    edges: VisEdge[];
+    onClickNode?: (node: VisNode) => void;
     height?: number;
     physics?: boolean;
     hierarchical?: boolean;
+    interactionOptions?: {
+        hover?: boolean;
+        highlightNeighbors?: boolean;
+        dragView?: boolean;
+        zoomView?: boolean;
+    };
+    physicsOptions?: Record<string, unknown>;
+    onReady?: (ref: { focus(id: string): void; fit(): void }) => void;
 }
 
 /** Универсальный интерактивный граф на vis-network: зум, панорамирование,
@@ -40,11 +48,16 @@ const VisGraph: React.FC<Props> = ({
     height = 420,
     physics = true,
     hierarchical = false,
+    interactionOptions,
+    physicsOptions,
+    onReady,
 }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const netRef = useRef<Network | null>(null);
     const onClickNodeRef = useRef(onClickNode);
-    onClickNodeRef.current = onClickNode;
+    useEffect(() => {
+        onClickNodeRef.current = onClickNode;
+    }, [onClickNode]);
 
     // P1-17: пред-вычисленные наборы и индекс узлов — сеть пересоздаётся
     // только при смене опций, данные обновляются через setData (без destroy).
@@ -98,19 +111,26 @@ const VisGraph: React.FC<Props> = ({
                 nodes: { chosen: true },
                 edges: { arrowStrikethrough: false },
                 layout: { hierarchical: { enabled: hierarchical } },
-                physics: physics
-                    ? {
-                          stabilization: { iterations: 200 },
-                          barnesHut: {
-                              gravitationalConstant: -3500,
-                              centralGravity: 0.25,
-                              springLength: 160,
-                              springConstant: 0.04,
-                              damping: 0.09,
-                          },
-                      }
-                    : { enabled: false },
-                interaction: { hover: true, tooltipDelay: 150, dragView: true, zoomView: true },
+                physics:
+                    physicsOptions ??
+                    (physics
+                        ? {
+                              stabilization: { iterations: 200 },
+                              barnesHut: {
+                                  gravitationalConstant: -3500,
+                                  centralGravity: 0.25,
+                                  springLength: 160,
+                                  springConstant: 0.04,
+                                  damping: 0.09,
+                              },
+                          }
+                        : { enabled: false }),
+                interaction: interactionOptions ?? {
+                    hover: true,
+                    tooltipDelay: 150,
+                    dragView: true,
+                    zoomView: true,
+                },
             },
         );
 
@@ -123,6 +143,10 @@ const VisGraph: React.FC<Props> = ({
                 if (node) onClickNodeRef.current(node);
             }
         });
+        onReady?.({
+            focus: (id) => net.focus(id, { scale: 1.4 }),
+            fit: () => net.fit(),
+        });
 
         return () => {
             net.destroy();
@@ -130,6 +154,16 @@ const VisGraph: React.FC<Props> = ({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hierarchical, physics]);
+
+    useEffect(() => {
+        if (!physicsOptions) return;
+        netRef.current?.setOptions({ physics: physicsOptions });
+    }, [physicsOptions]);
+
+    useEffect(() => {
+        if (!interactionOptions) return;
+        netRef.current?.setOptions({ interaction: interactionOptions });
+    }, [interactionOptions]);
 
     useEffect(() => {
         netRef.current?.setData({ nodes: netNodes, edges: netEdges });
