@@ -40,6 +40,7 @@ import {
     type WorkPlan,
 } from '../services/assistant/assistant-planner-service';
 import { createAssistantPlannerDB } from '../services/assistant/assistant-planner-dexie';
+import type { AttachmentService } from '../services/attachments/attachment-service';
 import type { OrchestrationService } from '../services/orchestration-service';
 import type { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import type { MetricsService } from '../services/metrics-service';
@@ -385,6 +386,53 @@ export const registerPhase78: Phase = ({ register }) => {
                         return { health, summary: lines.join(' | '), fields };
                     },
                 },
+                attachments: c.has('attachmentService')
+                    ? {
+                          register: (input) =>
+                              c.get<AttachmentService>('attachmentService').register(
+                                  input as {
+                                      projectId?: string;
+                                      sourceKind: 'wiki' | 'debate' | 'task' | 'project' | 'note';
+                                      sourceRef: string;
+                                      caption: string;
+                                      mimeType: string;
+                                      dataB64: string;
+                                      width?: number;
+                                      height?: number;
+                                  },
+                              ),
+                          list: (filter) =>
+                              c.get<AttachmentService>('attachmentService').list(filter),
+                          get: (id) => c.get<AttachmentService>('attachmentService').get(id),
+                          detach: (id) => c.get<AttachmentService>('attachmentService').detach(id),
+                      }
+                    : undefined,
+                vision:
+                    c.has('llmClientService') && c.has('attachmentService')
+                        ? {
+                              describe: async (attachmentId: string, prompt?: string) => {
+                                  const att = await c
+                                      .get<AttachmentService>('attachmentService')
+                                      .get(attachmentId);
+                                  if (!att) return 'attachment not found';
+                                  const llm = c.get<ILLMClientService>('llmClientService');
+                                  try {
+                                      const res = await llm.sendMessage([
+                                          {
+                                              role: 'user',
+                                              content: prompt ?? 'Describe this image concisely.',
+                                              inlineData: [
+                                                  { mimeType: att.mimeType, data: att.dataB64 },
+                                              ],
+                                          },
+                                      ]);
+                                      return res.content;
+                                  } catch (e) {
+                                      return `vision failed: ${e instanceof Error ? e.message : String(e)}`;
+                                  }
+                              },
+                          }
+                        : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),

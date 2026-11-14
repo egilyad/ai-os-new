@@ -166,6 +166,40 @@ export interface AssistantOpsDeps {
             fields: Record<string, unknown>;
         }>;
     };
+    /** Sidecar attachments (visual evidence; roadmap: images from sidecar). */
+    attachments?: {
+        register(input: {
+            projectId?: string;
+            sourceKind: string;
+            sourceRef: string;
+            caption: string;
+            mimeType: string;
+            dataB64: string;
+            width?: number;
+            height?: number;
+        }): Promise<{ id: string }>;
+        list(filter?: {
+            projectId?: string;
+            sourceKind?: string;
+            sourceRef?: string;
+        }): Promise<Array<{ id: string; sourceRef: string; caption: string; mimeType: string }>>;
+        get(id: string): Promise<
+            | {
+                  id: string;
+                  sourceRef: string;
+                  caption: string;
+                  mimeType: string;
+                  width?: number;
+                  height?: number;
+              }
+            | undefined
+        >;
+        detach(id: string): Promise<boolean>;
+    };
+    /** Vision helper over sidecar attachments. */
+    vision?: {
+        describe(attachmentId: string, prompt?: string): Promise<string>;
+    };
     /** M4 — structured planner & plan-execution loop. */
     planner?: {
         createPlan(
@@ -1538,6 +1572,186 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `observer.status failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'attachment.register',
+        group: 'work',
+        description: 'Store a sidecar visual attachment (base64) bound to a source entity.',
+        parameters: {
+            type: 'object',
+            properties: {
+                sourceKind: { type: 'string', enum: ['wiki', 'debate', 'task', 'project', 'note'] },
+                sourceRef: { type: 'string' },
+                caption: { type: 'string' },
+                mimeType: { type: 'string' },
+                dataB64: { type: 'string' },
+                projectId: { type: 'string' },
+            },
+            required: ['sourceKind', 'sourceRef', 'caption', 'mimeType', 'dataB64'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const attachments = deps.attachments;
+            if (!attachments) return { ok: false, detail: 'attachments are not available' };
+            try {
+                const att = await attachments.register({
+                    projectId: text(args['projectId']) || undefined,
+                    sourceKind: text(args['sourceKind']),
+                    sourceRef: text(args['sourceRef']),
+                    caption: text(args['caption']),
+                    mimeType: text(args['mimeType']),
+                    dataB64: text(args['dataB64']),
+                });
+                return {
+                    ok: true,
+                    detail: `attachment ${att.id} stored`,
+                    evidence: att.id,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `attachment.register failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'attachment.list',
+        group: 'research',
+        description: 'List sidecar attachments (optionally by source).',
+        parameters: {
+            type: 'object',
+            properties: {
+                sourceKind: { type: 'string' },
+                sourceRef: { type: 'string' },
+            },
+            required: [],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const attachments = deps.attachments;
+            if (!attachments) return { ok: false, detail: 'attachments are not available' };
+            try {
+                const items = await attachments.list({
+                    sourceKind: text(args['sourceKind']) || undefined,
+                    sourceRef: text(args['sourceRef']) || undefined,
+                });
+                const summary = items
+                    .slice(0, 30)
+                    .map((a) => `${a.caption} [${a.id}] (${a.mimeType})`)
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: `${items.length} attachment(s)`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `attachment.list failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'attachment.get',
+        group: 'research',
+        description: 'Get attachment metadata (use attachment.describe for vision content).',
+        parameters: {
+            type: 'object',
+            properties: { id: { type: 'string' } },
+            required: ['id'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const attachments = deps.attachments;
+            if (!attachments) return { ok: false, detail: 'attachments are not available' };
+            try {
+                const att = await attachments.get(text(args['id']));
+                if (!att) return { ok: false, detail: 'attachment not found' };
+                return {
+                    ok: true,
+                    detail: `${att.caption} (${att.mimeType})`,
+                    evidence: `source=${att.sourceRef}`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `attachment.get failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'attachment.detach',
+        group: 'work',
+        description: 'Remove a sidecar attachment.',
+        parameters: {
+            type: 'object',
+            properties: { id: { type: 'string' } },
+            required: ['id'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const attachments = deps.attachments;
+            if (!attachments) return { ok: false, detail: 'attachments are not available' };
+            try {
+                const ok = await attachments.detach(text(args['id']));
+                return {
+                    ok,
+                    detail: ok ? 'attachment removed' : 'attachment not found',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `attachment.detach failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'attachment.describe',
+        group: 'research',
+        description: 'Ask the vision-capable model to describe an attachment.',
+        parameters: {
+            type: 'object',
+            properties: {
+                id: { type: 'string' },
+                prompt: { type: 'string' },
+            },
+            required: ['id'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const vision = deps.vision;
+            if (!vision) return { ok: false, detail: 'vision is not available' };
+            try {
+                const description = await vision.describe(
+                    text(args['id']),
+                    text(args['prompt']) || undefined,
+                );
+                return { ok: true, detail: description.slice(0, 600), verification: 'verified' };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `attachment.describe failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
