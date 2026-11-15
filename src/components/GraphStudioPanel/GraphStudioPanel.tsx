@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { projectManagerService } from '../../kernel/instances/services-core';
+import { projectManagerService } from '../../kernel/instances/services-extras';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
 import { getWikiBrainDB } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
@@ -144,7 +144,9 @@ const GraphStudioPanel: React.FC = () => {
                           projectId: '',
                           from: l.fromSlug,
                           to: l.toSlug,
-                          relation: l.kind ?? 'connected_to',
+                          relation: (l.kind === 'citation'
+                              ? 'cites'
+                              : 'connected_to') as ProjectGraphEdge['relation'],
                           weight: 1,
                           createdAt: 0,
                       }));
@@ -240,15 +242,14 @@ const GraphStudioPanel: React.FC = () => {
         [config.physics],
     );
 
-    const set = (patch: Partial<GraphStudioConfig>) => setConfig((prev) => ({ ...prev, ...patch }));
     const setSemantics = (patch: Partial<GraphStudioConfig['semantics']>) =>
-        set((prev) => ({ ...prev, semantics: { ...prev.semantics, ...patch } }));
+        setConfig((prev) => ({ ...prev, semantics: { ...prev.semantics, ...patch } }));
     const setPhysics = (patch: Partial<GraphStudioConfig['physics']>) =>
-        set((prev) => ({ ...prev, physics: { ...prev.physics, ...patch } }));
+        setConfig((prev) => ({ ...prev, physics: { ...prev.physics, ...patch } }));
     const setStyle = (patch: Partial<GraphStudioConfig['style']>) =>
-        set((prev) => ({ ...prev, style: { ...prev.style, ...patch } }));
+        setConfig((prev) => ({ ...prev, style: { ...prev.style, ...patch } }));
     const setInteraction = (patch: Partial<GraphStudioConfig['interaction']>) =>
-        set((prev) => ({ ...prev, interaction: { ...prev.interaction, ...patch } }));
+        setConfig((prev) => ({ ...prev, interaction: { ...prev.interaction, ...patch } }));
 
     const visibleNodes = filtered.nodes;
     const visibleEdges = filtered.edges;

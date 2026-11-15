@@ -23,15 +23,16 @@ export interface VisGraphEdge {
 }
 
 interface Props {
-    nodes: VisNode[];
-    edges: VisEdge[];
-    onClickNode?: (node: VisNode) => void;
+    nodes: VisGraphNode[];
+    edges: VisGraphEdge[];
+    onClickNode?: (node: VisGraphNode) => void;
     height?: number;
     physics?: boolean;
     hierarchical?: boolean;
     interactionOptions?: {
         hover?: boolean;
         highlightNeighbors?: boolean;
+        dimOthers?: boolean;
         dragNodes?: boolean;
         dragView?: boolean;
         zoomView?: boolean;
@@ -149,7 +150,7 @@ const VisGraph: React.FC<Props> = ({
             const nodeIds = params.nodes;
             if (nodeIds && nodeIds.length > 0) {
                 const node = nodeByIdRef.current.get(nodeIds[0]!);
-                if (node) onClickNodeRef.current(node);
+                if (node) onClickNodeRef.current?.(node);
             }
         });
         onReady?.({
