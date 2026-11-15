@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 524,
+    "documents": 528,
     "byCategory": {
       "repo": 11,
       "top": 117,
       "audits": 25,
-      "wiki": 371
+      "wiki": 375
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 140,
-      "ru": 345
+      "mixed": 142,
+      "ru": 347
     }
   },
   "duplicates": {
@@ -2072,7 +2072,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8489,
-      "hash": "fba012b07a6dbca7c85bb9bcccf8e3eac77b1933"
+      "hash": "93bfb4199d572706b550ee7d62c0d8846d314d1c"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2144,7 +2144,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "7a7dd2eef49996c61caf24640ea98d58992179dd"
+      "hash": "4a81ffeb7e76fc47478234cc8c6229586fa656d2"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2243,6 +2243,14 @@
       "hash": "a89b04ae45d65d6d55ec4ceea81a1c9d94dbd7cd"
     },
     {
+      "path": "docs/wiki/dev-github-workflow.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "GitHub workflow: MCP, команды и автономия",
+      "bytes": 3421,
+      "hash": "d19450dbc74335638e2ea95bfc1686ba9154ea5f"
+    },
+    {
       "path": "docs/wiki/dev-glossary.md",
       "category": "wiki",
       "language": "ru",
@@ -2256,7 +2264,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "b53a4fcce400c0a61791196c77b55f654171c574"
+      "hash": "aa3cb6c001d38317067f558a88e7797bd61d43a9"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2321,6 +2329,14 @@
       "title": "Память OpenCode: команды и скрипты непрерывности сессий",
       "bytes": 4332,
       "hash": "6a8d5f8d8ca06f3cae689e51a7a2284f61dd88c9"
+    },
+    {
+      "path": "docs/wiki/dev-opencode-sidekick.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "OpenCode Sidekick: шпаргалка по командам и центр управления",
+      "bytes": 4041,
+      "hash": "2b0bbcdba7c7b1de9290eb7bc38ac49894af33b6"
     },
     {
       "path": "docs/wiki/dev-overview.md",
@@ -2491,6 +2507,22 @@
       "hash": "16b188a03aae1f443f80c30ea816c222a4851830"
     },
     {
+      "path": "docs/wiki/dev-universal-graph.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Universal Graph: проекция событий и провенанс",
+      "bytes": 3581,
+      "hash": "690cb0b9b9e5fee82a8c46d302da5e4961ed821f"
+    },
+    {
+      "path": "docs/wiki/dev-wiki-brain-progress.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Wiki-Brain: статус реализации (F0–F8)",
+      "bytes": 3836,
+      "hash": "e235fbbceb750ff8a4d7f3661257dac00b5219c2"
+    },
+    {
       "path": "docs/wiki/diagnostics.md",
       "category": "wiki",
       "language": "ru",
@@ -2503,8 +2535,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 57769,
-      "hash": "b7366015a08b2ed030163df5126e5ed1cce8767f"
+      "bytes": 58180,
+      "hash": "582e5a1f0d43c0baadace4b071527afdf129b4ec"
     },
     {
       "path": "docs/wiki/docs-standard.md",
