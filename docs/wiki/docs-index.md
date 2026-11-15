@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (532 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (534 документов)
 
 ## Вики по разделам
 
@@ -158,6 +158,8 @@
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [Промпт: Управление админкой](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/admin/_demo-admin-prompt.md)
 - [Промпт: Аудит подсистемы](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/audits/_demo-audit-prompt.md)
+- [Промпт: Browser Use (Playwright)](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/browser-use/_demo-browser-use-prompt.md)
+- [Промпт: Computer Use (desk-mcp)](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/computer-use/_demo-computer-use-prompt.md)
 - [Промпт: Разработка задачи](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/development/_demo-development-prompt.md)
 - [Промпт: Работа с Obsidian vault](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/obsidian/_demo-obsidian-prompt.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
