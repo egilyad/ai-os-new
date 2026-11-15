@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 522,
+    "documents": 524,
     "byCategory": {
-      "repo": 10,
-      "top": 116,
+      "repo": 11,
+      "top": 117,
       "audits": 25,
       "wiki": 371
     },
     "byLanguage": {
       "en": 39,
       "mixed": 139,
-      "ru": 344
+      "ru": 346
     }
   },
   "duplicates": {
@@ -81,6 +81,14 @@
       "title": "SuperAgents OS — Agent Guide",
       "bytes": 9565,
       "hash": "2a55052957ad2cc38ddd27e2237e7aa01395738f"
+    },
+    {
+      "path": "AUTONOMOUS_PROGRESS.md",
+      "category": "repo",
+      "language": "ru",
+      "title": "AUTONOMOUS_PROGRESS",
+      "bytes": 616,
+      "hash": "1e194df3c887b7fb097228ecb401717af65cd78e"
     },
     {
       "path": "CHANGELOG.md",
@@ -1163,6 +1171,14 @@
       "hash": "4e366985b937c04ea1db0a50c536fcfc3e114aa0"
     },
     {
+      "path": "docs/guides/coding-agents-levels.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Coding agents: уровни автономности (L1–L5)",
+      "bytes": 2071,
+      "hash": "d77a683a86e08f1f81708a4c12d5b5101db47e19"
+    },
+    {
       "path": "docs/known-issues-deferred.md",
       "category": "top",
       "language": "mixed",
@@ -2102,9 +2118,9 @@
       "path": "docs/wiki/dev-assistant-progress.md",
       "category": "wiki",
       "language": "mixed",
-      "title": "Assistant: статус реализации (M0–M2)",
-      "bytes": 2820,
-      "hash": "a37761f5c3f9554c14bdff30c564c204cf3a3057"
+      "title": "Assistant: статус реализации (M0–M4)",
+      "bytes": 3960,
+      "hash": "01e4c098f8940bdb86d2b47fcc6b2dd51c00356f"
     },
     {
       "path": "docs/wiki/dev-autonomy-governor.md",
@@ -2455,8 +2471,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "AGEMS Tasks: статус реализации (M0–M5)",
-      "bytes": 3381,
-      "hash": "a8598ed70777c353f3a2bbc6240df4793286c08a"
+      "bytes": 3464,
+      "hash": "cf3f972d9f96b85e108909332e45b0f9534a3356"
     },
     {
       "path": "docs/wiki/dev-testing.md",
@@ -2488,7 +2504,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 57618,
-      "hash": "5fe1aa4ecff58e03cdee34986645d1ed4845245a"
+      "hash": "8d01a1f28e5977c5eb74e09e4ae98e9d132206fa"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3384,7 +3400,7 @@
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
       "bytes": 37170,
-      "hash": "ad3fefeccff2b2a20b66906c128da4a21737706b"
+      "hash": "5ee409f5bf5c301dd85c5c65d03d068ae8ef2e1f"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
