@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1657,
+    "nodes": 1659,
     "edges": 2995,
     "byType": {
       "audit": 25,
       "code": 740,
       "test": 247,
-      "panel": 269,
+      "panel": 271,
       "article": 376
     },
     "byKind": {
@@ -5994,6 +5994,13 @@
       "route": "/graph-minimax"
     },
     {
+      "id": "panel:graph-studio",
+      "type": "panel",
+      "label": "graph-studio",
+      "section": "dashboard",
+      "route": "/graph-studio"
+    },
+    {
       "id": "panel:graph-workbench",
       "type": "panel",
       "label": "graph-workbench",
@@ -6951,6 +6958,13 @@
       "label": "uncertainty-propagation",
       "section": "techniques",
       "route": "/uncertainty-propagation"
+    },
+    {
+      "id": "panel:universal-graph",
+      "type": "panel",
+      "label": "universal-graph",
+      "section": "dashboard",
+      "route": "/universal-graph"
     },
     {
       "id": "panel:voice-input",

@@ -129,6 +129,8 @@ const nav: Record<string, string> = {
     'nav.memory_center': 'Memory Center',
     'nav.nav_graph': 'Navigation Graph',
     'nav.graph_workbench': 'Graph Workbench',
+    'nav.graph_studio': 'Graph Studio',
+    'nav.universal_graph': 'Universal Graph',
     'nav.defect_map': 'Defect Map',
     'nav.crystals': 'Crystal Vault',
     'nav.junctions': 'Junction Engine',

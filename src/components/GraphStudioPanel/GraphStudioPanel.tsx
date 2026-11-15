@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { projectManagerService } from '../../kernel/instances/services-extras';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
 import { getWikiBrainDB } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
+import { useTranslation } from '../../i18n/useTranslation';
+import { buildNavigationGraphData } from '../Common/navigation-graph-data';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
 import VisGraph from '../Common/VisGraph';
 import {
@@ -91,7 +93,7 @@ const KIND_KEY: Record<string, number> = {
 const GraphStudioPanel: React.FC = () => {
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [projectId, setProjectId] = useState('');
-    const [source, setSource] = useState<'project' | 'wiki'>('project');
+    const [source, setSource] = useState<'project' | 'wiki' | 'navigation'>('project');
     const [nodes, setNodes] = useState<ProjectGraphNode[]>([]);
     const [edges, setEdges] = useState<ProjectGraphEdge[]>([]);
     const [loading, setLoading] = useState(false);
@@ -102,6 +104,7 @@ const GraphStudioPanel: React.FC = () => {
         fit(): void;
         stabilize(iterations?: number): void;
     } | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         void projectManagerService
@@ -124,41 +127,46 @@ const GraphStudioPanel: React.FC = () => {
         setLoading(true);
         setError(null);
         const load =
-            source === 'wiki'
+            source === 'navigation'
                 ? async () => {
-                      const db = getWikiBrainDB();
-                      const [pages, links] = await Promise.all([
-                          db.pages.toArray(),
-                          db.links.toArray(),
-                      ]);
-                      const ns: ProjectGraphNode[] = pages.map((p) => ({
-                          id: p.slug,
-                          projectId: '',
-                          kind: 'knowledge',
-                          label: p.frontmatter.title ?? p.slug,
-                          createdAt: 0,
-                          updatedAt: 0,
-                      }));
-                      const es: ProjectGraphEdge[] = links.map((l) => ({
-                          id: l.id,
-                          projectId: '',
-                          from: l.fromSlug,
-                          to: l.toSlug,
-                          relation: (l.kind === 'citation'
-                              ? 'cites'
-                              : 'connected_to') as ProjectGraphEdge['relation'],
-                          weight: 1,
-                          createdAt: 0,
-                      }));
-                      return [ns, es];
+                      const data = buildNavigationGraphData(t);
+                      return [data.nodes, data.edges] as [ProjectGraphNode[], ProjectGraphEdge[]];
                   }
-                : async () => {
-                      const repo = new ProjectGraphRepository();
-                      return Promise.all([
-                          repo.listNodes({ projectId }),
-                          repo.listEdges(projectId),
-                      ]);
-                  };
+                : source === 'wiki'
+                  ? async () => {
+                        const db = getWikiBrainDB();
+                        const [pages, links] = await Promise.all([
+                            db.pages.toArray(),
+                            db.links.toArray(),
+                        ]);
+                        const ns: ProjectGraphNode[] = pages.map((p) => ({
+                            id: p.slug,
+                            projectId: '',
+                            kind: 'knowledge',
+                            label: p.frontmatter.title ?? p.slug,
+                            createdAt: 0,
+                            updatedAt: 0,
+                        }));
+                        const es: ProjectGraphEdge[] = links.map((l) => ({
+                            id: l.id,
+                            projectId: '',
+                            from: l.fromSlug,
+                            to: l.toSlug,
+                            relation: (l.kind === 'citation'
+                                ? 'cites'
+                                : 'connected_to') as ProjectGraphEdge['relation'],
+                            weight: 1,
+                            createdAt: 0,
+                        }));
+                        return [ns, es];
+                    }
+                  : async () => {
+                        const repo = new ProjectGraphRepository();
+                        return Promise.all([
+                            repo.listNodes({ projectId }),
+                            repo.listEdges(projectId),
+                        ]);
+                    };
         void load()
             .then(([ns, es]) => {
                 setNodes(ns as ProjectGraphNode[]);
@@ -166,7 +174,7 @@ const GraphStudioPanel: React.FC = () => {
             })
             .catch((e) => setError(e instanceof Error ? e.message : String(e)))
             .finally(() => setLoading(false));
-    }, [projectId, source]);
+    }, [projectId, source, t]);
 
     const filtered = useMemo(() => {
         const threshold = config.semantics.proximityThreshold / 100;
@@ -315,11 +323,12 @@ const GraphStudioPanel: React.FC = () => {
 
                 <select
                     value={source}
-                    onChange={(e) => setSource(e.target.value as 'project' | 'wiki')}
+                    onChange={(e) => setSource(e.target.value as 'project' | 'wiki' | 'navigation')}
                     style={controlStyle}
                 >
                     <option value="project">Project graph</option>
                     <option value="wiki">Wiki graph</option>
+                    <option value="navigation">Navigation graph</option>
                 </select>
 
                 {source === 'project' && (

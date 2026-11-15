@@ -81,6 +81,22 @@ export const CORE_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'graph-studio',
+                labelKey: 'nav.graph_studio',
+                icon: Icons.slidersHorizontal,
+                color: 'var(--accent)',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'universal-graph',
+                labelKey: 'nav.universal_graph',
+                icon: Icons.share2,
+                color: '#06b6d4',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'defect-map',
                 labelKey: 'nav.defect_map',
                 icon: Icons.thermometer,

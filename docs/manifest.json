@@ -10367,6 +10367,26 @@
       "status": "live"
     },
     {
+      "id": "panel:graph-studio",
+      "type": "panel",
+      "panelId": "graph-studio",
+      "section": "dashboard",
+      "route": "/graph-studio",
+      "component": "src/components/GraphStudioPanel/GraphStudioPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:universal-graph",
+      "type": "panel",
+      "panelId": "universal-graph",
+      "section": "dashboard",
+      "route": "/universal-graph",
+      "component": "src/components/UniversalGraphPanel/UniversalGraphPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:defect-map",
       "type": "panel",
       "panelId": "defect-map",

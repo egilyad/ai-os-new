@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { projectManagerService } from '../../kernel/instances/services-extras';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
+import { useTranslation } from '../../i18n/useTranslation';
+import { buildNavigationGraphData } from '../Common/navigation-graph-data';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
 
 interface GraphView {
@@ -35,10 +37,12 @@ const KIND_COLORS: Record<string, string> = {
 const UniversalGraphPanel: React.FC = () => {
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [projectId, setProjectId] = useState('');
+    const [source, setSource] = useState<'project' | 'navigation'>('project');
     const [view, setView] = useState<GraphView>({ nodes: [], edges: [] });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedNode, setSelectedNode] = useState<string | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         void projectManagerService
@@ -51,9 +55,16 @@ const UniversalGraphPanel: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!projectId) return;
+        if (source === 'project' && !projectId) return;
         setLoading(true);
         setError(null);
+        if (source === 'navigation') {
+            const data = buildNavigationGraphData(t);
+            setView(data);
+            setSelectedNode(null);
+            setLoading(false);
+            return;
+        }
         const repo = new ProjectGraphRepository();
         void Promise.all([repo.listNodes({ projectId }), repo.listEdges(projectId)])
             .then(([nodes, edges]) => {
@@ -62,7 +73,7 @@ const UniversalGraphPanel: React.FC = () => {
             })
             .catch((e) => setError(e instanceof Error ? e.message : String(e)))
             .finally(() => setLoading(false));
-    }, [projectId]);
+    }, [projectId, source, t]);
 
     const grouped = useMemo(() => {
         const map = new Map<string, ProjectGraphNode[]>();
@@ -84,8 +95,8 @@ const UniversalGraphPanel: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 <span style={{ fontWeight: 700, fontSize: 13 }}>Universal Graph</span>
                 <select
-                    value={projectId}
-                    onChange={(e) => setProjectId(e.target.value)}
+                    value={source}
+                    onChange={(e) => setSource(e.target.value as 'project' | 'navigation')}
                     style={{
                         padding: '6px 10px',
                         borderRadius: 8,
@@ -95,12 +106,29 @@ const UniversalGraphPanel: React.FC = () => {
                         color: 'inherit',
                     }}
                 >
-                    {projects.map((p) => (
-                        <option key={p.id} value={p.id}>
-                            {p.name}
-                        </option>
-                    ))}
+                    <option value="project">Project</option>
+                    <option value="navigation">Navigation</option>
                 </select>
+                {source === 'project' && (
+                    <select
+                        value={projectId}
+                        onChange={(e) => setProjectId(e.target.value)}
+                        style={{
+                            padding: '6px 10px',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-elevated)',
+                            fontSize: 12,
+                            color: 'inherit',
+                        }}
+                    >
+                        {projects.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.name}
+                            </option>
+                        ))}
+                    </select>
+                )}
                 <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>
                     {view.nodes.length} nodes · {view.edges.length} edges
                 </span>
