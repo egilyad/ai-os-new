@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 528,
+    "documents": 516,
     "byCategory": {
       "repo": 11,
-      "top": 117,
+      "top": 105,
       "audits": 25,
       "wiki": 375
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 142,
-      "ru": 347
+      "mixed": 137,
+      "ru": 340
     }
   },
   "duplicates": {
@@ -369,102 +369,6 @@
       "title": "Исследовательские темы и эксперименты",
       "bytes": 7436,
       "hash": "bfba9ba857955977e5ed2279deac586b344e3dd7"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_00_INDEX.md",
-      "category": "top",
-      "language": "ru",
-      "title": "SuperAgents OS — Пакет дорожных карт и рекомендаций",
-      "bytes": 16038,
-      "hash": "ca8e0048edb3732dd097ab4ead7d3cf122fc4bc2"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_01_LLM_LAYER.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: LLM-слой (адаптеры, декораторы, реестр, HTTP/SSE, эмбеддинги)",
-      "bytes": 16642,
-      "hash": "49895fea7a64b4cde47cc888def9c5c9ad52da74"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_02_DEBATE_RUNTIME.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: Движок дебатов (debate-runtime, техники, стратегии, rivals)",
-      "bytes": 10236,
-      "hash": "5926455ec083f6b3ab3bec833d8efa163e08921a"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_03_AGENTS_ORCHESTRATION.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: Агенты и когнитивная оркестрация",
-      "bytes": 5018,
-      "hash": "fa41100d354b0bc60480e668455fa0ce0c524a8f"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_04_MEMORY_KNOWLEDGE.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: Память и знания (memory, RAG, WikiBrain, knowledge-generator)",
-      "bytes": 7758,
-      "hash": "99125a43dfb526b2f82893f1b7eaec8462c9ab41"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_05_TOOLS_SANDBOX_MCP_BROWSER.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: Инструменты, песочница, MCP, Browser/Computer-use",
-      "bytes": 4715,
-      "hash": "87e0ef2d7af35fefe73c4e4433f2e1998016a603"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_06_OBSERVABILITY_DIAGNOSTICS.md",
-      "category": "top",
-      "language": "mixed",
-      "title": "Роадмап: Наблюдаемость, диагностика, советник, оценка",
-      "bytes": 3661,
-      "hash": "f0806b06004231c1b799e4199a2c803acd0f4f1f"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_07_SECURITY_KEYS_TRUST.md",
-      "category": "top",
-      "language": "mixed",
-      "title": "Роадмап: Безопасность, ключи, секреты, доверие, аудит",
-      "bytes": 6556,
-      "hash": "4dd8c91e35d159307b4c4508872298c10138ab57"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_08_KERNEL_EVENTS_STATE_DI.md",
-      "category": "top",
-      "language": "mixed",
-      "title": "Роадмап: Ядро — события, DI, состояние, персистентность, event-sourcing",
-      "bytes": 4260,
-      "hash": "f692c1cdb64e4ebd0b5bb8644829af29731f0740"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_09_UI_PANELS_STORES.md",
-      "category": "top",
-      "language": "mixed",
-      "title": "Роадмап: UI — панели, сторы, хуки, маршруты, i18n, визуализация",
-      "bytes": 4452,
-      "hash": "8534fffbf3bd7d457635fae7c51761b81ecae94e"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_10_INFRA_CI_SERVER_GENERATORS.md",
-      "category": "top",
-      "language": "mixed",
-      "title": "Роадмап: Инфраструктура — сервер, CLI, Docker, CI, скрипты-генераторы",
-      "bytes": 3669,
-      "hash": "5300346684a3d81ca0a53c773674ea3233a388e4"
-    },
-    {
-      "path": "docs/arhive-research/новое/New folder/ROADMAP_11_PARITY_RIVALS_ANALOGS.md",
-      "category": "top",
-      "language": "ru",
-      "title": "Роадмап: Rivals / Parity и паритет с аналогами",
-      "bytes": 3728,
-      "hash": "6fcb31f8fa6faee36d48a858022518272623e6ad"
     },
     {
       "path": "docs/arhive-research/новое/New folder/SPEC_01_CRYPTO_VAULT.md",
