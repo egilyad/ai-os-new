@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 139,
-      "ru": 346
+      "mixed": 140,
+      "ru": 345
     }
   },
   "duplicates": {
@@ -2119,8 +2119,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Assistant: статус реализации (M0–M4)",
-      "bytes": 3960,
-      "hash": "01e4c098f8940bdb86d2b47fcc6b2dd51c00356f"
+      "bytes": 4278,
+      "hash": "211da1c2e79d2600b2ebaa673cc68e3cfebb7a40"
     },
     {
       "path": "docs/wiki/dev-autonomy-governor.md",
@@ -2429,10 +2429,10 @@
     {
       "path": "docs/wiki/dev-status-roadmaps.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Roadmaps",
-      "bytes": 1320,
-      "hash": "c9bddc3630cb322a2178a82ced0c8c504c570fe7"
+      "bytes": 1722,
+      "hash": "9a6d17dd6656fc7fd19afb1fd9300124f7b32f10"
     },
     {
       "path": "docs/wiki/dev-status-testing.md",
@@ -3399,8 +3399,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 37170,
-      "hash": "5ee409f5bf5c301dd85c5c65d03d068ae8ef2e1f"
+      "bytes": 37645,
+      "hash": "122b7c03dece6120461152b926c2f8e7766574a8"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

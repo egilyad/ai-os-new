@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1631,
-    "edges": 2949,
+    "nodes": 1657,
+    "edges": 2995,
     "byType": {
       "audit": 25,
-      "code": 723,
-      "test": 242,
+      "code": 740,
+      "test": 247,
       "panel": 269,
-      "article": 372
+      "article": 376
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
-      "test": 353,
-      "source": 1029,
-      "related": 1228
+      "test": 359,
+      "source": 1051,
+      "related": 1246
     }
   },
   "nodes": [
@@ -208,6 +208,11 @@
       "label": ".github/workflows/ci.yml"
     },
     {
+      "id": "file:.opencode/agent/pr-reviewer.md",
+      "type": "code",
+      "label": ".opencode/agent/pr-reviewer.md"
+    },
+    {
       "id": "file:.opencode/command/",
       "type": "code",
       "label": ".opencode/command/"
@@ -228,6 +233,21 @@
       "label": ".opencode/command/autonomy-status.md"
     },
     {
+      "id": "file:.opencode/command/ci.md",
+      "type": "code",
+      "label": ".opencode/command/ci.md"
+    },
+    {
+      "id": "file:.opencode/command/pr.md",
+      "type": "code",
+      "label": ".opencode/command/pr.md"
+    },
+    {
+      "id": "file:.opencode/command/sync.md",
+      "type": "code",
+      "label": ".opencode/command/sync.md"
+    },
+    {
       "id": "file:.opencode/command/vault-draft.md",
       "type": "code",
       "label": ".opencode/command/vault-draft.md"
@@ -241,6 +261,11 @@
       "id": "file:.opencode/command/vault.md",
       "type": "code",
       "label": ".opencode/command/vault.md"
+    },
+    {
+      "id": "file:.opencode/skills/github-workflow/SKILL.md",
+      "type": "code",
+      "label": ".opencode/skills/github-workflow/SKILL.md"
     },
     {
       "id": "file:.superagents/memory/",
@@ -1026,6 +1051,16 @@
       "id": "file:src/components/GovernancePanel/GovernancePanel.tsx",
       "type": "code",
       "label": "src/components/GovernancePanel/GovernancePanel.tsx"
+    },
+    {
+      "id": "file:src/components/GraphStudioPanel/GraphStudioPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/GraphStudioPanel/GraphStudioPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/GraphStudioPanel/GraphStudioPanel.tsx",
+      "type": "code",
+      "label": "src/components/GraphStudioPanel/GraphStudioPanel.tsx"
     },
     {
       "id": "file:src/components/GraphWorkbenchPanel/CalibrationLens.tsx",
@@ -1916,6 +1951,16 @@
       "id": "file:src/components/TracesPanel/TracesPanel.tsx",
       "type": "code",
       "label": "src/components/TracesPanel/TracesPanel.tsx"
+    },
+    {
+      "id": "file:src/components/UniversalGraphPanel/UniversalGraphPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/UniversalGraphPanel/UniversalGraphPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/UniversalGraphPanel/UniversalGraphPanel.tsx",
+      "type": "code",
+      "label": "src/components/UniversalGraphPanel/UniversalGraphPanel.tsx"
     },
     {
       "id": "file:src/components/WhatIfPanel/WhatIfPanel",
@@ -3783,6 +3828,21 @@
       "label": "src/kernel/services/probe-service.ts"
     },
     {
+      "id": "file:src/kernel/services/project-graph/project-graph-projection.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/project-graph/project-graph-projection.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/project-graph/project-graph-projection.ts",
+      "type": "code",
+      "label": "src/kernel/services/project-graph/project-graph-projection.ts"
+    },
+    {
+      "id": "file:src/kernel/services/project-graph/project-graph-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/project-graph/project-graph-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/project-invocation-bridge.test.ts",
       "type": "test",
       "label": "src/kernel/services/project-invocation-bridge.test.ts"
@@ -3891,6 +3951,16 @@
       "id": "file:src/kernel/services/research-report-service.ts",
       "type": "code",
       "label": "src/kernel/services/research-report-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/research/literature-fetcher-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/research/literature-fetcher-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/research/literature-fetcher-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/research/literature-fetcher-service.ts"
     },
     {
       "id": "file:src/kernel/services/rivals/guardrail-service.test.ts",
@@ -4308,6 +4378,16 @@
       "label": "src/kernel/services/trust/provenance-service.ts"
     },
     {
+      "id": "file:src/kernel/services/trust/unified-provenance-bridge.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/trust/unified-provenance-bridge.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/trust/unified-provenance-bridge.ts",
+      "type": "code",
+      "label": "src/kernel/services/trust/unified-provenance-bridge.ts"
+    },
+    {
       "id": "file:src/kernel/services/truth-consistency-monitor.ts",
       "type": "code",
       "label": "src/kernel/services/truth-consistency-monitor.ts"
@@ -4338,6 +4418,31 @@
       "label": "src/kernel/services/virtual-key-service.ts"
     },
     {
+      "id": "file:src/kernel/services/wiki-brain/wiki-brain-mcp-server.ts",
+      "type": "code",
+      "label": "src/kernel/services/wiki-brain/wiki-brain-mcp-server.ts"
+    },
+    {
+      "id": "file:src/kernel/services/wiki-brain/wiki-contradiction-detector.ts",
+      "type": "code",
+      "label": "src/kernel/services/wiki-brain/wiki-contradiction-detector.ts"
+    },
+    {
+      "id": "file:src/kernel/services/wiki-brain/wiki-decay-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/wiki-brain/wiki-decay-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/wiki-brain/wiki-knowledge-unit.service.ts",
+      "type": "code",
+      "label": "src/kernel/services/wiki-brain/wiki-knowledge-unit.service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/wiki-brain/wiki-research.service.ts",
+      "type": "code",
+      "label": "src/kernel/services/wiki-brain/wiki-research.service.ts"
+    },
+    {
       "id": "file:src/kernel/types/",
       "type": "code",
       "label": "src/kernel/types/"
@@ -4361,6 +4466,11 @@
       "id": "file:src/kernel/types/lens-types.ts",
       "type": "code",
       "label": "src/kernel/types/lens-types.ts"
+    },
+    {
+      "id": "file:src/kernel/types/project-types.ts",
+      "type": "code",
+      "label": "src/kernel/types/project-types.ts"
     },
     {
       "id": "file:src/kernel/utils/compute-memory-id.test.ts",
@@ -7788,6 +7898,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:dev-github-workflow",
+      "type": "article",
+      "label": "GitHub workflow: MCP, команды и автономия",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
       "id": "wiki:dev-glossary",
       "type": "article",
       "label": "Разработчикам: глоссарий",
@@ -7856,6 +7973,13 @@
       "label": "Память OpenCode: команды и скрипты непрерывности сессий",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-opencode-sidekick",
+      "type": "article",
+      "label": "OpenCode Sidekick: шпаргалка по командам и центр управления",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-overview",
@@ -8003,6 +8127,20 @@
       "label": "Каталог тестов",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-universal-graph",
+      "type": "article",
+      "label": "Universal Graph: проекция событий и провенанс",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:dev-wiki-brain-progress",
+      "type": "article",
+      "label": "Wiki-Brain: статус реализации (F0–F8)",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:diagnostics",
@@ -17378,7 +17516,22 @@
     },
     {
       "from": "wiki:dev-assistant-progress",
+      "to": "wiki:dev-opencode-sidekick",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
       "to": "wiki:dev-tasks-agems-progress",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "wiki:dev-universal-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "wiki:dev-wiki-brain-progress",
       "kind": "related"
     },
     {
@@ -17912,6 +18065,56 @@
       "kind": "related"
     },
     {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:.opencode/agent/pr-reviewer.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:.opencode/command/ci.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:.opencode/command/pr.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:.opencode/command/sync.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:.opencode/skills/github-workflow/SKILL.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "file:opencode.jsonc",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "wiki:dev-ci",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "wiki:dev-mcp-tools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-github-workflow",
+      "to": "wiki:dev-opencode-sidekick",
+      "kind": "related"
+    },
+    {
       "from": "wiki:dev-glossary",
       "to": "file:src/components/",
       "kind": "source"
@@ -18249,6 +18452,46 @@
     {
       "from": "wiki:dev-opencode-memory",
       "to": "wiki:docs-index",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "file:.opencode/command/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "file:AGENTS.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "file:src/kernel/services/assistant/assistant-ops-actions.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "file:src/kernel/services/assistant/assistant-ops-actions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "wiki:dev-computer-use",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "wiki:dev-github-workflow",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "wiki:dev-mcp-tools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-sidekick",
+      "to": "wiki:dev-opencode-memory",
       "kind": "related"
     },
     {
@@ -19109,6 +19352,131 @@
     {
       "from": "wiki:dev-tests-catalog",
       "to": "wiki:dev-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/components/GraphStudioPanel/GraphStudioPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/components/GraphStudioPanel/GraphStudioPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/components/UniversalGraphPanel/UniversalGraphPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/components/UniversalGraphPanel/UniversalGraphPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/services/project-graph/project-graph-projection.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/services/project-graph/project-graph-projection.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/services/project-graph/project-graph-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/services/trust/unified-provenance-bridge.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/services/trust/unified-provenance-bridge.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "file:src/kernel/types/project-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "wiki:dev-assistant-progress",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-universal-graph",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/project-graph/project-graph-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/research/literature-fetcher-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/research/literature-fetcher-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/wiki-brain/wiki-brain-mcp-server.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/wiki-brain/wiki-contradiction-detector.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/wiki-brain/wiki-decay-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/wiki-brain/wiki-knowledge-unit.service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "file:src/kernel/services/wiki-brain/wiki-research.service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "wiki:dev-assistant-progress",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "wiki:dev-mcp-tools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-wiki-brain-progress",
+      "to": "wiki:dev-status-roadmaps",
       "kind": "related"
     },
     {

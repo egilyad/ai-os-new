@@ -723,7 +723,14 @@ OpenCode не переносит контекст между сессиями. �
             'src/kernel/services/assistant/assistant-ops-actions.ts',
             'src/kernel/service-registration/phase78-assistant.ts',
         ],
-        related: ['panel-assistant', 'panel-assistant-admin', 'dev-tasks-agems-progress'],
+        related: [
+            'panel-assistant',
+            'panel-assistant-admin',
+            'dev-tasks-agems-progress',
+            'dev-wiki-brain-progress',
+            'dev-universal-graph',
+            'dev-opencode-sidekick',
+        ],
         body: `## Что было сделано
 
 Ассистент прошёл роадмап M0→M4 — закрыты критические safety/context/delegation-пробелы и добавлены исследовательские/управляющие возможности.
@@ -1040,5 +1047,228 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
 
 - Система памяти OpenCode (команды/скрипты) — [[dev-opencode-memory]].
 - MCP-интеграция в целом — [[comp-integrations-interop]].`,
+    },
+    {
+        slug: 'dev-opencode-sidekick',
+        title: 'OpenCode Sidekick: шпаргалка по командам и центр управления',
+        section: 'dev',
+        tags: ['dev', 'opencode', 'sidekick', 'инструменты', 'шпаргалка'],
+        freshness: 'documented',
+        sources: [
+            'AGENTS.md',
+            '.opencode/command/',
+            'src/kernel/services/assistant/assistant-ops-actions.ts',
+        ],
+        related: [
+            'dev-opencode-memory',
+            'dev-github-workflow',
+            'dev-computer-use',
+            'dev-mcp-tools',
+        ],
+        body: `## Что это
+
+**OpenCode Sidekick** — лёгкое внешнее приложение рядом с OpenCode Desktop: карточки команд
+(название, описание, «когда использовать», уровень риска, точная команда), поиск по всем полям,
+категории, избранное, история и копирование одной кнопкой. Не является частью SuperAgents OS —
+это независимый локальный инструмент (папка вне репозитория).
+
+## Зачем
+
+Пользователю не нужно помнить команды: Sidekick показывает их в виде понятных карточек и позволяет
+копировать готовую строку или отправлять её в выбранную сессию OpenCode.
+
+## Функции
+
+- Реестр команд — отдельный файл \`commands.json\` (id, title, category, description, usage, command,
+  parameters, riskLevel, executionType, enabled, favorite). Новые команды добавляются без правки UI.
+- Поиск по названию/описанию/категории/команде; фильтры-чипсы по категориям.
+- Кнопка «Копировать команду» с подстановкой параметров, если они заполнены.
+- Подключение к OpenCode: обнаружение локального сервера (netstat + tasklist), выбор сессии,
+  отправка slash-команд (\`POST /session/:id/command\`) и prompt (\`prompt_async\`).
+- Шпаргалка работает без сервера: при отсутствии API реестр грузится из локального
+  \`public/commands.json\`.
+
+## Запуск
+
+\`\`\`powershell
+cd C:\\Users\\evgeny\\Desktop\\New folder\\opencode-sidekick
+npm start          # или node server.mjs
+\`\`\`
+
+Открой \`http://127.0.0.1:4517\`.
+
+## Ограничения
+
+- Для фактической отправки в OpenCode нужен токен/пароль (Basic auth): Desktop не публикует свой
+  токен наружу. Без него доступен режим шпаргалки (просмотр и копирование).
+- Активная вкладка Desktop публичным API надёжно не определяется — Sidekick требует явного выбора
+  сессии (проект/название/id).
+
+## Связанное
+
+- Команды проекта (AGENTS.md, \`.opencode/command/\`) — [[dev-opencode-memory]].
+- GitHub-настройки (MCP, команды, агент) — [[dev-github-workflow]].`,
+    },
+    {
+        slug: 'dev-github-workflow',
+        title: 'GitHub workflow: MCP, команды и автономия',
+        section: 'dev',
+        tags: ['dev', 'github', 'mcp', 'ci', 'команды', 'opencode'],
+        freshness: 'documented',
+        sources: [
+            'opencode.jsonc',
+            '.opencode/command/sync.md',
+            '.opencode/command/pr.md',
+            '.opencode/command/ci.md',
+            '.opencode/agent/pr-reviewer.md',
+            '.opencode/skills/github-workflow/SKILL.md',
+        ],
+        related: ['dev-opencode-memory', 'dev-opencode-sidekick', 'dev-ci', 'dev-mcp-tools'],
+        body: `## Что это
+
+Набор интеграций OpenCode с GitHub: официальный GitHub MCP-сервер, команды
+\`/sync\`, \`/pr\`, \`/ci\`, агент-ревьюер \`pr-reviewer\` и скилл \`github-workflow\`
+(правила коммитов/пушей/CI).
+
+## Состав
+
+**GitHub MCP** (\`opencode.jsonc\` → \`mcp.github\`):
+- remote-сервер \`https://api.githubcopilot.com/mcp/\`, авторизация \`Bearer {env:GITHUB_TOKEN}\`.
+- Нативные инструменты для issues/PR/checks.
+
+**Команды** (\`.opencode/command/\`):
+- \`/sync\` — безопасная синхронизация: \`git fetch origin\` + \`git pull --ff-only\` + статус.
+- \`/pr\` — создать/обновить PR из текущей ветки (base=main), вернуть ссылку.
+- \`/ci\` — статус GitHub Actions для последнего коммита/PR.
+
+**Агент** (\`.opencode/agent/pr-reviewer.md\`): субагент-ревьюер, без права правки
+(edit=deny), читает diff/checks через GitHub MCP и даёт вердикт.
+
+**Скилл** (\`.opencode/skills/github-workflow/SKILL.md\`): правила — коммиты только по явной
+просьбе либо авто-пуш в конце сессии; commitlint (заголовок ≤100 символов, нижний регистр);
+запреты (\`git reset --hard\`, \`git clean\`, \`git push --force\`, \`rm -rf\`).
+
+## Правила работы
+
+1. \`git status -sb\` → \`git add -A\` → \`git commit\` (корректный заголовок) → \`git push origin main\`.
+2. После пуша — \`/ci\` (или GitHub MCP); при красном прогоне — фиксить до зелёного.
+3. PR — через \`/pr\`, ревью — через агента \`pr-reviewer\`.
+
+## Связанное
+
+- Карточки этих команд — в [[dev-opencode-sidekick]].
+- Система памяти и команды — [[dev-opencode-memory]].
+- CI-пайплайн — [[dev-ci]].`,
+    },
+    {
+        slug: 'dev-universal-graph',
+        title: 'Universal Graph: проекция событий и провенанс',
+        section: 'dev',
+        tags: ['dev', 'graph', 'project-graph', 'provenance', 'events', 'junction'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/project-graph/project-graph-service.ts',
+            'src/kernel/services/project-graph/project-graph-projection.ts',
+            'src/kernel/services/trust/unified-provenance-bridge.ts',
+            'src/kernel/types/project-types.ts',
+            'src/components/UniversalGraphPanel/UniversalGraphPanel.tsx',
+            'src/components/GraphStudioPanel/GraphStudioPanel.tsx',
+        ],
+        related: ['dev-graph', 'dev-status-active', 'dev-assistant-progress'],
+        body: `## Что это
+
+**Universal Graph** — сквозной граф сущностей системы (проекты, задачи, дебаты, вики-страницы,
+цели, агенты, оркестрации). Строится событийно: доменные события проецируются в узел/ребро
+графа, а зеркало пишется в провенанс (temporal-хронология).
+
+## Компоненты
+
+- \`ProjectGraphService\` — операции графа: upsert узлов, связи (contains/assigned_to/...),
+  обход соседей, multi-hop traverse, статусы F6 (\`proposed → active → superseded\`),
+  \`listPotential\` (знаниевый потенциал).
+- \`ProjectGraphProjection\` — подписчик EventBus: PROJECT_CREATED, TASK_CREATED,
+  WIKI_PAGE_WRITTEN, PROJECT_DEBATE_STARTED, AUTONOMY_GOAL_CREATED, GRAPH_STARTED,
+  GRAPH_NODE, JUNCTION_DETECTED.
+- \`UnifiedProvenanceBridge\` — зеркалит те же события в \`ProvenanceService\` с едиными
+  \`ProvenanceNodeKind\`/тиProvenanceEdgeRelation\` (temporal-валидность).
+- \`UniversalGraphPanel\` — read-only просмотр графа проекта (узлы по типам, связи узла).
+- \`GraphStudioPanel\` — визуальная студия: физика (repulsion/spring/gravity/freeze),
+  стили (палитры, размер узлов, толщина рёбер), фильтры (порог близости, сироты, поиск-фокус),
+  пресеты, мультиисточник (проект / wiki), кластеры по компонентам связности.
+
+## События и связи
+
+| Событие | Узел | Ребро |
+|---|---|---|
+| PROJECT_CREATED | project | contains (self) |
+| TASK_CREATED | task, agent | contains, assigned_to |
+| WIKI_PAGE_WRITTEN | knowledge | contains |
+| PROJECT_DEBATE_STARTED | debate | contains |
+| AUTONOMY_GOAL_CREATED | goal | contains |
+| GRAPH_STARTED / GRAPH_NODE | subgraph / task | contains |
+| JUNCTION_DETECTED | research (глобальный контейнер) | contains |
+
+## Связанное
+
+- Сервисы графа и типы — [[dev-graph]].
+- Статус разработки — [[dev-status-active]].
+- Ассистент (действия \`graph.*\`) — [[dev-assistant-progress]].`,
+    },
+    {
+        slug: 'dev-wiki-brain-progress',
+        title: 'Wiki-Brain: статус реализации (F0–F8)',
+        section: 'dev',
+        tags: ['dev', 'wiki', 'brain', 'research', 'mcp', 'статус', 'roadmap'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/wiki-brain/wiki-knowledge-unit.service.ts',
+            'src/kernel/services/wiki-brain/wiki-research.service.ts',
+            'src/kernel/services/wiki-brain/wiki-contradiction-detector.ts',
+            'src/kernel/services/wiki-brain/wiki-decay-service.ts',
+            'src/kernel/services/wiki-brain/wiki-brain-mcp-server.ts',
+            'src/kernel/services/research/literature-fetcher-service.ts',
+            'src/kernel/services/project-graph/project-graph-service.ts',
+        ],
+        related: ['dev-assistant-progress', 'dev-graph', 'dev-mcp-tools', 'dev-status-roadmaps'],
+        body: `## Что было сделано
+
+Wiki-Brain прошёл роадмап F0→F8 (источник: wiki-wikibrain-somem-scimars-roadmap).
+
+### F0–F4 — Фундамент
+- \`KnowledgeUnitService\` — claim-level юниты (стабильный id, evidence, span) + типизированные связи.
+- Персистентные эмбеддинги (\`wikiEmbeddings\`), real BM25 через \`Bm25Service\`.
+- \`WikiEditService\` — staged-правки; \`WikiChunkerService\` — чанкинг; \`WikiResearchService\` — research-loop.
+- События \`wiki:*\` (page written/deleted/ingested/edit committed).
+
+### F5–F6 — Research и Knowledge Potential Graph
+- \`wiki.research\` — замкнутый цикл: вопрос → поиск → синтез → запись hypothesis/observation-юнитов.
+- \`ProjectGraphService\` F6: статусы \`proposed → active → superseded\`, \`listPotential\`,
+  действия ассистента \`graph.propose/potential/activate/supersede\`.
+
+### F7 — QC
+- \`WikiContradictionDetector\` — консервативная проверка противоречий (общие термины + контрарный маркер).
+- \`WikiDecayService\` — importance-weighted retention (score = база по kind × exp(−λ·age)).
+- \`WikiLintService\` — новое правило \`missing-evidence-citation\`.
+
+### F8 — MCP exposure
+- \`WikiBrainMcpServer\` — тонкая обёртка: \`wiki.search\`, \`wiki.read_page\`,
+  \`wiki.graph_query\`, \`wiki.add_knowledge_unit\` (in-process, local-first).
+
+### F5b — Literature fetcher
+- \`LiteratureFetcherService\`: провайдеры arXiv (публичный API) и Perplexity
+  (\`sonar-deep-research\`, ключ \`PERPLEXITY_API_KEY\`), web-stub; \`ingestAsSources\`
+  сохраняет статьи как \`TWikiSource\` (fnv1a-hash, дедупликация).
+- Действие ассистента \`research.fetch_literature\` (query, provider, maxResults, ingest).
+
+## Открытые вопросы
+
+- Web-провайдер литературы (реальный поиск) — пока stub.
+- Perplexity-провайдер включается только при заданном ключе.
+
+## Связанное
+
+- Ассистент (wiki-действия) — [[dev-assistant-progress]].
+- Граф и связь с проектами — [[dev-universal-graph]].
+- MCP-серверы — [[dev-mcp-tools]].`,
     },
 ];

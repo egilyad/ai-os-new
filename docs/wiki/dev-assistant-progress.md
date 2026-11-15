@@ -54,5 +54,8 @@
 - [Панель: Помощник проекта](./panel-assistant.md)
 - [Админка ассистента](./panel-assistant-admin.md)
 - [AGEMS Tasks: статус реализации (M0–M5)](./dev-tasks-agems-progress.md)
+- [Wiki-Brain: статус реализации (F0–F8)](./dev-wiki-brain-progress.md)
+- [Universal Graph: проекция событий и провенанс](./dev-universal-graph.md)
+- [OpenCode Sidekick: шпаргалка по командам и центр управления](./dev-opencode-sidekick.md)
 
 [← Все материалы](./README.md)

@@ -105,11 +105,11 @@ const BODIES: Record<string, string> = {
         '- Права/роли: admin-гейт для AUTOPILOT, authz-рефакторинги (W2-001/002/017/018).',
     ].join('\n'),
     'dev-status-roadmaps': [
-        'Направления (не текущее состояние):',
+        'Направления (актуализировано 2026-11-15):',
         '',
-        '- E2E для SRE/Health/Diagnostics.',
-        '- Индивидуальные статьи для техник-панелей (19 из 62 отсутствуют).',
-        '- Visual regression для 62 техник-панелей.',
+        '- Закрыто: E2E для SRE/Health/Diagnostics (data-sre-health-diagnostics.spec.ts, data-health.spec.ts); visual regression (visual-regression.spec.ts, screenshots.spec.ts); статьи техник-панелей (docs/wiki/panel-*.md).',
+        '- Закрыто: роадмап Wiki-Brain F0–F8 (см. dev-wiki-brain-progress); Assistant M0–M4; AGEMS M0–M5; Universal Graph (dev-universal-graph).',
+        '- Открыто: web-провайдер литературы (F5b, сейчас stub), Perplexity-ключ для deep-research, автозапуск OpenCode Sidekick с Windows и упаковка в EXE.',
     ].join('\n'),
     'dev-status-files': [
         'Ключевые файлы состояния:',

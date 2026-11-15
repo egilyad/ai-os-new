@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 71
+      "articles": 75
     }
   ],
   "articles": [
@@ -7395,7 +7395,10 @@
       "related": [
         "panel-assistant",
         "panel-assistant-admin",
-        "dev-tasks-agems-progress"
+        "dev-tasks-agems-progress",
+        "dev-wiki-brain-progress",
+        "dev-universal-graph",
+        "dev-opencode-sidekick"
       ],
       "reviewed": null,
       "tests": [
@@ -7573,6 +7576,140 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:dev-opencode-sidekick",
+      "type": "article",
+      "slug": "dev-opencode-sidekick",
+      "title": "OpenCode Sidekick: шпаргалка по командам и центр управления",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "opencode",
+        "sidekick",
+        "инструменты",
+        "шпаргалка"
+      ],
+      "sources": [
+        "AGENTS.md",
+        ".opencode/command/",
+        "src/kernel/services/assistant/assistant-ops-actions.ts"
+      ],
+      "related": [
+        "dev-opencode-memory",
+        "dev-github-workflow",
+        "dev-computer-use",
+        "dev-mcp-tools"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/assistant/assistant-ops-actions.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-github-workflow",
+      "type": "article",
+      "slug": "dev-github-workflow",
+      "title": "GitHub workflow: MCP, команды и автономия",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "github",
+        "mcp",
+        "ci",
+        "команды",
+        "opencode"
+      ],
+      "sources": [
+        "opencode.jsonc",
+        ".opencode/command/sync.md",
+        ".opencode/command/pr.md",
+        ".opencode/command/ci.md",
+        ".opencode/agent/pr-reviewer.md",
+        ".opencode/skills/github-workflow/SKILL.md"
+      ],
+      "related": [
+        "dev-opencode-memory",
+        "dev-opencode-sidekick",
+        "dev-ci",
+        "dev-mcp-tools"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-universal-graph",
+      "type": "article",
+      "slug": "dev-universal-graph",
+      "title": "Universal Graph: проекция событий и провенанс",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "graph",
+        "project-graph",
+        "provenance",
+        "events",
+        "junction"
+      ],
+      "sources": [
+        "src/kernel/services/project-graph/project-graph-service.ts",
+        "src/kernel/services/project-graph/project-graph-projection.ts",
+        "src/kernel/services/trust/unified-provenance-bridge.ts",
+        "src/kernel/types/project-types.ts",
+        "src/components/UniversalGraphPanel/UniversalGraphPanel.tsx",
+        "src/components/GraphStudioPanel/GraphStudioPanel.tsx"
+      ],
+      "related": [
+        "dev-graph",
+        "dev-status-active",
+        "dev-assistant-progress"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/project-graph/project-graph-projection.test.ts",
+        "src/kernel/services/trust/unified-provenance-bridge.test.ts",
+        "src/components/UniversalGraphPanel/UniversalGraphPanel.test.tsx",
+        "src/components/GraphStudioPanel/GraphStudioPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:dev-wiki-brain-progress",
+      "type": "article",
+      "slug": "dev-wiki-brain-progress",
+      "title": "Wiki-Brain: статус реализации (F0–F8)",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "wiki",
+        "brain",
+        "research",
+        "mcp",
+        "статус",
+        "roadmap"
+      ],
+      "sources": [
+        "src/kernel/services/wiki-brain/wiki-knowledge-unit.service.ts",
+        "src/kernel/services/wiki-brain/wiki-research.service.ts",
+        "src/kernel/services/wiki-brain/wiki-contradiction-detector.ts",
+        "src/kernel/services/wiki-brain/wiki-decay-service.ts",
+        "src/kernel/services/wiki-brain/wiki-brain-mcp-server.ts",
+        "src/kernel/services/research/literature-fetcher-service.ts",
+        "src/kernel/services/project-graph/project-graph-service.ts"
+      ],
+      "related": [
+        "dev-assistant-progress",
+        "dev-graph",
+        "dev-mcp-tools",
+        "dev-status-roadmaps"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/research/literature-fetcher-service.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-component-catalog",
