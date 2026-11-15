@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (528 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (516 документов)
 
 ## Вики по разделам
 
@@ -90,18 +90,6 @@
 - [Справочник: Доменный каталог событий EventBus](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/REF_01_EVENT_REGISTRY_DOMAINS.md)
 - [Справочник: Полный инвентарь 33 встроенных стратегий дебатов](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/REF_02_STRATEGIES_INVENTORY.md)
 - [Исследовательские темы и эксперименты](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/RESEARCH_TOPICS.md)
-- [SuperAgents OS — Пакет дорожных карт и рекомендаций](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_00_INDEX.md)
-- [Роадмап: LLM-слой (адаптеры, декораторы, реестр, HTTP/SSE, эмбеддинги)](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_01_LLM_LAYER.md)
-- [Роадмап: Движок дебатов (debate-runtime, техники, стратегии, rivals)](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_02_DEBATE_RUNTIME.md)
-- [Роадмап: Агенты и когнитивная оркестрация](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_03_AGENTS_ORCHESTRATION.md)
-- [Роадмап: Память и знания (memory, RAG, WikiBrain, knowledge-generator)](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_04_MEMORY_KNOWLEDGE.md)
-- [Роадмап: Инструменты, песочница, MCP, Browser/Computer-use](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_05_TOOLS_SANDBOX_MCP_BROWSER.md)
-- [Роадмап: Наблюдаемость, диагностика, советник, оценка](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_06_OBSERVABILITY_DIAGNOSTICS.md)
-- [Роадмап: Безопасность, ключи, секреты, доверие, аудит](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_07_SECURITY_KEYS_TRUST.md)
-- [Роадмап: Ядро — события, DI, состояние, персистентность, event-sourcing](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_08_KERNEL_EVENTS_STATE_DI.md)
-- [Роадмап: UI — панели, сторы, хуки, маршруты, i18n, визуализация](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_09_UI_PANELS_STORES.md)
-- [Роадмап: Инфраструктура — сервер, CLI, Docker, CI, скрипты-генераторы](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_10_INFRA_CI_SERVER_GENERATORS.md)
-- [Роадмап: Rivals / Parity и паритет с аналогами](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/ROADMAP_11_PARITY_RIVALS_ANALOGS.md)
 - [Спецификация: Зашифрованное хранилище ключей (crypto vault) + passphrase-UI](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/SPEC_01_CRYPTO_VAULT.md)
 - [Спецификация: Единый embedding-слой и RAG-стандарт](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/SPEC_02_EMBEDDING_STANDARD.md)
 - [Спецификация: Единый MetricsService (метрический слой)](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/New folder/SPEC_03_METRICS_SERVICE.md)
