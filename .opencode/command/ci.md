@@ -1,7 +1,9 @@
 ---
-description: Статус GitHub Actions
+description: Check GitHub Actions status for the latest commit / PR.
 ---
 
-Выполни: node scripts/opencode/ci-status.mjs $ARGUMENTS
+Проверь статус CI:
 
-Покажи статус. Если есть failure — определи причину (Type-check, тесты, wiki-sync) и предложи следующий шаг.
+1. Последний коммит в текущей ветке (`git rev-parse HEAD`).
+2. Через GitHub MCP получи статусы checks (Actions) для этого коммита/PR.
+3. Если есть упавшие джобы — разбери вывод и предложи конкретный фикс.

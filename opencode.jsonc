@@ -20,6 +20,14 @@
       "command": ["node", "C:/Users/evgeny/AppData/Local/Programs/desk-mcp/server.mjs"],
       "enabled": true,
       "timeout": 60000
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "enabled": true,
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      }
     }
   },
   "permission": {
