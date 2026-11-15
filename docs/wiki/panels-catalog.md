@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **270** · с компонентом: **269** · со статьёй: **270** · всего разделов: **20**.
+Панелей: **271** · с компонентом: **212** · со статьёй: **267** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -25,6 +25,8 @@
 | Панель | Memory Center `memory-center` | `/memory-center` | `src/components/MemoryCenterPanel/MemoryCenterPanel` | [Memory Center](./panel-memory-center.md) |
 | Панель | Граф навигации `nav-graph` | `/nav-graph` | `src/components/NavGraphPanel/NavGraphPanel` | [Граф навигации](./panel-nav-graph.md) |
 | Панель | Graph Workbench `graph-workbench` | `/graph-workbench` | `src/components/GraphWorkbenchPanel/GraphWorkbenchPanel` | [Graph Workbench](./panel-graph-workbench.md) |
+| Панель | Graph Studio `graph-studio` | `/graph-studio` | `src/components/GraphStudioPanel/GraphStudioPanel` | — |
+| Панель | Universal Graph `universal-graph` | `/universal-graph` | `src/components/UniversalGraphPanel/UniversalGraphPanel` | — |
 | Панель | Карта дефектов `defect-map` | `/defect-map` | `src/components/DefectMapPanel/DefectMapPanel` | [Карта дефектов](./panel-defect-map.md) |
 | Панель | Хранилище кристаллов `crystals` | `/crystals` | `src/components/CrystalVaultPanel/CrystalVaultPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Движок связей `junctions` | `/junctions` | `src/components/JunctionPanel/JunctionPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
@@ -45,7 +47,7 @@
 | Панель | Очередь запусков `run-queue` | `/run-queue` | `src/components/RunQueuePanel/RunQueuePanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
 | Бюджет AI | аналитика `analytics` | `/analytics` | `src/components/AnalyticsPanel/AnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
 | Бюджет AI | экономика `pricing` | `/pricing` | `src/components/AnalyticsPanel/PricingPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
-| Бюджет AI | Бюджет `budget` | `/budget` | `src/components/BudgetPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
+| Бюджет AI | Бюджет `budget` | `/budget` | `src/components/BudgetHub` | [Панель: Бюджет и затраты](./panel-budget.md) |
 | Бюджет AI | Аналитика стоимости `cost-analytics` | `/cost-analytics` | `src/components/CostAnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
 | Бюджет AI | Оптимизация стоимости `cost-optimization` | `/cost-optimization` | `src/components/CostOptimizationPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
 | Бюджет AI | Оповещения о бюджете `budget-alerts` | `/budget-alerts` | `src/components/BudgetAlertsPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
@@ -101,69 +103,70 @@
 | Техники | Атака уязвимостей `vuln-targeting` | `/vuln-targeting` | `src/components/VulnTargetingPanel/VulnTargetingPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
 | Техники | Обоснование `justification` | `/justification` | `src/components/JustificationPanel/JustificationPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
 | Техники | Логическая форма `logical-form` | `/logical-form` | `src/components/LogicalFormPanel/LogicalFormPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
-| Техники | cross-examination `cross-examination` | `/cross-examination` | `src/components/TechniquePanels/CrossExaminationPanel` | [Перекрёстный допрос](./technique-cross-examination.md) |
-| Техники | delta-focusing `delta-focusing` | `/delta-focusing` | `src/components/TechniquePanels/DeltaFocusingPanel` | [Фокусировка на дельте](./technique-delta-focusing.md) |
-| Техники | vulnerability-targeting `vulnerability-targeting` | `/vulnerability-targeting` | `src/components/TechniquePanels/VulnerabilityTargetingPanel` | [Атака уязвимостей](./technique-vulnerability-targeting.md) |
-| Техники | agreement-anchoring `agreement-anchoring` | `/agreement-anchoring` | `src/components/TechniquePanels/AgreementAnchoringPanel` | [Якорение на согласии](./technique-agreement-anchoring.md) |
-| Техники | graph-minimax `graph-minimax` | `/graph-minimax` | `src/components/TechniquePanels/GraphMinimaxPanel` | [Граф минимакса](./technique-graph-minimax.md) |
-| Техники | burden-of-proof `burden-of-proof` | `/burden-of-proof` | `src/components/TechniquePanels/BurdenOfProofPanel` | [Бремя доказательства](./technique-burden-of-proof.md) |
-| Техники | consistency-check `consistency-check` | `/consistency-check` | `src/components/TechniquePanels/ConsistencyCheckPanel` | [Проверка согласованности](./technique-consistency-check.md) |
-| Техники | credibility-scoring `credibility-scoring` | `/credibility-scoring` | `src/components/TechniquePanels/CredibilityScoringPanel` | [Оценка достоверности](./technique-credibility-scoring.md) |
-| Техники | causal-graph `causal-graph` | `/causal-graph` | `src/components/TechniquePanels/CausalGraphPanel` | [Каузальный граф](./technique-causal-graph.md) |
-| Техники | pre-publish-critic `pre-publish-critic` | `/pre-publish-critic` | `src/components/TechniquePanels/PrePublishCriticPanel` | [Критик перед публикацией](./technique-pre-publish-critic.md) |
-| Техники | fact-checking `fact-checking` | `/fact-checking` | `src/components/TechniquePanels/FactCheckingPanel` | [Проверка фактов](./technique-fact-checking.md) |
-| Техники | epistemic-calibration `epistemic-calibration` | `/epistemic-calibration` | `src/components/TechniquePanels/EpistemicCalibrationPanel` | [Эпистемическая калибровка](./technique-epistemic-calibration.md) |
-| Техники | socratic-pivot `socratic-pivot` | `/socratic-pivot` | `src/components/TechniquePanels/SocraticPivotPanel` | [Сократический разворот](./technique-socratic-pivot.md) |
-| Техники | concession-engine `concession-engine` | `/concession-engine` | `src/components/TechniquePanels/ConcessionEnginePanel` | [Движок уступок](./technique-concession-engine.md) |
-| Техники | bayesian-judges `bayesian-judges` | `/bayesian-judges` | `src/components/TechniquePanels/BayesianJudgesPanel` | [Байесовские судьи](./technique-bayesian-judges.md) |
-| Техники | dpo-sampler `dpo-sampler` | `/dpo-sampler` | `src/components/TechniquePanels/DpoSamplerPanel` | [Семплер DPO](./technique-dpo-sampler.md) |
-| Техники | critic `critic` | `/critic` | `src/components/TechniquePanels/CriticPanel` | [Критик](./technique-critic.md) |
-| Техники | pivot `pivot` | `/pivot` | `src/components/TechniquePanels/PivotPanel` | [Пивот](./technique-pivot.md) |
-| Техники | concession `concession` | `/concession` | `src/components/TechniquePanels/ConcessionPanel` | [Уступка](./technique-concession.md) |
-| Техники | triangulation `triangulation` | `/triangulation` | `src/components/TechniquePanels/TriangulationPanel` | [Триангуляция](./technique-triangulation.md) |
-| Техники | empathy `empathy` | `/empathy` | `src/components/TechniquePanels/EmpathyPanel` | [Эмпатия](./technique-empathy.md) |
-| Техники | heat `heat` | `/heat` | `src/components/TechniquePanels/HeatPanel` | [Накал](./technique-heat.md) |
-| Техники | sentinel `sentinel` | `/sentinel` | `src/components/TechniquePanels/SentinelPanel` | [Страж](./technique-sentinel.md) |
-| Техники | redundancy `redundancy` | `/redundancy` | `src/components/TechniquePanels/RedundancyPanel` | [Избыточность](./technique-redundancy.md) |
-| Техники | replay `replay` | `/replay` | `src/components/TechniquePanels/ReplayPanel` | [Повтор](./technique-replay.md) |
-| Техники | enthymeme `enthymeme` | `/enthymeme` | `src/components/TechniquePanels/EnthymemePanel` | [Энтимема](./technique-enthymeme.md) |
-| Техники | multi-hop `multi-hop` | `/multi-hop` | `src/components/TechniquePanels/MultiHopPanel` | [Многошаговость](./technique-multi-hop.md) |
-| Техники | bias-exploit `bias-exploit` | `/bias-exploit` | `src/components/TechniquePanels/BiasExploitPanel` | [Эксплуатация искажений](./technique-bias-exploit.md) |
-| Техники | interrupt `interrupt` | `/interrupt` | `src/components/TechniquePanels/InterruptPanel` | [Прерывание](./technique-interrupt.md) |
-| Техники | frame `frame` | `/frame` | `src/components/TechniquePanels/FramePanel` | [Фрейминг](./technique-frame.md) |
-| Техники | rhetorical-device `rhetorical-device` | `/rhetorical-device` | `src/components/TechniquePanels/RhetoricalDevicePanel` | [Риторический приём](./technique-rhetorical-device.md) |
-| Техники | narrative-arc `narrative-arc` | `/narrative-arc` | `src/components/TechniquePanels/NarrativeArcPanel` | [Нарративная дуга](./technique-narrative-arc.md) |
-| Техники | abstraction-ladder `abstraction-ladder` | `/abstraction-ladder` | `src/components/TechniquePanels/AbstractionLadderPanel` | [Лестница абстракции](./technique-abstraction-ladder.md) |
-| Техники | role-reversal `role-reversal` | `/role-reversal` | `src/components/TechniquePanels/RoleReversalPanel` | [Обмен ролями](./technique-role-reversal.md) |
-| Техники | fog-of-war `fog-of-war` | `/fog-of-war` | `src/components/TechniquePanels/FogOfWarPanel` | [Туман войны](./technique-fog-of-war.md) |
-| Техники | evidence-revelation `evidence-revelation` | `/evidence-revelation` | `src/components/TechniquePanels/EvidenceRevelationPanel` | [Раскрытие улик](./technique-evidence-revelation.md) |
-| Техники | humor `humor` | `/humor` | `src/components/TechniquePanels/HumorPanel` | [Юмор](./technique-humor.md) |
-| Техники | status-dynamics `status-dynamics` | `/status-dynamics` | `src/components/TechniquePanels/StatusDynamicsPanel` | [Динамика статуса](./technique-status-dynamics.md) |
-| Техники | style-matching `style-matching` | `/style-matching` | `src/components/TechniquePanels/StyleMatchingPanel` | [Подбор стиля](./technique-style-matching.md) |
-| Техники | dynamic-persona `dynamic-persona` | `/dynamic-persona` | `src/components/TechniquePanels/DynamicPersonaPanel` | [Динамическая персона](./technique-dynamic-persona.md) |
-| Техники | strategist `strategist` | `/strategist` | `src/components/TechniquePanels/StrategistPanel` | [Стратегист](./technique-strategist.md) |
-| Техники | whisper-channels `whisper-channels` | `/whisper-channels` | `src/components/TechniquePanels/WhisperChannelsPanel` | [Шёпот-каналы](./technique-whisper-channels.md) |
-| Техники | alliance `alliance` | `/alliance` | `src/components/TechniquePanels/AlliancePanel` | [Альянс](./technique-alliance.md) |
-| Техники | prediction-market `prediction-market` | `/prediction-market` | `src/components/TechniquePanels/PredictionMarketPanel` | [Рынок предсказаний](./technique-prediction-market.md) |
-| Техники | rtom `rtom` | `/rtom` | `src/components/TechniquePanels/RtomPanel` | [RT-OM](./technique-rtom.md) |
-| Техники | strategy-fingerprint `strategy-fingerprint` | `/strategy-fingerprint` | `src/components/TechniquePanels/StrategyFingerprintPanel` | [Отпечаток стратегии](./technique-strategy-fingerprint.md) |
-| Техники | objection-anticipation `objection-anticipation` | `/objection-anticipation` | `src/components/TechniquePanels/ObjectionAnticipationPanel` | [Предвосхищение возражений](./technique-objection-anticipation.md) |
-| Техники | evidence-triangulation `evidence-triangulation` | `/evidence-triangulation` | `src/components/TechniquePanels/EvidenceTriangulationPanel` | [Триангуляция улик](./technique-evidence-triangulation.md) |
-| Техники | hegelian-synthesis `hegelian-synthesis` | `/hegelian-synthesis` | `src/components/TechniquePanels/HegelianSynthesisPanel` | [Гегелевский синтез](./technique-hegelian-synthesis.md) |
-| Техники | uncertainty-propagation `uncertainty-propagation` | `/uncertainty-propagation` | `src/components/TechniquePanels/UncertaintyPropagationPanel` | [Распространение неопределённости](./technique-uncertainty-propagation.md) |
-| Техники | rhetoric-safety `rhetoric-safety` | `/rhetoric-safety` | `src/components/TechniquePanels/RhetoricSafetyPanel` | [Безопасная риторика](./technique-rhetoric-safety.md) |
-| Техники | blind-evaluation `blind-evaluation` | `/blind-evaluation` | `src/components/TechniquePanels/BlindEvaluationPanel` | [Слепая оценка](./technique-blind-evaluation.md) |
-| Техники | bidding-time `bidding-time` | `/bidding-time` | `src/components/TechniquePanels/BiddingTimePanel` | [Торг за время](./technique-bidding-time.md) |
-| Техники | adaptive-order `adaptive-order` | `/adaptive-order` | `src/components/TechniquePanels/AdaptiveOrderPanel` | [Адаптивный порядок](./technique-adaptive-order.md) |
-| Техники | executable-evidence `executable-evidence` | `/executable-evidence` | `src/components/TechniquePanels/ExecutableEvidencePanel` | [Исполняемые улики](./technique-executable-evidence.md) |
-| Техники | hidden-incentives `hidden-incentives` | `/hidden-incentives` | `src/components/TechniquePanels/HiddenIncentivesPanel` | [Скрытые стимулы](./technique-hidden-incentives.md) |
-| Техники | semantic-blending `semantic-blending` | `/semantic-blending` | `src/components/TechniquePanels/SemanticBlendingPanel` | [Семантическое смешение](./technique-semantic-blending.md) |
-| Техники | judge-deliberation `judge-deliberation` | `/judge-deliberation` | `src/components/TechniquePanels/JudgeDeliberationPanel` | [Совещание судей](./technique-judge-deliberation.md) |
+| Техники | cross-examination `cross-examination` | `/cross-examination` | — | [Перекрёстный допрос](./technique-cross-examination.md) |
+| Техники | delta-focusing `delta-focusing` | `/delta-focusing` | — | [Фокусировка на дельте](./technique-delta-focusing.md) |
+| Техники | vulnerability-targeting `vulnerability-targeting` | `/vulnerability-targeting` | — | [Атака уязвимостей](./technique-vulnerability-targeting.md) |
+| Техники | agreement-anchoring `agreement-anchoring` | `/agreement-anchoring` | — | [Якорение на согласии](./technique-agreement-anchoring.md) |
+| Техники | graph-minimax `graph-minimax` | `/graph-minimax` | — | [Граф минимакса](./technique-graph-minimax.md) |
+| Техники | burden-of-proof `burden-of-proof` | `/burden-of-proof` | — | [Бремя доказательства](./technique-burden-of-proof.md) |
+| Техники | consistency-check `consistency-check` | `/consistency-check` | — | [Проверка согласованности](./technique-consistency-check.md) |
+| Техники | credibility-scoring `credibility-scoring` | `/credibility-scoring` | — | [Оценка достоверности](./technique-credibility-scoring.md) |
+| Техники | causal-graph `causal-graph` | `/causal-graph` | — | [Каузальный граф](./technique-causal-graph.md) |
+| Техники | pre-publish-critic `pre-publish-critic` | `/pre-publish-critic` | — | [Критик перед публикацией](./technique-pre-publish-critic.md) |
+| Техники | fact-checking `fact-checking` | `/fact-checking` | — | [Проверка фактов](./technique-fact-checking.md) |
+| Техники | epistemic-calibration `epistemic-calibration` | `/epistemic-calibration` | — | [Эпистемическая калибровка](./technique-epistemic-calibration.md) |
+| Техники | socratic-pivot `socratic-pivot` | `/socratic-pivot` | — | [Сократический разворот](./technique-socratic-pivot.md) |
+| Техники | concession-engine `concession-engine` | `/concession-engine` | — | [Движок уступок](./technique-concession-engine.md) |
+| Техники | bayesian-judges `bayesian-judges` | `/bayesian-judges` | — | [Байесовские судьи](./technique-bayesian-judges.md) |
+| Техники | dpo-sampler `dpo-sampler` | `/dpo-sampler` | — | [Семплер DPO](./technique-dpo-sampler.md) |
+| Техники | critic `critic` | `/critic` | — | [Критик](./technique-critic.md) |
+| Техники | pivot `pivot` | `/pivot` | — | [Пивот](./technique-pivot.md) |
+| Техники | concession `concession` | `/concession` | — | [Уступка](./technique-concession.md) |
+| Техники | triangulation `triangulation` | `/triangulation` | — | [Триангуляция](./technique-triangulation.md) |
+| Техники | empathy `empathy` | `/empathy` | — | [Эмпатия](./technique-empathy.md) |
+| Техники | heat `heat` | `/heat` | — | [Накал](./technique-heat.md) |
+| Техники | sentinel `sentinel` | `/sentinel` | — | [Страж](./technique-sentinel.md) |
+| Техники | redundancy `redundancy` | `/redundancy` | — | [Избыточность](./technique-redundancy.md) |
+| Техники | replay `replay` | `/replay` | — | [Повтор](./technique-replay.md) |
+| Техники | enthymeme `enthymeme` | `/enthymeme` | — | [Энтимема](./technique-enthymeme.md) |
+| Техники | multi-hop `multi-hop` | `/multi-hop` | — | [Многошаговость](./technique-multi-hop.md) |
+| Техники | bias-exploit `bias-exploit` | `/bias-exploit` | — | [Эксплуатация искажений](./technique-bias-exploit.md) |
+| Техники | interrupt `interrupt` | `/interrupt` | — | [Прерывание](./technique-interrupt.md) |
+| Техники | frame `frame` | `/frame` | — | [Фрейминг](./technique-frame.md) |
+| Техники | rhetorical-device `rhetorical-device` | `/rhetorical-device` | — | [Риторический приём](./technique-rhetorical-device.md) |
+| Техники | narrative-arc `narrative-arc` | `/narrative-arc` | — | [Нарративная дуга](./technique-narrative-arc.md) |
+| Техники | abstraction-ladder `abstraction-ladder` | `/abstraction-ladder` | — | [Лестница абстракции](./technique-abstraction-ladder.md) |
+| Техники | role-reversal `role-reversal` | `/role-reversal` | — | [Обмен ролями](./technique-role-reversal.md) |
+| Техники | fog-of-war `fog-of-war` | `/fog-of-war` | — | [Туман войны](./technique-fog-of-war.md) |
+| Техники | evidence-revelation `evidence-revelation` | `/evidence-revelation` | — | [Раскрытие улик](./technique-evidence-revelation.md) |
+| Техники | humor `humor` | `/humor` | — | [Юмор](./technique-humor.md) |
+| Техники | status-dynamics `status-dynamics` | `/status-dynamics` | — | [Динамика статуса](./technique-status-dynamics.md) |
+| Техники | style-matching `style-matching` | `/style-matching` | — | [Подбор стиля](./technique-style-matching.md) |
+| Техники | dynamic-persona `dynamic-persona` | `/dynamic-persona` | — | [Динамическая персона](./technique-dynamic-persona.md) |
+| Техники | strategist `strategist` | `/strategist` | — | [Стратегист](./technique-strategist.md) |
+| Техники | whisper-channels `whisper-channels` | `/whisper-channels` | — | [Шёпот-каналы](./technique-whisper-channels.md) |
+| Техники | alliance `alliance` | `/alliance` | — | [Альянс](./technique-alliance.md) |
+| Техники | prediction-market `prediction-market` | `/prediction-market` | — | [Рынок предсказаний](./technique-prediction-market.md) |
+| Техники | rtom `rtom` | `/rtom` | — | [RT-OM](./technique-rtom.md) |
+| Техники | strategy-fingerprint `strategy-fingerprint` | `/strategy-fingerprint` | — | [Отпечаток стратегии](./technique-strategy-fingerprint.md) |
+| Техники | objection-anticipation `objection-anticipation` | `/objection-anticipation` | — | [Предвосхищение возражений](./technique-objection-anticipation.md) |
+| Техники | evidence-triangulation `evidence-triangulation` | `/evidence-triangulation` | — | [Триангуляция улик](./technique-evidence-triangulation.md) |
+| Техники | hegelian-synthesis `hegelian-synthesis` | `/hegelian-synthesis` | — | [Гегелевский синтез](./technique-hegelian-synthesis.md) |
+| Техники | uncertainty-propagation `uncertainty-propagation` | `/uncertainty-propagation` | — | [Распространение неопределённости](./technique-uncertainty-propagation.md) |
+| Техники | rhetoric-safety `rhetoric-safety` | `/rhetoric-safety` | — | [Безопасная риторика](./technique-rhetoric-safety.md) |
+| Техники | blind-evaluation `blind-evaluation` | `/blind-evaluation` | — | [Слепая оценка](./technique-blind-evaluation.md) |
+| Техники | bidding-time `bidding-time` | `/bidding-time` | — | [Торг за время](./technique-bidding-time.md) |
+| Техники | adaptive-order `adaptive-order` | `/adaptive-order` | — | [Адаптивный порядок](./technique-adaptive-order.md) |
+| Техники | executable-evidence `executable-evidence` | `/executable-evidence` | — | [Исполняемые улики](./technique-executable-evidence.md) |
+| Техники | hidden-incentives `hidden-incentives` | `/hidden-incentives` | — | [Скрытые стимулы](./technique-hidden-incentives.md) |
+| Техники | semantic-blending `semantic-blending` | `/semantic-blending` | — | [Семантическое смешение](./technique-semantic-blending.md) |
+| Техники | judge-deliberation `judge-deliberation` | `/judge-deliberation` | — | [Совещание судей](./technique-judge-deliberation.md) |
 | Агенты | агенты `agents` | `/agents` | `src/components/AgentsPanel/AgentsPanel` | [Агенты: устройство и управление](./agents.md) |
 | Агенты | роли `roles` | `/roles` | `src/components/RolesPanel/RolesPanel` | [Панель: Роли и консорциумы](./panel-roles.md) |
 | Агенты | роли: консорциумы `roles-consortia` | `/roles-consortia` | `src/components/RolesPanel/RolesConsortiaPanel` | [Панель: Роли и консорциумы](./panel-roles.md) |
 | Агенты | SRE-агент `sre` | `/sre` | `src/components/SREAgentPanel/SREAgentPanel` | [Панель: SRE-агент](./panel-sre.md) |
 | Агенты | Журнал агента `agent-journal` | `/agent-journal` | `src/components/AgentJournalPanel` | [След исполнения: журнал, раны, зомби](./execution-trail.md) |
+| Агенты | Админка ассистента `assistant-admin` | `/assistant-admin` | `src/components/AssistantAdminPanel` | — |
 | Агенты | Контроль миссии `mission` | `/mission` | `src/components/LiveCognition/MissionControl` | [Панели: Планирование и миссии](./panel-planning.md) |
 | Агенты | живое рабочее пространство `live` | `/live` | `src/components/LiveCognition/LiveWorkspace` | [Панель: Живые дебаты](./panel-debate-live.md) |
 | Агенты | Маркетплейс агентов `agent-marketplace` | `/agent-marketplace` | `src/components/AgentMarketplacePanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
@@ -178,7 +181,7 @@
 | Диагностика | трейсы `debugger` | `/debugger` | `src/components/TracesPanel/TracesPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Маршрутизатор Трассировка `router-trace` | `/router-trace` | `src/components/RouterTraceView/RouterTraceView` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Память `memory` | `/memory` | `src/components/MemoryPanel/MemoryPanel` | [Знания и память](./memory.md) |
-| Диагностика | Здоровье `health` | `/health` | `src/components/HealthPanel/HealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Здоровье `health` | `/health` | `src/components/HealthHub` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Система Здоровье `system-health` | `/system-health` | `src/components/SystemHealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Документы Здоровье `docs-health` | `/docs-health` | `src/components/DocsHealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Карта давления `pressure` | `/pressure` | `src/components/PressureMap` | [Панель: Карта давления](./panel-pressure.md) |
@@ -192,7 +195,6 @@
 | Диагностика | каузальный отладчик `causal-debugger` | `/causal-debugger` | `src/components/CausalDebugger/CausalDebugger` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
 | Диагностика | контрфактический `counterfactual` | `/counterfactual` | `src/components/CounterfactualPanel/CounterfactualPanel` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
 | Диагностика | сканер пробелов наблюдаемости `obs-gaps` | `/obs-gaps` | `src/components/DebateResearch/ObsGaps` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
-| Диагностика | Здоровье SLA `health-sla` | `/health-sla` | `src/components/HealthSlaPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Пользовательский Метрики `custom-metrics` | `/custom-metrics` | `src/components/CustomMetricsPanel` | [Панель: Пользовательские метрики](./panel-custom-metrics.md) |
 | Вики | Вики `wiki` | `/wiki` | `src/components/WikiPanel/WikiPanel` | [Панель: Wiki](./panel-wiki.md) |
 | Вики | Вики-мозг `wiki-brain` | `/wiki-brain` | `src/components/WikiBrainPanel` | [Вики-мозг](./panel-wiki-brain.md) |
@@ -213,7 +215,7 @@
 | Google AI | Google Кэш `google-cache` | `/google-cache` | `src/components/GoogleCachePanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
 | Google AI | Gemini Live `gemini-live` | `/gemini-live` | `src/components/GeminiLivePanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
 | Google AI | исследование Gemini `research-gemini` | `/research-gemini` | `src/components/GeminiResearch/GeminiResearchPanel` | [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |
-| Исследования | Исследовательский движок `research-engine` | `/research-engine` | `src/components/ResearchPanel/ResearchEnginePanel` | [Панель: Исследовательский движок](./panel-research.md) |
+| Исследования | Исследовательский движок `research-engine` | `/research-engine` | `src/components/ResearchHub` | [Панель: Исследовательский движок](./panel-research.md) |
 | Исследования | Research Cockpit `research-cockpit` | `/research-cockpit` | `src/components/ResearchCockpit/ResearchCockpit` | [Deep Research](./panel-research-cockpit.md) |
 | Исследования | Исследование дебатов `debate-system-research` | `/debate-system-research` | `src/components/DebateResearch/DebateSystemResearch` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
 | Исследования | исследовательские отчёты `research-reports` | `/research-reports` | `src/components/ResearchReportPanel` | [Панель: Исследовательский движок](./panel-research.md) |
@@ -232,6 +234,7 @@
 | AI провайдеры и ключи | Умная маршрутизация `smart-routing` | `/smart-routing` | `src/components/SmartRoutingPanel` | [Панели: Умная маршрутизация](./panel-routing.md) |
 | AI провайдеры и ключи | Маршрутизация Ии `routing` | `/routing` | `src/components/RoutingIntelligence/RoutingIntelligence` | [Панели: Умная маршрутизация](./panel-routing.md) |
 | AI провайдеры и ключи | Провайдер Панель `provider-dashboard` | `/provider-dashboard` | `src/components/ProviderDashboard` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| AI провайдеры и ключи | Модели (Model Explorer) `model-explorer` | `/model-explorer` | `src/components/ModelExplorerPanel` | — |
 | AI провайдеры и ключи | Маркетплейс провайдеров `provider-marketplace` | `/provider-marketplace` | `src/components/ProviderMarketplace` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
 | AI провайдеры и ключи | Аналитика использования ключей `key-usage-analytics` | `/key-usage-analytics` | `src/components/KeyUsageAnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
 | AI провайдеры и ключи | Скорость Groq `groq-speed` | `/groq-speed` | `src/components/ProviderManager/GroqSpeedDashboard` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
@@ -278,8 +281,6 @@
 | Остальное | пакетная обработка `batch` | `/batch` | `src/components/BatchProcessingPanel` | [Панель: Пакетная обработка](./panel-batch.md) |
 | Остальное | командная работа `team-collaboration` | `/team-collaboration` | `src/components/CollaborationPanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
 | Остальное | сообщество `community-hub` | `/community-hub` | `src/components/CommunityHubPanel` | [Панели: Вклад и сообщество](./panel-contribution.md) |
-| Остальное | Дистилляция моделей `model-distillation` | `/model-distillation` | `src/components/DistillationPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
-| Остальное | Деплой `deploy` | `/deploy` | `src/components/DeployPanel` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
 | Остальное | Голосовой ввод `voice-input` | `/voice-input` | `src/components/VoiceInputPanel` | [Панели: Файлы, редакторы, обучение, голос](./panel-files-editors.md) |
 | Остальное | аквариум `aquarium` | `/aquarium` | `src/components/AquariumPanel/AquariumPanel` | [Панель: Аквариум агентов](./panel-aquarium.md) |
 | Остальное | Граф вклада `contribution-graph` | `/contribution-graph` | `src/components/ContributionGraphPanel` | [Панели: Вклад и сообщество](./panel-contribution.md) |
