@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (528 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (532 документов)
 
 ## Вики по разделам
 
@@ -156,6 +156,10 @@
 - [Coding agents: уровни автономности (L1–L5)](https://github.com/egilyad/ai-os-new/blob/main/docs/guides/coding-agents-levels.md)
 - [Карта отложенных проблем (Deferred / Known Issues)](https://github.com/egilyad/ai-os-new/blob/main/docs/known-issues-deferred.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
+- [Промпт: Управление админкой](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/admin/_demo-admin-prompt.md)
+- [Промпт: Аудит подсистемы](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/audits/_demo-audit-prompt.md)
+- [Промпт: Разработка задачи](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/development/_demo-development-prompt.md)
+- [Промпт: Работа с Obsidian vault](https://github.com/egilyad/ai-os-new/blob/main/docs/prompts/obsidian/_demo-obsidian-prompt.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
 - [SuperAgents OS — Пакет дорожных карт и рекомендаций](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmaps/ROADMAP_00_INDEX.md)
 - [Роадмап: LLM-слой (адаптеры, декораторы, реестр, HTTP/SSE, эмбеддинги)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmaps/ROADMAP_01_LLM_LAYER.md)
