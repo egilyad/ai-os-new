@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 532,
+    "documents": 534,
     "byCategory": {
       "repo": 11,
-      "top": 121,
+      "top": 123,
       "audits": 25,
       "wiki": 375
     },
     "byLanguage": {
       "en": 39,
       "mixed": 142,
-      "ru": 351
+      "ru": 353
     }
   },
   "duplicates": {
@@ -1113,6 +1113,22 @@
       "title": "Промпт: Аудит подсистемы",
       "bytes": 1470,
       "hash": "601b2b9fbd90c56f2e1ee3bb4c01ef1951578f89"
+    },
+    {
+      "path": "docs/prompts/browser-use/_demo-browser-use-prompt.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Промпт: Browser Use (Playwright)",
+      "bytes": 1253,
+      "hash": "0f96ac709578342d4c0b7b7a97b2ab6c803b7fb2"
+    },
+    {
+      "path": "docs/prompts/computer-use/_demo-computer-use-prompt.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Промпт: Computer Use (desk-mcp)",
+      "bytes": 1408,
+      "hash": "526875bc9aca9ea5f51fef57536abb604ce28a33"
     },
     {
       "path": "docs/prompts/development/_demo-development-prompt.md",
