@@ -6,6 +6,9 @@ import type {
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
 import type { TWikiSource, TWikiLogEntry } from '../../contracts/wiki-brain/types';
 import { wikiId } from './wiki-brain-dexie';
+import { rootLogger } from '../logger-service';
+
+const LOGGER = rootLogger.child('WikiVaultSync');
 
 type FSDirHandle = FileSystemDirectoryHandle & {
     entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
@@ -67,7 +70,9 @@ export class WikiVaultSyncService implements IWikiVaultSyncService {
                 ? await this.picker({ mode })
                 : await (
                       window as unknown as {
-                          showDirectoryPicker: (opts?: { mode?: string }) => Promise<FileSystemDirectoryHandle>;
+                          showDirectoryPicker: (opts?: {
+                              mode?: string;
+                          }) => Promise<FileSystemDirectoryHandle>;
                       }
                   ).showDirectoryPicker({ mode });
             this.root = handle;
@@ -100,7 +105,11 @@ export class WikiVaultSyncService implements IWikiVaultSyncService {
             exported += 1;
         }
         for (const source of sources) {
-            await this.writeText(rawDir, `${safeFileName(source.title)}.md`, this.sourceToMarkdown(source));
+            await this.writeText(
+                rawDir,
+                `${safeFileName(source.title)}.md`,
+                this.sourceToMarkdown(source),
+            );
             exported += 1;
         }
 
@@ -179,6 +188,34 @@ export class WikiVaultSyncService implements IWikiVaultSyncService {
         };
     }
 
+    private autoTimer: ReturnType<typeof setInterval> | null = null;
+
+    startAutoSync(opts: { intervalMs?: number } = {}): () => void {
+        this.stopAutoSync();
+        const intervalMs = opts.intervalMs ?? 30_000;
+        const tick = async () => {
+            try {
+                await this.importFromVault();
+            } catch (e) {
+                LOGGER.warn('vault autosync failed', { error: String(e) });
+            }
+        };
+        void tick();
+        this.autoTimer = setInterval(() => void tick(), intervalMs);
+        return () => this.stopAutoSync();
+    }
+
+    stopAutoSync(): void {
+        if (this.autoTimer !== null) {
+            clearInterval(this.autoTimer);
+            this.autoTimer = null;
+        }
+    }
+
+    destroy(): void {
+        this.stopAutoSync();
+    }
+
     private requireRoot(): FileSystemDirectoryHandle {
         if (!this.root) throw new Error('No vault attached — call attachVault() first');
         return this.root;
@@ -218,7 +255,10 @@ export class WikiVaultSyncService implements IWikiVaultSyncService {
             .join('');
     }
 
-    private async appendLog(op: TWikiLogEntry['op'], details: Record<string, unknown>): Promise<void> {
+    private async appendLog(
+        op: TWikiLogEntry['op'],
+        details: Record<string, unknown>,
+    ): Promise<void> {
         const entry: TWikiLogEntry = {
             id: wikiId('log'),
             ts: new Date().toISOString(),

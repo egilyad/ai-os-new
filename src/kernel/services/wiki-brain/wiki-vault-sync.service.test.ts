@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createWikiBrainDB, getWikiBrainDB, wikiId } from './wiki-brain-dexie';
 import { WikiDexieStore } from './store.dexie';
 import { WikiVaultSyncService } from './wiki-vault-sync.service';
@@ -138,5 +138,25 @@ describe('wiki vault sync service', () => {
         const second = await vault.importFromVault();
         expect(second.imported).toBe(0);
         expect(second.skipped).toBe(2);
+    });
+});
+
+describe('WikiVaultSyncService.startAutoSync', () => {
+    it('запускает периодический импорт и останавливается', async () => {
+        vi.useFakeTimers();
+        const store = new WikiDexieStore(getWikiBrainDB());
+        const service = new WikiVaultSyncService(store, {
+            picker: async () => ({}),
+        } as never);
+        const spy = vi
+            .spyOn(service, 'importFromVault')
+            .mockResolvedValue({ exported: 0, imported: 0, skipped: 0 } as never);
+        const stop = service.startAutoSync({ intervalMs: 1000 });
+        await vi.advanceTimersByTimeAsync(2100);
+        expect(spy).toHaveBeenCalledTimes(3);
+        stop();
+        await vi.advanceTimersByTimeAsync(2000);
+        expect(spy).toHaveBeenCalledTimes(3);
+        vi.useRealTimers();
     });
 });

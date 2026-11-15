@@ -25,4 +25,8 @@ export interface IWikiVaultSyncService {
      * not already imported by sha256) and enqueue it for ingest.
      */
     importFromVault(): Promise<WikiVaultSyncResult>;
+    /** Start a polling watcher that re-imports raw/ changes (bidirectional sync). */
+    startAutoSync(opts?: { intervalMs?: number }): () => void;
+    /** Stop the polling watcher. */
+    stopAutoSync(): void;
 }
