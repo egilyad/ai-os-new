@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (522 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (524 документов)
 
 ## Вики по разделам
 
@@ -165,6 +165,7 @@
 - [🧠 Cognitive Runtime Specification (CRS)](https://github.com/egilyad/ai-os-new/blob/main/docs/COGNITIVE_RUNTIME_SPEC.md)
 - [SuperAgents OS — Developer Quickstart](https://github.com/egilyad/ai-os-new/blob/main/docs/DEV_QUICKSTART.md)
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
+- [Coding agents: уровни автономности (L1–L5)](https://github.com/egilyad/ai-os-new/blob/main/docs/guides/coding-agents-levels.md)
 - [Карта отложенных проблем (Deferred / Known Issues)](https://github.com/egilyad/ai-os-new/blob/main/docs/known-issues-deferred.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
