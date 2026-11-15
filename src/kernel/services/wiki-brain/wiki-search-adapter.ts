@@ -69,7 +69,7 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
     private vecs = new Map<string, number[]>();
     private vecModel = '';
     private vecDim = 0;
-    private bm25 = new Bm25Service();
+    private bm25Service = new Bm25Service();
     private bm25Dirty = true;
 
     constructor(
@@ -163,7 +163,7 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
     private async ensureBm25Index(): Promise<void> {
         if (!this.bm25Dirty) return;
         const pages = await this.store.listPages({ limit: 10000 });
-        await this.bm25.build(
+        await this.bm25Service.build(
             pages.map((p) => ({
                 id: p.id,
                 text: `${p.frontmatter.title}\n${p.body}`,
@@ -176,7 +176,7 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
         const queryTerms = tokenize(query);
         if (queryTerms.length === 0) return [];
         await this.ensureBm25Index();
-        const hits = await this.bm25.search(query, topK);
+        const hits = await this.bm25Service.search(query, topK);
         return hits.map((h) => ({ pageId: h.id, score: h.score }));
     }
 

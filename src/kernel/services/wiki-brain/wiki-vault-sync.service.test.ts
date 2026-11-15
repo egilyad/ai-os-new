@@ -144,10 +144,11 @@ describe('wiki vault sync service', () => {
 describe('WikiVaultSyncService.startAutoSync', () => {
     it('запускает периодический импорт и останавливается', async () => {
         vi.useFakeTimers();
-        const store = new WikiDexieStore(getWikiBrainDB());
-        const service = new WikiVaultSyncService(store, {
-            picker: async () => ({}),
-        } as never);
+        const store = new WikiDexieStore();
+        const service = new WikiVaultSyncService(
+            store,
+            async () => ({}) as FileSystemDirectoryHandle,
+        );
         const spy = vi
             .spyOn(service, 'importFromVault')
             .mockResolvedValue({ exported: 0, imported: 0, skipped: 0 } as never);

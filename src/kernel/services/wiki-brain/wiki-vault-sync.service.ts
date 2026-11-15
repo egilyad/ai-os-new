@@ -197,7 +197,7 @@ export class WikiVaultSyncService implements IWikiVaultSyncService {
             try {
                 await this.importFromVault();
             } catch (e) {
-                LOGGER.warn('vault autosync failed', { error: String(e) });
+                LOGGER.warn('WikiVaultSync', 'vault autosync failed', { error: String(e) });
             }
         };
         void tick();

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { TaskExecutorDispatcher } from './task-executor-dispatcher';
+import { TaskExecutorDispatcher, type HandoffInvokeRequest } from './task-executor-dispatcher';
 import { eventBus } from '../events/event-bus';
 import { EVENTS } from '../events/event-names';
 
@@ -40,7 +40,10 @@ describe('task-executor-dispatcher', () => {
                 },
             ],
         } as never;
-        const invoke = vi.fn(async () => ({ id: 'inv-1', status: 'done' }));
+        const invoke = vi.fn(async (_req: HandoffInvokeRequest) => ({
+            id: 'inv-1',
+            status: 'done',
+        }));
         const dispatcher = new TaskExecutorDispatcher({ handoff: handoffStub, invoke });
         dispatcher.start();
 

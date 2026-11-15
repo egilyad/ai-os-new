@@ -78,7 +78,7 @@ export class WebStubProvider implements ILiteratureProvider {
     readonly id = 'web';
     readonly label = 'web search (not configured)';
 
-    async fetch(): Promise<LiteraturePaper[]> {
+    async fetch(_query: string, _opts?: LiteratureFetchOptions): Promise<LiteraturePaper[]> {
         return [];
     }
 }
@@ -88,7 +88,8 @@ export class PerplexityProvider implements ILiteratureProvider {
     readonly label = 'Perplexity (sonar-deep-research)';
 
     constructor(
-        private apiKey = process.env.PERPLEXITY_API_KEY ?? '',
+        private apiKey = (globalThis as { process?: { env?: Record<string, string> } }).process?.env
+            ?.PERPLEXITY_API_KEY ?? '',
         private model = 'sonar-deep-research',
     ) {}
 
@@ -187,7 +188,10 @@ export class LiteratureFetcherService {
                 const papers = await provider.fetch(query, { maxResults: opts.maxResults });
                 results.push({ provider: provider.id, providerLabel: provider.label, papers });
             } catch (e) {
-                LOGGER.warn('fetch failed', { provider: provider.id, error: String(e) });
+                LOGGER.warn('LiteratureFetcher', 'fetch failed', {
+                    provider: provider.id,
+                    error: String(e),
+                });
                 results.push({ provider: provider.id, providerLabel: provider.label, papers: [] });
             }
         }

@@ -1,9 +1,11 @@
+import type { TWikiSource } from '../../contracts/wiki-brain/types';
 import { describe, expect, it, vi, afterEach } from 'vitest';
 import {
     ArxivProvider,
     LiteratureFetcherService,
     PerplexityProvider,
     WebStubProvider,
+    type LiteratureFetchOptions,
 } from './literature-fetcher-service';
 
 const SAMPLE_ARXIV_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -47,7 +49,7 @@ describe('LiteratureFetcherService (F5b)', () => {
             {
                 id: 'a',
                 label: 'A',
-                fetch: async () => [
+                fetch: async (_q: string, _o?: LiteratureFetchOptions) => [
                     {
                         id: '1',
                         title: 'x',
@@ -58,7 +60,7 @@ describe('LiteratureFetcherService (F5b)', () => {
                     },
                 ],
             },
-            { id: 'b', label: 'B', fetch: async () => [] },
+            { id: 'b', label: 'B', fetch: async (_q: string, _o?: LiteratureFetchOptions) => [] },
         ]);
         expect(svc.listProviders()).toEqual([
             { id: 'a', label: 'A' },
@@ -71,8 +73,8 @@ describe('LiteratureFetcherService (F5b)', () => {
 
     it('ingestAsSources пишет TWikiSource и пропускает дубликаты', async () => {
         const store = {
-            getSourceBySha256: vi.fn(async () => undefined),
-            putSource: vi.fn(async () => undefined),
+            getSourceBySha256: vi.fn(async (_sha: string) => undefined),
+            putSource: vi.fn(async (_s: TWikiSource) => undefined),
         };
         const svc = new LiteratureFetcherService({ store: store as never }, []);
         const count = await svc.ingestAsSources(

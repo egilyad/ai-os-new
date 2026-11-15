@@ -42,7 +42,9 @@ beforeEach(async () => {
 describe('wiki search adapter', () => {
     it('ranks by BM25 without an embedder', async () => {
         const store = new WikiDexieStore();
-        await store.putPage(page('quantum', 'Quantum theory', 'About quantum mechanics and superposition.'));
+        await store.putPage(
+            page('quantum', 'Quantum theory', 'About quantum mechanics and superposition.'),
+        );
         await store.putPage(page('gardening', 'Gardening', 'About soil and compost.'));
 
         const adapter = new WikiSearchAdapter(store);
