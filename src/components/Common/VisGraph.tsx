@@ -32,11 +32,16 @@ interface Props {
     interactionOptions?: {
         hover?: boolean;
         highlightNeighbors?: boolean;
+        dragNodes?: boolean;
         dragView?: boolean;
         zoomView?: boolean;
     };
     physicsOptions?: Record<string, unknown>;
-    onReady?: (ref: { focus(id: string): void; fit(): void }) => void;
+    onReady?: (ref: {
+        focus(id: string): void;
+        fit(): void;
+        stabilize(iterations?: number): void;
+    }) => void;
 }
 
 /** Универсальный интерактивный граф на vis-network: зум, панорамирование,
@@ -150,6 +155,7 @@ const VisGraph: React.FC<Props> = ({
         onReady?.({
             focus: (id) => net.focus(id, { scale: 1.4 }),
             fit: () => net.fit(),
+            stabilize: (iterations) => net.stabilize(iterations),
         });
 
         return () => {

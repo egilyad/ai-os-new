@@ -1,45 +1,15 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { projectManagerService } from '../../kernel/instances/services-core';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
+import { getWikiBrainDB } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
 import VisGraph from '../Common/VisGraph';
-
-export interface GraphStudioConfig {
-    semantics: {
-        proximityThreshold: number; // 0..100
-        hideOrphans: boolean;
-        query: string;
-    };
-    physics: {
-        repulsion: number; // gravitationalConstant (positive)
-        springLength: number;
-        springConstant: number;
-        gravity: number;
-        frozen: boolean;
-    };
-    style: {
-        nodeSizeMode: 'fixed' | 'degree';
-        palette: 'default' | 'neon' | 'clusters';
-        edgeThicknessScale: number;
-    };
-    interaction: {
-        highlightNeighbors: boolean;
-        dimOthers: boolean;
-    };
-}
-
-export const DEFAULT_GRAPH_STUDIO_CONFIG: GraphStudioConfig = {
-    semantics: { proximityThreshold: 0, hideOrphans: false, query: '' },
-    physics: {
-        repulsion: 3500,
-        springLength: 160,
-        springConstant: 0.04,
-        gravity: 0.25,
-        frozen: false,
-    },
-    style: { nodeSizeMode: 'degree', palette: 'default', edgeThicknessScale: 1 },
-    interaction: { highlightNeighbors: true, dimOthers: true },
-};
+import {
+    GRAPH_STUDIO_PRESETS,
+    loadGraphStudioConfig,
+    saveGraphStudioConfig,
+    type GraphStudioConfig,
+} from './graph-studio-config';
 
 const PALETTES: Record<GraphStudioConfig['style']['palette'], string[]> = {
     default: [
@@ -64,6 +34,36 @@ const PALETTES: Record<GraphStudioConfig['style']['palette'], string[]> = {
         '#277da1',
     ],
 };
+
+function computeComponents(
+    nodes: ProjectGraphNode[],
+    edges: ProjectGraphEdge[],
+): Map<string, number> {
+    const adj = new Map<string, Set<string>>();
+    for (const n of nodes) adj.set(n.id, new Set());
+    for (const e of edges) {
+        adj.get(e.from)?.add(e.to);
+        adj.get(e.to)?.add(e.from);
+    }
+    const cluster = new Map<string, number>();
+    let next = 0;
+    for (const n of nodes) {
+        if (cluster.has(n.id)) continue;
+        const queue = [n.id];
+        cluster.set(n.id, next);
+        while (queue.length > 0) {
+            const cur = queue.pop()!;
+            for (const nb of adj.get(cur) ?? []) {
+                if (!cluster.has(nb)) {
+                    cluster.set(nb, next);
+                    queue.push(nb);
+                }
+            }
+        }
+        next++;
+    }
+    return cluster;
+}
 
 const KIND_KEY: Record<string, number> = {
     project: 0,
@@ -91,12 +91,17 @@ const KIND_KEY: Record<string, number> = {
 const GraphStudioPanel: React.FC = () => {
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [projectId, setProjectId] = useState('');
+    const [source, setSource] = useState<'project' | 'wiki'>('project');
     const [nodes, setNodes] = useState<ProjectGraphNode[]>([]);
     const [edges, setEdges] = useState<ProjectGraphEdge[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [config, setConfig] = useState<GraphStudioConfig>(DEFAULT_GRAPH_STUDIO_CONFIG);
-    const graphRef = useRef<{ focus(id: string): void; fit(): void } | null>(null);
+    const [config, setConfig] = useState<GraphStudioConfig>(loadGraphStudioConfig);
+    const graphRef = useRef<{
+        focus(id: string): void;
+        fit(): void;
+        stabilize(iterations?: number): void;
+    } | null>(null);
 
     useEffect(() => {
         void projectManagerService
@@ -110,18 +115,56 @@ const GraphStudioPanel: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (!projectId) return;
+        const t = setTimeout(() => saveGraphStudioConfig(config), 400);
+        return () => clearTimeout(t);
+    }, [config]);
+
+    useEffect(() => {
+        if (source === 'project' && !projectId) return;
         setLoading(true);
         setError(null);
-        const repo = new ProjectGraphRepository();
-        void Promise.all([repo.listNodes({ projectId }), repo.listEdges(projectId)])
+        const load =
+            source === 'wiki'
+                ? async () => {
+                      const db = getWikiBrainDB();
+                      const [pages, links] = await Promise.all([
+                          db.pages.toArray(),
+                          db.links.toArray(),
+                      ]);
+                      const ns: ProjectGraphNode[] = pages.map((p) => ({
+                          id: p.slug,
+                          projectId: '',
+                          kind: 'knowledge',
+                          label: p.frontmatter.title ?? p.slug,
+                          createdAt: 0,
+                          updatedAt: 0,
+                      }));
+                      const es: ProjectGraphEdge[] = links.map((l) => ({
+                          id: l.id,
+                          projectId: '',
+                          from: l.fromSlug,
+                          to: l.toSlug,
+                          relation: l.kind ?? 'connected_to',
+                          weight: 1,
+                          createdAt: 0,
+                      }));
+                      return [ns, es];
+                  }
+                : async () => {
+                      const repo = new ProjectGraphRepository();
+                      return Promise.all([
+                          repo.listNodes({ projectId }),
+                          repo.listEdges(projectId),
+                      ]);
+                  };
+        void load()
             .then(([ns, es]) => {
-                setNodes(ns);
-                setEdges(es);
+                setNodes(ns as ProjectGraphNode[]);
+                setEdges(es as ProjectGraphEdge[]);
             })
             .catch((e) => setError(e instanceof Error ? e.message : String(e)))
             .finally(() => setLoading(false));
-    }, [projectId]);
+    }, [projectId, source]);
 
     const filtered = useMemo(() => {
         const threshold = config.semantics.proximityThreshold / 100;
@@ -151,10 +194,16 @@ const GraphStudioPanel: React.FC = () => {
             degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
             degree.set(e.to, (degree.get(e.to) ?? 0) + 1);
         }
+        const clusters =
+            config.style.palette === 'clusters'
+                ? computeComponents(filtered.nodes, filtered.edges)
+                : null;
         return filtered.nodes.map((n) => {
             const deg = degree.get(n.id) ?? 0;
             const size = config.style.nodeSizeMode === 'degree' ? Math.max(6, 10 + deg * 1.5) : 12;
-            const color = palette[KIND_KEY[n.kind] ?? 7] ?? palette[7]!;
+            const color = clusters
+                ? (palette[(clusters.get(n.id) ?? 0) % palette.length] ?? palette[7]!)
+                : (palette[KIND_KEY[n.kind] ?? 7] ?? palette[7]!);
             return {
                 id: n.id,
                 label: n.label,
@@ -204,6 +253,18 @@ const GraphStudioPanel: React.FC = () => {
     const visibleNodes = filtered.nodes;
     const visibleEdges = filtered.edges;
 
+    useEffect(() => {
+        const q = config.semantics.query.trim().toLowerCase();
+        if (!q) return;
+        const t = setTimeout(() => {
+            const found = visibleNodes.find(
+                (n) => n.label.toLowerCase().includes(q) || n.id.toLowerCase().includes(q),
+            );
+            if (found && graphRef.current) graphRef.current.focus(found.id);
+        }, 350);
+        return () => clearTimeout(t);
+    }, [config.semantics.query, visibleNodes]);
+
     return (
         <div style={{ display: 'flex', gap: 12, padding: '1rem', height: '100%' }}>
             {/* Sidebar controls */}
@@ -223,17 +284,56 @@ const GraphStudioPanel: React.FC = () => {
             >
                 <div style={{ fontWeight: 800, fontSize: 14 }}>Graph Studio</div>
 
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                    {GRAPH_STUDIO_PRESETS.map((p) => (
+                        <button
+                            key={p.id}
+                            onClick={() =>
+                                setConfig({
+                                    ...p.config,
+                                    semantics: {
+                                        ...p.config.semantics,
+                                        query: config.semantics.query,
+                                    },
+                                })
+                            }
+                            style={{
+                                padding: '3px 8px',
+                                borderRadius: 6,
+                                border: '1px solid rgba(255,255,255,0.08)',
+                                background: 'transparent',
+                                color: 'var(--slate-300)',
+                                fontSize: 10,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {p.label}
+                        </button>
+                    ))}
+                </div>
+
                 <select
-                    value={projectId}
-                    onChange={(e) => setProjectId(e.target.value)}
+                    value={source}
+                    onChange={(e) => setSource(e.target.value as 'project' | 'wiki')}
                     style={controlStyle}
                 >
-                    {projects.map((p) => (
-                        <option key={p.id} value={p.id}>
-                            {p.name}
-                        </option>
-                    ))}
+                    <option value="project">Project graph</option>
+                    <option value="wiki">Wiki graph</option>
                 </select>
+
+                {source === 'project' && (
+                    <select
+                        value={projectId}
+                        onChange={(e) => setProjectId(e.target.value)}
+                        style={controlStyle}
+                    >
+                        {projects.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.name}
+                            </option>
+                        ))}
+                    </select>
+                )}
 
                 <div style={groupStyle}>
                     <div style={groupTitleStyle}>Semantics</div>
@@ -326,6 +426,9 @@ const GraphStudioPanel: React.FC = () => {
                         />{' '}
                         Freeze simulation
                     </label>
+                    <button onClick={() => graphRef.current?.stabilize(200)} style={buttonStyle}>
+                        Resimulate
+                    </button>
                 </div>
 
                 <div style={groupStyle}>
@@ -395,6 +498,14 @@ const GraphStudioPanel: React.FC = () => {
                         />{' '}
                         Dim others
                     </label>
+                    <label style={labelStyle}>
+                        <input
+                            type="checkbox"
+                            checked={config.interaction.dragNodes}
+                            onChange={(e) => setInteraction({ dragNodes: e.target.checked })}
+                        />{' '}
+                        Drag nodes (pinning)
+                    </label>
                     <button onClick={() => graphRef.current?.fit()} style={buttonStyle}>
                         Fit view
                     </button>
@@ -421,6 +532,7 @@ const GraphStudioPanel: React.FC = () => {
                         hover: true,
                         highlightNeighbors: config.interaction.highlightNeighbors,
                         dimOthers: config.interaction.dimOthers,
+                        dragNodes: config.interaction.dragNodes,
                         dragView: true,
                         zoomView: true,
                     }}
