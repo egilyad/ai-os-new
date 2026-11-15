@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import UniversalGraphPanel from './UniversalGraphPanel';
 
-vi.mock('../../kernel/instances/services-core', () => ({
+vi.mock('../../kernel/instances/services-extras', () => ({
     projectManagerService: {
         list: vi.fn(async () => [{ id: 'p1', name: 'Demo' }]),
     },

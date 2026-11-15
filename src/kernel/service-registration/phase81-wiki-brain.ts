@@ -87,18 +87,20 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
         (c: IContainer) => new WikiVaultSyncService(c.get('wikiStore')),
     );
 
-    register(
-        'wikiEditService',
-        (c: IContainer) =>
-            new WikiEditService(
-                c.get('wikiStore'),
-                {
-                    get: (id) => c.get('database')?.getKv?.(id) ?? null,
-                    set: (id, v) => c.get('database')?.setKv?.(id, v),
-                },
-                { eventBus: c.get<IEventBus>('eventBus') },
-            ),
-    );
+    register('wikiEditService', (c: IContainer) => {
+        const db = c.get<{
+            getKv?<T>(id: string): Promise<T | null>;
+            setKv?<T>(id: string, value: T): Promise<void>;
+        }>('database');
+        return new WikiEditService(
+            c.get('wikiStore'),
+            {
+                get: (id) => (db?.getKv?.(id) ?? Promise.resolve(null)) as Promise<unknown>,
+                set: (id, v) => db?.setKv?.(id, v) ?? Promise.resolve(),
+            },
+            { eventBus: c.get<IEventBus>('eventBus') },
+        );
+    });
 
     register(
         'wikiBrainService',

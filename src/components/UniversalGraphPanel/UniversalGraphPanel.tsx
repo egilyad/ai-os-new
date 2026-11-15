@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { projectManagerService } from '../../kernel/instances/services-core';
+import { projectManagerService } from '../../kernel/instances/services-extras';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
 
