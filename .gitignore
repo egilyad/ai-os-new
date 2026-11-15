@@ -38,7 +38,7 @@ vite_*.txt
 data/
 
 # Downloaded third-party reference repositories (opencode, models.dev, hermes, ...)
-# — kept outside the repo (~/Desktop/ai-os-references); only generated output is
+# â€” kept outside the repo (~/Desktop/ai-os-references); only generated output is
 # committed. The patterns below ignore *subdirectories* of the harness agent
 # folders, so a re-downloaded reference repo can never be committed while our
 # own agent definitions (index.ts / persona.ts) stay tracked.
@@ -101,5 +101,10 @@ temp_*.txt
 .gprofile/
 
 
-# Local scraped sites (may contain secrets/third-party content) � NOT pushed
+# Local scraped sites (may contain secrets/third-party content) ï¿½ NOT pushed
 docs/fetched-sites/
+
+!.opencode/agent/
+!.opencode/agent/**
+!.opencode/skills/
+!.opencode/skills/**
