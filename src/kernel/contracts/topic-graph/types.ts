@@ -85,10 +85,14 @@ export interface TopicEvidence {
     sourceId: string;
     /** Фрагмент оригинала, из которого извлечено утверждение. */
     quote: string;
-    /** Смещение в исходнике (опционально). */
+    /** Смещение начала в исходнике (опционально). */
     offset?: number;
+    /** Смещение конца в исходнике (опционально). */
+    end?: number;
     /** 'source' — дословная цитата из оригинала; 'model' — сгенерировано моделью. */
     origin?: 'source' | 'model';
+    /** Способ извлечения. */
+    extraction?: 'llm' | 'fallback';
     createdAt: number;
 }
 
@@ -103,7 +107,13 @@ export interface TopicConflict {
     createdAt: number;
 }
 
-export type ProcessingRunStatus = 'pending' | 'running' | 'completed' | 'failed';
+export type ProcessingRunStatus =
+    | 'pending'
+    | 'running'
+    | 'completed'
+    | 'partial'
+    | 'fallback'
+    | 'failed';
 
 export interface TopicProcessingRun {
     id: string;
@@ -114,10 +124,13 @@ export interface TopicProcessingRun {
         extracted: number;
         duplicates: number;
         newClaims: number;
+        newEvidence: number;
         conflicts: number;
         relations: number;
         /** Утверждения, похожие на существующие, но не объединённые автоматически. */
         mergeCandidates: number;
+        /** Утверждения, полученные без полноценного LLM-извлечения. */
+        fallbackClaims: number;
     };
     error?: string;
     /** Предупреждения (например, частичные сбои при обработке чанков). */

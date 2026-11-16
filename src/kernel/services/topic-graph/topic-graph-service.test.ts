@@ -45,7 +45,7 @@ describe('TopicGraphService (MVP)', () => {
                 'This is a short note.',
         });
 
-        expect(run.status).toBe('completed');
+        expect(run.status).toBe('fallback');
         expect(run.stats.newClaims).toBeGreaterThanOrEqual(2);
         expect((await svc.sources(topic.id)).length).toBe(1);
         expect((await svc.claims(topic.id)).length).toBeGreaterThanOrEqual(2);

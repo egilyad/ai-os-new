@@ -163,7 +163,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             topicId,
             sourceIds: [],
             status: 'running',
-            stats: { extracted: 0, duplicates: 0, newClaims: 0, conflicts: 0, relations: 0, mergeCandidates: 0 },
+            stats: { extracted: 0, duplicates: 0, newClaims: 0, newEvidence: 0, conflicts: 0, relations: 0, mergeCandidates: 0, fallbackClaims: 0 },
             createdAt: Date.now(),
         };
         await this.db.topicProcessingRuns.put(run);
@@ -199,9 +199,13 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
                 let sentenceUnits: Array<{ sentence: string; start?: number }>;
                 let llmWarnings: string[] = [];
+                let llmMode: 'llm' | 'fallback' = 'fallback';
+                let failedChunks = 0;
                 if (this.deps.llm) {
-                    const { sentences, warnings } = await this.extractClaimsWithLlm(payload.content);
+                    const { sentences, warnings, mode, failedChunks: fc } = await this.extractClaimsWithLlm(payload.content);
                     llmWarnings = warnings;
+                    llmMode = mode;
+                    failedChunks = fc;
                     sentenceUnits = sentences.map((sentence) => {
                         const loc = locateFragment(payload.content, sentence);
                         return loc ? { sentence, start: loc.start } : { sentence };
@@ -232,16 +236,20 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                             unit.start !== undefined
                                 ? { start: unit.start }
                                 : locateFragment(payload.content, unit.sentence);
+                        const quote = loc
+                            ? payload.content.slice(loc.start, Math.min(loc.start + 300, payload.content.length))
+                            : unit.sentence.slice(0, 300);
+                        run.stats.newEvidence++;
                         return {
                             id: GENERIC_ID('ev'),
                             topicId,
                             claimId,
                             sourceId: source.id,
-                            quote: loc
-                                ? payload.content.slice(loc.start, Math.min(loc.start + 300, payload.content.length))
-                                : unit.sentence.slice(0, 300),
+                            quote,
                             offset: loc?.start,
+                            end: loc ? loc.start + quote.length : undefined,
                             origin: loc ? 'source' : 'model',
+                            extraction: llmMode,
                             createdAt: Date.now(),
                         };
                     };
@@ -277,11 +285,13 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     existingClaims.push(claim);
                     newClaims.push(claim);
                     evidenceEntries.push(makeEvidence(claim.id));
+                    if (llmMode === 'fallback') run.stats.fallbackClaims++;
                     run.stats.newClaims++;
                 }
                 if (llmWarnings.length > 0) {
                     run.warnings = llmWarnings;
                 }
+                run.status = failedChunks > 0 ? 'partial' : llmMode === 'fallback' ? 'fallback' : 'completed';
             await this.db.topicClaims.bulkPut(newClaims as never);
 
             // Противоречия.
@@ -321,7 +331,6 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             // Evidence: для каждого нового claim — цитата из оригинала + offset.
             await this.db.topicEvidence.bulkPut(evidenceEntries as never);
 
-            run.status = 'completed';
             run.completedAt = Date.now();
             await this.db.topicProcessingRuns.put(run);
             return run;
@@ -413,8 +422,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return out;
     }
 
-    private async extractClaimsWithLlm(content: string): Promise<{ sentences: string[]; warnings: string[] }> {
-        if (!this.deps.llm) return { sentences: splitIntoSentences(content), warnings: [] };
+    private async extractClaimsWithLlm(
+        content: string,
+    ): Promise<{ sentences: string[]; warnings: string[]; mode: 'llm' | 'fallback'; failedChunks: number }> {
+        if (!this.deps.llm) {
+            return { sentences: splitIntoSentences(content), warnings: [], mode: 'fallback', failedChunks: 0 };
+        }
         const all: string[] = [];
         const warnings: string[] = [];
         const CHUNK_SIZE = 6000;
@@ -452,8 +465,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         if (chunksFailed > 0) {
             warnings.push(`LLM не обработал ${chunksFailed} из ${chunksTotal} чанков; результат может быть неполным`);
         }
-        if (all.length === 0) return { sentences: splitIntoSentences(content), warnings };
-        return { sentences: all, warnings };
+        if (all.length === 0) {
+            warnings.push('LLM ничего не извлекла; использован fallback по предложениям');
+            return { sentences: splitIntoSentences(content), warnings, mode: 'fallback', failedChunks: chunksFailed };
+        }
+        return { sentences: all, warnings, mode: 'llm', failedChunks: chunksFailed };
     }
 
     /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */

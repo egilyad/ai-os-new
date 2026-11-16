@@ -185,7 +185,7 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('BadJson', '');
         const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
-        expect(run.status).toBe('completed');
+        expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
 
@@ -194,8 +194,30 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('EmptyLlm', '');
         const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
-        expect(run.status).toBe('completed');
+        expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
+    });
+
+    it('валидный пустой массив LLM → fallback', async () => {
+        const llm = { chat: async () => ({ content: '[]' }) };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('EmptyArray', '');
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Факт о OpenCode Desktop.' });
+        expect(run.status).toBe('fallback');
+        expect(run.warnings?.some((w) => w.includes('fallback'))).toBe(true);
+        expect(run.stats.fallbackClaims).toBeGreaterThan(0);
+    });
+
+    it('повторный импорт одного источника идемпотентен', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('Idem', '');
+        const payload = { kind: 'document' as const, ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' };
+        await svc.ingest(topic.id, payload);
+        const run2 = await svc.ingest(topic.id, payload);
+        expect(run2.status).toBe('completed');
+        expect(run2.stats.newClaims).toBe(0);
+        const evs = await getTopicGraphDB().topicEvidence.toArray();
+        expect(evs).toHaveLength(1);
     });
 
     it('LLM частичные сбои чанков фиксируются в warnings', async () => {
@@ -211,7 +233,7 @@ describe('TopicGraph quality corpus', () => {
         const topic = await svc.createTopic('Partial', '');
         const big = 'Слово узкое '.repeat(800);
         const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
-        expect(run.status).toBe('completed');
+        expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
 
