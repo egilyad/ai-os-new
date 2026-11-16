@@ -33,7 +33,8 @@ export async function ensureTopicGraphDemo(): Promise<Topic> {
         'Демо: ответы 4 моделей про OpenCode Desktop 1.19.4',
     );
     for (const doc of DEMO_DOCS) {
-        // Без LLM: fallback-извлечение по предложениям (провайдер может быть не настроен).
+        // Без LLM и без эмбеддингов: fast fallback по предложениям
+        // (провайдеры могут быть не настроены, а embeddings на 150KB медленные).
         await svc.ingest(
             topic.id,
             {
@@ -42,7 +43,7 @@ export async function ensureTopicGraphDemo(): Promise<Topic> {
                 title: doc.title,
                 content: doc.content,
             },
-            { useLlm: false },
+            { useLlm: false, useEmbedder: false },
         );
     }
     return topic;

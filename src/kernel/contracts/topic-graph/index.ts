@@ -64,7 +64,7 @@ export interface TopicGraphService {
     ingest(
         topicId: string,
         payload: IngestPayload,
-        opts?: { useLlm?: boolean },
+        opts?: { useLlm?: boolean; useEmbedder?: boolean },
     ): Promise<TopicProcessingRun>;
 
     sources(topicId: string): Promise<TopicSource[]>;
