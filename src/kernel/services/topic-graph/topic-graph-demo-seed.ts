@@ -22,7 +22,12 @@ export async function ensureTopicGraphDemo(): Promise<Topic> {
     const svc = getContainer().get<TopicGraphService>('topicGraphService');
     const existing = await svc.listTopics();
     const found = existing.find((t) => t.title === TOPIC_GRAPH_DEMO_TITLE);
-    if (found) return found;
+    if (found) {
+        const claims = await svc.claims(found.id);
+        if (claims.length > 0) return found;
+        // Тема есть, но пуста (например, от прерванного прогона) — пересоздаём.
+        await svc.deleteTopic(found.id, true);
+    }
     const topic = await svc.createTopic(
         TOPIC_GRAPH_DEMO_TITLE,
         'Демо: ответы 4 моделей про OpenCode Desktop 1.19.4',
