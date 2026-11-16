@@ -47,6 +47,21 @@ ALWAYS:
 - End with actionable recommendations.
 `;
 
+/**
+ * Облегчённый формат для обычного (standard) режима: разрешает и поощряет
+ * ссылки и таблицы, но без жёсткой структуры Research Brief.
+ */
+export const STANDARD_FORMAT_HINTS = `
+## Output hints
+- Prefer concrete facts, numbers, versions, names, and paths.
+- Use markdown tables when comparing options, versions, or facts.
+- When you mention an external claim, attach a source: a URL or a file path
+  (e.g. "docs/...", "opencode.jsonc", "https://..."). If no source is known,
+  write "unknown" — do not invent links.
+- Do NOT philosophize; answer directly and stay constructive.
+- If a problem is mentioned, propose a fix or next step.
+`;
+
 export const RESEARCH_ROLE_PROMPTS: Record<string, string> = {
     analyst: `You are ANALYST. Collect facts, versions, structure, and sources.
 Your contribution must be concrete: numbers, names, paths, versions, links.

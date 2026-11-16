@@ -17,6 +17,7 @@ import { buildDebateState, buildDebateStatePrompt } from './debate-state-builder
 import {
     RESEARCH_BRIEF_FORMAT,
     RESEARCH_ROLE_PROMPTS,
+    STANDARD_FORMAT_HINTS,
 } from './research-brief-format';
 
 // ── Re-exports for external consumers (prompt-audit-service, index.ts) ──
@@ -215,7 +216,7 @@ export function buildOpeningPrompt(
 
     const researchFormatBlock = researchRolePrompt
         ? `\n\n${RESEARCH_BRIEF_FORMAT}`
-        : '';
+        : `\n\n${STANDARD_FORMAT_HINTS}`;
 
     return `## Topic: ${sanitizeForPrompt(topic)}
 
@@ -683,7 +684,7 @@ export function buildArgumentPrompt(
 
     const researchFormatBlock = researchRolePrompt
         ? `\n\n${RESEARCH_BRIEF_FORMAT}`
-        : '';
+        : `\n\n${STANDARD_FORMAT_HINTS}`;
 
     return `## Topic: ${sanitizeForPrompt(topic)}
 ${roleContext}${constraintBlock}${socraticBlock}${treePrompt}${strategyBlock}${angleBlock}${tempBlock}${entanglementBlock}${anchorsBlock}${vulnerabilityBlock}${adversarialBlock}${beliefConflictsBlock}${minimaxBlock}${tacticalBlock}${steelmanBlock}${bopBlock}${consistencyBlock}${credibilityBlock}${crossExBlock}${deltaBlock}${objectionBlock}${triangulationBlock}${criticBlock}${criticSelfBlock}${socraticPivotBlock}${changePivotBlock}${synthesizeBlock}${concessionBlock}${counterfactualBlock}${synthesisBlock}${shadowBlock}${empathyBlock}${humilityBlock}${heatBlock}${sentinelBlock}${redundancyBlock}${driftBlock}${insightBlock}${replayBlock}${enthymemeBlock}${multiHopBlock}${dpoBlock}${uncertaintyBlock}${biasBlock}${interruptBlock}${stakeholderBlock}${calibrationBlock}${factCheckBlock}${personaMixBlock}${frameBlock}${expertBlock}${driftCalloutBlock}${rhetoricalBlock}${rhetoricBlock}${biddingBlock}${scratchpadBlock}${narrativeBlock}${levelBlock}${reversalBlock}${fogBlock}${evidenceBlock}${humorBlock}${statusBlock}${styleBlock}${adaptiveBlock}${personaBlock}${strategistBlock}${whisperBlock}${audienceBlock}${allianceBlock}${predictionBlock}${rtomBlock}${blindBlock}${fingerprintBlock}${causalBlock}${executableEvidenceBlock}${hiddenIncentivesBlock}${gotBlock}${blendingBlock}${forecasterBlock}${liveResearchBlock}${diagramBlock}${bestOfNBlock}${researchFormatBlock}
