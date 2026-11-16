@@ -57,6 +57,8 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
     actionLoading,
     onStart,
     t,
+    debateMode,
+    onModeChange,
 }) => {
     const totalParticipants = selectedAgents.length + (selectedHistoricalCount ?? 0);
     const canStart = topic.trim().length > 0 && totalParticipants >= 2 && actionLoading !== 'start';
