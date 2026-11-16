@@ -79,11 +79,16 @@ const NEGATION_MARKERS = [
 ];
 
 function hasNegation(text: string): boolean {
-    const lower = text.toLowerCase();
-    return NEGATION_MARKERS.some((m) => lower.includes(m));
+    const words = text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/);
+    return NEGATION_MARKERS.some((m) => words.includes(m));
 }
 
-const DEDUPE_THRESHOLD = 0.45;
+/** Jaccard-близость для уверенного автослияния утверждений. */
+const DEDUPE_JACCARD_THRESHOLD = 0.6;
+/** Cosine-близость эмбеддингов для уверенного автослияния. */
+const DEDUPE_EMBEDDING_THRESHOLD = 0.82;
+/** Ниже этого порога — не кандидат на объединение. */
+const MERGE_CANDIDATE_THRESHOLD = 0.45;
 const CONTRADICTION_THRESHOLD = 0.4;
 
 export class TopicGraphServiceImpl implements TopicGraphService {
@@ -187,17 +192,18 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             run.sourceIds = [source.id];
 
                 // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
-                const sentences = this.deps.llm
-                    ? await this.extractClaimsWithLlm(payload.content)
-                    : splitIntoSentences(payload.content);
+                const sentenceUnits: Array<{ sentence: string; start?: number }> = this.deps.llm
+                    ? (await this.extractClaimsWithLlm(payload.content)).map((sentence) => ({ sentence }))
+                    : splitIntoSentencesWithOffsets(payload.content);
                 const existingClaims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
                 const existingEmbeddings = existingClaims.map((c) => c.embedding).filter(Boolean) as number[][];
                 const newClaims: TopicClaim[] = [];
-                for (const sentence of sentences) {
-                    const text = normalizeClaim(sentence);
+                const evidenceEntries: TopicEvidence[] = [];
+                for (const unit of sentenceUnits) {
+                    const text = normalizeClaim(unit.sentence);
                     if (text.length < 12) continue;
 
-                    // Эмбеддинг-близость (если доступен) поверх jaccard.
+                    // Эмбедддинг-близость (если доступен) поверх jaccard.
                     let embedding: number[] | undefined;
                     if (this.deps.embedder) {
                         try {
@@ -207,20 +213,22 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                             embedding = undefined;
                         }
                     }
-                    const dup = findDuplicate(existingClaims, text, embedding, existingEmbeddings);
-                    if (dup) {
-                        const conflicting = hasNegation(dup.text) !== hasNegation(text);
+                    const found = findDuplicate(existingClaims, text, embedding, existingEmbeddings);
+                    if (found.dup) {
+                        const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
                         if (conflicting) {
                             // противоречие: не схлопываем
                         } else {
-                            if (!dup.sourceIds.includes(source.id)) {
-                                dup.sourceIds.push(source.id);
-                                dup.updatedAt = Date.now();
-                                await this.db.topicClaims.put(dup);
+                            if (!found.dup.sourceIds.includes(source.id)) {
+                                found.dup.sourceIds.push(source.id);
+                                found.dup.updatedAt = Date.now();
+                                await this.db.topicClaims.put(found.dup);
                             }
                             run.stats.duplicates++;
                             continue;
                         }
+                    } else if (found.candidate) {
+                        run.stats.mergeCandidates++;
                     }
                     const claim: TopicClaim = {
                         id: GENERIC_ID('claim'),
@@ -236,6 +244,18 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     existingClaims.push(claim);
                     if (embedding) existingEmbeddings.push(embedding);
                     newClaims.push(claim);
+                    evidenceEntries.push({
+                        id: GENERIC_ID('ev'),
+                        topicId,
+                        claimId: claim.id,
+                        sourceId: source.id,
+                        quote:
+                            unit.start !== undefined
+                                ? payload.content.slice(unit.start, Math.min(unit.start + 300, payload.content.length))
+                                : unit.sentence.slice(0, 300),
+                        offset: unit.start,
+                        createdAt: Date.now(),
+                    });
                     run.stats.newClaims++;
                 }
             await this.db.topicClaims.bulkPut(newClaims as never);
@@ -274,16 +294,8 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             }
             run.stats.relations = relations.length;
 
-            // Evidence: для каждого нового claim — цитата.
-            const evidence: TopicEvidence[] = newClaims.map((c) => ({
-                id: GENERIC_ID('ev'),
-                topicId,
-                claimId: c.id,
-                sourceId: source.id,
-                quote: c.text.slice(0, 300),
-                createdAt: Date.now(),
-            }));
-            await this.db.topicEvidence.bulkPut(evidence as never);
+            // Evidence: для каждого нового claim — цитата из оригинала + offset.
+            await this.db.topicEvidence.bulkPut(evidenceEntries as never);
 
             run.status = 'completed';
             run.completedAt = Date.now();
@@ -562,6 +574,21 @@ function splitIntoSentences(text: string): string[] {
         .filter((s) => s.length > 0);
 }
 
+function splitIntoSentencesWithOffsets(text: string): Array<{ sentence: string; start: number }> {
+    const lines = text.replace(/([.!?])\s+/g, '$1\n').split('\n');
+    const out: Array<{ sentence: string; start: number }> = [];
+    let cursor = 0;
+    for (const raw of lines) {
+        const line = raw.trim();
+        if (!line) continue;
+        const idx = text.indexOf(line, cursor);
+        if (idx === -1) continue;
+        out.push({ sentence: line, start: idx });
+        cursor = idx + line.length;
+    }
+    return out;
+}
+
 function normalizeClaim(sentence: string): string {
     return sentence
         .replace(/^\s*[-*#>\d.)]+\s*/, '')
@@ -594,30 +621,46 @@ function differsOnlyByNumbers(a: Set<string>, b: Set<string>): boolean {
     );
 }
 
+/**
+ * Ищет в существующих утверждениях либо уверенный дубликат (auto-merge),
+ * либо кандидата на объединение (похож, но не настолько, чтобы сливать).
+ */
 function findDuplicate(
     existing: TopicClaim[],
     text: string,
     embedding?: number[],
     existingEmbeddings: number[][] = [],
-): TopicClaim | undefined {
+): { dup?: TopicClaim; candidate?: TopicClaim } {
     const t = tokenize(text);
+    let bestCandidate: TopicClaim | undefined;
+    let bestSim = 0;
     for (let i = 0; i < existing.length; i++) {
         const claim = existing[i]!;
         const jSim = jaccard(t, tokenize(claim.text));
         const eSim =
             embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
-        const maxSim = Math.max(jSim, eSim);
-        if (maxSim >= DEDUPE_THRESHOLD) {
-            if (differsOnlyByNumbers(t, tokenize(claim.text))) continue;
-            return claim;
+        const differsNumbers = differsOnlyByNumbers(t, tokenize(claim.text));
+        if (
+            !differsNumbers &&
+            (jSim >= DEDUPE_JACCARD_THRESHOLD || eSim >= DEDUPE_EMBEDDING_THRESHOLD)
+        ) {
+            return { dup: claim };
+        }
+        if (!differsNumbers && jSim >= MERGE_CANDIDATE_THRESHOLD && jSim > bestSim) {
+            bestCandidate = claim;
+            bestSim = jSim;
         }
         if (i < existingEmbeddings.length) {
             const other = existingEmbeddings[i]!;
-            if (embedding && cosine(embedding, other) >= DEDUPE_THRESHOLD) {
+            if (
+                !differsNumbers &&
+                embedding &&
+                cosine(embedding, other) >= DEDUPE_EMBEDDING_THRESHOLD
+            ) {
                 const cand = existing.find((c) => c.embedding === other);
-                if (cand) return cand;
+                if (cand) return { dup: cand };
             }
         }
     }
-    return undefined;
+    return bestCandidate ? { candidate: bestCandidate } : {};
 }

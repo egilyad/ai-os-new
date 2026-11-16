@@ -58,6 +58,12 @@ describe('TopicGraph quality corpus', () => {
         // Проверяем, что уникальные факты из B сохранились.
         const mcpClaim = claims.find((c) => c.text.toLowerCase().includes('mcp'));
         expect(mcpClaim).toBeTruthy();
+
+        // Evidence ссылается на оригинальный фрагмент с offset.
+        const evs = await getTopicGraphDB().topicEvidence.toArray();
+        const versionEv = evs.find((e) => e.quote.startsWith('OpenCode Desktop version is 1.19.4.'));
+        expect(versionEv).toBeTruthy();
+        expect(versionEv!.offset).toBeGreaterThan(0);
     });
 
     it('прямые противоречия фиксируются как конфликты', async () => {

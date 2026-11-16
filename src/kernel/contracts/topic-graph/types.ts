@@ -113,6 +113,8 @@ export interface TopicProcessingRun {
         newClaims: number;
         conflicts: number;
         relations: number;
+        /** Утверждения, похожие на существующие, но не объединённые автоматически. */
+        mergeCandidates: number;
     };
     error?: string;
     createdAt: number;

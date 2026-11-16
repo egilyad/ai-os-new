@@ -145,7 +145,7 @@ export default function TopicGraphPanel() {
             });
             setMessage(
                 `Обработка: ${run.stats.newClaims} новых, ${run.stats.duplicates} дублей, ` +
-                `${run.stats.conflicts} конфликтов`,
+                `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение`,
             );
             setIngestText('');
             setIngestTitle('');
