@@ -11,6 +11,7 @@ import type {
     TopicConflict,
 } from '../../kernel/contracts/topic-graph/types';
 import type { TopicGraphService } from '../../kernel/contracts/topic-graph';
+import { ensureTopicGraphDemo } from '../../kernel/services/topic-graph/topic-graph-demo-seed';
 
 type View = 'graph' | 'knowledge' | 'sources' | 'coverage';
 
@@ -64,7 +65,15 @@ export default function TopicGraphPanel() {
     }, [svc, selectedTopic]);
 
     useEffect(() => {
-        void loadTopics();
+        void (async () => {
+            try {
+                const demo = await ensureTopicGraphDemo();
+                await loadTopics();
+                if (demo) setSelectedTopic((prev) => prev || demo.id);
+            } catch (e) {
+                setMessage(`Ошибка демо-сида: ${e instanceof Error ? e.message : String(e)}`);
+            }
+        })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
