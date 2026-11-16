@@ -28,6 +28,15 @@ export interface TopicCompleteness {
     coverage: number;
 }
 
+export interface TopicGraphDeps {
+    llm?: {
+        chat(messages: Array<{ role: string; content: string }>): Promise<{ content: string }>;
+    };
+    embedder?: {
+        embed(texts: string[]): Promise<number[][]>;
+    };
+}
+
 export interface TopicGraphService {
     createTopic(title: string, description: string): Promise<Topic>;
     listTopics(): Promise<Topic[]>;

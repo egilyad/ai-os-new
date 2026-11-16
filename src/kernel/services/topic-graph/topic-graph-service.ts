@@ -1,5 +1,6 @@
 import type {
     TopicGraphService,
+    TopicGraphDeps,
     IngestPayload,
     TopicCompleteness,
 } from '../../contracts/topic-graph';
@@ -79,7 +80,10 @@ const CONTRADICTION_THRESHOLD = 0.45;
 export class TopicGraphServiceImpl implements TopicGraphService {
     private db: TopicGraphDB;
 
-    constructor(db?: TopicGraphDB) {
+    constructor(
+        db?: TopicGraphDB,
+        private deps: TopicGraphDeps = {},
+    ) {
         this.db = db ?? createTopicGraphDB();
     }
 
@@ -173,45 +177,58 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.db.topicSources.put(source);
             run.sourceIds = [source.id];
 
-            // Извлечение утверждений (MVP: фрагменты по предложениям).
-            const sentences = splitIntoSentences(payload.content);
-            const existingClaims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
-            const newClaims: TopicClaim[] = [];
-            for (const sentence of sentences) {
-                const text = normalizeClaim(sentence);
-                if (text.length < 12) continue;
-                // Дедупликация по смысловой близости к уже известным.
-                // Если похожее утверждение имеет противоположный знак — это
-                // противоречие, а не дубль: сохраняем оба.
-                const dup = findDuplicate(existingClaims, text);
-                if (dup) {
-                    const conflicting = hasNegation(dup.text) !== hasNegation(text);
-                    if (conflicting) {
-                        // не схлопываем: оба останутся как отдельные claims
-                    } else {
-                        if (!dup.sourceIds.includes(source.id)) {
-                            dup.sourceIds.push(source.id);
-                            dup.updatedAt = Date.now();
-                            await this.db.topicClaims.put(dup);
+                // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
+                const sentences = this.deps.llm
+                    ? await this.extractClaimsWithLlm(payload.content)
+                    : splitIntoSentences(payload.content);
+                const existingClaims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
+                const existingEmbeddings = existingClaims.map((c) => c.embedding).filter(Boolean) as number[][];
+                const newClaims: TopicClaim[] = [];
+                for (const sentence of sentences) {
+                    const text = normalizeClaim(sentence);
+                    if (text.length < 12) continue;
+
+                    // Эмбеддинг-близость (если доступен) поверх jaccard.
+                    let embedding: number[] | undefined;
+                    if (this.deps.embedder) {
+                        try {
+                            const vecs = await this.deps.embedder.embed([text]);
+                            embedding = vecs[0];
+                        } catch {
+                            embedding = undefined;
                         }
-                        run.stats.duplicates++;
-                        continue;
                     }
+                    const dup = findDuplicate(existingClaims, text, embedding, existingEmbeddings);
+                    if (dup) {
+                        const conflicting = hasNegation(dup.text) !== hasNegation(text);
+                        if (conflicting) {
+                            // противоречие: не схлопываем
+                        } else {
+                            if (!dup.sourceIds.includes(source.id)) {
+                                dup.sourceIds.push(source.id);
+                                dup.updatedAt = Date.now();
+                                await this.db.topicClaims.put(dup);
+                            }
+                            run.stats.duplicates++;
+                            continue;
+                        }
+                    }
+                    const claim: TopicClaim = {
+                        id: GENERIC_ID('claim'),
+                        topicId,
+                        text,
+                        sourceIds: [source.id],
+                        confidence: embedding ? 0.7 : 0.6,
+                        status: 'extracted',
+                        embedding,
+                        createdAt: Date.now(),
+                        updatedAt: Date.now(),
+                    };
+                    existingClaims.push(claim);
+                    if (embedding) existingEmbeddings.push(embedding);
+                    newClaims.push(claim);
+                    run.stats.newClaims++;
                 }
-                const claim: TopicClaim = {
-                    id: GENERIC_ID('claim'),
-                    topicId,
-                    text,
-                    sourceIds: [source.id],
-                    confidence: 0.6,
-                    status: 'extracted',
-                    createdAt: Date.now(),
-                    updatedAt: Date.now(),
-                };
-                existingClaims.push(claim);
-                newClaims.push(claim);
-                run.stats.newClaims++;
-            }
             await this.db.topicClaims.bulkPut(newClaims as never);
 
             // Противоречия.
@@ -348,6 +365,32 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return out;
     }
 
+    private async extractClaimsWithLlm(content: string): Promise<string[]> {
+        if (!this.deps.llm) return splitIntoSentences(content);
+        try {
+            const res = await this.deps.llm.chat([
+                {
+                    role: 'system',
+                    content:
+                        'Extract standalone factual claims from the text. ' +
+                        'Return ONLY a JSON array of strings: ["claim1","claim2",...]. ' +
+                        'Each claim must be a single concrete fact. No prose.',
+                },
+                { role: 'user', content: content.slice(0, 6000) },
+            ]);
+            const match = res.content.match(/\[[\s\S]*\]/);
+            if (match) {
+                const parsed = JSON.parse(match[0]) as unknown;
+                if (Array.isArray(parsed)) {
+                    return parsed.map((s) => String(s)).filter((s) => s.length > 0);
+                }
+            }
+        } catch (e) {
+            LOGGER.warn('TopicGraph', 'llm extraction failed, fallback to sentences', { error: String(e) });
+        }
+        return splitIntoSentences(content);
+    }
+
     // ── Accessors ──
 
     async sources(topicId: string): Promise<TopicSource[]> {
@@ -437,6 +480,20 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     }
 }
 
+function cosine(a: number[], b: number[]): number {
+    if (a.length !== b.length || a.length === 0) return 0;
+    let dot = 0;
+    let na = 0;
+    let nb = 0;
+    for (let i = 0; i < a.length; i++) {
+        dot += a[i]! * b[i]!;
+        na += a[i]! * a[i]!;
+        nb += b[i]! * b[i]!;
+    }
+    if (na === 0 || nb === 0) return 0;
+    return dot / (Math.sqrt(na) * Math.sqrt(nb));
+}
+
 function splitIntoSentences(text: string): string[] {
     return text
         .replace(/([.!?])\s+/g, '$1\n')
@@ -452,11 +509,28 @@ function normalizeClaim(sentence: string): string {
         .trim();
 }
 
-function findDuplicate(existing: TopicClaim[], text: string): TopicClaim | undefined {
+function findDuplicate(
+    existing: TopicClaim[],
+    text: string,
+    embedding?: number[],
+    existingEmbeddings: number[][] = [],
+): TopicClaim | undefined {
     const t = tokenize(text);
-    for (const claim of existing) {
-        if (jaccard(t, tokenize(claim.text)) >= DEDUPE_THRESHOLD) {
+    for (let i = 0; i < existing.length; i++) {
+        const claim = existing[i]!;
+        const jSim = jaccard(t, tokenize(claim.text));
+        const eSim =
+            embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
+        const maxSim = Math.max(jSim, eSim);
+        if (maxSim >= DEDUPE_THRESHOLD) {
             return claim;
+        }
+        if (i < existingEmbeddings.length) {
+            const other = existingEmbeddings[i]!;
+            if (embedding && cosine(embedding, other) >= DEDUPE_THRESHOLD) {
+                const cand = existing.find((c) => c.embedding === other);
+                if (cand) return cand;
+            }
         }
     }
     return undefined;
