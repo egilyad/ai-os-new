@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (534 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (536 документов)
 
 ## Вики по разделам
 
@@ -151,6 +151,7 @@
 - [Карта функциональной ценности — Feature Value Map](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/Карта-функциональной-ценности-SuperAgents-OS.md)
 - [Карта функциональных пробелов — Capability Gap Map](https://github.com/egilyad/ai-os-new/blob/main/docs/arhive-research/новое/Карта-функциональных-пробелов-SuperAgents-OS.md)
 - [🧠 Cognitive Runtime Specification (CRS)](https://github.com/egilyad/ai-os-new/blob/main/docs/COGNITIVE_RUNTIME_SPEC.md)
+- [Topic Graph — концепт-дизайн](https://github.com/egilyad/ai-os-new/blob/main/docs/design/topic-graph-design.md)
 - [SuperAgents OS — Developer Quickstart](https://github.com/egilyad/ai-os-new/blob/main/docs/DEV_QUICKSTART.md)
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
 - [Coding agents: уровни автономности (L1–L5)](https://github.com/egilyad/ai-os-new/blob/main/docs/guides/coding-agents-levels.md)
