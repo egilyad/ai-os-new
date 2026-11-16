@@ -398,4 +398,85 @@ describe('TopicGraph quality corpus', () => {
         expect(claims.some((c) => c.text.includes('1.19.4'))).toBe(true);
         expect(claims.some((c) => c.text.includes('MCP'))).toBe(true);
     });
+
+    it('синонимы в одной партии сливаются (внутрисинхронизационный мерж)', async () => {
+        const pseudoEmbed = (s: string): number[] => {
+            let h = 2166136261 >>> 0;
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            const out: number[] = [];
+            for (let d = 0; d < 16; d++) {
+                const x = Math.sin(h + d * 997) * 43758.5453;
+                out.push(x - Math.floor(x) - 0.5);
+            }
+            return out;
+        };
+        const embedder = {
+            embed: async (texts: string[]) =>
+                texts.map((t) => {
+                    const s = t.trim().toLowerCase();
+                    if (!s.includes(' ') && s.length <= 20) {
+                        return [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    }
+                    return pseudoEmbed(s);
+                }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { embedder } as never);
+        const topic = await svc.createTopic('OneBatch', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'Workstation is useful here. Workstation matters. Desktop is useful here. Desktop matters.',
+        });
+
+        const concepts = await svc.concepts(topic.id);
+        const workstation = concepts.find((c) => c.name.toLowerCase() === 'workstation');
+        const desktop = concepts.find((c) => c.name.toLowerCase() === 'desktop');
+        expect(workstation || desktop).toBeTruthy();
+        if (workstation) expect(workstation.aliases).toContain('desktop');
+        if (desktop) expect(desktop.aliases).toContain('workstation');
+    });
+
+    it('LLM-relations из structured extraction создают рёбра между концептами', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    { text: 'OpenCode Desktop works well.', entities: ['OpenCode'], relations: [] },
+                    { text: 'OpenCode has features.', entities: ['OpenCode'], relations: [] },
+                    { text: 'Windows 10 and Windows 11 differ.', entities: ['Windows'], relations: [] },
+                    { text: 'Relation extra.', entities: [], relations: [{ a: 'OpenCode', b: 'Windows', kind: 'related' }] },
+                ]),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('LlmRels', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 's', title: 'S', content: 'OpenCode Desktop works well. OpenCode has features. Windows 10 and Windows 11 differ. Relation extra.' });
+
+        const concepts = await svc.concepts(topic.id);
+        const opencode = concepts.find((c) => c.name === 'opencode');
+        const windows = concepts.find((c) => c.name === 'window');
+        expect(opencode).toBeTruthy();
+        expect(windows).toBeTruthy();
+
+        const rels = await svc.relations(topic.id);
+        expect(rels.some((r) => r.relation === 'related_to' && r.fromId === opencode!.id && r.toId === windows!.id)).toBe(true);
+    });
+
+    it('fallback при ошибке embedder: ingest завершается, концепты без vectors', async () => {
+        const embedder = {
+            embed: async () => {
+                throw new Error('embedder down');
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { embedder } as never);
+        const topic = await svc.createTopic('EmbedFail', '');
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop is a tool. OpenCode Desktop runs locally.' });
+        expect(run.status).toBe('fallback');
+        const concepts = await svc.concepts(topic.id);
+        expect(concepts.some((c) => c.name === 'opencode')).toBe(true);
+        expect(concepts.every((c) => c.embedding === undefined)).toBe(true);
+    });
 });

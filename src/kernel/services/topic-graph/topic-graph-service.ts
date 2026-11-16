@@ -44,14 +44,17 @@ function stem(w: string): string {
 }
 
 function tokenize(text: string): Set<string> {
-    return new Set(
-        text
-            .toLowerCase()
-            .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-            .split(/\s+/)
-            .map(stem)
-            .filter((w) => w.length > 2 || /^\d+(\.\d+)*$/.test(w)),
-    );
+    return new Set(tokenList(text));
+}
+
+/** Токены с повторами (для подсчёта частот). */
+function tokenList(text: string): string[] {
+    return text
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .split(/\s+/)
+        .map(stem)
+        .filter((w) => w.length > 2 || /^\d+(\.\d+)*$/.test(w));
 }
 
 function jaccard(a: Set<string>, b: Set<string>): number {
@@ -90,6 +93,12 @@ const DEDUPE_EMBEDDING_THRESHOLD = 0.82;
 /** Ниже этого порога — не кандидат на объединение. */
 const MERGE_CANDIDATE_THRESHOLD = 0.45;
 const CONTRADICTION_THRESHOLD = 0.4;
+
+interface LlmRelationDraft {
+    source: string;
+    target: string;
+    kind: 'related' | 'part_of';
+}
 
 export class TopicGraphServiceImpl implements TopicGraphService {
     private db: TopicGraphDB;
@@ -201,8 +210,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 let llmWarnings: string[] = [];
                 let llmMode: 'llm' | 'fallback' = 'fallback';
                 let failedChunks = 0;
+                let llmRelations: LlmRelationDraft[] = [];
                 if (this.deps.llm) {
-                    const { sentences, warnings, mode, failedChunks: fc } = await this.extractClaimsWithLlm(payload.content);
+                    const { sentences, warnings, mode, failedChunks: fc, relations } = await this.extractClaimsWithLlm(payload.content);
+                    llmRelations = relations;
                     llmWarnings = warnings;
                     llmMode = mode;
                     failedChunks = fc;
@@ -303,6 +314,8 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
             // Концепты: глобальная синхронизация по всем утверждениям темы.
             await this.syncConcepts(topicId, existingClaims);
+            // LLM-отношения (structured extraction) → рёбра между концептами.
+            await this.applyLlmRelations(topicId, llmRelations);
 
             // Иерархия концептов (part_of / related_to) по покрытию.
             await this.rebuildConceptRelations(topicId);
@@ -361,7 +374,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     private async syncConcepts(topicId: string, allClaims: TopicClaim[]): Promise<void> {
         const freq = new Map<string, number>();
         for (const c of allClaims) {
-            for (const w of tokenize(c.text)) {
+            for (const w of tokenList(c.text)) {
                 if (STOPWORDS.has(w)) continue;
                 freq.set(w, (freq.get(w) ?? 0) + 1);
             }
@@ -371,7 +384,9 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             .sort((a, b) => b[1] - a[1])
             .slice(0, 15)
             .map(([w]) => w);
+
         const existing = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        const candidates = existing.slice();
         const byName = new Map(existing.map((c) => [c.name.normalize('NFKC'), c]));
         const activeNames = new Set<string>();
         for (const rawName of names) {
@@ -388,8 +403,8 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     try {
                         const vecs = await this.deps.embedder.embed([name]);
                         embedding = vecs[0];
-                        for (const c of existing) {
-                            if (!c.embedding) continue;
+                        for (const c of candidates) {
+                            if (!c.embedding || !embedding) continue;
                             if (cosine(embedding, c.embedding) >= ENTITY_MERGE_THRESHOLD) {
                                 mergedInto = c;
                                 break;
@@ -406,7 +421,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                         claimIds: [...new Set([...mergedInto.claimIds, ...claimIds])],
                     });
                 } else {
-                    await this.db.topicConcepts.put({
+                    const created: TopicConcept = {
                         id: GENERIC_ID('concept'),
                         topicId,
                         name,
@@ -414,7 +429,9 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                         claimIds,
                         embedding,
                         createdAt: Date.now(),
-                    });
+                    };
+                    await this.db.topicConcepts.put(created);
+                    candidates.push(created);
                 }
             }
         }
@@ -494,6 +511,37 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
     }
 
+    /** Резолвинг LLM-отношений в рёбра между концептами (по имени/алиасам). */
+    private async applyLlmRelations(topicId: string, drafts: LlmRelationDraft[]): Promise<void> {
+        if (drafts.length === 0) return;
+        const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        const normKey = (s: string): string => [...tokenize(s)].join(' ');
+        const byName = new Map<string, TopicConcept>();
+        for (const c of concepts) {
+            byName.set(normKey(c.name), c);
+            for (const a of c.aliases) {
+                byName.set(normKey(a), c);
+            }
+        }
+        const relations: TopicRelation[] = [];
+        for (const d of drafts) {
+            const a = byName.get(normKey(d.source));
+            const b = byName.get(normKey(d.target));
+            if (!a || !b || a.id === b.id) continue;
+            relations.push({
+                id: GENERIC_ID('rel'),
+                topicId,
+                fromId: a.id,
+                toId: b.id,
+                relation: d.kind === 'related' ? 'related_to' : d.kind,
+                weight: 0.7,
+                manual: true,
+                createdAt: Date.now(),
+            });
+        }
+        await this.putUniqueRelations(topicId, relations);
+    }
+
     private async rebuildConceptRelations(topicId: string): Promise<void> {
         const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         if (concepts.length < 2) return;
@@ -512,11 +560,24 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
     private async extractClaimsWithLlm(
         content: string,
-    ): Promise<{ sentences: string[]; warnings: string[]; mode: 'llm' | 'fallback'; failedChunks: number }> {
+    ): Promise<{
+        sentences: string[];
+        warnings: string[];
+        mode: 'llm' | 'fallback';
+        failedChunks: number;
+        relations: LlmRelationDraft[];
+    }> {
         if (!this.deps.llm) {
-            return { sentences: splitIntoSentences(content), warnings: [], mode: 'fallback', failedChunks: 0 };
+            return {
+                sentences: splitIntoSentences(content),
+                warnings: [],
+                mode: 'fallback',
+                failedChunks: 0,
+                relations: [],
+            };
         }
         const all: string[] = [];
+        const relations: LlmRelationDraft[] = [];
         const warnings: string[] = [];
         const CHUNK_SIZE = 6000;
         const OVERLAP = 400;
@@ -543,14 +604,28 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 const strings = parsed.map((x) => {
                     if (typeof x === 'string') return x;
                     if (x && typeof x === 'object' && typeof (x as { text?: unknown }).text === 'string') {
-                        return (x as { text: string }).text;
+                        const obj = x as { text: string; relations?: unknown };
+                        if (Array.isArray(obj.relations)) {
+                            for (const r of obj.relations) {
+                                if (!r || typeof r !== 'object') continue;
+                                const rr = r as { a?: unknown; b?: unknown; kind?: unknown };
+                                if (typeof rr.a === 'string' && typeof rr.b === 'string') {
+                                    relations.push({
+                                        source: rr.a,
+                                        target: rr.b,
+                                        kind: rr.kind === 'part_of' ? 'part_of' : 'related',
+                                    });
+                                }
+                            }
+                        }
+                        return obj.text;
                     }
                     return null;
                 });
                 if (strings.some((s) => s === null)) {
                     throw new Error('ответ содержит нестроковые элементы');
                 }
-                all.push(...strings.filter((s): s is string => s.length > 0));
+                all.push(...strings.filter((s): s is string => typeof s === 'string' && s.length > 0));
             } catch (e) {
                 chunksFailed++;
                 warnings.push(`Чанк #${chunksTotal} (offset ${start}) не обработан: ${e instanceof Error ? e.message : String(e)}`);
@@ -562,9 +637,15 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
         if (all.length === 0) {
             warnings.push('LLM ничего не извлекла; использован fallback по предложениям');
-            return { sentences: splitIntoSentences(content), warnings, mode: 'fallback', failedChunks: chunksFailed };
+            return {
+                sentences: splitIntoSentences(content),
+                warnings,
+                mode: 'fallback',
+                failedChunks: chunksFailed,
+                relations,
+            };
         }
-        return { sentences: all, warnings, mode: 'llm', failedChunks: chunksFailed };
+        return { sentences: all, warnings, mode: 'llm', failedChunks: chunksFailed, relations };
     }
 
     /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */
