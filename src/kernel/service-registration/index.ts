@@ -83,6 +83,7 @@ import { registerPhase82 } from './phase82-authorization-metrics';
 import { registerPhase83 } from './phase83-attachments';
 import { registerPhase84 } from './phase84-images';
 import { registerPhase85 } from './phase85-literature';
+import { registerPhase86 } from './phase86-topic-graph';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -178,6 +179,7 @@ export function registerServices(
     registerPhase83(helpers, ctx);
     registerPhase84(helpers, ctx);
     registerPhase85(helpers, ctx);
+    registerPhase86(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
