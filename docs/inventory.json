@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 534,
+    "documents": 536,
     "byCategory": {
-      "repo": 11,
-      "top": 123,
+      "repo": 12,
+      "top": 124,
       "audits": 25,
       "wiki": 375
     },
     "byLanguage": {
-      "en": 39,
+      "en": 40,
       "mixed": 142,
-      "ru": 353
+      "ru": 354
     }
   },
   "duplicates": {
@@ -1057,6 +1057,14 @@
       "title": "🧠 Cognitive Runtime Specification (CRS)",
       "bytes": 4398,
       "hash": "d0f001ac46fb241b00e14bc36cafb40e3799ef7f"
+    },
+    {
+      "path": "docs/design/topic-graph-design.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Topic Graph — концепт-дизайн",
+      "bytes": 6602,
+      "hash": "6fa9dbca7366a39444890e9aff2e585cd5a4d0ba"
     },
     {
       "path": "docs/DEV_QUICKSTART.md",
@@ -2119,8 +2127,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8550,
-      "hash": "56ba2094baac6db384f3e96dca29c90e2d0094ad"
+      "bytes": 8586,
+      "hash": "ac0d07cf754b6345c11f67b8d257ced01f605359"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2192,7 +2200,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "8c322bf4882c5dceb1f11d69ac845d54dda60ccd"
+      "hash": "5f2dc7c9638c7dd416b82209428a1ca5a23f3f1d"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2312,7 +2320,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "e7585af4c14f8ee9bc146401138cdda394481d45"
+      "hash": "e19ad9b4c962bbc231af05ba4228d17630d445b0"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -3439,8 +3447,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 54772,
-      "hash": "1af7d73b2fc8cac12211ecb3e6bff143ad609631"
+      "bytes": 54891,
+      "hash": "2af5aa126bbb4e7d141f775d70259b72390c903b"
     },
     {
       "path": "docs/wiki/panels-guide.md",
@@ -3536,7 +3544,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10060,
-      "hash": "680c0f2095ff0b3d10f826436afb5681249e59d9"
+      "hash": "c7f2ec41a40d5b685c93a9d390141620ef37c220"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",
@@ -4281,6 +4289,14 @@
       "title": "Зона 9: настройки",
       "bytes": 2090,
       "hash": "fb825d4dc14adabdf449e84d9d263f62d3878ecd"
+    },
+    {
+      "path": "OPENCODE_PROFILE.md",
+      "category": "repo",
+      "language": "en",
+      "title": "OpenCode Runtime Profile",
+      "bytes": 2074,
+      "hash": "47183a06dae5a23b2e1ccda43024d5ed17aa0358"
     },
     {
       "path": "README_EN.md",

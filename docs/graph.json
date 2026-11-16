@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1659,
+    "nodes": 1660,
     "edges": 2995,
     "byType": {
       "audit": 25,
       "code": 740,
       "test": 247,
-      "panel": 271,
+      "panel": 272,
       "article": 376
     },
     "byKind": {
@@ -6923,6 +6923,13 @@
       "label": "tools",
       "section": "system",
       "route": "/tools"
+    },
+    {
+      "id": "panel:topic-graph",
+      "type": "panel",
+      "label": "topic-graph",
+      "section": "dashboard",
+      "route": "/topic-graph"
     },
     {
       "id": "panel:topics",

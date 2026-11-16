@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **271** · с компонентом: **212** · со статьёй: **267** · всего разделов: **20**.
+Панелей: **272** · с компонентом: **213** · со статьёй: **267** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@
 | Панель | Помощник `assistant` | `/assistant` | `src/components/Assistant/AssistantPanel` | [Панель: Помощник проекта](./panel-assistant.md) |
 | Панель | провайдеры `keys` | `/keys` | `src/components/ProviderManager/ProviderManager` | [Панель: Провайдеры и ключи](./panel-providers.md) |
 | Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
+| Панель | Topic Graph `topic-graph` | `/topic-graph` | `src/components/TopicGraphPanel/TopicGraphPanel` | — |
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
 | Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | [Панель: Исключения (вето)](./panel-exceptions.md) |

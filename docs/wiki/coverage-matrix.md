@@ -33,10 +33,10 @@
 | source-checked (есть источники) | 333 |
 | test-backed (есть co-located тесты) | 139 |
 | manual-verified (reviewed) | 3 |
-| Панелей (обычных) | 187 |
-| Панелей с компонентом | 186 |
+| Панелей (обычных) | 188 |
+| Панелей с компонентом | 187 |
 | Панелей с тестами у компонента | 73 |
-| Панелей без статьи | 4 |
+| Панелей без статьи | 5 |
 | Авто-панелей техник | 84 (покрыты [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md)) |
 
 ## По разделам
@@ -77,15 +77,16 @@
 | Внешние библиотеки | — | [Внешние библиотеки](./dev-libraries.md) | `scripts/gen-wiki-libraries.mjs` |
 | Архитектурные решения | — | [Реестр архитектурных решений (ADR)](./dev-adr.md) | `docs/001-event-driven-architecture.md` |
 | Аудиты | 25 | [История разработки](./dev-history.md) | `docs/audits/` |
-| Панели | 187 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
+| Панели | 188 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
 
 ## Что не подтверждено тестами
 
-Компоненты панелей без co-located тестов: **113** из 186.
+Компоненты панелей без co-located тестов: **114** из 187.
 Статьи, помеченные verified, но без co-located тестов: **104**.
 
 Примеры панелей без тестов у компонента:
 
+- `topic-graph` → `src/components/TopicGraphPanel/TopicGraphPanel`
 - `project-os` → `src/components/DebateResearch/ProjectOsExplorer`
 - `exceptions` → `src/components/ExceptionsPanel/ExceptionsPanel`
 - `nav-graph` → `src/components/NavGraphPanel/NavGraphPanel`
@@ -105,10 +106,10 @@
 - `debate-tournament` → `src/components/TournamentPanel`
 - `audience` → `src/components/AudiencePanel`
 - `argument-graph` → `src/components/ArgumentGraphPanel/ArgumentGraphPanel`
-- `debate-analysis` → `src/components/DebateAnalysisPanel`
 
 Панели без статьи:
 
+- `topic-graph` (dashboard)
 - `graph-studio` (dashboard)
 - `universal-graph` (dashboard)
 - `assistant-admin` (agents)
