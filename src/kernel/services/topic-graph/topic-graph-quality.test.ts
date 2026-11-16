@@ -112,6 +112,55 @@ describe('TopicGraph quality corpus', () => {
         const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
         expect(calls.length).toBeGreaterThan(1);
         expect(run.status).toBe('completed');
+        expect(run.stats.extracted).toBeGreaterThan(0);
+        expect(run.stats.mergeCandidates).toBeGreaterThanOrEqual(0);
+    });
+
+    it('LLM evidence: цитата из оригинала, если найдена; иначе пометка model', async () => {
+        const sourceContent = 'OpenCode Desktop version is 1.19.4. It supports MCP servers.';
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    'OpenCode Desktop version is 1.19.4',
+                    'Компьютеры летают',
+                ]),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Provenance', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'src',
+            title: 'Src',
+            content: sourceContent,
+        });
+
+        const evs = await getTopicGraphDB().topicEvidence.toArray();
+        const fromSource = evs.find((e) => e.quote.includes('OpenCode Desktop version is 1.19.4'));
+        const fromModel = evs.find((e) => e.quote.includes('Компьютеры летают'));
+        expect(fromSource).toBeTruthy();
+        expect(fromSource!.origin).toBe('source');
+        expect(fromSource!.offset).toBe(0);
+        expect(fromModel).toBeTruthy();
+        expect(fromModel!.origin).toBe('model');
+        expect(fromModel!.offset).toBeUndefined();
+    });
+
+    it('LLM частичные сбои чанков фиксируются в warnings', async () => {
+        let calls = 0;
+        const llm = {
+            chat: async () => {
+                calls++;
+                if (calls > 1) throw new Error('LLM down');
+                return { content: JSON.stringify(['Факт из первого чанка']) };
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Partial', '');
+        const big = 'Слово узкое '.repeat(800);
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
+        expect(run.status).toBe('completed');
+        expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
 
     it('дополнение новыми сведениями расширяет граф', async () => {

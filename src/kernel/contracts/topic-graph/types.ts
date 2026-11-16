@@ -87,6 +87,8 @@ export interface TopicEvidence {
     quote: string;
     /** Смещение в исходнике (опционально). */
     offset?: number;
+    /** 'source' — дословная цитата из оригинала; 'model' — сгенерировано моделью. */
+    origin?: 'source' | 'model';
     createdAt: number;
 }
 
@@ -118,6 +120,8 @@ export interface TopicProcessingRun {
         mergeCandidates: number;
     };
     error?: string;
+    /** Предупреждения (например, частичные сбои при обработке чанков). */
+    warnings?: string[];
     createdAt: number;
     completedAt?: number;
 }

@@ -163,7 +163,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             topicId,
             sourceIds: [],
             status: 'running',
-            stats: { extracted: 0, duplicates: 0, newClaims: 0, conflicts: 0, relations: 0 },
+            stats: { extracted: 0, duplicates: 0, newClaims: 0, conflicts: 0, relations: 0, mergeCandidates: 0 },
             createdAt: Date.now(),
         };
         await this.db.topicProcessingRuns.put(run);
@@ -197,16 +197,25 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             run.sourceIds = [source.id];
 
                 // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
-                const sentenceUnits: Array<{ sentence: string; start?: number }> = this.deps.llm
-                    ? (await this.extractClaimsWithLlm(payload.content)).map((sentence) => ({ sentence }))
-                    : splitIntoSentencesWithOffsets(payload.content);
+                let sentenceUnits: Array<{ sentence: string; start?: number }>;
+                let llmWarnings: string[] = [];
+                if (this.deps.llm) {
+                    const { sentences, warnings } = await this.extractClaimsWithLlm(payload.content);
+                    llmWarnings = warnings;
+                    sentenceUnits = sentences.map((sentence) => {
+                        const loc = locateFragment(payload.content, sentence);
+                        return loc ? { sentence, start: loc.start } : { sentence };
+                    });
+                } else {
+                    sentenceUnits = splitIntoSentencesWithOffsets(payload.content);
+                }
                 const existingClaims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
-                const existingEmbeddings = existingClaims.map((c) => c.embedding).filter(Boolean) as number[][];
                 const newClaims: TopicClaim[] = [];
                 const evidenceEntries: TopicEvidence[] = [];
                 for (const unit of sentenceUnits) {
                     const text = normalizeClaim(unit.sentence);
                     if (text.length < 12) continue;
+                    run.stats.extracted++;
 
                     // Эмбедддинг-близость (если доступен) поверх jaccard.
                     let embedding: number[] | undefined;
@@ -218,7 +227,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                             embedding = undefined;
                         }
                     }
-                    const found = findDuplicate(existingClaims, text, embedding, existingEmbeddings);
+                    const found = findDuplicate(existingClaims, text, embedding);
                     if (found.dup) {
                         const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
                         if (conflicting) {
@@ -247,7 +256,6 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                         updatedAt: Date.now(),
                     };
                     existingClaims.push(claim);
-                    if (embedding) existingEmbeddings.push(embedding);
                     newClaims.push(claim);
                     evidenceEntries.push({
                         id: GENERIC_ID('ev'),
@@ -259,9 +267,13 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                                 ? payload.content.slice(unit.start, Math.min(unit.start + 300, payload.content.length))
                                 : unit.sentence.slice(0, 300),
                         offset: unit.start,
+                        origin: unit.start !== undefined ? 'source' : 'model',
                         createdAt: Date.now(),
                     });
                     run.stats.newClaims++;
+                }
+                if (llmWarnings.length > 0) {
+                    run.warnings = llmWarnings;
                 }
             await this.db.topicClaims.bulkPut(newClaims as never);
 
@@ -394,12 +406,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return out;
     }
 
-    private async extractClaimsWithLlm(content: string): Promise<string[]> {
-        if (!this.deps.llm) return splitIntoSentences(content);
+    private async extractClaimsWithLlm(content: string): Promise<{ sentences: string[]; warnings: string[] }> {
+        if (!this.deps.llm) return { sentences: splitIntoSentences(content), warnings: [] };
         const all: string[] = [];
+        const warnings: string[] = [];
         const CHUNK_SIZE = 6000;
         const OVERLAP = 400;
+        let chunksTotal = 0;
+        let chunksFailed = 0;
         for (let start = 0; start < content.length; start += CHUNK_SIZE - OVERLAP) {
+            chunksTotal++;
             const chunk = content.slice(start, start + CHUNK_SIZE);
             try {
                 const res = await this.deps.llm.chat([
@@ -420,11 +436,15 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     }
                 }
             } catch (e) {
+                chunksFailed++;
                 LOGGER.warn('TopicGraph', 'llm extraction failed on chunk', { error: String(e) });
             }
         }
-        if (all.length === 0) return splitIntoSentences(content);
-        return all;
+        if (chunksFailed > 0) {
+            warnings.push(`LLM не обработал ${chunksFailed} из ${chunksTotal} чанков; результат может быть неполным`);
+        }
+        if (all.length === 0) return { sentences: splitIntoSentences(content), warnings };
+        return { sentences: all, warnings };
     }
 
     /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */
@@ -504,6 +524,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             conflicts: conflicts.length,
             sources: sources.length,
             coverage,
+            collectionProgress: coverage,
             criteria: [
                 { name: 'concepts', score: conceptScore },
                 { name: 'sources', score: sourceScore },
@@ -545,7 +566,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         lines.push(`- Concepts: ${concepts.length}`);
         lines.push(`- Relations: ${relations.length}`);
         lines.push(`- Conflicts: ${conflicts.length}`);
-        lines.push(`- Coverage: ${Math.round(comp.coverage * 100)}%`);
+        lines.push(`- Collection progress (накопление материала): ${Math.round(comp.collectionProgress * 100)}%`);
         lines.push('');
         lines.push('## Concepts');
         lines.push('');
@@ -612,6 +633,17 @@ function splitIntoSentencesWithOffsets(text: string): Array<{ sentence: string; 
     return out;
 }
 
+/** Пытается найти утверждение в исходном тексте (дословно или после нормализации пробелов). */
+function locateFragment(content: string, claim: string): { start: number } | undefined {
+    const direct = content.indexOf(claim.trim());
+    if (direct !== -1) return { start: direct };
+    const normContent = content.replace(/\s+/g, ' ');
+    const normClaim = claim.replace(/\s+/g, ' ').trim();
+    const idx = normContent.indexOf(normClaim);
+    if (idx === -1) return undefined;
+    return { start: idx };
+}
+
 function normalizeClaim(sentence: string): string {
     return sentence
         .replace(/^\s*[-*#>\d.)]+\s*/, '')
@@ -652,13 +684,11 @@ function findDuplicate(
     existing: TopicClaim[],
     text: string,
     embedding?: number[],
-    existingEmbeddings: number[][] = [],
 ): { dup?: TopicClaim; candidate?: TopicClaim } {
     const t = tokenize(text);
     let bestCandidate: TopicClaim | undefined;
     let bestSim = 0;
-    for (let i = 0; i < existing.length; i++) {
-        const claim = existing[i]!;
+    for (const claim of existing) {
         const jSim = jaccard(t, tokenize(claim.text));
         const eSim =
             embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
@@ -672,17 +702,6 @@ function findDuplicate(
         if (!differsNumbers && jSim >= MERGE_CANDIDATE_THRESHOLD && jSim > bestSim) {
             bestCandidate = claim;
             bestSim = jSim;
-        }
-        if (i < existingEmbeddings.length) {
-            const other = existingEmbeddings[i]!;
-            if (
-                !differsNumbers &&
-                embedding &&
-                cosine(embedding, other) >= DEDUPE_EMBEDDING_THRESHOLD
-            ) {
-                const cand = existing.find((c) => c.embedding === other);
-                if (cand) return { dup: cand };
-            }
         }
     }
     return bestCandidate ? { candidate: bestCandidate } : {};

@@ -141,9 +141,10 @@ export default function TopicGraphPanel() {
                 kind: 'document',
                 ...payload,
             });
+            const warnPart = run.warnings?.length ? `; предупреждений: ${run.warnings.length}` : '';
             setMessage(
                 `Обработка: ${run.stats.newClaims} новых, ${run.stats.duplicates} дублей, ` +
-                `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение`,
+                `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение${warnPart}`,
             );
             const [c, cp, r, cf, s, cov] = await Promise.all([
                 svc().claims(selectedTopic),

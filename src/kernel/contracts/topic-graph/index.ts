@@ -30,8 +30,13 @@ export interface TopicCompleteness {
     uniqueConcepts: number;
     conflicts: number;
     sources: number;
-    /** Оценка полноты 0..1 (взвешенная по критериям). */
+    /**
+     * Предварительная оценка накопления материала 0..1 (НЕ полнота раскрытия
+     * темы: для настоящей coverage нужны заданные аспекты/подтемы).
+     */
     coverage: number;
+    /** Алиас с честным именем: накопление материала. */
+    collectionProgress: number;
     /** Разбиение оценки по критериям. */
     criteria: TopicCompletenessCriteria[];
 }
