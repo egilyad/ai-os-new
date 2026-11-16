@@ -11,6 +11,8 @@ interface DebateSetupWizardProps {
     onMaxRoundsChange: (value: number) => void;
     debateTemperature?: number;
     onTemperatureChange?: (value: number) => void;
+    debateMode?: 'standard' | 'research-brief';
+    onModeChange?: (m: 'standard' | 'research-brief') => void;
     agentArchetypes?: Record<string, string>;
     onArchetypeChange?: (id: string) => void;
     selectedAgents: string[];
@@ -125,6 +127,35 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
                                 </button>
                             )}
                         </div>
+
+                        {/* 3.5 Mode */}
+                        {onModeChange && (
+                            <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--slate-300)' }}>
+                                    Mode
+                                </span>
+                                <select
+                                    value={debateMode ?? 'standard'}
+                                    onChange={(e) =>
+                                        onModeChange(e.target.value as 'standard' | 'research-brief')
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px 12px',
+                                        borderRadius: 10,
+                                        border: '1px solid rgba(100,116,139,0.25)',
+                                        background: 'rgba(15,23,42,0.6)',
+                                        color: 'var(--slate-100)',
+                                        fontSize: '0.9rem',
+                                        outline: 'none',
+                                        boxSizing: 'border-box',
+                                    }}
+                                >
+                                    <option value="standard">Standard</option>
+                                    <option value="research-brief">Research Brief</option>
+                                </select>
+                            </label>
+                        )}
 
                         {/* 4. Rounds */}
                         <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

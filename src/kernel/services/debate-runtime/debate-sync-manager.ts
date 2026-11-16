@@ -26,6 +26,9 @@ import { finalizeDebateState, emitFinalizeEvents } from './debate-finalizer';
 import { loadActiveSession } from './debate-session-persistence';
 import { checkDebatePreflight } from './debate-preflight';
 import { getAllSettings } from './quality-settings-store';
+import { createResearchBriefDebate } from './research-brief-launcher';
+import { exportResearchBriefToProject } from './research-brief-export';
+import { OPENCODE_INFO_PROJECT_ID } from '../project-bootstrap';
 import type { GovernorState } from './debate-governor/types';
 
 import { logMemoryStats, estimateSessionBytes } from '../../utils/memory-tracker';
@@ -447,10 +450,15 @@ export class DebateSyncManager {
             sessionConfig.qualitySettings = getAllSettings();
         }
 
+        const isResearchBrief = sessionConfig.mode === 'research-brief';
+        const { topology: rbTopology, participants: rbParticipants } = isResearchBrief
+            ? createResearchBriefDebate(topic)
+            : { topology: null as never, participants: null as never };
+
         const runtimeId = this.engine.createSession(
-            topology,
+            isResearchBrief ? rbTopology : topology,
             topic,
-            participantsToConfig(participants),
+            isResearchBrief ? rbParticipants : participantsToConfig(participants),
             sessionConfig.language === 'en' ? 'English' : DEFAULT_DEBATE_LANGUAGE,
             sessionConfig.qualitySettings,
         );
@@ -847,6 +855,15 @@ export class DebateSyncManager {
         finalizeDebateState(session, {
             interpreter: this._interpreter,
             eventBus: this.deps!.eventBus,
+            exportToProject: session.config?.mode === 'research-brief' && this.deps!.projectRepository
+                ? (s, interpretation) =>
+                      exportResearchBriefToProject(
+                          this.deps!.projectRepository!,
+                          OPENCODE_INFO_PROJECT_ID,
+                          s,
+                          interpretation,
+                      )
+                : undefined,
         });
         // Keep full argument content for persistence and traceability.
         // Previously content was wiped here before saveToDebateHistory to reduce clone cost,

@@ -72,4 +72,6 @@ export interface DebateServiceDeps {
     debateLiveStore: IDebateLiveStore;
     qualityCollector?: IQualityImpactCollector;
     experimentEngine?: IExperimentEngine;
+    /** Опционально: репозиторий проектов для экспорта Research Brief в проект. */
+    projectRepository?: import('../dal/project-repository').ProjectRepository;
 }

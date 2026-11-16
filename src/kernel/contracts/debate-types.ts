@@ -57,7 +57,17 @@ export interface IDebateQueryEngine {
     ): TimelineEntry[];
 }
 
-export type DebateRole = 'pro' | 'con' | 'neutral' | 'judge' | 'attacker' | 'defender';
+export type DebateRole =
+    | 'pro'
+    | 'con'
+    | 'neutral'
+    | 'judge'
+    | 'attacker'
+    | 'defender'
+    | 'analyst'
+    | 'researcher'
+    | 'structuredWriter'
+    | 'devilAdvocate';
 export type DebateSessionStrategy =
     | 'round_robin'
     | 'sequential'
@@ -205,8 +215,10 @@ export interface DebateConfig {
     useGovernor?: boolean;
     language?: 'ru' | 'en';
     qualitySettings?: Record<string, boolean>;
-    /** Optional builtin mode id (D3) — its constraint/temperature/limits are applied at start. */
+    /** Optional builtin mode id (D3) - its constraint/temperature/limits are applied at start. */
     modeId?: string;
+    /** Research Brief mode: specialized roles + strict output format. Standard by default. */
+    mode?: 'standard' | 'research-brief';
     /** From DSL plan (SPEC_07) — early-exit confidence threshold. */
     earlyExitConfidence?: number;
     /** From DSL plan (SPEC_07) — convergence threshold. */
@@ -318,6 +330,8 @@ export interface DebateInterpretation {
     trajectoryChangers: TrajectoryChanger[];
     constraintCorrelation?: ConstraintCorrelation;
     insights: string[];
+    /** Research Brief — плотный итоговый вывод (резюме → схема → таблица → пункты). */
+    researchBrief?: string;
 }
 
 export function jaccardSimilarity(a: string, b: string): number {

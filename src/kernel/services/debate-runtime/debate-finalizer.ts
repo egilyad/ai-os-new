@@ -5,12 +5,16 @@ import {
     computeActivityMetrics,
     computeQualityMetrics,
 } from './debate-metrics';
-import type { DebateSession } from '../../contracts/debate-types';
+import type { DebateSession, DebateInterpretation } from '../../contracts/debate-types';
 import type { IEventBus } from '../../types/interfaces';
 
 export interface FinalizerDeps {
     interpreter: DebateInterpreter;
     eventBus: IEventBus;
+    exportToProject?: (
+        session: DebateSession,
+        interpretation: DebateInterpretation | undefined,
+    ) => Promise<{ path: string } | undefined>;
 }
 
 const ACTIVE_STATUSES = new Set(['active', 'deliberating', 'consensus', 'summarizing']);
@@ -26,6 +30,11 @@ export function finalizeDebateState(session: DebateSession, deps: FinalizerDeps)
     const quality = computeQualityMetrics(session.arguments, session.topic);
     if (quality) session.qualityMetrics = quality;
     session.interpretation = deps.interpreter.interpret(session);
+    if (deps.exportToProject) {
+        void deps.exportToProject(session, session.interpretation).catch(() => {
+            /* экспорт опционален — не ломаем финализацию */
+        });
+    }
 }
 
 export function emitFinalizeEvents(session: DebateSession, deps: FinalizerDeps): void {

@@ -17,6 +17,7 @@ export class DebateInterpreter {
                 ? this.analyzeConstraintCorrelation(session)
                 : undefined;
         const insights = this.generateInsights(session);
+        const researchBrief = this.buildResearchBrief(session);
 
         return {
             summary: this.generateSummary(session),
@@ -25,6 +26,7 @@ export class DebateInterpreter {
             trajectoryChangers: changers,
             constraintCorrelation: correlation,
             insights,
+            researchBrief,
         };
     }
 
@@ -241,6 +243,38 @@ export class DebateInterpreter {
             };
         }
         return { byConstraint: result };
+    }
+
+    private buildResearchBrief(session: DebateSession): string {
+        const args = session.arguments;
+        if (args.length === 0) return 'No arguments recorded.';
+
+        // 1. Summary
+        const total = args.length;
+        const uniqueAgents = new Set(args.map((a) => a.agentName)).size;
+        const roundCount = Math.max(...args.map((a) => a.round), 1);
+        let brief = `## Research Brief: ${session.topic}\n\n`;
+        brief += `Debate concluded: ${uniqueAgents} agents, ${roundCount} rounds, ${total} arguments. `;
+        brief += `Convergence ${Math.round(session.convergenceScore)}%.\n\n`;
+
+        // 2. Key points (dense, factual)
+        brief += '### Key points\n';
+        const points = args
+            .slice(-12)
+            .map((a) => `- [${a.agentName}] ${a.content.trim().slice(0, 220)}`);
+        brief += points.join('\n');
+        brief += '\n\n';
+
+        // 3. Limitations
+        brief += '### Limitations\n';
+        if (session.currentRound > 0 && session.currentRound < 3) {
+            brief += '- Short debate (few rounds); conclusions are preliminary.\n';
+        } else {
+            brief += '- Conclusions based on agent arguments; verify sources separately.\n';
+        }
+        brief += '\n';
+
+        return brief;
     }
 
     private generateInsights(session: DebateSession): string[] {

@@ -65,6 +65,7 @@ const DebatePanel: React.FC = () => {
     const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
     const [strategy, setStrategy] = useState<DebateSessionStrategy>('round_robin');
     const [maxRounds, setMaxRounds] = useState(10);
+    const [debateMode, setDebateMode] = useState<'standard' | 'research-brief'>('standard');
     const now = useNow(1000);
     const [userInjection, setUserInjection] = useState('');
     const [isLoading, setIsLoading] = useState(() => {
@@ -331,7 +332,11 @@ const DebatePanel: React.FC = () => {
                 allParticipants,
                 strategy,
                 maxRounds,
-                { debateTemperature: debateTemperature / 10, qualitySettings: getAllSettings() },
+                {
+                    debateTemperature: debateTemperature / 10,
+                    qualitySettings: getAllSettings(),
+                    mode: debateMode,
+                },
                 activeChatId || undefined,
             );
             if (pendingHypothesisId.current && started?.id) {
@@ -469,6 +474,8 @@ const DebatePanel: React.FC = () => {
                     onMaxRoundsChange: setMaxRounds,
                     debateTemperature,
                     onTemperatureChange: setDebateTemperature,
+                    debateMode,
+                    onModeChange: setDebateMode,
                     agentArchetypes,
                     onArchetypeChange: (key: string) => {
                         if (key === 'auto') {

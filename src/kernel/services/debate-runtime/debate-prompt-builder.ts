@@ -14,6 +14,10 @@ import type { UnmetBurden } from '../../contracts/debate-bop';
 import type { Contradiction } from '../../contracts/debate-consistency';
 import type { SourceCredibility } from '../../contracts/debate-credibility';
 import { buildDebateState, buildDebateStatePrompt } from './debate-state-builder';
+import {
+    RESEARCH_BRIEF_FORMAT,
+    RESEARCH_ROLE_PROMPTS,
+} from './research-brief-format';
 
 // ── Re-exports for external consumers (prompt-audit-service, index.ts) ──
 export {
@@ -209,10 +213,14 @@ export function buildOpeningPrompt(
     const tempBlock =
         debateTemperature !== undefined ? buildTemperaturePrompt(debateTemperature) : '';
 
+    const researchFormatBlock = researchRolePrompt
+        ? `\n\n${RESEARCH_BRIEF_FORMAT}`
+        : '';
+
     return `## Topic: ${sanitizeForPrompt(topic)}
 
 ## Your Role
-${roleContext}${characterBlock}${constraintBlock}${strategyBlock}${tempBlock}
+${roleContext}${characterBlock}${constraintBlock}${strategyBlock}${tempBlock}${researchFormatBlock}
 
 ### Strategy
 ${openingStrategy}
@@ -296,13 +304,18 @@ export function buildArgumentPrompt(
 
     const isSocrates = isSocratic && socraticQuestioner === participants.indexOf(participant);
 
+    const researchRolePrompt =
+        participant.role && RESEARCH_ROLE_PROMPTS[participant.role]
+            ? RESEARCH_ROLE_PROMPTS[participant.role]!
+            : '';
     const roleContext = isSocrates
-        ? 'You are SOCRATES. Ask probing questions. Do NOT make arguments — expose contradictions.'
-        : participant.role === 'pro'
-          ? 'You argue FOR the topic.'
-          : participant.role === 'con'
-            ? 'You argue AGAINST the topic.'
-            : 'You provide neutral analysis.';
+        ? 'You are SOCRATES. Ask probing questions. Do NOT make arguments - expose contradictions.'
+        : researchRolePrompt ||
+          (participant.role === 'pro'
+              ? 'You argue FOR the topic.'
+              : participant.role === 'con'
+                ? 'You argue AGAINST the topic.'
+                : 'You provide neutral analysis.');
 
     let treePrompt = '';
     if (isArgumentTree && round > 1) {
@@ -668,8 +681,12 @@ export function buildArgumentPrompt(
         ? buildDiagramPrompt(language)
         : '';
 
+    const researchFormatBlock = researchRolePrompt
+        ? `\n\n${RESEARCH_BRIEF_FORMAT}`
+        : '';
+
     return `## Topic: ${sanitizeForPrompt(topic)}
-${roleContext}${constraintBlock}${socraticBlock}${treePrompt}${strategyBlock}${angleBlock}${tempBlock}${entanglementBlock}${anchorsBlock}${vulnerabilityBlock}${adversarialBlock}${beliefConflictsBlock}${minimaxBlock}${tacticalBlock}${steelmanBlock}${bopBlock}${consistencyBlock}${credibilityBlock}${crossExBlock}${deltaBlock}${objectionBlock}${triangulationBlock}${criticBlock}${criticSelfBlock}${socraticPivotBlock}${changePivotBlock}${synthesizeBlock}${concessionBlock}${counterfactualBlock}${synthesisBlock}${shadowBlock}${empathyBlock}${humilityBlock}${heatBlock}${sentinelBlock}${redundancyBlock}${driftBlock}${insightBlock}${replayBlock}${enthymemeBlock}${multiHopBlock}${dpoBlock}${uncertaintyBlock}${biasBlock}${interruptBlock}${stakeholderBlock}${calibrationBlock}${factCheckBlock}${personaMixBlock}${frameBlock}${expertBlock}${driftCalloutBlock}${rhetoricalBlock}${rhetoricBlock}${biddingBlock}${scratchpadBlock}${narrativeBlock}${levelBlock}${reversalBlock}${fogBlock}${evidenceBlock}${humorBlock}${statusBlock}${styleBlock}${adaptiveBlock}${personaBlock}${strategistBlock}${whisperBlock}${audienceBlock}${allianceBlock}${predictionBlock}${rtomBlock}${blindBlock}${fingerprintBlock}${causalBlock}${executableEvidenceBlock}${hiddenIncentivesBlock}${gotBlock}${blendingBlock}${forecasterBlock}${liveResearchBlock}${diagramBlock}${bestOfNBlock}
+${roleContext}${constraintBlock}${socraticBlock}${treePrompt}${strategyBlock}${angleBlock}${tempBlock}${entanglementBlock}${anchorsBlock}${vulnerabilityBlock}${adversarialBlock}${beliefConflictsBlock}${minimaxBlock}${tacticalBlock}${steelmanBlock}${bopBlock}${consistencyBlock}${credibilityBlock}${crossExBlock}${deltaBlock}${objectionBlock}${triangulationBlock}${criticBlock}${criticSelfBlock}${socraticPivotBlock}${changePivotBlock}${synthesizeBlock}${concessionBlock}${counterfactualBlock}${synthesisBlock}${shadowBlock}${empathyBlock}${humilityBlock}${heatBlock}${sentinelBlock}${redundancyBlock}${driftBlock}${insightBlock}${replayBlock}${enthymemeBlock}${multiHopBlock}${dpoBlock}${uncertaintyBlock}${biasBlock}${interruptBlock}${stakeholderBlock}${calibrationBlock}${factCheckBlock}${personaMixBlock}${frameBlock}${expertBlock}${driftCalloutBlock}${rhetoricalBlock}${rhetoricBlock}${biddingBlock}${scratchpadBlock}${narrativeBlock}${levelBlock}${reversalBlock}${fogBlock}${evidenceBlock}${humorBlock}${statusBlock}${styleBlock}${adaptiveBlock}${personaBlock}${strategistBlock}${whisperBlock}${audienceBlock}${allianceBlock}${predictionBlock}${rtomBlock}${blindBlock}${fingerprintBlock}${causalBlock}${executableEvidenceBlock}${hiddenIncentivesBlock}${gotBlock}${blendingBlock}${forecasterBlock}${liveResearchBlock}${diagramBlock}${bestOfNBlock}${researchFormatBlock}
 
 ${statePrompt}
 

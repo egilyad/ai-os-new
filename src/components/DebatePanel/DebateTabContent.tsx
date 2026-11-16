@@ -47,6 +47,8 @@ export function DebateTabContent({
     onMaxRoundsChange,
     debateTemperature,
     onTemperatureChange,
+    debateMode,
+    onModeChange,
     agentArchetypes,
     onArchetypeChange,
     agentConstraints,
@@ -104,6 +106,8 @@ export function DebateTabContent({
     onMaxRoundsChange: (r: number) => void;
     debateTemperature: number;
     onTemperatureChange: (t: number) => void;
+    debateMode: 'standard' | 'research-brief';
+    onModeChange: (m: 'standard' | 'research-brief') => void;
     agentArchetypes: Record<string, string>;
     onArchetypeChange: (key: string) => void;
     agentConstraints: Record<string, string>;
@@ -230,6 +234,8 @@ export function DebateTabContent({
                                     onMaxRoundsChange={onMaxRoundsChange}
                                     debateTemperature={debateTemperature}
                                     onTemperatureChange={onTemperatureChange}
+                                    debateMode={debateMode}
+                                    onModeChange={onModeChange}
                                     agentArchetypes={agentArchetypes}
                                     onArchetypeChange={onArchetypeChange}
                                     selectedAgents={selectedAgents}
