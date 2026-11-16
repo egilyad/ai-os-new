@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createTopicGraphDB, getTopicGraphDB } from './topic-graph-dexie';
 import { TopicGraphServiceImpl } from './topic-graph-service';
+import type { TopicConcept, TopicRelation } from '../../contracts/topic-graph/types';
 
 const A = {
     title: 'OpenCode overview',
@@ -248,5 +249,98 @@ describe('TopicGraph quality corpus', () => {
         const after = (await svc.claims(topic.id)).length;
 
         expect(after).toBeGreaterThan(before);
+    });
+
+    it('consolidate: ручные связи сохраняются, повторный прогон идемпотентен', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('Consolidate', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.' });
+
+        const concepts = await svc.concepts(topic.id);
+        const desktop = concepts.find((c) => c.name === 'desktop');
+        const opencode = concepts.find((c) => c.name === 'opencode');
+        expect(desktop).toBeTruthy();
+        expect(opencode).toBeTruthy();
+
+        const manual: TopicRelation = {
+            id: 'rel-manual-test',
+            topicId: topic.id,
+            fromId: desktop!.id,
+            toId: opencode!.id,
+            relation: 'related_to',
+            weight: 1,
+            manual: true,
+            createdAt: Date.now(),
+        };
+        await getTopicGraphDB().topicRelations.put(manual);
+
+        await svc.consolidate(topic.id);
+        const after1 = await svc.relations(topic.id);
+        expect(after1.some((r) => r.id === 'rel-manual-test')).toBe(true);
+
+        await svc.consolidate(topic.id);
+        const after2 = await svc.relations(topic.id);
+        expect(after2.length).toBe(after1.length);
+        expect(after2.some((r) => r.id === 'rel-manual-test')).toBe(true);
+    });
+
+    it('мёртвый концепт удаляется при консолидации вместе с рёбрами', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('DeadConcept', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.' });
+
+        const claims = await svc.claims(topic.id);
+        const opencode = (await svc.concepts(topic.id)).find((c) => c.name === 'opencode');
+        const zombie: TopicConcept = {
+            id: 'concept-zombie',
+            topicId: topic.id,
+            name: 'zzz-synthetic',
+            aliases: [],
+            claimIds: [claims[0]!.id],
+            createdAt: Date.now(),
+        };
+        await getTopicGraphDB().topicConcepts.put(zombie);
+        await getTopicGraphDB().topicRelations.put({
+            id: 'rel-zombie',
+            topicId: topic.id,
+            fromId: zombie.id,
+            toId: opencode!.id,
+            relation: 'part_of',
+            weight: 0.9,
+            createdAt: Date.now(),
+        });
+
+        await svc.consolidate(topic.id);
+        expect(await getTopicGraphDB().topicConcepts.get(zombie.id)).toBeUndefined();
+        const rels = await svc.relations(topic.id);
+        expect(rels.some((r) => r.fromId === zombie.id || r.toId === zombie.id)).toBe(false);
+    });
+
+    it('новый claim связывается с существующим из прошлого импорта', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('CrossBatch', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' });
+        const oldClaims = await svc.claims(topic.id);
+        const oldId = oldClaims[0]!.id;
+
+        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'OpenCode Desktop memory usage is high.' });
+        const newClaims = await svc.claims(topic.id);
+        const newId = newClaims.find((c) => c.id !== oldId)!.id;
+
+        const rels = await svc.relations(topic.id);
+        expect(rels.some((r) => (r.fromId === oldId && r.toId === newId) || (r.fromId === newId && r.toId === oldId))).toBe(true);
+    });
+
+    it('поиск подтягивает связанное утверждение без прямого совпадения', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('GraphSearch', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop runs on Windows 10 Education.' });
+
+        const claims = await svc.claims(topic.id);
+        const versionClaim = claims.find((c) => c.text.includes('1.19.4'));
+        expect(versionClaim).toBeTruthy();
+
+        const found = await svc.search(topic.id, 'Windows 10 education');
+        expect(found.some((c) => c.id === versionClaim!.id)).toBe(true);
     });
 });

@@ -76,6 +76,8 @@ export interface TopicRelation {
     toId: string;
     relation: TopicRelationType;
     weight: number;
+    /** Ручная связь: не пересчитывается и не удаляется при консолидации. */
+    manual?: boolean;
     createdAt: number;
 }
 

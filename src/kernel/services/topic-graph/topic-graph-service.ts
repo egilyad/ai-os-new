@@ -308,7 +308,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.rebuildConceptRelations(topicId);
 
             // Связи: поддержка между утверждениями с общими концептами.
-            const relations = this.discoverRelations(topicId, newClaims);
+            const relations = this.discoverRelations(topicId, newClaims, existingClaims);
             await this.putUniqueRelations(topicId, relations);
             run.stats.relations = relations.length;
 
@@ -362,6 +362,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         const freq = new Map<string, number>();
         for (const c of allClaims) {
             for (const w of tokenize(c.text)) {
+                if (STOPWORDS.has(w)) continue;
                 freq.set(w, (freq.get(w) ?? 0) + 1);
             }
         }
@@ -370,11 +371,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             .sort((a, b) => b[1] - a[1])
             .slice(0, 15)
             .map(([w]) => w);
-        if (names.length === 0) return;
         const existing = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
-        const byName = new Map(existing.map((c) => [c.name, c]));
+        const byName = new Map(existing.map((c) => [c.name.normalize('NFKC'), c]));
+        const activeNames = new Set<string>();
         for (const rawName of names) {
             const name = rawName.normalize('NFKC');
+            activeNames.add(name);
             const claimIds = allClaims.filter((c) => tokenize(c.text).has(rawName)).map((c) => c.id);
             const prev = byName.get(name) ?? byName.get(rawName);
             if (prev) {
@@ -390,14 +392,38 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 });
             }
         }
+        // Устаревшие: пересчитать claimIds; полностью мёртвые — удалить с рёбрами.
+        for (const c of existing) {
+            const nm = c.name.normalize('NFKC');
+            const claimIds = allClaims.filter((cc) => tokenize(cc.text).has(nm)).map((cc) => cc.id);
+            if (claimIds.length > 0) {
+                if (!activeNames.has(nm)) {
+                    await this.db.topicConcepts.put({ ...c, claimIds });
+                }
+            } else {
+                await this.db.topicConcepts.delete(c.id);
+                await this.db.topicRelations
+                    .where('topicId')
+                    .equals(topicId)
+                    .filter((r) => r.fromId === c.id || r.toId === c.id)
+                    .delete();
+            }
+        }
     }
 
-    private discoverRelations(topicId: string, claims: TopicClaim[]): TopicRelation[] {
+    private discoverRelations(
+        topicId: string,
+        newClaims: TopicClaim[],
+        allClaims: TopicClaim[],
+    ): TopicRelation[] {
         const out: TopicRelation[] = [];
-        for (let i = 0; i < claims.length; i++) {
-            for (let j = i + 1; j < claims.length; j++) {
-                const a = claims[i]!;
-                const b = claims[j]!;
+        const seen = new Set<string>();
+        for (const a of newClaims) {
+            for (const b of allClaims) {
+                if (a.id === b.id) continue;
+                const key = a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`;
+                if (seen.has(key)) continue;
+                seen.add(key);
                 const inter = [...tokenize(a.text)].filter((w) => tokenize(b.text).has(w)).length;
                 if (inter >= 2) {
                     const contradicts = hasNegation(a.text) !== hasNegation(b.text);
@@ -423,13 +449,20 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     private async putUniqueRelations(topicId: string, relations: TopicRelation[]): Promise<void> {
         if (relations.length === 0) return;
         const existing = await this.db.topicRelations.where('topicId').equals(topicId).toArray();
-        const keys = new Set(existing.map((r) => `${r.fromId}|${r.toId}|${r.relation}`));
-        const fresh = relations.filter((r) => {
+        const known = new Map(existing.map((r) => [`${r.fromId}|${r.toId}|${r.relation}`, r]));
+        const fresh: TopicRelation[] = [];
+        for (const r of relations) {
             const k = `${r.fromId}|${r.toId}|${r.relation}`;
-            if (keys.has(k)) return false;
-            keys.add(k);
-            return true;
-        });
+            const prev = known.get(k);
+            if (!prev) {
+                known.set(k, r);
+                fresh.push(r);
+            } else if (!prev.manual && r.weight > prev.weight) {
+                const merged = { ...prev, weight: r.weight };
+                known.set(k, merged);
+                fresh.push(merged);
+            }
+        }
         if (fresh.length > 0) {
             await this.db.topicRelations.bulkPut(fresh as never);
         }
@@ -438,8 +471,17 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     private async rebuildConceptRelations(topicId: string): Promise<void> {
         const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         if (concepts.length < 2) return;
+        const conceptIds = new Set(concepts.map((c) => c.id));
+        // Полный пересчёт автоматических рёбер: ручные не трогаем.
+        await this.db.topicRelations
+            .where('topicId')
+            .equals(topicId)
+            .filter((r) => !r.manual && conceptIds.has(r.fromId) && conceptIds.has(r.toId))
+            .delete();
         const relations = buildConceptRelations(topicId, concepts, CONCEPT_COVER_THRESHOLD);
-        await this.putUniqueRelations(topicId, relations);
+        if (relations.length > 0) {
+            await this.db.topicRelations.bulkPut(relations as never);
+        }
     }
 
     private async extractClaimsWithLlm(
@@ -590,18 +632,22 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             }
         }
         const [claims, relations] = await Promise.all([this.claims(topicId), this.relations(topicId)]);
-        const scored = claims
-            .map((c) => {
-                let sim = jaccard(q, tokenize(c.text));
-                if (qEmb && c.embedding) {
-                    sim = Math.max(sim, cosine(qEmb, c.embedding));
-                }
-                return { c, sim };
-            })
-            .filter((x) => x.sim > 0);
+        const scored = claims.map((c) => {
+            let sim = jaccard(q, tokenize(c.text));
+            if (qEmb && c.embedding) {
+                sim = Math.max(sim, cosine(qEmb, c.embedding));
+            }
+            return { c, sim };
+        });
         scored.sort((a, b) => b.sim - a.sim);
-        // Graph expansion: соседи топ-сидов получают буст (как в RAGraph).
-        const seeds = new Set(scored.slice(0, 5).map((x) => x.c.id));
+        // Graph expansion: соседи топ-сидов получают буст (как в RAGraph),
+        // поэтому связанные утверждения без прямого совпадения тоже попадают.
+        const seeds = new Set(
+            scored
+                .filter((x) => x.sim > 0)
+                .slice(0, 5)
+                .map((x) => x.c.id),
+        );
         const boost = new Map<string, number>();
         for (const r of relations) {
             const neighbor = seeds.has(r.fromId) ? r.toId : seeds.has(r.toId) ? r.fromId : undefined;
@@ -612,7 +658,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             if (b) x.sim += b * 0.15;
         }
         scored.sort((a, b) => b.sim - a.sim);
-        return scored.slice(0, 20).map((x) => x.c);
+        return scored.filter((x) => x.sim > 0).slice(0, 20).map((x) => x.c);
     }
 
     /** Пересборка глобальной структуры (концепты + иерархия) по требованию. */
@@ -776,6 +822,37 @@ function locateFragment(content: string, claim: string): { start: number } | und
 
 /** Порог покрытия claim-множеств для иерархии концептов (part_of). */
 const CONCEPT_COVER_THRESHOLD = 0.8;
+
+/** Общеупотребительные слова, не являющиеся понятиями. */
+const STOPWORDS = new Set([
+    'the', 'a', 'an', 'and', 'or', 'but', 'if', 'then', 'else', 'when', 'while',
+    'of', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'from', 'into', 'onto',
+    'about', 'over', 'under', 'between', 'against', 'through', 'during', 'after',
+    'before', 'until', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'has',
+    'have', 'had', 'do', 'does', 'did', 'will', 'would', 'shall', 'should', 'can',
+    'could', 'may', 'might', 'must', 'not', 'no', 'nor', 'so', 'too', 'very',
+    'just', 'also', 'only', 'more', 'most', 'other', 'such', 'than', 'as', 'it',
+    'its', 'this', 'that', 'these', 'those', 'he', 'she', 'they', 'we', 'you',
+    'i', 'me', 'him', 'her', 'them', 'us', 'my', 'your', 'his', 'their', 'our',
+    'what', 'which', 'who', 'whom', 'whose', 'when', 'where', 'why', 'how',
+    'all', 'any', 'both', 'each', 'few', 'many', 'much', 'some', 'several',
+    'there', 'here', 'up', 'down', 'out', 'off', 'again', 'once', 'also',
+    'и', 'в', 'на', 'с', 'со', 'по', 'для', 'от', 'из', 'к', 'ко', 'за',
+    'при', 'не', 'нет', 'ни', 'но', 'а', 'или', 'если', 'то', 'так', 'как',
+    'что', 'чтобы', 'это', 'этот', 'эта', 'это', 'эти', 'он', 'она', 'оно',
+    'они', 'мы', 'вы', 'ты', 'я', 'мне', 'меня', 'тебе', 'вам', 'нам',
+    'его', 'её', 'ее', 'их', 'мой', 'твой', 'наш', 'ваш', 'свой', 'который',
+    'которая', 'которое', 'которые', 'там', 'здесь', 'тут', 'уже', 'ещё',
+    'еще', 'только', 'более', 'менее', 'очень', 'все', 'всё', 'весь', 'сам',
+    'сама', 'само', 'сами', 'другой', 'другая', 'другое', 'другие', 'такой',
+    'такая', 'такое', 'такие', 'каждый', 'каждая', 'каждое', 'каждые',
+    'между', 'через', 'около', 'над', 'под', 'перед', 'после', 'во', 'время',
+    'дело', 'вещь', 'часть', 'год', 'года', 'лет', 'день', 'дня', 'дней',
+    'раз', 'раза', 'когда', 'потому', 'поэтому', 'хотя', 'даже', 'ли',
+    'бы', 'был', 'была', 'было', 'были', 'будет', 'будут', 'есть', 'можно',
+    'нельзя', 'нужно', 'надо', 'должен', 'должна', 'должны', 'может', 'могут',
+    'является', 'являются', 'считается', 'представляет',
+]);
 
 /**
  * Иерархия концептов (идея из RAGraph: topic clustering / PART_OF):
