@@ -10307,6 +10307,16 @@
       "status": "live"
     },
     {
+      "id": "panel:topic-graph",
+      "type": "panel",
+      "panelId": "topic-graph",
+      "section": "dashboard",
+      "route": "/topic-graph",
+      "component": "src/components/TopicGraphPanel/TopicGraphPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:project-os",
       "type": "panel",
       "panelId": "project-os",
