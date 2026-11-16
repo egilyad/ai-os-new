@@ -88,23 +88,18 @@ const DEMO_SITE_HTML = `<!DOCTYPE html>
   by the OpenCodeInfo seed.</div>
 </main></body></html>`;
 
+/**
+ * Идемпотентное наполнение демо-графа OpenCodeInfo:
+ * - создаёт отсутствующие узлы/рёбра (upsert по refId);
+ * - создаёт демо-файлы только если их ещё нет (не затирает правки);
+ * - НЕ удаляет пользовательские узлы, связи и файлы.
+ */
 export async function seedOpenCodeInfo(
     graph: ProjectGraphService,
     repo: ProjectRepository,
-): Promise<{ files: number }> {
-    let before = -1;
-    try {
-        const { nodes } = await graph.listProject(OPENCODE_INFO_PROJECT_ID);
-        before = nodes.length;
-    } catch (e) {
-        LOGGER.warn('OpenCodeInfoSeed', 'listProject failed', { error: String(e) });
-    }
-    if (before !== 0) {
-        LOGGER.info('OpenCodeInfoSeed', 'clearing previous graph', { before });
-    }
-    await graph.clearProject(OPENCODE_INFO_PROJECT_ID);
-
+): Promise<{ files: number; nodes: number }> {
     const nowMs = Date.now();
+    let filesCreated = 0;
 
     const files: Array<{ path: string; content: string }> = [
         { path: CENTER_PATH, content: CENTER_BODY },
@@ -112,6 +107,8 @@ export async function seedOpenCodeInfo(
         ...ARTICLES.map((a) => ({ path: a.path, content: a.body })),
     ];
     for (const f of files) {
+        const existing = await repo.getFile(OPENCODE_INFO_PROJECT_ID, f.path);
+        if (existing) continue;
         await repo.putFile({
             projectId: OPENCODE_INFO_PROJECT_ID,
             path: f.path,
@@ -119,8 +116,10 @@ export async function seedOpenCodeInfo(
             createdAt: nowMs,
             updatedAt: nowMs,
         });
+        filesCreated++;
     }
 
+    // Узел-центр (README.md) + связи к статьям (link дедуплицируется).
     const center = await graph.upsertNode({
         projectId: OPENCODE_INFO_PROJECT_ID,
         kind: 'concept',
@@ -144,6 +143,7 @@ export async function seedOpenCodeInfo(
         });
     }
 
+    // Узел-сайт (index.html).
     const siteNode = await graph.upsertNode({
         projectId: OPENCODE_INFO_PROJECT_ID,
         kind: 'website',
@@ -164,6 +164,22 @@ export async function seedOpenCodeInfo(
         relation: 'contains',
     });
 
-    LOGGER.info('OpenCodeInfoSeed', 'seeded', { files: files.length });
-    return { files: files.length };
+    LOGGER.info('OpenCodeInfoSeed', 'seeded idempotently', {
+        filesCreated,
+        nodes: files.length,
+    });
+    return { files: filesCreated, nodes: files.length };
+}
+
+/**
+ * Контролируемый сброс демо-данных: полностью очищает граф OpenCodeInfo и
+ * заново создаёт стартовый набор. Вызывать только явно (например, ручной
+ * сброс из админки) — НЕ при обычном старте.
+ */
+export async function resetOpenCodeInfoDemo(
+    graph: ProjectGraphService,
+    repo: ProjectRepository,
+): Promise<{ files: number; nodes: number }> {
+    await graph.clearProject(OPENCODE_INFO_PROJECT_ID);
+    return seedOpenCodeInfo(graph, repo);
 }
