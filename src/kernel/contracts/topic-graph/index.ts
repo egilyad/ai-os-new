@@ -61,7 +61,11 @@ export interface TopicGraphService {
     archiveTopic(id: string): Promise<Topic | undefined>;
 
     /** Добавить источник и запустить инкрементальную обработку. */
-    ingest(topicId: string, payload: IngestPayload): Promise<TopicProcessingRun>;
+    ingest(
+        topicId: string,
+        payload: IngestPayload,
+        opts?: { useLlm?: boolean },
+    ): Promise<TopicProcessingRun>;
 
     sources(topicId: string): Promise<TopicSource[]>;
     claims(topicId: string): Promise<TopicClaim[]>;

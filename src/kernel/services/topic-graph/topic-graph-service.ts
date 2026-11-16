@@ -166,7 +166,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
     // ── Ingest & processing ──
 
-    async ingest(topicId: string, payload: IngestPayload): Promise<TopicProcessingRun> {
+    async ingest(
+        topicId: string,
+        payload: IngestPayload,
+        opts?: { useLlm?: boolean },
+    ): Promise<TopicProcessingRun> {
         const run: TopicProcessingRun = {
             id: GENERIC_ID('run'),
             topicId,
@@ -211,7 +215,8 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 let llmMode: 'llm' | 'fallback' = 'fallback';
                 let failedChunks = 0;
                 let llmRelations: LlmRelationDraft[] = [];
-                if (this.deps.llm) {
+                const llmAvailable = this.deps.llm && opts?.useLlm !== false;
+                if (llmAvailable) {
                     const { sentences, warnings, mode, failedChunks: fc, relations } = await this.extractClaimsWithLlm(payload.content);
                     llmRelations = relations;
                     llmWarnings = warnings;

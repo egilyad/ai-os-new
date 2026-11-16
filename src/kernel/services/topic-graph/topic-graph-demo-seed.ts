@@ -28,12 +28,17 @@ export async function ensureTopicGraphDemo(): Promise<Topic> {
         'Демо: ответы 4 моделей про OpenCode Desktop 1.19.4',
     );
     for (const doc of DEMO_DOCS) {
-        await svc.ingest(topic.id, {
-            kind: 'document',
-            ref: doc.ref,
-            title: doc.title,
-            content: doc.content,
-        });
+        // Без LLM: fallback-извлечение по предложениям (провайдер может быть не настроен).
+        await svc.ingest(
+            topic.id,
+            {
+                kind: 'document',
+                ref: doc.ref,
+                title: doc.title,
+                content: doc.content,
+            },
+            { useLlm: false },
+        );
     }
     return topic;
 }
