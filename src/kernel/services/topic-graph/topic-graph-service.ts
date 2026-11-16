@@ -382,14 +382,40 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             if (prev) {
                 await this.db.topicConcepts.put({ ...prev, claimIds });
             } else {
-                await this.db.topicConcepts.put({
-                    id: GENERIC_ID('concept'),
-                    topicId,
-                    name,
-                    aliases: [],
-                    claimIds,
-                    createdAt: Date.now(),
-                });
+                let embedding: number[] | undefined;
+                let mergedInto: TopicConcept | undefined;
+                if (this.deps.embedder) {
+                    try {
+                        const vecs = await this.deps.embedder.embed([name]);
+                        embedding = vecs[0];
+                        for (const c of existing) {
+                            if (!c.embedding) continue;
+                            if (cosine(embedding, c.embedding) >= ENTITY_MERGE_THRESHOLD) {
+                                mergedInto = c;
+                                break;
+                            }
+                        }
+                    } catch {
+                        embedding = undefined;
+                    }
+                }
+                if (mergedInto) {
+                    await this.db.topicConcepts.put({
+                        ...mergedInto,
+                        aliases: [...new Set([...mergedInto.aliases, name])],
+                        claimIds: [...new Set([...mergedInto.claimIds, ...claimIds])],
+                    });
+                } else {
+                    await this.db.topicConcepts.put({
+                        id: GENERIC_ID('concept'),
+                        topicId,
+                        name,
+                        aliases: [],
+                        claimIds,
+                        embedding,
+                        createdAt: Date.now(),
+                    });
+                }
             }
         }
         // Устаревшие: пересчитать claimIds; полностью мёртвые — удалить с рёбрами.
@@ -514,10 +540,17 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 if (!match) throw new Error('ответ не содержит JSON-массив');
                 const parsed = JSON.parse(match[0]) as unknown;
                 if (!Array.isArray(parsed)) throw new Error('ответ не является массивом');
-                if (!parsed.every((x) => typeof x === 'string')) {
+                const strings = parsed.map((x) => {
+                    if (typeof x === 'string') return x;
+                    if (x && typeof x === 'object' && typeof (x as { text?: unknown }).text === 'string') {
+                        return (x as { text: string }).text;
+                    }
+                    return null;
+                });
+                if (strings.some((s) => s === null)) {
                     throw new Error('ответ содержит нестроковые элементы');
                 }
-                all.push(...parsed.filter((s): s is string => s.length > 0));
+                all.push(...strings.filter((s): s is string => s.length > 0));
             } catch (e) {
                 chunksFailed++;
                 warnings.push(`Чанк #${chunksTotal} (offset ${start}) не обработан: ${e instanceof Error ? e.message : String(e)}`);
@@ -822,6 +855,9 @@ function locateFragment(content: string, claim: string): { start: number } | und
 
 /** Порог покрытия claim-множеств для иерархии концептов (part_of). */
 const CONCEPT_COVER_THRESHOLD = 0.8;
+
+/** Cosine-порог слияния концептов-синонимов (RAGraph entityMergeThreshold). */
+const ENTITY_MERGE_THRESHOLD = 0.85;
 
 /** Общеупотребительные слова, не являющиеся понятиями. */
 const STOPWORDS = new Set([

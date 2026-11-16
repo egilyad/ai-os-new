@@ -55,6 +55,8 @@ export interface TopicConcept {
     name: string;
     aliases: string[];
     claimIds: string[];
+    /** Вектор имени (для слияния синонимов). */
+    embedding?: number[];
     createdAt: number;
 }
 

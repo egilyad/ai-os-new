@@ -343,4 +343,59 @@ describe('TopicGraph quality corpus', () => {
         const found = await svc.search(topic.id, 'Windows 10 education');
         expect(found.some((c) => c.id === versionClaim!.id)).toBe(true);
     });
+
+    it('концепты-синонимы сливаются через embeddings (entity merge)', async () => {
+        const pseudoEmbed = (s: string): number[] => {
+            let h = 2166136261 >>> 0;
+            for (let i = 0; i < s.length; i++) {
+                h ^= s.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            const out: number[] = [];
+            for (let d = 0; d < 16; d++) {
+                const x = Math.sin(h + d * 997) * 43758.5453;
+                out.push(x - Math.floor(x) - 0.5);
+            }
+            return out;
+        };
+        const embedder = {
+            embed: async (texts: string[]) =>
+                texts.map((t) => {
+                    const s = t.trim().toLowerCase();
+                    if (!s.includes(' ') && s.length <= 20) {
+                        return [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    }
+                    return pseudoEmbed(s);
+                }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { embedder } as never);
+        const topic = await svc.createTopic('Merge', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'Workstation is useful here. Workstation matters a lot.' });
+        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'Desktop is useful here. Desktop matters a lot.' });
+
+        const concepts = await svc.concepts(topic.id);
+        const workstation = concepts.find((c) => c.name.toLowerCase() === 'workstation');
+        const desktop = concepts.find((c) => c.name.toLowerCase() === 'desktop');
+        expect(workstation || desktop).toBeTruthy();
+        if (workstation) expect(workstation.aliases).toContain('desktop');
+        if (desktop) expect(desktop.aliases).toContain('workstation');
+    });
+
+    it('LLM structured extraction: массив объектов распознаётся', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    { text: 'OpenCode Desktop version is 1.19.4.', entities: ['OpenCode'], relations: [] },
+                    { text: 'It supports MCP servers.', entities: ['MCP'], relations: [] },
+                ]),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Structured', '');
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 's', title: 'S', content: 'Исходный текст для привязки.' });
+        expect(run.status).toBe('completed');
+        const claims = await svc.claims(topic.id);
+        expect(claims.some((c) => c.text.includes('1.19.4'))).toBe(true);
+        expect(claims.some((c) => c.text.includes('MCP'))).toBe(true);
+    });
 });
