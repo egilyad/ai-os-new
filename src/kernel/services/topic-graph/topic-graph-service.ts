@@ -388,28 +388,35 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
     private async extractClaimsWithLlm(content: string): Promise<string[]> {
         if (!this.deps.llm) return splitIntoSentences(content);
-        try {
-            const res = await this.deps.llm.chat([
-                {
-                    role: 'system',
-                    content:
-                        'Extract standalone factual claims from the text. ' +
-                        'Return ONLY a JSON array of strings: ["claim1","claim2",...]. ' +
-                        'Each claim must be a single concrete fact. No prose.',
-                },
-                { role: 'user', content: content.slice(0, 6000) },
-            ]);
-            const match = res.content.match(/\[[\s\S]*\]/);
-            if (match) {
-                const parsed = JSON.parse(match[0]) as unknown;
-                if (Array.isArray(parsed)) {
-                    return parsed.map((s) => String(s)).filter((s) => s.length > 0);
+        const all: string[] = [];
+        const CHUNK_SIZE = 6000;
+        const OVERLAP = 400;
+        for (let start = 0; start < content.length; start += CHUNK_SIZE - OVERLAP) {
+            const chunk = content.slice(start, start + CHUNK_SIZE);
+            try {
+                const res = await this.deps.llm.chat([
+                    {
+                        role: 'system',
+                        content:
+                            'Extract standalone factual claims from the text. ' +
+                            'Return ONLY a JSON array of strings: ["claim1","claim2",...]. ' +
+                            'Each claim must be a single concrete fact. No prose.',
+                    },
+                    { role: 'user', content: chunk },
+                ]);
+                const match = res.content.match(/\[[\s\S]*\]/);
+                if (match) {
+                    const parsed = JSON.parse(match[0]) as unknown;
+                    if (Array.isArray(parsed)) {
+                        all.push(...parsed.map((s) => String(s)).filter((s) => s.length > 0));
+                    }
                 }
+            } catch (e) {
+                LOGGER.warn('TopicGraph', 'llm extraction failed on chunk', { error: String(e) });
             }
-        } catch (e) {
-            LOGGER.warn('TopicGraph', 'llm extraction failed, fallback to sentences', { error: String(e) });
         }
-        return splitIntoSentences(content);
+        if (all.length === 0) return splitIntoSentences(content);
+        return all;
     }
 
     /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */

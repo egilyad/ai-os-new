@@ -91,6 +91,23 @@ describe('TopicGraph quality corpus', () => {
         expect(with900).toBeTruthy();
     });
 
+    it('LLM обрабатывает большой документ чанками, а не первыми 6000', async () => {
+        const calls: string[] = [];
+        const llm = {
+            chat: async (msgs: Array<{ role: string; content: string }>) => {
+                const last = msgs[msgs.length - 1]!.content;
+                calls.push(last);
+                return { content: JSON.stringify([`claim-chunk-${last.length}`]) };
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Big', '');
+        const big = 'Слово повторяется часто '.repeat(1500);
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
+        expect(calls.length).toBeGreaterThan(1);
+        expect(run.status).toBe('completed');
+    });
+
     it('дополнение новыми сведениями расширяет граф', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('OpenCode', '');
