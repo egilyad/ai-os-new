@@ -73,8 +73,16 @@ export interface TopicGraphService {
 
     completeness(topicId: string): Promise<TopicCompleteness>;
 
-    /** Поиск по утверждениям темы (простая реализация; BM25 позже). */
+    /** Поиск по утверждениям темы (jaccard + cosine + graph expansion). */
     search(topicId: string, query: string): Promise<TopicClaim[]>;
+
+    /** Ручная консолидация: глобальная синхронизация концептов и иерархии. */
+    consolidate(topicId: string): Promise<void>;
+
+    /** Нормализованная степень центральности узлов (claims + концепты). */
+    centrality(
+        topicId: string,
+    ): Promise<Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>>;
 
     /** Экспорт отчёта темы в Markdown. */
     exportReport(topicId: string): Promise<string>;

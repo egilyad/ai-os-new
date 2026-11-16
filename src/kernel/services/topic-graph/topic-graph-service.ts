@@ -309,9 +309,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
             // Связи: поддержка между утверждениями с общими концептами.
             const relations = this.discoverRelations(topicId, newClaims);
-            for (const r of relations) {
-                await this.db.topicRelations.put(r);
-            }
+            await this.putUniqueRelations(topicId, relations);
             run.stats.relations = relations.length;
 
             // Evidence: для каждого нового claim — цитата из оригинала + offset.
@@ -375,9 +373,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         if (names.length === 0) return;
         const existing = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         const byName = new Map(existing.map((c) => [c.name, c]));
-        for (const name of names) {
-            const claimIds = allClaims.filter((c) => tokenize(c.text).has(name)).map((c) => c.id);
-            const prev = byName.get(name);
+        for (const rawName of names) {
+            const name = rawName.normalize('NFKC');
+            const claimIds = allClaims.filter((c) => tokenize(c.text).has(rawName)).map((c) => c.id);
+            const prev = byName.get(name) ?? byName.get(rawName);
             if (prev) {
                 await this.db.topicConcepts.put({ ...prev, claimIds });
             } else {
@@ -421,19 +420,26 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
     // ── Concept hierarchy (RAGraph-inspired: topic clustering / PART_OF) ──
 
+    private async putUniqueRelations(topicId: string, relations: TopicRelation[]): Promise<void> {
+        if (relations.length === 0) return;
+        const existing = await this.db.topicRelations.where('topicId').equals(topicId).toArray();
+        const keys = new Set(existing.map((r) => `${r.fromId}|${r.toId}|${r.relation}`));
+        const fresh = relations.filter((r) => {
+            const k = `${r.fromId}|${r.toId}|${r.relation}`;
+            if (keys.has(k)) return false;
+            keys.add(k);
+            return true;
+        });
+        if (fresh.length > 0) {
+            await this.db.topicRelations.bulkPut(fresh as never);
+        }
+    }
+
     private async rebuildConceptRelations(topicId: string): Promise<void> {
         const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         if (concepts.length < 2) return;
-        const conceptIds = new Set(concepts.map((c) => c.id));
-        await this.db.topicRelations
-            .where('topicId')
-            .equals(topicId)
-            .filter((r) => conceptIds.has(r.fromId) && conceptIds.has(r.toId))
-            .delete();
         const relations = buildConceptRelations(topicId, concepts, CONCEPT_COVER_THRESHOLD);
-        if (relations.length > 0) {
-            await this.db.topicRelations.bulkPut(relations as never);
-        }
+        await this.putUniqueRelations(topicId, relations);
     }
 
     private async extractClaimsWithLlm(
@@ -575,13 +581,72 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     async search(topicId: string, query: string): Promise<TopicClaim[]> {
         const q = tokenize(query);
         if (q.size === 0) return [];
-        const claims = await this.claims(topicId);
-        return claims
-            .map((c) => ({ c, sim: jaccard(q, tokenize(c.text)) }))
-            .filter((x) => x.sim > 0)
-            .sort((a, b) => b.sim - a.sim)
-            .map((x) => x.c)
-            .slice(0, 20);
+        let qEmb: number[] | undefined;
+        if (this.deps.embedder) {
+            try {
+                qEmb = (await this.deps.embedder.embed([query]))[0];
+            } catch {
+                qEmb = undefined;
+            }
+        }
+        const [claims, relations] = await Promise.all([this.claims(topicId), this.relations(topicId)]);
+        const scored = claims
+            .map((c) => {
+                let sim = jaccard(q, tokenize(c.text));
+                if (qEmb && c.embedding) {
+                    sim = Math.max(sim, cosine(qEmb, c.embedding));
+                }
+                return { c, sim };
+            })
+            .filter((x) => x.sim > 0);
+        scored.sort((a, b) => b.sim - a.sim);
+        // Graph expansion: соседи топ-сидов получают буст (как в RAGraph).
+        const seeds = new Set(scored.slice(0, 5).map((x) => x.c.id));
+        const boost = new Map<string, number>();
+        for (const r of relations) {
+            const neighbor = seeds.has(r.fromId) ? r.toId : seeds.has(r.toId) ? r.fromId : undefined;
+            if (neighbor) boost.set(neighbor, Math.max(boost.get(neighbor) ?? 0, r.weight));
+        }
+        for (const x of scored) {
+            const b = boost.get(x.c.id);
+            if (b) x.sim += b * 0.15;
+        }
+        scored.sort((a, b) => b.sim - a.sim);
+        return scored.slice(0, 20).map((x) => x.c);
+    }
+
+    /** Пересборка глобальной структуры (концепты + иерархия) по требованию. */
+    async consolidate(topicId: string): Promise<void> {
+        const claims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
+        await this.syncConcepts(topicId, claims);
+        await this.rebuildConceptRelations(topicId);
+    }
+
+    /** Нормализованная степень центральности узлов (claims + концепты). */
+    async centrality(
+        topicId: string,
+    ): Promise<Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>> {
+        const [claims, concepts, relations] = await Promise.all([
+            this.claims(topicId),
+            this.concepts(topicId),
+            this.relations(topicId),
+        ]);
+        const deg = new Map<string, number>();
+        for (const r of relations) {
+            deg.set(r.fromId, (deg.get(r.fromId) ?? 0) + 1);
+            deg.set(r.toId, (deg.get(r.toId) ?? 0) + 1);
+        }
+        const nodes: Array<{ id: string; kind: 'claim' | 'concept' }> = [
+            ...claims.map((c) => ({ id: c.id, kind: 'claim' as const })),
+            ...concepts.map((c) => ({ id: c.id, kind: 'concept' as const })),
+        ];
+        const max = Math.max(1, ...nodes.map((n) => deg.get(n.id) ?? 0));
+        return nodes.map((n) => ({
+            id: n.id,
+            kind: n.kind,
+            degree: deg.get(n.id) ?? 0,
+            normalized: (deg.get(n.id) ?? 0) / max,
+        }));
     }
 
     async exportReport(topicId: string): Promise<string> {
@@ -618,6 +683,19 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         claims.slice(0, 300).forEach((c) => {
             lines.push(`- ${c.text} [${c.sourceIds.length} sources, conf ${c.confidence.toFixed(2)}]`);
         });
+        lines.push('');
+        lines.push('## Key claims (centrality)');
+        lines.push('');
+        const cent = await this.centrality(topicId);
+        const claimById = new Map(claims.map((c) => [c.id, c]));
+        cent
+            .filter((n) => n.kind === 'claim')
+            .sort((a, b) => b.normalized - a.normalized)
+            .slice(0, 5)
+            .forEach((n) => {
+                const c = claimById.get(n.id);
+                if (c) lines.push(`- ${c.text} [centrality ${n.normalized.toFixed(2)}]`);
+            });
         lines.push('');
         lines.push('## Sources');
         lines.push('');
@@ -710,6 +788,37 @@ function buildConceptRelations(
     coverThreshold = CONCEPT_COVER_THRESHOLD,
 ): TopicRelation[] {
     const out: TopicRelation[] = [];
+    const seen = new Set<string>();
+    const push = (r: TopicRelation) => {
+        const key = `${r.fromId}|${r.toId}|${r.relation}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        out.push(r);
+    };
+    // Fallback: супер-фраза (слово B целиком входит в имя A) → part_of.
+    const nameTokens = concepts.map((c) => ({
+        c,
+        tokens: new Set(tokenize(c.name)),
+    }));
+    for (let i = 0; i < nameTokens.length; i++) {
+        for (let j = 0; j < nameTokens.length; j++) {
+            if (i === j) continue;
+            const a = nameTokens[i]!;
+            const b = nameTokens[j]!;
+            if (a.tokens.size === 0 || b.tokens.size === 0) continue;
+            if (b.tokens.size < a.tokens.size && [...b.tokens].every((t) => a.tokens.has(t))) {
+                push({
+                    id: GENERIC_ID('rel'),
+                    topicId,
+                    fromId: b.c.id,
+                    toId: a.c.id,
+                    relation: 'part_of',
+                    weight: 0.85,
+                    createdAt: Date.now(),
+                });
+            }
+        }
+    }
     for (let i = 0; i < concepts.length; i++) {
         for (let j = i + 1; j < concepts.length; j++) {
             const a = concepts[i]!;
@@ -724,7 +833,7 @@ function buildConceptRelations(
             const cover = inter / minSize;
             if (cover >= coverThreshold && aSet.size !== bSet.size) {
                 const [child, parent] = aSet.size < bSet.size ? [a, b] : [b, a];
-                out.push({
+                push({
                     id: GENERIC_ID('rel'),
                     topicId,
                     fromId: child.id,
@@ -734,7 +843,7 @@ function buildConceptRelations(
                     createdAt: Date.now(),
                 });
             } else if (cover >= 0.4) {
-                out.push({
+                push({
                     id: GENERIC_ID('rel'),
                     topicId,
                     fromId: a.id,

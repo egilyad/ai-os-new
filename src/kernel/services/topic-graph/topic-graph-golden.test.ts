@@ -62,6 +62,19 @@ describe('TopicGraph golden corpus', () => {
         // Иерархия концептов: desktop вложен в opencode (part_of).
         expect(relations.some((r) => r.relation === 'part_of')).toBe(true);
 
+        // Консолидация по требованию идемпотентна.
+        await svc.consolidate(topic.id);
+        expect((await svc.relations(topic.id)).some((r) => r.relation === 'part_of')).toBe(true);
+
+        // Центральность считает степень узлов.
+        const cent = await svc.centrality(topic.id);
+        expect(cent.some((n) => n.kind === 'claim' && n.normalized > 0)).toBe(true);
+
+        // Гибридный поиск находит релевантные утверждения.
+        const found = await svc.search(topic.id, 'OpenCode version 1.19.4');
+        expect(found.length).toBeGreaterThanOrEqual(1);
+        expect(found.some((c) => c.text.includes('1.19.4'))).toBe(true);
+
         // Всё evidence имеет source-происхождение и корректные offsets.
         const evs = await getTopicGraphDB().topicEvidence.toArray();
         expect(evs.length).toBeGreaterThan(0);
