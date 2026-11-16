@@ -136,7 +136,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return updated;
     }
 
-    async deleteTopic(id: string): Promise<boolean> {
+    async archiveTopic(id: string): Promise<Topic | undefined> {
+        return this.updateTopic(id, { status: 'archived' });
+    }
+
+    async deleteTopic(id: string, confirm = false): Promise<boolean> {
+        if (!confirm) return false;
         const topic = await this.db.topics.get(id);
         if (!topic) return false;
         await this.db.topics.delete(id);
@@ -371,13 +376,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 const b = claims[j]!;
                 const inter = [...tokenize(a.text)].filter((w) => tokenize(b.text).has(w)).length;
                 if (inter >= 2) {
+                    const contradicts = hasNegation(a.text) !== hasNegation(b.text);
                     out.push({
                         id: GENERIC_ID('rel'),
                         topicId,
                         fromId: a.id,
                         toId: b.id,
-                        relation: 'supports',
-                        weight: Math.min(1, 0.4 + inter * 0.1),
+                        relation: contradicts ? 'contradicts' : 'related_to',
+                        weight: contradicts
+                            ? Math.min(1, 0.4 + inter * 0.1)
+                            : Math.max(0.3, Math.min(0.6, inter * 0.15)),
                         createdAt: Date.now(),
                     });
                 }
@@ -486,13 +494,21 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             this.conflicts(topicId),
             this.sources(topicId),
         ]);
-        const coverage = claims.length === 0 ? 0 : Math.min(1, claims.length / 20);
+        const conceptScore = Math.min(1, concepts.length / 5);
+        const sourceScore = Math.min(1, sources.length / 3);
+        const claimScore = Math.min(1, claims.length / 20);
+        const coverage = Math.round((conceptScore * 0.5 + sourceScore * 0.3 + claimScore * 0.2) * 100) / 100;
         return {
             totalClaims: claims.length,
             uniqueConcepts: concepts.length,
             conflicts: conflicts.length,
             sources: sources.length,
             coverage,
+            criteria: [
+                { name: 'concepts', score: conceptScore },
+                { name: 'sources', score: sourceScore },
+                { name: 'claims', score: claimScore },
+            ],
         };
     }
 

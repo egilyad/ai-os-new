@@ -65,7 +65,8 @@ export type TopicRelationType =
     | 'depends_on'
     | 'example_of'
     | 'same_as'
-    | 'cites';
+    | 'cites'
+    | 'related_to';
 
 export interface TopicRelation {
     id: string;

@@ -19,13 +19,21 @@ export interface IngestPayload {
     meta?: Record<string, unknown>;
 }
 
+export interface TopicCompletenessCriteria {
+    name: string;
+    /** Оценка критерия 0..1. */
+    score: number;
+}
+
 export interface TopicCompleteness {
     totalClaims: number;
     uniqueConcepts: number;
     conflicts: number;
     sources: number;
-    /** Оценка полноты 0..1 (по ожидаемым подтемам, если заданы). */
+    /** Оценка полноты 0..1 (взвешенная по критериям). */
     coverage: number;
+    /** Разбиение оценки по критериям. */
+    criteria: TopicCompletenessCriteria[];
 }
 
 export interface TopicGraphDeps {
@@ -42,7 +50,10 @@ export interface TopicGraphService {
     listTopics(): Promise<Topic[]>;
     getTopic(id: string): Promise<Topic | undefined>;
     updateTopic(id: string, patch: Partial<Pick<Topic, 'title' | 'description' | 'status'>>): Promise<Topic | undefined>;
-    deleteTopic(id: string): Promise<boolean>;
+    /** Удаление только при confirm: true (каскадное, уничтожает источники). */
+    deleteTopic(id: string, confirm?: boolean): Promise<boolean>;
+    /** Архивирование: сохраняет все данные, тема уходит из активных. */
+    archiveTopic(id: string): Promise<Topic | undefined>;
 
     /** Добавить источник и запустить инкрементальную обработку. */
     ingest(topicId: string, payload: IngestPayload): Promise<TopicProcessingRun>;

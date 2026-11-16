@@ -76,6 +76,12 @@ describe('TopicGraph quality corpus', () => {
         const conflicts = await svc.conflicts(topic.id);
         const mcpConflict = conflicts.find((cf) => cf.reason.includes('polarity'));
         expect(mcpConflict).toBeTruthy();
+
+        // Связи: противоречие → contradicticts, иначе нейтральная related_to.
+        const relations = await svc.relations(topic.id);
+        expect(relations.some((r) => r.relation === 'contradicts')).toBe(true);
+        expect(relations.every((r) => r.relation === 'contradicts' || r.relation === 'related_to')).toBe(true);
+        expect(relations.some((r) => r.relation === 'supports')).toBe(false);
     });
 
     it('несовпадающие цифры не теряются и не схлопываются', async () => {

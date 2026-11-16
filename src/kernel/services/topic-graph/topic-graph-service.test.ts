@@ -10,7 +10,7 @@ describe('TopicGraphService (MVP)', () => {
         await db.open();
     });
 
-    it('createTopic → list/get/update/delete', async () => {
+    it('createTopic → list/get/update/archive/delete (с подтверждением)', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('Water from air', 'study');
         expect(topic.id).toBeTruthy();
@@ -21,7 +21,13 @@ describe('TopicGraphService (MVP)', () => {
         const updated = await svc.updateTopic(topic.id, { status: 'paused' });
         expect(updated?.status).toBe('paused');
 
-        expect(await svc.deleteTopic(topic.id)).toBe(true);
+        const archived = await svc.archiveTopic(topic.id);
+        expect(archived?.status).toBe('archived');
+
+        expect(await svc.deleteTopic(topic.id)).toBe(false);
+        expect(await svc.getTopic(topic.id)).toBeTruthy();
+
+        expect(await svc.deleteTopic(topic.id, true)).toBe(true);
         expect(await svc.getTopic(topic.id)).toBeUndefined();
     });
 
