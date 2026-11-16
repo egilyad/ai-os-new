@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { getContainer } from '../../kernel/service-helper';
+import { projectManagerService } from '../../kernel/instances/services-extras';
 import { tokens } from '../../styles/tokens';
 import type {
     Topic,
@@ -45,6 +46,8 @@ export default function TopicGraphPanel() {
     const [ingestTitle, setIngestTitle] = useState('');
     const [coverage, setCoverage] = useState<{ totalClaims: number; uniqueConcepts: number; conflicts: number; sources: number; coverage: number } | null>(null);
     const [message, setMessage] = useState('');
+    const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
+    const [exportProjectId, setExportProjectId] = useState('');
 
     const svc = useCallback((): TopicGraphService => {
         return getContainer().get<TopicGraphService>('topicGraphService');
@@ -63,6 +66,17 @@ export default function TopicGraphPanel() {
     useEffect(() => {
         void loadTopics();
         // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        void projectManagerService
+            .list()
+            .then((list) => {
+                const mapped = list.map((p) => ({ id: p.id, name: p.name }));
+                setProjects(mapped);
+                if (mapped.length > 0) setExportProjectId(mapped[0]!.id);
+            })
+            .catch(() => setMessage('Не удалось загрузить проекты'));
     }, []);
 
     useEffect(() => {
@@ -104,14 +118,14 @@ export default function TopicGraphPanel() {
     };
 
     const exportToProject = async () => {
-        if (!selectedTopic) return;
+        if (!selectedTopic || !exportProjectId) return;
         try {
             const repo = getContainer().get<{
                 putFile(input: { projectId: string; path: string; content: string; createdAt: number; updatedAt: number }): Promise<void>;
             }>('projectRepository');
             const path = await svc().exportToProject(
                 { putFile: (input) => repo.putFile(input) },
-                'proj-opencode-info', // TODO: дать выбрать проект
+                exportProjectId,
                 selectedTopic,
             );
             setMessage(path ? `Экспортировано: ${path.path}` : 'Экспорт не выполнен');
@@ -240,10 +254,21 @@ export default function TopicGraphPanel() {
                     <button onClick={() => void ingest()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: tokens.accent, color: tokens.slate[950], fontWeight: 700, cursor: 'pointer' }}>
                         Ingest
                     </button>
+                    <select
+                        value={exportProjectId}
+                        onChange={(e) => setExportProjectId(e.target.value)}
+                        title="Проект для экспорта"
+                        style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'var(--slate-300)', maxWidth: 180 }}
+                    >
+                        {projects.map((p) => (
+                            <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                    </select>
                     <button
                         onClick={() => void exportToProject()}
+                        disabled={!exportProjectId}
                         title="Экспорт отчёта темы в проект (TopicResults/)"
-                        style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--slate-300)', fontWeight: 600, cursor: 'pointer' }}
+                        style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: exportProjectId ? 'var(--slate-300)' : 'var(--slate-600)', fontWeight: 600, cursor: exportProjectId ? 'pointer' : 'not-allowed' }}
                     >
                         Экспорт в проект
                     </button>
