@@ -40,6 +40,13 @@ export class ProjectGraphRepository {
         await db.edges.where('to').equals(id).delete();
     }
 
+    /** Полностью очистить граф проекта (узлы и рёбра с данным projectId). */
+    async clearProject(projectId: string): Promise<void> {
+        const db = getProjectGraphDB();
+        await db.nodes.where('projectId').equals(projectId).delete();
+        await db.edges.where('projectId').equals(projectId).delete();
+    }
+
     async putEdge(edge: ProjectGraphEdge): Promise<void> {
         await getProjectGraphDB().edges.put(edge as never);
     }

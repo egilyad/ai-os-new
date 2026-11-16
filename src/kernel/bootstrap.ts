@@ -540,6 +540,13 @@ export class SystemBootstrap implements IBootstrap {
         });
         this.eventBus.emit(EVENTS.RUNTIME_READY, { timestamp: Date.now() });
         this.phase = 'ready';
+        // Seed OpenCodeInfo: проект-граф с демо-данными (центр + статьи + сайт).
+        // Сервис зарегистрирован в phase81; вызов фабрики запускает сид.
+        try {
+            this.container.get('openCodeInfoSeedBootstrap' as never);
+        } catch (e) {
+            this.logger.warn('Bootstrap', 'OpenCodeInfo seed trigger failed', { error: e });
+        }
         return true;
     }
 

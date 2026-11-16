@@ -30,6 +30,13 @@ import {
     knowledgeUnitService,
 } from '../services/wiki-brain/wiki-knowledge-unit.service';
 import { WikiResearchService } from '../services/wiki-brain/wiki-research.service';
+import { ensureOpenCodeInfoProject } from '../services/project-bootstrap';
+import { seedOpenCodeInfo } from '../services/project-opencodeinfo-seed';
+import { rootLogger } from '../services/logger-service';
+import type { ProjectRepository } from '../dal/project-repository';
+import type { ProjectGraphService } from '../services/project-graph/project-graph-service';
+
+const LOGGER = rootLogger.child('Phase81WikiBrain');
 
 function wikiLlm(c: IContainer): WikiLlmClient | null {
     if (!c.has('llmClientService')) return null;
@@ -132,5 +139,30 @@ export const registerPhase81: Phase = ({ register }, ctx) => {
             units: c.get('knowledgeUnitService'),
             llm: llm ?? undefined,
         });
+    });
+
+    // Seed OpenCodeInfo: выполняется после того, как зарегистрированы и
+    // wikiBrainService (только что), и projectGraphService (phase66). Отложен
+    // на микротаск, чтобы ленивая инициализация всех сервисов успела.
+    register('openCodeInfoSeedBootstrap', (c) => {
+        queueMicrotask(() => {
+            void (async () => {
+                try {
+                    await ensureOpenCodeInfoProject(
+                        c.get<ProjectRepository>('projectRepository'),
+                        c.get<IEventBus>('eventBus'),
+                    );
+                    const graphSvc = c.get<ProjectGraphService>('projectGraphService');
+                    const result = await seedOpenCodeInfo(
+                        graphSvc,
+                        c.get<ProjectRepository>('projectRepository'),
+                    );
+                    LOGGER.info('Phase81WikiBrain', 'seed OpenCodeInfo', { result });
+                } catch (e) {
+                    LOGGER.warn('Phase81WikiBrain', 'seed failed', { error: e });
+                }
+            })();
+        });
+        return {};
     });
 };

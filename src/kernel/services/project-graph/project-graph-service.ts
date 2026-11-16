@@ -198,6 +198,11 @@ export class ProjectGraphService {
         return updated;
     }
 
+    /** Полностью очистить граф проекта (узлы и рёбра с данным projectId). */
+    async clearProject(projectId: string): Promise<void> {
+        await this.repo.clearProject(projectId);
+    }
+
     async listProject(
         projectId: string,
     ): Promise<{ nodes: ProjectGraphNode[]; edges: ProjectGraphEdge[] }> {

@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { projectManagerService } from '../../kernel/instances/services-extras';
 import { ProjectGraphRepository } from '../../kernel/services/project-graph/project-graph-repository';
 import { getWikiBrainDB } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
+import { getContainer } from '../../kernel/service-helper';
 import { useTranslation } from '../../i18n/useTranslation';
 import { buildNavigationGraphData } from '../Common/navigation-graph-data';
+import { OPENCODE_INFO_PROJECT_ID } from '../../kernel/services/project-bootstrap';
 import type { ProjectGraphNode, ProjectGraphEdge } from '../../kernel/types/project-types';
 import VisGraph from '../Common/VisGraph';
 import {
@@ -98,6 +101,7 @@ const GraphStudioPanel: React.FC = () => {
     const [edges, setEdges] = useState<ProjectGraphEdge[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<{ path: string; content: string } | null>(null);
     const [config, setConfig] = useState<GraphStudioConfig>(loadGraphStudioConfig);
     const graphRef = useRef<{
         focus(id: string): void;
@@ -105,6 +109,7 @@ const GraphStudioPanel: React.FC = () => {
         stabilize(iterations?: number): void;
     } | null>(null);
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         void projectManagerService
@@ -261,6 +266,31 @@ const GraphStudioPanel: React.FC = () => {
 
     const visibleNodes = filtered.nodes;
     const visibleEdges = filtered.edges;
+
+    useEffect(() => {
+        if (visibleNodes.length === 0) return;
+        const timer = setTimeout(() => {
+            graphRef.current?.fit();
+        }, 350);
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [source, projectId, loading]);
+
+    const openProjectFile = async (path: string) => {
+        try {
+            const repo = getContainer().get<{
+                getFile(projectId: string, filePath: string): Promise<{ content: string } | undefined>;
+            }>('projectRepository');
+            const file = await repo.getFile(OPENCODE_INFO_PROJECT_ID, path);
+            if (file) {
+                setSelectedFile({ path, content: file.content });
+            } else {
+                setSelectedFile({ path, content: '(пусто)' });
+            }
+        } catch (e) {
+            setSelectedFile({ path, content: `Ошибка чтения: ${e instanceof Error ? e.message : String(e)}` });
+        }
+    };
 
     useEffect(() => {
         const q = config.semantics.query.trim().toLowerCase();
@@ -493,24 +523,6 @@ const GraphStudioPanel: React.FC = () => {
                     <label style={labelStyle}>
                         <input
                             type="checkbox"
-                            checked={config.interaction.highlightNeighbors}
-                            onChange={(e) =>
-                                setInteraction({ highlightNeighbors: e.target.checked })
-                            }
-                        />{' '}
-                        Highlight neighbors
-                    </label>
-                    <label style={labelStyle}>
-                        <input
-                            type="checkbox"
-                            checked={config.interaction.dimOthers}
-                            onChange={(e) => setInteraction({ dimOthers: e.target.checked })}
-                        />{' '}
-                        Dim others
-                    </label>
-                    <label style={labelStyle}>
-                        <input
-                            type="checkbox"
                             checked={config.interaction.dragNodes}
                             onChange={(e) => setInteraction({ dragNodes: e.target.checked })}
                         />{' '}
@@ -538,16 +550,74 @@ const GraphStudioPanel: React.FC = () => {
                     onReady={(ref) => {
                         graphRef.current = ref;
                     }}
+                    onClickNode={(node) => {
+                        const n = filtered.nodes.find((x) => x.id === node.id);
+                        if (!n) return;
+                        if (n.refType === 'project-file' && n.refId) {
+                            void openProjectFile(n.refId);
+                        } else if (n.refType === 'wiki-page' && n.refId) {
+                            navigate(`/wiki-brain?slug=${encodeURIComponent(n.refId)}`);
+                        }
+                    }}
                     interactionOptions={{
                         hover: true,
-                        highlightNeighbors: config.interaction.highlightNeighbors,
-                        dimOthers: config.interaction.dimOthers,
                         dragNodes: config.interaction.dragNodes,
                         dragView: true,
                         zoomView: true,
                     }}
                     physicsOptions={physicsOptions}
                 />
+                {selectedFile && (
+                    <div
+                        style={{
+                            marginTop: 10,
+                            border: '1px solid var(--border)',
+                            borderRadius: 10,
+                            background: 'var(--bg-elevated)',
+                            overflow: 'hidden',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '6px 10px',
+                                borderBottom: '1px solid var(--border)',
+                                fontSize: 12,
+                            }}
+                        >
+                            <code style={{ color: '#60a5fa' }}>{selectedFile.path}</code>
+                            <button
+                                onClick={() => setSelectedFile(null)}
+                                style={{
+                                    border: 'none',
+                                    background: 'transparent',
+                                    color: 'var(--slate-400)',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <pre
+                            style={{
+                                margin: 0,
+                                padding: 10,
+                                maxHeight: 260,
+                                overflow: 'auto',
+                                fontSize: 12,
+                                lineHeight: 1.5,
+                                color: 'var(--slate-200)',
+                                whiteSpace: 'pre-wrap',
+                                wordBreak: 'break-word',
+                            }}
+                        >
+                            {selectedFile.content}
+                        </pre>
+                    </div>
+                )}
             </div>
         </div>
     );

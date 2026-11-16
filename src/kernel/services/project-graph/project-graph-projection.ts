@@ -2,6 +2,7 @@ import { eventBus } from '../../events/event-bus';
 import { EVENTS } from '../../events/event-names';
 import type { ProjectGraphService } from './project-graph-service';
 import { rootLogger } from '../logger-service';
+import { OPENCODE_INFO_PROJECT_ID } from '../project-bootstrap';
 
 const LOGGER = rootLogger.child('ProjectGraphProjection');
 
@@ -248,23 +249,60 @@ export class ProjectGraphProjection {
             eventBus.on(EVENTS.WIKI_PAGE_WRITTEN as never, (d) => {
                 const data = d as { pageId?: string; slug?: string; projectId?: string };
                 if (!data.pageId || !data.projectId) return;
+                const pid = data.projectId;
                 void (async () => {
                     try {
                         const pageNode = await this.graph.upsertNode({
-                            projectId: data.projectId!,
+                            projectId: pid,
                             kind: 'knowledge',
                             label: data.slug ?? data.pageId!,
                             refType: 'wiki-page',
                             refId: data.pageId,
                         });
                         await this.graph.link({
-                            projectId: data.projectId!,
-                            from: data.projectId!,
+                            projectId: pid,
+                            from: pid,
                             to: pageNode.id,
                             relation: 'contains',
                         });
                     } catch (e) {
                         LOGGER.warn('ProjectGraphProjection', 'wiki node failed', { error: e });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
+            eventBus.on('workspace:file:written' as never, (d) => {
+                const data = d as { projectId?: string; path?: string; size?: number };
+                if (!data.projectId || !data.path) return;
+                const path = String(data.path);
+                const ext = path.split('.').pop()?.toLowerCase() ?? '';
+                const kind =
+                    ext === 'html'
+                        ? 'website'
+                        : ext === 'md'
+                          ? path === 'README.md'
+                              ? 'concept'
+                              : 'knowledge'
+                          : 'artifact';
+                void (async () => {
+                    try {
+                        const node = await this.graph.upsertNode({
+                            projectId: data.projectId!,
+                            kind,
+                            label: path.split('/').pop() ?? path,
+                            refType: 'project-file',
+                            refId: path,
+                        });
+                        await this.graph.link({
+                            projectId: data.projectId!,
+                            from: data.projectId!,
+                            to: node.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'file node failed', { error: e });
                     }
                 })();
             }),

@@ -31,8 +31,6 @@ interface Props {
     hierarchical?: boolean;
     interactionOptions?: {
         hover?: boolean;
-        highlightNeighbors?: boolean;
-        dimOthers?: boolean;
         dragNodes?: boolean;
         dragView?: boolean;
         zoomView?: boolean;

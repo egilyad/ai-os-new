@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import {
@@ -24,6 +25,7 @@ import type { Artifact } from '../../kernel/types/artifact-types';
 import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
 import type { PythonRun } from '../../kernel/types/python-runtime-types';
+import type { WorkspaceTreeEntry } from '../../kernel/types/workspace-types';
 
 const CARD: React.CSSProperties = {
     margin: '0.5rem 0',
@@ -121,6 +123,7 @@ const TABS: Tab[] = [
 
 const ProjectsPanel: React.FC = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     // Selective subscription: tasks/runs/files/assignments churn on every
     // run update — this panel only needs the project list slice.
     const {
@@ -156,6 +159,8 @@ const ProjectsPanel: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState('');
     const [typeFilter, setTypeFilter] = useState('');
     const [files, setFiles] = useState<string[]>([]);
+    const [tree, setTree] = useState<WorkspaceTreeEntry[]>([]);
+    const [expandedDirs, setExpandedDirs] = useState<Set<string>>(() => new Set());
     const [previewHtml, setPreviewHtml] = useState('');
     const [qaScore, setQaScore] = useState<number | null>(null);
     const [qaIssues, setQaIssues] = useState<string[]>([]);
@@ -206,6 +211,7 @@ const ProjectsPanel: React.FC = () => {
             if (activeTab === 'files') {
                 const tree = await projectWorkspaceService.getTree(selectedId);
                 if (!isCurrent()) return;
+                setTree(Array.isArray(tree) ? tree : []);
                 setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
             } else if (activeTab === 'preview') {
                 const r = await websitePreviewService.generatePreview(selectedId);
@@ -447,7 +453,12 @@ const ProjectsPanel: React.FC = () => {
             setNewFilePath('');
             setNewFileContent('');
             const tree = await projectWorkspaceService.getTree(selectedId);
+            setTree(Array.isArray(tree) ? tree : []);
             setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
+            const parent = newFilePath.trim().split('/').slice(0, -1).join('/');
+            if (parent) {
+                setExpandedDirs((prev) => new Set(prev).add(parent));
+            }
             await handleReadFile(newFilePath.trim());
         });
     };
@@ -535,6 +546,7 @@ const ProjectsPanel: React.FC = () => {
             await artifactService.restoreSnapshot(snapshotId);
             if (selectedId) {
                 const tree = await projectWorkspaceService.getTree(selectedId);
+                setTree(Array.isArray(tree) ? tree : []);
                 setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
             }
         });
@@ -646,6 +658,15 @@ const ProjectsPanel: React.FC = () => {
                             aria-label={t('projects.seed_demo')}
                         >
                             ☕
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => navigate('/graph-studio')}
+                            title="Граф проекта"
+                            aria-label="Граф проекта"
+                        >
+                            🌐 Граф
                         </Button>
                         <Button
                             variant="primary"
@@ -999,16 +1020,20 @@ const ProjectsPanel: React.FC = () => {
                                 No files. Apply a template or create files via agent.
                             </p>
                         )}
-                        {files.map((f) => (
-                            <div
-                                key={f}
-                                style={{ ...FILE_ROW, cursor: 'pointer' }}
-                                onClick={() => void handleReadFile(f)}
-                            >
-                                <span>{f}</span>
-                                <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>👁</span>
-                            </div>
-                        ))}
+                        <FileTree
+                            entries={tree}
+                            depth={0}
+                            expandedDirs={expandedDirs}
+                            onToggleDir={(dirPath) =>
+                                setExpandedDirs((prev) => {
+                                    const next = new Set(prev);
+                                    if (next.has(dirPath)) next.delete(dirPath);
+                                    else next.add(dirPath);
+                                    return next;
+                                })
+                            }
+                            onOpenFile={(path) => void handleReadFile(path)}
+                        />
                         {selectedFile && fileError && (
                             <p style={{ color: 'var(--error)', fontSize: '0.8rem' }}>{fileError}</p>
                         )}
@@ -1809,5 +1834,60 @@ const ProjectsPanel: React.FC = () => {
         </div>
     );
 };
+
+function FileTree({
+    entries,
+    depth,
+    expandedDirs,
+    onToggleDir,
+    onOpenFile,
+}: {
+    entries: WorkspaceTreeEntry[];
+    depth: number;
+    expandedDirs: Set<string>;
+    onToggleDir: (path: string) => void;
+    onOpenFile: (path: string) => void;
+}) {
+    return (
+        <>
+            {entries.map((entry) => (
+                <div key={entry.path} style={{ paddingLeft: depth * 14 }}>
+                    {entry.type === 'dir' ? (
+                        <div
+                            style={{ ...FILE_ROW, cursor: 'pointer' }}
+                            onClick={() => onToggleDir(entry.path)}
+                        >
+                            <span>
+                                {expandedDirs.has(entry.path) ? '📂' : '📁'} {entry.path}
+                            </span>
+                            <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>
+                                {expandedDirs.has(entry.path) ? '▼' : '▶'}
+                            </span>
+                        </div>
+                    ) : (
+                        <div
+                            style={{ ...FILE_ROW, cursor: 'pointer' }}
+                            onClick={() => onOpenFile(entry.path)}
+                        >
+                            <span>📄 {entry.path}</span>
+                            <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>
+                                {entry.size != null ? `${entry.size} B` : ''}
+                            </span>
+                        </div>
+                    )}
+                    {entry.type === 'dir' && expandedDirs.has(entry.path) && entry.children && (
+                        <FileTree
+                            entries={entry.children}
+                            depth={depth + 1}
+                            expandedDirs={expandedDirs}
+                            onToggleDir={onToggleDir}
+                            onOpenFile={onOpenFile}
+                        />
+                    )}
+                </div>
+            ))}
+        </>
+    );
+}
 
 export default ProjectsPanel;

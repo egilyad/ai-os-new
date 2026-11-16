@@ -27,7 +27,7 @@ export function createProjectGraphDB(dbName = 'aios-project-graph'): ProjectGrap
 }
 
 export function getProjectGraphDB(): ProjectGraphDB {
-    if (!_db) throw new Error('ProjectGraphDB not initialized — call createProjectGraphDB() first');
+    if (!_db) _db = new ProjectGraphDB();
     return _db;
 }
 

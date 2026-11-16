@@ -17,8 +17,6 @@ export interface GraphStudioConfig {
         edgeThicknessScale: number;
     };
     interaction: {
-        highlightNeighbors: boolean;
-        dimOthers: boolean;
         dragNodes: boolean;
     };
 }
@@ -33,7 +31,7 @@ export const DEFAULT_GRAPH_STUDIO_CONFIG: GraphStudioConfig = {
         frozen: false,
     },
     style: { nodeSizeMode: 'degree', palette: 'default', edgeThicknessScale: 1 },
-    interaction: { highlightNeighbors: true, dimOthers: true, dragNodes: true },
+    interaction: { dragNodes: true },
 };
 
 export interface GraphStudioPreset {
@@ -41,7 +39,7 @@ export interface GraphStudioPreset {
     label: string;
     config: Omit<GraphStudioConfig, 'semantics' | 'interaction'> & {
         semantics: { proximityThreshold: number; hideOrphans: boolean; query: string };
-        interaction: { highlightNeighbors: boolean; dimOthers: boolean; dragNodes: boolean };
+        interaction: { dragNodes: boolean };
     };
 }
 
@@ -64,7 +62,7 @@ export const GRAPH_STUDIO_PRESETS: GraphStudioPreset[] = [
                 frozen: false,
             },
             style: { nodeSizeMode: 'fixed', palette: 'default', edgeThicknessScale: 0.8 },
-            interaction: { highlightNeighbors: true, dimOthers: true, dragNodes: true },
+            interaction: { dragNodes: true },
         },
     },
     {
@@ -80,7 +78,7 @@ export const GRAPH_STUDIO_PRESETS: GraphStudioPreset[] = [
                 frozen: false,
             },
             style: { nodeSizeMode: 'degree', palette: 'clusters', edgeThicknessScale: 1.2 },
-            interaction: { highlightNeighbors: true, dimOthers: true, dragNodes: true },
+            interaction: { dragNodes: true },
         },
     },
     {
@@ -96,7 +94,7 @@ export const GRAPH_STUDIO_PRESETS: GraphStudioPreset[] = [
                 frozen: false,
             },
             style: { nodeSizeMode: 'degree', palette: 'neon', edgeThicknessScale: 1.4 },
-            interaction: { highlightNeighbors: true, dimOthers: true, dragNodes: true },
+            interaction: { dragNodes: true },
         },
     },
 ];
