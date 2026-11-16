@@ -1,5 +1,6 @@
 import type { ProjectRepository } from '../dal/project-repository';
 import type { ProjectGraphService } from './project-graph/project-graph-service';
+import { ensureFilePathTree } from './project-graph/file-tree-projection';
 import { OPENCODE_INFO_PROJECT_ID } from './project-bootstrap';
 import { rootLogger } from './logger-service';
 
@@ -24,7 +25,7 @@ documented in Sidekick: /context, /status, /checkpoint, /sessions, /wiki,
 /vault, /sync, /pr, /ci, /check.`,
     },
     {
-        path: 'docs/server-api.md',
+        path: 'docs/api/server.md',
         title: 'OpenCode Server API',
         body: `# OpenCode Server API
 
@@ -32,7 +33,7 @@ Local HTTP server endpoints: /global/health, /session, /project,
 /session/:id/command, /session/:id/prompt_async, /event (SSE). OpenAPI at /doc.`,
     },
     {
-        path: 'docs/mcp.md',
+        path: 'docs/mcp/index.md',
         title: 'OpenCode MCP',
         body: `# MCP in OpenCode
 
@@ -48,12 +49,27 @@ A lightweight external app: command cards, Skills/Tools/Hooks, Roadmaps,
 Audits, Prompts. Run with: npm start (opencode-sidekick folder).`,
     },
     {
-        path: 'docs/workflow.md',
+        path: 'docs/workflow/github.md',
         title: 'GitHub Workflow',
         body: `# GitHub Workflow
 
 GitHub rules and commands: /sync (ff-only pull), /pr (PR, base=main), /ci
 (Actions status). Commits go through commitlint, no force-push.`,
+    },
+    {
+        path: 'docs/research/notes/paper.md',
+        title: 'Research Notes',
+        body: `# Research Notes
+
+A nested article to demonstrate deep file hierarchy: project -> docs ->
+research -> notes -> paper.md.`,
+    },
+    {
+        path: 'docs/tools/runbook.md',
+        title: 'Tools Runbook',
+        body: `# Tools Runbook
+
+Nested file: project -> docs -> tools -> runbook.md.`,
     },
 ];
 
@@ -83,17 +99,11 @@ const DEMO_SITE_HTML = `<!DOCTYPE html>
 <h1>OpenCodeInfo</h1>
 <p>Project-graph of the system: central OpenCode node + articles + site.</p>
 <div class="card"><strong>OpenCode</strong> - the central node.
-  Linked articles: CLI, Server API, MCP, Sidekick, Workflow.</div>
+  Linked articles: CLI, API, MCP, Sidekick, Workflow and nested docs.</div>
 <div class="card"><strong>Project site</strong> - this demo site is created
   by the OpenCodeInfo seed.</div>
 </main></body></html>`;
 
-/**
- * Идемпотентное наполнение демо-графа OpenCodeInfo:
- * - создаёт отсутствующие узлы/рёбра (upsert по refId);
- * - создаёт демо-файлы только если их ещё нет (не затирает правки);
- * - НЕ удаляет пользовательские узлы, связи и файлы.
- */
 export async function seedOpenCodeInfo(
     graph: ProjectGraphService,
     repo: ProjectRepository,
@@ -119,56 +129,76 @@ export async function seedOpenCodeInfo(
         filesCreated++;
     }
 
-    // Узел-центр (README.md) + связи к статьям (link дедуплицируется).
+    const pid = OPENCODE_INFO_PROJECT_ID;
+    const { nodes } = await graph.listProject(pid);
+
+    // Удаляем старые «прямые» contains-рёбра от проекта к демо-узлам
+    // (файлы/папки), чтобы граф отражал только новую иерархию от центра.
+    const demoIds = new Set(
+        nodes
+            .filter((n) => n.refType === 'project-file' || n.refType === 'project-dir')
+            .map((n) => n.id),
+    );
+    const edges = await graph.listEdges(pid);
+    for (const e of edges) {
+        if (e.relation === 'contains' && e.from === pid && demoIds.has(e.to)) {
+            await graph.removeEdge(e.id);
+        }
+    }
+
+    // Центр: README.md — корень дерева.
     const center = await graph.upsertNode({
-        projectId: OPENCODE_INFO_PROJECT_ID,
+        projectId: pid,
         kind: 'concept',
         label: 'OpenCode',
         refType: 'project-file',
         refId: CENTER_PATH,
     });
-    for (const a of ARTICLES) {
-        const node = await graph.upsertNode({
-            projectId: OPENCODE_INFO_PROJECT_ID,
-            kind: 'knowledge',
-            label: a.title,
-            refType: 'project-file',
-            refId: a.path,
-        });
-        await graph.link({
-            projectId: OPENCODE_INFO_PROJECT_ID,
-            from: center.id,
-            to: node.id,
-            relation: 'cites',
-        });
+    await graph.link({ projectId: pid, from: pid, to: center.id, relation: 'contains' });
+
+    // Строим дерево от центра для всех демо-файлов (в т.ч. старых путей).
+    const existingFiles = nodes
+        .filter((n) => n.refType === 'project-file' && n.refId)
+        .map((n) => n.refId as string);
+    const paths = [...new Set([...existingFiles, ...files.map((f) => f.path)])];
+
+    const fileIds = new Map<string, string>();
+    fileIds.set(CENTER_PATH, center.id);
+    for (const p of paths) {
+        if (p === CENTER_PATH) continue;
+        const { fileNodeId } = await ensureFilePathTree(graph, pid, p, { rootId: center.id });
+        fileIds.set(p, fileNodeId);
     }
 
-    // Узел-сайт (index.html).
-    const siteNode = await graph.upsertNode({
-        projectId: OPENCODE_INFO_PROJECT_ID,
-        kind: 'website',
-        label: 'OpenCodeInfo Site',
-        refType: 'project-file',
-        refId: 'index.html',
-    });
-    await graph.link({
-        projectId: OPENCODE_INFO_PROJECT_ID,
-        from: center.id,
-        to: siteNode.id,
-        relation: 'produces',
-    });
-    await graph.link({
-        projectId: OPENCODE_INFO_PROJECT_ID,
-        from: OPENCODE_INFO_PROJECT_ID,
-        to: siteNode.id,
-        relation: 'contains',
-    });
+    // Убираем любые прямые рёбра от центра к не-корневым элементам
+    // (путь содержит '/'), чтобы связи шли только через папки.
+    const fresh = await graph.listProject(pid);
+    const freshNodeById = new Map(fresh.nodes.map((n) => [n.id, n] as const));
+    for (const e of fresh.edges) {
+        if (e.from !== center.id) continue;
+        const target = freshNodeById.get(e.to);
+        if (
+            target &&
+            (target.refType === 'project-file' || target.refType === 'project-dir') &&
+            target.refId &&
+            target.refId.includes('/')
+        ) {
+            await graph.removeEdge(e.id);
+        }
+    }
+
+    // Центр → сайт (корневой файл): семантическая связь «производит».
+    const siteId = fileIds.get('index.html');
+    if (siteId) {
+        await graph.link({ projectId: pid, from: center.id, to: siteId, relation: 'produces' });
+    }
 
     LOGGER.info('OpenCodeInfoSeed', 'seeded idempotently', {
         filesCreated,
-        nodes: files.length,
+        files: files.length,
+        paths: paths.length,
     });
-    return { files: filesCreated, nodes: files.length };
+    return { files: filesCreated, nodes: paths.length };
 }
 
 /**

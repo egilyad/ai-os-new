@@ -203,6 +203,16 @@ export class ProjectGraphService {
         await this.repo.clearProject(projectId);
     }
 
+    /** Получить рёбра проекта (или все, если projectId не задан). */
+    async listEdges(projectId?: string): Promise<ProjectGraphEdge[]> {
+        return this.repo.listEdges(projectId);
+    }
+
+    /** Удалить ребро по id. */
+    async removeEdge(id: string): Promise<void> {
+        await this.repo.removeEdge(id);
+    }
+
     async listProject(
         projectId: string,
     ): Promise<{ nodes: ProjectGraphNode[]; edges: ProjectGraphEdge[] }> {

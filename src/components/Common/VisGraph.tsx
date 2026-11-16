@@ -81,6 +81,13 @@ const VisGraph: React.FC<Props> = ({
                 font: { color: 'var(--slate-300)', size: 12 },
                 borderWidth: n.borderColor ? 3 : 2,
                 shadow: true,
+                ...(typeof n.x === 'number' && typeof n.y === 'number'
+                    ? {
+                          x: n.x,
+                          y: n.y,
+                          fixed: { x: true, y: true },
+                      }
+                    : {}),
             })),
         [nodes],
     );

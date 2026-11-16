@@ -2,6 +2,7 @@ import { eventBus } from '../../events/event-bus';
 import { EVENTS } from '../../events/event-names';
 import type { ProjectGraphService } from './project-graph-service';
 import { rootLogger } from '../logger-service';
+import { ensureFilePathTree } from './file-tree-projection';
 import { OPENCODE_INFO_PROJECT_ID } from '../project-bootstrap';
 
 const LOGGER = rootLogger.child('ProjectGraphProjection');
@@ -277,32 +278,21 @@ export class ProjectGraphProjection {
                 const data = d as { projectId?: string; path?: string; size?: number };
                 if (!data.projectId || !data.path) return;
                 const path = String(data.path);
-                const ext = path.split('.').pop()?.toLowerCase() ?? '';
-                const kind =
-                    ext === 'html'
-                        ? 'website'
-                        : ext === 'md'
-                          ? path === 'README.md'
-                              ? 'concept'
-                              : 'knowledge'
-                          : 'artifact';
                 void (async () => {
                     try {
-                        const node = await this.graph.upsertNode({
-                            projectId: data.projectId!,
-                            kind,
-                            label: path.split('/').pop() ?? path,
-                            refType: 'project-file',
-                            refId: path,
-                        });
-                        await this.graph.link({
-                            projectId: data.projectId!,
-                            from: data.projectId!,
-                            to: node.id,
-                            relation: 'contains',
+                        // Если у проекта есть центр (README.md), строим дерево от
+                        // него; иначе — от узла проекта.
+                        const { nodes } = await this.graph.listProject(data.projectId!);
+                        const center = nodes.find(
+                            (n) =>
+                                n.refType === 'project-file' &&
+                                (n.refId ?? '').toLowerCase() === 'readme.md',
+                        );
+                        await ensureFilePathTree(this.graph, data.projectId!, path, {
+                            rootId: center?.id,
                         });
                     } catch (e) {
-                        LOGGER.warn('ProjectGraphProjection', 'file node failed', { error: e });
+                        LOGGER.warn('ProjectGraphProjection', 'file tree failed', { error: e });
                     }
                 })();
             }),

@@ -72,21 +72,21 @@ function computeComponents(
 
 const KIND_KEY: Record<string, number> = {
     project: 0,
-    goal: 1,
-    task: 2,
-    debate: 3,
-    knowledge: 4,
-    agent: 5,
+    subgraph: 1,
+    knowledge: 2,
+    concept: 3,
+    website: 4,
+    artifact: 5,
     decision: 6,
-    artifact: 0,
-    note: 1,
-    concept: 2,
-    requirement: 3,
-    document: 4,
-    research: 5,
-    codebase: 6,
-    website: 7,
-    subgraph: 7,
+    document: 7,
+    goal: 0,
+    task: 1,
+    debate: 2,
+    agent: 3,
+    note: 4,
+    requirement: 5,
+    research: 6,
+    codebase: 7,
 };
 
 /**
@@ -215,15 +215,24 @@ const GraphStudioPanel: React.FC = () => {
                 : null;
         return filtered.nodes.map((n) => {
             const deg = degree.get(n.id) ?? 0;
-            const size = config.style.nodeSizeMode === 'degree' ? Math.max(6, 10 + deg * 1.5) : 12;
+            const isCenter =
+                n.refType === 'project-file' && (n.refId ?? '').toLowerCase() === 'readme.md';
+            const size = isCenter
+                ? 44
+                : config.style.nodeSizeMode === 'degree'
+                  ? Math.max(6, 10 + deg * 1.5)
+                  : 12;
             const color = clusters
                 ? (palette[(clusters.get(n.id) ?? 0) % palette.length] ?? palette[7]!)
-                : (palette[KIND_KEY[n.kind] ?? 7] ?? palette[7]!);
+                : isCenter
+                  ? palette[3]!
+                  : (palette[KIND_KEY[n.kind] ?? 7] ?? palette[7]!);
             return {
                 id: n.id,
                 label: n.label,
                 color,
                 size,
+                ...(isCenter ? { x: 0, y: 0 } : {}),
             };
         });
     }, [filtered, config.style]);
