@@ -34,14 +34,23 @@ function fnv1a64(input: string): string {
     return h.toString(16).padStart(16, '0');
 }
 
-/** Простейший токенизатор для близости (слова >2 символов). */
+/** Простейший токенизатор + лёгкий стемминг. */
+function stem(w: string): string {
+    if (w.length > 4 && w.endsWith('ing')) return w.slice(0, -3);
+    if (w.length > 3 && w.endsWith('es')) return w.slice(0, -2);
+    if (w.length > 3 && w.endsWith('ed')) return w.slice(0, -2);
+    if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);
+    return w;
+}
+
 function tokenize(text: string): Set<string> {
     return new Set(
         text
             .toLowerCase()
             .replace(/[^\p{L}\p{N}\s]/gu, ' ')
             .split(/\s+/)
-            .filter((w) => w.length > 2),
+            .map(stem)
+            .filter((w) => w.length > 2 || /^\d+(\.\d+)*$/.test(w)),
     );
 }
 
@@ -74,8 +83,8 @@ function hasNegation(text: string): boolean {
     return NEGATION_MARKERS.some((m) => lower.includes(m));
 }
 
-const DEDUPE_THRESHOLD = 0.6;
-const CONTRADICTION_THRESHOLD = 0.45;
+const DEDUPE_THRESHOLD = 0.45;
+const CONTRADICTION_THRESHOLD = 0.4;
 
 export class TopicGraphServiceImpl implements TopicGraphService {
     private db: TopicGraphDB;
@@ -560,6 +569,31 @@ function normalizeClaim(sentence: string): string {
         .trim();
 }
 
+/** Числа из токенов в порядке появления. */
+function numericTokens(tokens: string[]): string[] {
+    return tokens.filter((t) => /^\d+(\.\d+)*$/.test(t));
+}
+
+/** Только нечисловые токены. */
+function nonNumericTokens(tokens: string[]): string[] {
+    return tokens.filter((t) => !/^\d+(\.\d+)*$/.test(t));
+}
+
+/**
+ * Если два набора токенов совпадают по нечисловым токенам, но различаются
+ * числами — это разные факты (например «300 MB» vs «900 MB»), схлопывать нельзя.
+ */
+function differsOnlyByNumbers(a: Set<string>, b: Set<string>): boolean {
+    const an = nonNumericTokens([...a]).sort();
+    const bn = nonNumericTokens([...b]).sort();
+    if (an.length !== bn.length || an.some((t, i) => t !== bn[i])) return false;
+    const anum = numericTokens([...a]).sort();
+    const bnum = numericTokens([...b]).sort();
+    return (
+        anum.length !== bnum.length || anum.some((t, i) => t !== bnum[i])
+    );
+}
+
 function findDuplicate(
     existing: TopicClaim[],
     text: string,
@@ -574,6 +608,7 @@ function findDuplicate(
             embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
         const maxSim = Math.max(jSim, eSim);
         if (maxSim >= DEDUPE_THRESHOLD) {
+            if (differsOnlyByNumbers(t, tokenize(claim.text))) continue;
             return claim;
         }
         if (i < existingEmbeddings.length) {
