@@ -1,5 +1,5 @@
 import type { DebateSession, DebateInterpretation } from '../../contracts/debate-types';
-import type { ProjectRepository } from '../dal/project-repository';
+import type { ProjectRepository } from '../../dal/project-repository';
 
 /**
  * Полноценный Markdown-документ Research Brief со всеми разделами.

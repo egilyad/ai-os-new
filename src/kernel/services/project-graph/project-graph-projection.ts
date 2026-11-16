@@ -3,7 +3,6 @@ import { EVENTS } from '../../events/event-names';
 import type { ProjectGraphService } from './project-graph-service';
 import { rootLogger } from '../logger-service';
 import { ensureFilePathTree } from './file-tree-projection';
-import { OPENCODE_INFO_PROJECT_ID } from '../project-bootstrap';
 
 const LOGGER = rootLogger.child('ProjectGraphProjection');
 

@@ -27,8 +27,6 @@ import { ProjectInvocationBridge } from '../services/project-invocation-bridge';
 import { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import { createProjectGraphDB } from '../services/project-graph/project-graph-dexie';
 import { ProjectGraphProjection } from '../services/project-graph/project-graph-projection';
-import { ensureOpenCodeInfoProject } from '../services/project-bootstrap';
-import type { IWikiBrainService } from '../contracts/wiki-brain';
 import { UnifiedProvenanceBridge } from '../services/trust/unified-provenance-bridge';
 import type { IProvenanceService } from '../contracts/trust';
 import { rootLogger } from '../services/logger-service';

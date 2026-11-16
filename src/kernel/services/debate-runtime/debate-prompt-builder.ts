@@ -214,9 +214,10 @@ export function buildOpeningPrompt(
     const tempBlock =
         debateTemperature !== undefined ? buildTemperaturePrompt(debateTemperature) : '';
 
-    const researchFormatBlock = researchRolePrompt
-        ? `\n\n${RESEARCH_BRIEF_FORMAT}`
-        : `\n\n${STANDARD_FORMAT_HINTS}`;
+    const researchFormatBlock =
+        participant.role && RESEARCH_ROLE_PROMPTS[participant.role]
+            ? `\n\n${RESEARCH_BRIEF_FORMAT}`
+            : `\n\n${STANDARD_FORMAT_HINTS}`;
 
     return `## Topic: ${sanitizeForPrompt(topic)}
 
