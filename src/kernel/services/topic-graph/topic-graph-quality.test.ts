@@ -146,6 +146,58 @@ describe('TopicGraph quality corpus', () => {
         expect(fromModel!.offset).toBeUndefined();
     });
 
+    it('locateFragment: offset корректен при переносах строк и повторяющихся пробелах', async () => {
+        const sourceContent = 'Начало\n\nOpenCode  Desktop version is 1.19.4.';
+        const llm = {
+            chat: async () => ({ content: JSON.stringify(['OpenCode Desktop version is 1.19.4']) }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Offsets', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'src', title: 'Src', content: sourceContent });
+
+        const evs = await getTopicGraphDB().topicEvidence.toArray();
+        const ev = evs.find((e) => e.quote.includes('OpenCode'));
+        expect(ev).toBeTruthy();
+        expect(ev!.offset).toBe(sourceContent.indexOf('OpenCode'));
+        expect(ev!.origin).toBe('source');
+    });
+
+    it('дубликат из второго источника получает отдельное Evidence', async () => {
+        const svc = new TopicGraphServiceImpl();
+        const topic = await svc.createTopic('TwoSrc', '');
+        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' });
+        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'According to docs, OpenCode Desktop version is 1.19.4.' });
+
+        const claims = await svc.claims(topic.id);
+        const version = claims.find((c) => c.text.includes('1.19.4'));
+        expect(version).toBeTruthy();
+        expect(version!.sourceIds).toHaveLength(2);
+
+        const evs = await getTopicGraphDB().topicEvidence.toArray();
+        const forClaim = evs.filter((e) => e.claimId === version!.id);
+        expect(forClaim).toHaveLength(2);
+        expect(new Set(forClaim.map((e) => e.sourceId)).size).toBe(2);
+        expect(forClaim.every((e) => e.origin === 'source')).toBe(true);
+    });
+
+    it('малформированный JSON от LLM фиксируется как ошибка чанка', async () => {
+        const llm = { chat: async () => ({ content: '{not json' }) };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('BadJson', '');
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
+        expect(run.status).toBe('completed');
+        expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
+    });
+
+    it('пустой ответ LLM — ошибка чанка', async () => {
+        const llm = { chat: async () => ({ content: '' }) };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('EmptyLlm', '');
+        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
+        expect(run.status).toBe('completed');
+        expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
+    });
+
     it('LLM частичные сбои чанков фиксируются в warnings', async () => {
         let calls = 0;
         const llm = {

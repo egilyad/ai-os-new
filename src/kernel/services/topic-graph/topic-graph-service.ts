@@ -227,6 +227,24 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                             embedding = undefined;
                         }
                     }
+                    const makeEvidence = (claimId: string): TopicEvidence => {
+                        const loc =
+                            unit.start !== undefined
+                                ? { start: unit.start }
+                                : locateFragment(payload.content, unit.sentence);
+                        return {
+                            id: GENERIC_ID('ev'),
+                            topicId,
+                            claimId,
+                            sourceId: source.id,
+                            quote: loc
+                                ? payload.content.slice(loc.start, Math.min(loc.start + 300, payload.content.length))
+                                : unit.sentence.slice(0, 300),
+                            offset: loc?.start,
+                            origin: loc ? 'source' : 'model',
+                            createdAt: Date.now(),
+                        };
+                    };
                     const found = findDuplicate(existingClaims, text, embedding);
                     if (found.dup) {
                         const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
@@ -237,6 +255,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                                 found.dup.sourceIds.push(source.id);
                                 found.dup.updatedAt = Date.now();
                                 await this.db.topicClaims.put(found.dup);
+                                evidenceEntries.push(makeEvidence(found.dup.id));
                             }
                             run.stats.duplicates++;
                             continue;
@@ -257,19 +276,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     };
                     existingClaims.push(claim);
                     newClaims.push(claim);
-                    evidenceEntries.push({
-                        id: GENERIC_ID('ev'),
-                        topicId,
-                        claimId: claim.id,
-                        sourceId: source.id,
-                        quote:
-                            unit.start !== undefined
-                                ? payload.content.slice(unit.start, Math.min(unit.start + 300, payload.content.length))
-                                : unit.sentence.slice(0, 300),
-                        offset: unit.start,
-                        origin: unit.start !== undefined ? 'source' : 'model',
-                        createdAt: Date.now(),
-                    });
+                    evidenceEntries.push(makeEvidence(claim.id));
                     run.stats.newClaims++;
                 }
                 if (llmWarnings.length > 0) {
@@ -429,14 +436,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     { role: 'user', content: chunk },
                 ]);
                 const match = res.content.match(/\[[\s\S]*\]/);
-                if (match) {
-                    const parsed = JSON.parse(match[0]) as unknown;
-                    if (Array.isArray(parsed)) {
-                        all.push(...parsed.map((s) => String(s)).filter((s) => s.length > 0));
-                    }
+                if (!match) throw new Error('ответ не содержит JSON-массив');
+                const parsed = JSON.parse(match[0]) as unknown;
+                if (!Array.isArray(parsed)) throw new Error('ответ не является массивом');
+                if (!parsed.every((x) => typeof x === 'string')) {
+                    throw new Error('ответ содержит нестроковые элементы');
                 }
+                all.push(...parsed.filter((s): s is string => s.length > 0));
             } catch (e) {
                 chunksFailed++;
+                warnings.push(`Чанк #${chunksTotal} (offset ${start}) не обработан: ${e instanceof Error ? e.message : String(e)}`);
                 LOGGER.warn('TopicGraph', 'llm extraction failed on chunk', { error: String(e) });
             }
         }
@@ -633,15 +642,28 @@ function splitIntoSentencesWithOffsets(text: string): Array<{ sentence: string; 
     return out;
 }
 
-/** Пытается найти утверждение в исходном тексте (дословно или после нормализации пробелов). */
+function escapeRegExp(s: string): string {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Пытается найти утверждение в исходном тексте. Возвращает позицию именно в
+ * оригинале: сначала дословный поиск, затем regex с допуском любых пробелов
+ * (включая переносы строк) между словами.
+ */
 function locateFragment(content: string, claim: string): { start: number } | undefined {
-    const direct = content.indexOf(claim.trim());
+    const trimmed = claim.trim();
+    if (trimmed.length === 0) return undefined;
+    const direct = content.indexOf(trimmed);
     if (direct !== -1) return { start: direct };
-    const normContent = content.replace(/\s+/g, ' ');
-    const normClaim = claim.replace(/\s+/g, ' ').trim();
-    const idx = normContent.indexOf(normClaim);
-    if (idx === -1) return undefined;
-    return { start: idx };
+    const pattern = trimmed
+        .replace(/\s+/g, ' ')
+        .split(' ')
+        .map(escapeRegExp)
+        .join('\\s+');
+    const match = new RegExp(pattern).exec(content);
+    if (match) return { start: match.index };
+    return undefined;
 }
 
 function normalizeClaim(sentence: string): string {
