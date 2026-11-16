@@ -134,22 +134,17 @@ export default function TopicGraphPanel() {
         }
     };
 
-    const ingest = async () => {
-        if (!selectedTopic || !ingestText.trim()) return;
+    const runIngest = async (payload: { ref: string; title: string; content: string }) => {
+        if (!selectedTopic) return;
         try {
             const run = await svc().ingest(selectedTopic, {
                 kind: 'document',
-                ref: ingestTitle.trim() || `manual-${Date.now()}`,
-                title: ingestTitle.trim() || 'Manual input',
-                content: ingestText,
+                ...payload,
             });
             setMessage(
                 `Обработка: ${run.stats.newClaims} новых, ${run.stats.duplicates} дублей, ` +
                 `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение`,
             );
-            setIngestText('');
-            setIngestTitle('');
-            // перезагрузить данные
             const [c, cp, r, cf, s, cov] = await Promise.all([
                 svc().claims(selectedTopic),
                 svc().concepts(selectedTopic),
@@ -166,6 +161,38 @@ export default function TopicGraphPanel() {
             setCoverage(cov);
         } catch (e) {
             setMessage(`Ошибка ингеста: ${e instanceof Error ? e.message : String(e)}`);
+        }
+    };
+
+    const ingest = async () => {
+        if (!ingestText.trim()) return;
+        await runIngest({
+            ref: ingestTitle.trim() || `manual-${Date.now()}`,
+            title: ingestTitle.trim() || 'Manual input',
+            content: ingestText,
+        });
+        setIngestText('');
+        setIngestTitle('');
+    };
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        e.target.value = '';
+        if (!file) return;
+        const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+        if (!['txt', 'md', 'markdown', 'json'].includes(ext)) {
+            setMessage(`Неподдерживаемый тип файла: .${ext} (поддерживаются .txt .md .json)`);
+            return;
+        }
+        try {
+            const text = await file.text();
+            if (!text.trim()) {
+                setMessage(`Файл пустой: ${file.name}`);
+                return;
+            }
+            await runIngest({ ref: file.name, title: file.name, content: text });
+        } catch (err) {
+            setMessage(`Ошибка чтения файла: ${err instanceof Error ? err.message : String(err)}`);
         }
     };
 
@@ -250,6 +277,13 @@ export default function TopicGraphPanel() {
                         value={ingestText}
                         onChange={(e) => setIngestText(e.target.value)}
                         style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                    />
+                    <input
+                        type="file"
+                        accept=".txt,.md,.markdown,.json"
+                        onChange={(e) => void handleFileUpload(e)}
+                        title="Загрузить файл (.txt/.md/.json)"
+                        style={{ maxWidth: 200, color: 'var(--slate-300)', fontSize: 12 }}
                     />
                     <button onClick={() => void ingest()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: tokens.accent, color: tokens.slate[950], fontWeight: 700, cursor: 'pointer' }}>
                         Ingest
