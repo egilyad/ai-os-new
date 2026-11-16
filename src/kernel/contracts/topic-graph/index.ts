@@ -62,4 +62,19 @@ export interface TopicGraphService {
 
     /** Экспорт отчёта темы в Markdown. */
     exportReport(topicId: string): Promise<string>;
+
+    /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */
+    exportToProject(
+        repo: {
+            putFile(input: {
+                projectId: string;
+                path: string;
+                content: string;
+                createdAt: number;
+                updatedAt: number;
+            }): Promise<void>;
+        },
+        projectId: string,
+        topicId: string,
+    ): Promise<{ path: string } | undefined>;
 }

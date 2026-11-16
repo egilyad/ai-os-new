@@ -391,6 +391,42 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return splitIntoSentences(content);
     }
 
+    /** Экспорт отчёта темы в файл проекта (TopicResults/<slug>.md). */
+    async exportToProject(
+        repo: {
+            putFile(input: {
+                projectId: string;
+                path: string;
+                content: string;
+                createdAt: number;
+                updatedAt: number;
+            }): Promise<void>;
+        },
+        projectId: string,
+        topicId: string,
+    ): Promise<{ path: string } | undefined> {
+        if (!projectId) return undefined;
+        const topic = await this.getTopic(topicId);
+        if (!topic) return undefined;
+        const report = await this.exportReport(topicId);
+        const slug =
+            topic.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 60) || `topic-${topicId}`;
+        const path = `TopicResults/${slug}.md`;
+        const now = Date.now();
+        await repo.putFile({
+            projectId,
+            path,
+            content: report,
+            createdAt: now,
+            updatedAt: now,
+        });
+        return { path };
+    }
+
     // ── Accessors ──
 
     async sources(topicId: string): Promise<TopicSource[]> {
@@ -454,26 +490,41 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             this.sources(topicId),
         ]);
         if (!topic) return '# Topic not found';
+        const comp = await this.completeness(topicId);
         const lines: string[] = [];
         lines.push(`# Topic Graph: ${topic.title}`);
         lines.push('');
         lines.push(`- Description: ${topic.description}`);
+        lines.push(`- Category: ${topic.status}`);
         lines.push(`- Sources: ${sources.length}`);
         lines.push(`- Claims: ${claims.length}`);
         lines.push(`- Concepts: ${concepts.length}`);
         lines.push(`- Relations: ${relations.length}`);
         lines.push(`- Conflicts: ${conflicts.length}`);
+        lines.push(`- Coverage: ${Math.round(comp.coverage * 100)}%`);
+        lines.push('');
+        lines.push('## Concepts');
+        lines.push('');
+        concepts.forEach((c) => {
+            lines.push(`- ${c.name} (${c.claimIds.length} claims)`);
+        });
         lines.push('');
         lines.push('## Claims');
         lines.push('');
-        claims.slice(0, 200).forEach((c) => {
-            lines.push(`- ${c.text} [${c.sourceIds.length} sources]`);
+        claims.slice(0, 300).forEach((c) => {
+            lines.push(`- ${c.text} [${c.sourceIds.length} sources, conf ${c.confidence.toFixed(2)}]`);
+        });
+        lines.push('');
+        lines.push('## Sources');
+        lines.push('');
+        sources.forEach((s) => {
+            lines.push(`- ${s.title} [${s.kind}] — ${s.ref}`);
         });
         lines.push('');
         lines.push('## Conflicts');
         lines.push('');
         conflicts.forEach((c) => {
-            lines.push(`- ${c.claimAId} ↔ ${c.claimBId}: ${c.reason}`);
+            lines.push(`- ${c.claimAId} ↔ ${c.claimBId}: ${c.reason} (${c.confidence.toFixed(2)})`);
         });
         lines.push('');
         return lines.join('\n');

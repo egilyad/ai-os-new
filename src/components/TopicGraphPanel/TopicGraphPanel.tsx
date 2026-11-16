@@ -103,6 +103,23 @@ export default function TopicGraphPanel() {
         }
     };
 
+    const exportToProject = async () => {
+        if (!selectedTopic) return;
+        try {
+            const repo = getContainer().get<{
+                putFile(input: { projectId: string; path: string; content: string; createdAt: number; updatedAt: number }): Promise<void>;
+            }>('projectRepository');
+            const path = await svc().exportToProject(
+                { putFile: (input) => repo.putFile(input) },
+                'proj-opencode-info', // TODO: дать выбрать проект
+                selectedTopic,
+            );
+            setMessage(path ? `Экспортировано: ${path.path}` : 'Экспорт не выполнен');
+        } catch (e) {
+            setMessage(`Ошибка экспорта: ${e instanceof Error ? e.message : String(e)}`);
+        }
+    };
+
     const ingest = async () => {
         if (!selectedTopic || !ingestText.trim()) return;
         try {
@@ -222,6 +239,13 @@ export default function TopicGraphPanel() {
                     />
                     <button onClick={() => void ingest()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: tokens.accent, color: tokens.slate[950], fontWeight: 700, cursor: 'pointer' }}>
                         Ingest
+                    </button>
+                    <button
+                        onClick={() => void exportToProject()}
+                        title="Экспорт отчёта темы в проект (TopicResults/)"
+                        style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: 'var(--slate-300)', fontWeight: 600, cursor: 'pointer' }}
+                    >
+                        Экспорт в проект
                     </button>
                 </div>
             )}
