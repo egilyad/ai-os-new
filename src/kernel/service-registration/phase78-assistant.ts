@@ -568,6 +568,16 @@ export const registerPhase78: Phase = ({ register }) => {
                                   .ingestAsSources(papers, projectId),
                       }
                     : undefined,
+                topicGraph: c.has('topicGraphService')
+                    ? {
+                          createTopic: (title, description) =>
+                              c.get<{ createTopic(title: string, description: string): Promise<{ id: string; title: string }> }>('topicGraphService').createTopic(title, description),
+                          ingest: (topicId, payload) =>
+                              c.get<{ ingest(topicId: string, payload: { kind: string; ref: string; title: string; content: string }): Promise<{ status: string; stats: { newClaims: number; duplicates: number; conflicts: number; relations: number } }> }>('topicGraphService').ingest(topicId, payload),
+                          completeness: (topicId) =>
+                              c.get<{ completeness(topicId: string): Promise<{ totalClaims: number; uniqueConcepts: number; conflicts: number; sources: number; coverage: number }> }>('topicGraphService').completeness(topicId),
+                      }
+                    : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),

@@ -158,6 +158,21 @@ export interface AssistantOpsDeps {
         promoteEdge(id: string): Promise<{ id: string; status?: string } | undefined>;
     };
 
+    /** Topic Graph ? ??????????????? ????? ??????. */
+    topicGraph?: {
+        createTopic(title: string, description: string): Promise<{ id: string; title: string }>;
+        ingest(topicId: string, payload: { kind: string; ref: string; title: string; content: string }): Promise<{
+            status: string;
+            stats: { newClaims: number; duplicates: number; conflicts: number; relations: number };
+        }>;
+        completeness(topicId: string): Promise<{
+            totalClaims: number;
+            uniqueConcepts: number;
+            conflicts: number;
+            sources: number;
+            coverage: number;
+        }>;
+    };
     /** Read-only system observer (health, errors, stuck runs). */
     observer?: {
         status(): Promise<{
@@ -2067,6 +2082,96 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                     ok: false,
                     detail: `research.fetch_literature failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'topic.create',
+        group: 'research',
+        description: 'Create a Topic Graph topic for accumulating structured knowledge.',
+        parameters: {
+            type: 'object',
+            properties: {
+                title: { type: 'string' },
+                description: { type: 'string' },
+            },
+            required: ['title'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const topic = deps.topicGraph;
+            if (!topic) return { ok: false, detail: 'topic graph is not available' };
+            try {
+                const created = await topic.createTopic(text(args['title']), text(args['description']));
+                return { ok: true, detail: `topic ${created.id} created`, evidence: created.title, verification: 'verified' };
+            } catch (e) {
+                return { ok: false, detail: `topic.create failed: ${e instanceof Error ? e.message : String(e)}` };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'topic.ingest',
+        group: 'research',
+        description: 'Ingest a document/model answer into a topic and process it into claims.',
+        parameters: {
+            type: 'object',
+            properties: {
+                topicId: { type: 'string' },
+                title: { type: 'string' },
+                content: { type: 'string' },
+            },
+            required: ['topicId', 'content'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const topic = deps.topicGraph;
+            if (!topic) return { ok: false, detail: 'topic graph is not available' };
+            try {
+                const run = await topic.ingest(text(args['topicId']), {
+                    kind: 'document',
+                    ref: text(args['title']) || `assistant-${Date.now()}`,
+                    title: text(args['title']) || 'Assistant input',
+                    content: text(args['content']),
+                });
+                return {
+                    ok: run.status === 'completed',
+                    detail: `ingest ${run.status}: ${run.stats.newClaims} new, ${run.stats.conflicts} conflicts`,
+                    evidence: `claims=${run.stats.newClaims} conflicts=${run.stats.conflicts}`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return { ok: false, detail: `topic.ingest failed: ${e instanceof Error ? e.message : String(e)}` };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'topic.summary',
+        group: 'research',
+        description: 'Get a summary of a topic: completeness, claims, conflicts, coverage.',
+        parameters: {
+            type: 'object',
+            properties: { topicId: { type: 'string' } },
+            required: ['topicId'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const topic = deps.topicGraph;
+            if (!topic) return { ok: false, detail: 'topic graph is not available' };
+            try {
+                const comp = await topic.completeness(text(args['topicId']));
+                return {
+                    ok: true,
+                    detail: `claims=${comp.totalClaims} concepts=${comp.uniqueConcepts} conflicts=${comp.conflicts} sources=${comp.sources} coverage=${Math.round(comp.coverage * 100)}%`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return { ok: false, detail: `topic.summary failed: ${e instanceof Error ? e.message : String(e)}` };
             }
         },
     });

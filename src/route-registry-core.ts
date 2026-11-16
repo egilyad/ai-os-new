@@ -33,6 +33,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#a855f7',
             },
             {
+                id: 'topic-graph',
+                labelKey: 'nav.topic_graph',
+                icon: Icons.gitBranch,
+                color: '#2dd4bf',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'project-os',
                 labelKey: 'nav.project_os_explorer',
                 icon: Icons.search,

@@ -110,6 +110,7 @@ const nav: Record<string, string> = {
     'nav.service_registry': 'Service Registry',
     'nav.patterns': 'Patterns',
     'nav.knowledge': 'Knowledge',
+    'nav.topic_graph': 'Topic Graph',
     'nav.files': 'Files',
     'nav.docs': 'Documentation',
     'nav.bookmarks': 'Bookmarks',

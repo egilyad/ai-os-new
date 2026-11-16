@@ -160,6 +160,7 @@ const MemoryCenterPanelLazy = React.lazy(
     () => import('./components/MemoryCenterPanel/MemoryCenterPanel'),
 );
 const NavGraphPanelLazy = React.lazy(() => import('./components/NavGraphPanel/NavGraphPanel'));
+const TopicGraphPanelLazy = React.lazy(() => import('./components/TopicGraphPanel/TopicGraphPanel'));
 const GraphStudioPanelLazy = React.lazy(
     () => import('./components/GraphStudioPanel/GraphStudioPanel'),
 );
@@ -431,6 +432,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     counterfactual: CounterfactualPanel,
     aquarium: AquariumPanel,
     knowledge: KnowledgePanelLazy,
+    'topic-graph': TopicGraphPanelLazy,
     'project-os': ProjectOsExplorer,
     'hypothesis-gen': HypothesisGenerator,
     'research-advanced': ResearchEngineAdvancedPanelLazy,
