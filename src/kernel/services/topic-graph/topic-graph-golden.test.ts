@@ -39,6 +39,7 @@ describe('TopicGraph golden corpus', () => {
         const claims = await svc.claims(topic.id);
         const conflicts = await svc.conflicts(topic.id);
         const concepts = await svc.concepts(topic.id);
+        const relations = await svc.relations(topic.id);
 
         // Один и тот же факт (версия) из нескольких источников — дедуп.
         const versionClaim = claims.find((c) => c.text.includes('1.19.4'));
@@ -57,6 +58,9 @@ describe('TopicGraph golden corpus', () => {
 
         // Концепты выделены.
         expect(concepts.length).toBeGreaterThanOrEqual(3);
+
+        // Иерархия концептов: desktop вложен в opencode (part_of).
+        expect(relations.some((r) => r.relation === 'part_of')).toBe(true);
 
         // Всё evidence имеет source-происхождение и корректные offsets.
         const evs = await getTopicGraphDB().topicEvidence.toArray();

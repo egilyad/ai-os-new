@@ -301,25 +301,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             }
             run.stats.conflicts = conflicts.length;
 
-            // Концепты (простые: частые слова в новых утверждениях).
-            const concepts = this.extractConcepts(topicId, newClaims);
-            for (const concept of concepts) {
-                const existing = await this.db.topicConcepts
-                    .where('topicId')
-                    .equals(topicId)
-                    .filter((x) => x.name === concept.name)
-                    .first();
-                if (existing) {
-                    const merged = {
-                        ...existing,
-                        aliases: [...new Set([...existing.aliases, ...concept.aliases])],
-                        claimIds: [...new Set([...existing.claimIds, ...concept.claimIds])],
-                    };
-                    await this.db.topicConcepts.put(merged);
-                } else {
-                    await this.db.topicConcepts.put(concept);
-                }
-            }
+            // Концепты: глобальная синхронизация по всем утверждениям темы.
+            await this.syncConcepts(topicId, existingClaims);
+
+            // Иерархия концептов (part_of / related_to) по покрытию.
+            await this.rebuildConceptRelations(topicId);
 
             // Связи: поддержка между утверждениями с общими концептами.
             const relations = this.discoverRelations(topicId, newClaims);
@@ -374,26 +360,37 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return out;
     }
 
-    private extractConcepts(topicId: string, claims: TopicClaim[]): TopicConcept[] {
+    private async syncConcepts(topicId: string, allClaims: TopicClaim[]): Promise<void> {
         const freq = new Map<string, number>();
-        for (const c of claims) {
+        for (const c of allClaims) {
             for (const w of tokenize(c.text)) {
                 freq.set(w, (freq.get(w) ?? 0) + 1);
             }
         }
-        const top = [...freq.entries()]
+        const names = [...freq.entries()]
             .filter(([, n]) => n >= 2)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 15)
             .map(([w]) => w);
-        return top.map((name) => ({
-            id: GENERIC_ID('concept'),
-            topicId,
-            name,
-            aliases: [],
-            claimIds: claims.filter((c) => tokenize(c.text).has(name)).map((c) => c.id),
-            createdAt: Date.now(),
-        }));
+        if (names.length === 0) return;
+        const existing = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        const byName = new Map(existing.map((c) => [c.name, c]));
+        for (const name of names) {
+            const claimIds = allClaims.filter((c) => tokenize(c.text).has(name)).map((c) => c.id);
+            const prev = byName.get(name);
+            if (prev) {
+                await this.db.topicConcepts.put({ ...prev, claimIds });
+            } else {
+                await this.db.topicConcepts.put({
+                    id: GENERIC_ID('concept'),
+                    topicId,
+                    name,
+                    aliases: [],
+                    claimIds,
+                    createdAt: Date.now(),
+                });
+            }
+        }
     }
 
     private discoverRelations(topicId: string, claims: TopicClaim[]): TopicRelation[] {
@@ -420,6 +417,23 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             }
         }
         return out;
+    }
+
+    // ── Concept hierarchy (RAGraph-inspired: topic clustering / PART_OF) ──
+
+    private async rebuildConceptRelations(topicId: string): Promise<void> {
+        const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        if (concepts.length < 2) return;
+        const conceptIds = new Set(concepts.map((c) => c.id));
+        await this.db.topicRelations
+            .where('topicId')
+            .equals(topicId)
+            .filter((r) => conceptIds.has(r.fromId) && conceptIds.has(r.toId))
+            .delete();
+        const relations = buildConceptRelations(topicId, concepts, CONCEPT_COVER_THRESHOLD);
+        if (relations.length > 0) {
+            await this.db.topicRelations.bulkPut(relations as never);
+        }
     }
 
     private async extractClaimsWithLlm(
@@ -680,6 +694,59 @@ function locateFragment(content: string, claim: string): { start: number } | und
     const match = new RegExp(pattern).exec(content);
     if (match) return { start: match.index };
     return undefined;
+}
+
+/** Порог покрытия claim-множеств для иерархии концептов (part_of). */
+const CONCEPT_COVER_THRESHOLD = 0.8;
+
+/**
+ * Иерархия концептов (идея из RAGraph: topic clustering / PART_OF):
+ * если claim-множество концепта почти полностью покрыто другим — меньший
+ * вложен в больший (part_of); при заметном пересечении — related_to.
+ */
+function buildConceptRelations(
+    topicId: string,
+    concepts: TopicConcept[],
+    coverThreshold = CONCEPT_COVER_THRESHOLD,
+): TopicRelation[] {
+    const out: TopicRelation[] = [];
+    for (let i = 0; i < concepts.length; i++) {
+        for (let j = i + 1; j < concepts.length; j++) {
+            const a = concepts[i]!;
+            const b = concepts[j]!;
+            if (a.id === b.id) continue;
+            const aSet = new Set(a.claimIds);
+            const bSet = new Set(b.claimIds);
+            const minSize = Math.min(aSet.size, bSet.size);
+            if (minSize === 0) continue;
+            const inter = [...aSet].filter((id) => bSet.has(id)).length;
+            if (inter === 0) continue;
+            const cover = inter / minSize;
+            if (cover >= coverThreshold && aSet.size !== bSet.size) {
+                const [child, parent] = aSet.size < bSet.size ? [a, b] : [b, a];
+                out.push({
+                    id: GENERIC_ID('rel'),
+                    topicId,
+                    fromId: child.id,
+                    toId: parent.id,
+                    relation: 'part_of',
+                    weight: 0.9,
+                    createdAt: Date.now(),
+                });
+            } else if (cover >= 0.4) {
+                out.push({
+                    id: GENERIC_ID('rel'),
+                    topicId,
+                    fromId: a.id,
+                    toId: b.id,
+                    relation: 'related_to',
+                    weight: Math.max(0.3, Math.min(0.6, cover)),
+                    createdAt: Date.now(),
+                });
+            }
+        }
+    }
+    return out;
 }
 
 function normalizeClaim(sentence: string): string {

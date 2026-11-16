@@ -77,10 +77,10 @@ describe('TopicGraph quality corpus', () => {
         const mcpConflict = conflicts.find((cf) => cf.reason.includes('polarity'));
         expect(mcpConflict).toBeTruthy();
 
-        // Связи: противоречие → contradicticts, иначе нейтральная related_to.
+        // Связи: противоречие → contradicticts, иначе нейтральная related_to/part_of.
         const relations = await svc.relations(topic.id);
         expect(relations.some((r) => r.relation === 'contradicts')).toBe(true);
-        expect(relations.every((r) => r.relation === 'contradicts' || r.relation === 'related_to')).toBe(true);
+        expect(relations.every((r) => r.relation === 'contradicts' || r.relation === 'related_to' || r.relation === 'part_of')).toBe(true);
         expect(relations.some((r) => r.relation === 'supports')).toBe(false);
     });
 
