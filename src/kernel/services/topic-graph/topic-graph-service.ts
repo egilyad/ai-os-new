@@ -216,7 +216,6 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 let failedChunks = 0;
                 let llmRelations: LlmRelationDraft[] = [];
                 const llmAvailable = this.deps.llm && opts?.useLlm !== false;
-                const embedderEnabled = this.deps.embedder && opts?.useEmbedder !== false;
                 if (llmAvailable) {
                     const { sentences, warnings, mode, failedChunks: fc, relations } = await this.extractClaimsWithLlm(payload.content);
                     llmRelations = relations;
@@ -240,10 +239,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
                     // Эмбедддинг-близость (если доступен) поверх jaccard.
                     let embedding: number[] | undefined;
-                    if (embedderEnabled) {
+                    if (this.deps.embedder && opts?.useEmbedder !== false) {
                         try {
                             const vecs = await this.deps.embedder.embed([text]);
-                            embedding = vecs[0];
+                            embedding = vecs[0] ?? undefined;
                         } catch {
                             embedding = undefined;
                         }

@@ -12,6 +12,7 @@ import type {
 } from '../../kernel/contracts/topic-graph/types';
 import type { TopicGraphService } from '../../kernel/contracts/topic-graph';
 import { ensureTopicGraphDemo } from '../../kernel/services/topic-graph/topic-graph-demo-seed';
+import TopicGraphFlow from './TopicGraphFlow';
 
 type View = 'graph' | 'knowledge' | 'sources' | 'coverage';
 
@@ -30,88 +31,6 @@ const KIND_COLORS: Record<string, string> = {
 
 function claimColor(kind: string): string {
     return KIND_COLORS[kind] ?? '#94a3b8';
-}
-
-function TopicGraphSvg(props: {
-    concepts: TopicConcept[];
-    claims: TopicClaim[];
-    relations: TopicRelation[];
-}) {
-    const { concepts, claims, relations } = props;
-    const nodes: Array<{ id: string; label: string; kind: 'concept' | 'claim' }> = [
-        ...concepts.slice(0, 14).map((c) => ({ id: c.id, label: c.name, kind: 'concept' as const })),
-        ...claims.slice(0, 26).map((c) => ({
-            id: c.id,
-            label: c.text.length > 42 ? c.text.slice(0, 42) + '…' : c.text,
-            kind: 'claim' as const,
-        })),
-    ];
-    if (nodes.length === 0) {
-        return <div style={{ fontSize: 12, color: 'var(--slate-500)', padding: 20 }}>Нет данных для графа</div>;
-    }
-    const ids = new Set(nodes.map((n) => n.id));
-    const edges = relations.filter((r) => ids.has(r.fromId) && ids.has(r.toId)).slice(0, 80);
-    const W = 860;
-    const H = 560;
-    const cx = W / 2;
-    const cy = H / 2;
-    const R = Math.min(W, H) / 2 - 60;
-    const pos = new Map<string, { x: number; y: number }>();
-    nodes.forEach((n, i) => {
-        const a = (2 * Math.PI * i) / Math.max(1, nodes.length);
-        pos.set(n.id, { x: cx + R * Math.cos(a), y: cy + R * Math.sin(a) });
-    });
-    return (
-        <svg
-            width="100%"
-            height={H}
-            viewBox={`0 0 ${W} ${H}`}
-            style={{ background: 'var(--bg-elevated)', borderRadius: 10 }}
-        >
-            {edges.map((e) => {
-                const a = pos.get(e.fromId);
-                const b = pos.get(e.toId);
-                if (!a || !b) return null;
-                return (
-                    <line
-                        key={e.id}
-                        x1={a.x}
-                        y1={a.y}
-                        x2={b.x}
-                        y2={b.y}
-                        stroke="var(--slate-600)"
-                        strokeWidth={1.2}
-                        strokeOpacity={0.65}
-                    />
-                );
-            })}
-            {nodes.map((n) => {
-                const p = pos.get(n.id)!;
-                return (
-                    <g key={n.id}>
-                        <circle
-                            cx={p.x}
-                            cy={p.y}
-                            r={n.kind === 'concept' ? 7 : 5}
-                            fill={claimColor(n.kind)}
-                            stroke="var(--bg)"
-                            strokeWidth={1.5}
-                        />
-                        <text
-                            x={p.x}
-                            y={p.y + 16}
-                            textAnchor="middle"
-                            fontSize={9}
-                            fill="var(--slate-300)"
-                            style={{ pointerEvents: 'none' }}
-                        >
-                            {n.label}
-                        </text>
-                    </g>
-                );
-            })}
-        </svg>
-    );
 }
 
 export default function TopicGraphPanel() {
@@ -404,7 +323,12 @@ export default function TopicGraphPanel() {
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {view === 'graph' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <TopicGraphSvg concepts={topConcepts} claims={claims} relations={relations} />
+                        <TopicGraphFlow
+                            concepts={topConcepts}
+                            claims={claims}
+                            relations={relations}
+                            sources={sources}
+                        />
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Концепты</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                             {topConcepts.map((c) => (
