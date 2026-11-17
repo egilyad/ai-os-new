@@ -2,16 +2,16 @@
 
 ## SuperAgents OS (`egilyad/ai-os-new`)
 
-> **Версия проекта:** commit `e08ab8e` (Oct 31, 2026, ветка `main`)
-> **Объект анализа:** 268 панелей в 22 навигационных разделах
-> **Дата анализа:** 2026-10-31
+> **Версия проекта:** commit `ae2dad8` (Nov 17, 2026, ветка `main`)
+> **Объект анализа:** 272 панели в ~22 навигационных разделах
+> **Дата анализа:** 2026-11-17 (обновление карты от 2026-10-31)
 > **Парный документ:** «Карта готовности панелей» (оценка качества 1–10) — dort оценивается _можно ли пользоваться_, здесь — _зачем нужно_.
 
 ---
 
 ## 1. Исполнительное резюме
 
-SuperAgents OS — не чат-бот, а **операционная система для оркестрации распределённого интеллекта**. Ценность проекта — не в количестве панелей (268 — это много), а в **пяти-шести действительно уникальных подсистемах**, которых нет ни в одном конкурентном продукте:
+SuperAgents OS — не чат-бот, а **операционная система для оркестрации распределённого интеллекта**. Ценность проекта — не в количестве панелей (272 — это много), а в **пяти-шести действительно уникальных подсистемах**, которых нет ни в одном конкурентном продукте:
 
 | Уникальная подсистема                                        | Где живёт                                              | Ценность                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------ | --------------------------------------------------------- |
@@ -22,7 +22,7 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 | **33 стратегии дебатов + 75 техник качества**                | `DebateArena`, 62 TechniquePanels                      | Готовая таксономия аргументации                           |
 | **След исполнения / Audit Trail**                            | `AgentJournalPanel`, `TracesPanel`, `DecisionLogPanel` | Наблюдаемость шагов агентов                               |
 
-Остальные ~260 панелей — это **обвязка вокруг этих шести подсистем** + стандартные OS-панели (settings/logs/health/keys), которые ожидаются в любом подобном продукте.
+Остальные ~266 панелей — это **обвязка вокруг этих шести подсистем** + стандартные OS-панели (settings/logs/health/keys), которые ожидаются в любом подобном продукте.
 
 **Ценностная структура проекта:**
 
@@ -31,6 +31,12 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 - **Useful (стандартная функциональность)** — ~120 панелей
 - **Optional / Experimental** — ~70 панелей (включая 62 техники)
 - **Decorative / Stub** — ~10 панелей
+
+**Обновление от 2026-11-17:**
+
+- Панелей: 268 → **272**. Новые: `TopicGraphPanel` (/topic-graph), `GraphStudioPanel` (/graph-studio), `UniversalGraphPanel` (/universal-graph), `ModelExplorerPanel` (/model-explorer), `PluginManagerPanel` (/plugins), `PluginMarketplacePanel` (/plugin-marketplace).
+- Новый сервис ядра: `deploy-bundle-service` (`src/kernel/services/deploy/deploy-bundle-service.ts`, 139 строк + контрактный тест) — local-first сборка deploy-бандлов (env manifest + start script + file manifest), событие `deploy:bundle:created`; пока без UI-панели.
+- Тестирование выросло: контрактные тесты kernel-сервисов (elo, provider-budget, routing-policy), тесты новых панелей (GraphStudio, UniversalGraph, PluginManager/PluginMarketplace), smoke-тесты (wrapper-panels, technique-panels, bundle).
 
 ---
 
@@ -175,14 +181,14 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 #### `GovernancePanel` — `/governance`
 
-| Вопрос                 | Ответ                                                                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **1. Задача**          | RBAC: назначение ролей observer/approver/director/auditor пользователям.                                                               |
-| **2. Полезность**      | **3/10** — панель из 61 строки, в wiki обещано больше (audit trail, HITL queue, policy binding), реализовано — только role assignment. |
-| **3. Возможности**     | Ввести userId, выбрать роль из 4, назначить, посмотреть список назначенных ролей.                                                      |
-| **4. Уникальность**    | 🔴 **нет** — RBAC есть в любом enterprise-продукте.                                                                                    |
-| **5. Важность для ОС** | **Useful** — local-first single-user OS почти не нуждается в RBAC (один пользователь = director).                                      |
-| **6. Можно обойтись?** | **Да.** Сейчас это stub. Можно скрыть до реализации полной governance.                                                                 |
+| Вопрос                 | Ответ                                                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Задача**          | RBAC: назначение ролей observer/approver/director/auditor пользователям.                                                                        |
+| **2. Полезность**      | **3/10** — панель из ~124 строк (+тест), в wiki обещано больше (audit trail, HITL queue, policy binding), реализовано — только role assignment. |
+| **3. Возможности**     | Ввести userId, выбрать роль из 4, назначить, посмотреть список назначенных ролей.                                                               |
+| **4. Уникальность**    | 🔴 **нет** — RBAC есть в любом enterprise-продукте.                                                                                             |
+| **5. Важность для ОС** | **Useful** — local-first single-user OS почти не нуждается в RBAC (один пользователь = director).                                               |
+| **6. Можно обойтись?** | **Да.** Сейчас это stub. Можно скрыть до реализации полной governance.                                                                          |
 
 ---
 
@@ -366,18 +372,53 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ---
 
-### 4.19. Граф навигации
+### 4.19. Графовые панели (навигация + research)
 
-#### `NavGraphPanel` — `/nav-graph` (84 строки) + `GraphWorkbenchPanel` — `/graph-workbench` (585 строк)
+#### `NavGraphPanel` — `/nav-graph` (76 строк) + `GraphWorkbenchPanel` — `/graph-workbench` (573 строки)
 
-| Вопрос                 | Ответ                                                                                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **1. Задача**          | NavGraph: визуализация карты панелей/маршрутов. GraphWorkbench: мульти-линзовый графовый воркбенч (Calibration/Coverage/Debate/Embeddings/Keys). |
-| **2. Полезность**      | NavGraph **5/10**; GraphWorkbench **6/10** — для research.                                                                                       |
-| **3. Возможности**     | NavGraph: node-link viz навигации. GraphWorkbench: 5 линз (CalibrationLens, CoverageLens, DebateLens, EmbeddingsLens, KeysLens).                 |
-| **4. Уникальность**    | 🟡 **partial** — graph views есть в LangSmith; 5 specialized lenses в одном UI — редко.                                                          |
-| **5. Важность для ОС** | **Optional** — исследовательский инструмент.                                                                                                     |
-| **6. Можно обойтись?** | **Да.** Обе панели опциональны.                                                                                                                  |
+| Вопрос                 | Ответ                                                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Задача**          | NavGraph: визуализация карты панелей/маршрутов. GraphWorkbench: мульти-линзовый графовый воркбенч (Calibration/Coverage/Debate/Embeddings/Keys).                                                       |
+| **2. Полезность**      | NavGraph **5/10**; GraphWorkbench **6/10** — для research.                                                                                                                                             |
+| **3. Возможности**     | NavGraph: node-link viz навигации. GraphWorkbench: 5 линз (CalibrationLens, CoverageLens, DebateLens, EmbeddingsLens, KeysLens), cross-lens фильтры по провайдеру/времени, knowledge coverage treemap. |
+| **4. Уникальность**    | 🟡 **partial** — graph views есть в LangSmith; 5 specialized lenses в одном UI — редко.                                                                                                                |
+| **5. Важность для ОС** | **Optional** — исследовательский инструмент.                                                                                                                                                           |
+| **6. Можно обойтись?** | **Да.** Обе панели опциональны.                                                                                                                                                                        |
+
+### 4.19.1. Новые графовые панели (добавлены после 2026-10-31)
+
+#### `TopicGraphPanel` — `/topic-graph` (~858 строк, 3 файла)
+
+| Вопрос                 | Ответ                                                                                                                                                                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Задача**          | Тематический граф: анализ ответов/документов → концепты, связи (part_of/related_to), кластеры, центральность.                                                                                                                                 |
+| **2. Полезность**      | **6/10** — мощный research-инструмент, но требует понимания графовых моделей.                                                                                                                                                                 |
+| **3. Возможности**     | Demo seed из 4 ответов моделей; file upload (txt/md/json); chunked LLM-extraction; entity merge через embeddings; hybrid search; centrality; два движка рендера (react-flow / vis-network, switcher); экспорт отчёта в проект (TopicResults). |
+| **4. Уникальность**    | 🟡 **partial** — topic modeling есть у конкурентов, но browser-only + два движка + provenance extraction — редко.                                                                                                                             |
+| **5. Важность для ОС** | **Optional** — исследовательский инструмент, но закладывает основу «карты знаний» ОС.                                                                                                                                                         |
+| **6. Можно обойтись?** | **Да.** Тестов на панель пока нет (12 коммитов развития за ноябрь).                                                                                                                                                                           |
+
+#### `GraphStudioPanel` — `/graph-studio` (647 + 125 строк, тест есть)
+
+| Вопрос                 | Ответ                                                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **1. Задача**          | Визуальная студия конфигурации графа: физика, стили, взаимодействие, источники данных.                                                    |
+| **2. Полезность**      | **6/10** — power-users / research.                                                                                                        |
+| **3. Возможности**     | Presets; resimulate; live focus; sources; clusters; настройки physics/styles/interaction; file tree из README; интеграция с ProjectGraph. |
+| **4. Уникальность**    | 🟡 **partial** — graph config studios есть в Gephi/neo4j-инструментах, но в AI OS — редко.                                                |
+| **5. Важность для ОС** | **Optional**                                                                                                                              |
+| **6. Можно обойтись?** | **Да.**                                                                                                                                   |
+
+#### `UniversalGraphPanel` — `/universal-graph` (382 строки, тест есть)
+
+| Вопрос                 | Ответ                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| **1. Задача**          | Универсальный просмотрщик графа проекта (ProjectGraph): узлы/рёбра из проектов, wiki, navigation data. |
+| **2. Полезность**      | **5/10** — обзорная визуализация.                                                                      |
+| **3. Возможности**     | Выбор источника (project/wiki/navigation); визуализация; переходы по узлам.                            |
+| **4. Уникальность**    | 🔴 **нет** — graph viewer стандартен.                                                                  |
+| **5. Важность для ОС** | **Optional**                                                                                           |
+| **6. Можно обойтись?** | **Да.**                                                                                                |
 
 ---
 
@@ -441,22 +482,23 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 Это **то, что нельзя скопировать** за неделю, и что составляет реальную ценность проекта.
 
-| #   | Фича                                                | Где                                                             | Уникальность                                  | Конкуренты                                                |
-| --- | --------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------- |
-| 1   | **33 стратегии дебатов**                            | `DebateArena` + `kernel/services/debate-runtime`                | 🟢 Готовая таксономия                         | Нет аналогов в AI-продуктах                               |
-| 2   | **75 техник качества (P0/P1/P2)**                   | 62 TechniquePanels + `kernel/contracts/debate-quality-settings` | 🟢 Готовый каталог                            | Нет аналогов                                              |
-| 3   | **Crystal Vault с lifecycle**                       | `CrystalVaultPanel` + `kernel/services/crystal-vault`           | 🟢 semi→crystal→superseded→refuted            | Нет в AI-продуктах                                        |
-| 4   | **Synthesis zones** (consensus/dissent/uncertainty) | `SynthesisPanel` + `kernel/services/synthesis`                  | 🟢 Явное разделение вывода                    | Нет аналогов                                              |
-| 5   | **Cognitive Builder (React Flow)**                  | `BuilderPanel/CognitiveBuilder`                                 | 🟢 Visual pipeline с guardrails+agents+deploy | Dify/Flowise — но без cognitive framing                   |
-| 6   | **Time Machine (5 scopes)**                         | `TimeMachinePanel` + `kernel/services/time-machine`             | 🟢 Snapshot+restore+diff для runtime-state    | git — для кода, не для runtime                            |
-| 7   | **Cognitive Lenses**                                | `LensesPanel` + `kernel/services/lens-engine`                   | 🟢 Структурные перспективы                    | Pol.is / Kialo — без LLM                                  |
-| 8   | **Aquarium (experimental viz)**                     | `AquariumPanel`                                                 | 🟢 Декоративная метафора                      | Нет аналогов                                              |
-| 9   | **Federated Memory (experimental)**                 | `FederatedMemoryPanel`                                          | 🟢 Federated AI memory                        | Research-grade                                            |
-| 10  | **Director (multi-agent scenarios)**                | `DirectorPanel`                                                 | 🟢 Режиссёрская метафора                      | Нет в AI-продуктах                                        |
-| 11  | **След исполнения (execution trail)**               | `AgentJournalPanel` + `TracesPanel`                             | 🟡 Partial                                    | LangSmith traces — но без «журнала супервайзеров» framing |
-| 12  | **UCB1-bandit routing в UI**                        | `ChatPanel` + `kernel/services/router`                          | 🟡 Partial                                    | Есть в research, не в продуктах                           |
-| 13  | **Elo-leaderboard агентов**                         | `AgentsPanel/EloLeaderboard`                                    | 🟡 Partial                                    | Arena-style, но для своих агентов                         |
-| 14  | **Personality badges провайдеров**                  | `ProviderManager/PersonalityBadge`                              | 🟡 Partial                                    | OpenRouter personalities — близко                         |
+| #   | Фича                                                | Где                                                             | Уникальность                                  | Конкуренты                                                                |
+| --- | --------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| 1   | **33 стратегии дебатов**                            | `DebateArena` + `kernel/services/debate-runtime`                | 🟢 Готовая таксономия                         | Нет аналогов в AI-продуктах                                               |
+| 2   | **75 техник качества (P0/P1/P2)**                   | 62 TechniquePanels + `kernel/contracts/debate-quality-settings` | 🟢 Готовый каталог                            | Нет аналогов                                                              |
+| 3   | **Crystal Vault с lifecycle**                       | `CrystalVaultPanel` + `kernel/services/crystal-vault`           | 🟢 semi→crystal→superseded→refuted            | Нет в AI-продуктах                                                        |
+| 4   | **Synthesis zones** (consensus/dissent/uncertainty) | `SynthesisPanel` + `kernel/services/synthesis`                  | 🟢 Явное разделение вывода                    | Нет аналогов                                                              |
+| 5   | **Cognitive Builder (React Flow)**                  | `BuilderPanel/CognitiveBuilder`                                 | 🟢 Visual pipeline с guardrails+agents+deploy | Dify/Flowise — но без cognitive framing                                   |
+| 6   | **Time Machine (5 scopes)**                         | `TimeMachinePanel` + `kernel/services/time-machine`             | 🟢 Snapshot+restore+diff для runtime-state    | git — для кода, не для runtime                                            |
+| 7   | **Cognitive Lenses**                                | `LensesPanel` + `kernel/services/lens-engine`                   | 🟢 Структурные перспективы                    | Pol.is / Kialo — без LLM                                                  |
+| 8   | **Aquarium (experimental viz)**                     | `AquariumPanel`                                                 | 🟢 Декоративная метафора                      | Нет аналогов                                                              |
+| 9   | **Federated Memory (experimental)**                 | `FederatedMemoryPanel`                                          | 🟢 Federated AI memory                        | Research-grade                                                            |
+| 10  | **Director (multi-agent scenarios)**                | `DirectorPanel`                                                 | 🟢 Режиссёрская метафора                      | Нет в AI-продуктах                                                        |
+| 11  | **След исполнения (execution trail)**               | `AgentJournalPanel` + `TracesPanel`                             | 🟡 Partial                                    | LangSmith traces — но без «журнала супервайзеров» framing                 |
+| 12  | **UCB1-bandit routing в UI**                        | `ChatPanel` + `kernel/services/router`                          | 🟡 Partial                                    | Есть в research, не в продуктах                                           |
+| 13  | **Elo-leaderboard агентов**                         | `AgentsPanel/EloLeaderboard`                                    | 🟡 Partial                                    | Arena-style, но для своих агентов                                         |
+| 14  | **Personality badges провайдеров**                  | `ProviderManager/PersonalityBadge`                              | 🟡 Partial                                    | OpenRouter personalities — близко                                         |
+| 15  | **Topic Graph engine**                              | `TopicGraphPanel` + `kernel/services/project-graph`             | 🟡 Partial                                    | Topic-aware tools есть, но browser-only + два движка + provenance — редко |
 
 ---
 
@@ -493,31 +535,31 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ### 6.2. Панели, которые можно упростить или объединить
 
-| Группа панелей                                                                            | Сейчас                | Рекомендация                                   |
-| ----------------------------------------------------------------------------------------- | --------------------- | ---------------------------------------------- |
-| 62 TechniquePanels                                                                        | 62 отдельных маршрута | Объединить в 1 «Techniques Catalog» с таблицей |
-| LogsPanel + TracesPanel + RouterTraceView                                                 | 3 отдельные           | Оставить 3 — разные задачи                     |
-| HealthPanel + SystemHealthPanel + DocsHealthPanel + HealthSlaPanel                        | 4 health-панели       | Объединить в 1 с табами                        |
-| BudgetPanel + BudgetAlertsPanel + CostOptimizationPanel + CostAnalyticsPanel + CostsPanel | 5 budget-панелей      | Объединить в 1 BudgetHub с табами              |
-| FederatedMemoryPanel + MemoryTransferPanel + MemoryCenterPanel                            | 3 memory extras       | Оставить MemoryCenter как hub                  |
-| OpenRouterPanel + ProviderDashboard + ProviderMarketplace + ProviderManager               | 4 provider-UI         | Оставить ProviderManager как единый            |
+| Группа панелей                                                                            | Сейчас                | Рекомендация / статус                                                                                                                 |
+| ----------------------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 62 TechniquePanels                                                                        | 62 отдельных маршрута | Частично выполнено (P2-4): generic `TechniquePanel` + lazy factory — один чанк вместо ~58 почти идентичных панелей; маршруты остались |
+| LogsPanel + TracesPanel + RouterTraceView                                                 | 3 отдельные           | Оставить 3 — разные задачи                                                                                                            |
+| HealthPanel + SystemHealthPanel + DocsHealthPanel + HealthSlaPanel                        | 4 health-панели       | Выполнено (p2-3): `HealthHub` — консолидация под /health (+ `ResearchHub` под /research-engine)                                       |
+| BudgetPanel + BudgetAlertsPanel + CostOptimizationPanel + CostAnalyticsPanel + CostsPanel | 5 budget-панелей      | Частично выполнено (p2-3): `BudgetHub` — консолидация под /budget                                                                     |
+| FederatedMemoryPanel + MemoryTransferPanel + MemoryCenterPanel                            | 3 memory extras       | Оставить MemoryCenter как hub                                                                                                         |
+| OpenRouterPanel + ProviderDashboard + ProviderMarketplace + ProviderManager               | 4 provider-UI         | Оставить ProviderManager как единый                                                                                                   |
 
 ### 6.3. Панели, которые можно скрыть без боли
 
 - `AquariumPanel` (experimental, decorative)
 - `FederatedMemoryPanel` (experimental)
 - `SocialLeaderboardPanel` (тонкая обёртка)
-- `OpenRouterPanel` (29 строк, делегирует в ProviderManager)
-- `ArchitectureMapPanel` (85 строк)
-- `RivalsCatalogPanel` (85 строк)
+- `OpenRouterPanel` (28 строк, делегирует в ProviderManager)
+- `ArchitectureMapPanel` (81 строка)
+- `RivalsCatalogPanel` (80 строк)
 - `LearnHubPanel` (объединяет 4 протестированные панели — но tabbed-hub не добавляет ценности)
 - `CommunityHubPanel`, `TemplateSharingPanel`, `PortabilityPanel` — mostly auxiliary
 
 ### 6.4. Панели-заглушки (требуют либо реализации, либо удаления)
 
-- `GovernancePanel` — 61 строка, обещает больше, чем реализует. **Либо расширить, либо явно пометить stub.**
-- `OpenRouterPanel` — 29 строк, дубликат. **Удалить.**
-- `SocialLeaderboardPanel` — 34 строки, обёртка. **Удалить, оставить `EloLeaderboard` в AgentsPanel.**
+- `GovernancePanel` — ~124 строки (+тест), обещает больше, чем реализует. **Либо расширить, либо явно пометить stub.**
+- `OpenRouterPanel` — 28 строк, дубликат. **Удалить.**
+- `SocialLeaderboardPanel` — 31 строка, обёртка. **Удалить, оставить `EloLeaderboard` в AgentsPanel.**
 
 ---
 
@@ -544,10 +586,10 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ### 8.1. Разрыв «обещано в wiki — реализовано частично»
 
-| Панель            | Wiki обещает                 | Реализовано                           | Риск                                                      |
-| ----------------- | ---------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `GovernancePanel` | RBAC + audit + HITL + policy | Только role assignment (61 строка)    | Пользователь ожидает enterprise-governance, получает stub |
-| `DirectorPanel`   | Полный режиссёр              | 95 строк основной + 7 таб-компонентов | Частично реализовано, но не «full director»               |
+| Панель            | Wiki обещает                 | Реализовано                                                                          | Риск                                                      |
+| ----------------- | ---------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| `GovernancePanel` | RBAC + audit + HITL + policy | Только role assignment (~124 строки; рефакторинг P2-12 + тесты — суть не изменилась) | Пользователь ожидает enterprise-governance, получает stub |
+| `DirectorPanel`   | Полный режиссёр              | 95 строк основной + 7 таб-компонентов                                                | Частично реализовано, но не «full director»               |
 
 ### 8.2. Избыточность (too many panels)
 
@@ -571,22 +613,24 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ### Быстрые победы (high-ROI)
 
-1. **Объединить 62 TechniquePanels в 1 `TechniquesCatalog`** с таблицей: имя | категория (P0/P1/P2) | toggle | impact metrics. Сэкономит ~60 маршрутов в навигации, не потеряв функциональности.
-2. **Объединить 5 budget-панелей в 1 `BudgetHub`** с табами. Аналогично для 4 health-панелей.
-3. **Расширить `GovernancePanel`** до обещанного (audit trail, HITL queue, policy binding) — либо явно понизить статус wiki-статьи до «stub».
-4. **Удалить `OpenRouterPanel`** (29 строк, дубликат) и `SocialLeaderboardPanel` (34 строки, обёртка).
+1. **Объединить 62 TechniquePanels в 1 `TechniquesCatalog`** с таблицей: имя | категория (P0/P1/P2) | toggle | impact metrics. Сэкономит ~60 маршрутов в навигации, не потеряв функциональности. _Статус на 2026-11-17: частично выполнено (P2-4) — появился generic `TechniquePanel` + lazy factory, но отдельные маршруты остались._
+2. **Объединить 5 budget-панелей в 1 `BudgetHub`** с табами. Аналогично для 4 health-панелей. _Статус на 2026-11-17: выполнено частично (p2-3) — `BudgetHub`, `HealthHub`, `ResearchHub` созданы._
+3. **Расширить `GovernancePanel`** до обещанного (audit trail, HITL queue, policy binding) — либо явно понизить статус wiki-статьи до «stub». _Статус: без изменений, по-прежнему ~124 строки (role assignment + тест)._
+4. **Удалить `OpenRouterPanel`** (28 строк, дубликат) и `SocialLeaderboardPanel` (31 строка, обёртка).
 5. **Перенести `AquariumPanel` и `FederatedMemoryPanel` за feature flag** `ui.experimentalVisuals` (он уже упоминается в коде AquariumPanel).
+6. **Добавить тесты для `TopicGraphPanel`** — самый активный новый модуль (12+ коммитов за ноябрь), а тестов пока нет (в отличие от GraphStudio/UniversalGraph).
+7. **Определиться с UI для `deploy-bundle-service`** — сервис готов (сборка local-first бандлов), панели нет; либо добавить простой список бандлов в Deploy, либо явно пометить как kernel-only.
 
 ### Среднесрочные
 
-6. **Выделить «killer features» в отдельный top-level раздел навигации** «Cognitive Engine»: Crystal Vault + Synthesis + Lenses + Builder. Сейчас они разбросаны по разным разделам и теряются среди 268 панелей.
+6. **Выделить «killer features» в отдельный top-level раздел навигации** «Cognitive Engine»: Crystal Vault + Synthesis + Lenses + Builder. Сейчас они разбросаны по разным разделам и теряются среди 272 панелей.
 7. **Добавить явные badges в UI**: «Experimental», «Stub», «Deprecated». В коде эти метки есть, в UI — нет.
 8. **Опубликовать comparison table** с конкурентами (LangSmith / Dify / Flowise / OpenAI Playground) — показать, где SuperAgents OS уникален. Это повысит воспринимаемую ценность.
 
 ### Стратегические
 
 9. **Сократить количество панелей до ~150** за счёт объединения дублирующих. Это снизит cognitive load пользователя без потери функциональности.
-10. **Документировать «minimum viable OS»**: какие 18 панелей составляют ядро. Сейчас 268 — это пугает новых пользователей.
+10. **Документировать «minimum viable OS»**: какие 18 панелей составляют ядро. Сейчас 272 — это пугает новых пользователей.
 11. **Подсветить 6 уникальных подсистем** в onboarding wizard — сейчас новые пользователи не понимают, чем проект отличается от «yet another multi-chat».
 
 ---
@@ -595,7 +639,7 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 | Метрика                      | Значение                                                                       |
 | ---------------------------- | ------------------------------------------------------------------------------ |
-| Всего панелей                | 268                                                                            |
+| Всего панелей                | 272                                                                            |
 | **Critical для концепции**   | **18 (7%)**                                                                    |
 | **Уникальных killer-фич**    | **6 (Crystal, Synthesis, Builder, TimeMachine, Lenses, 33+75 debate catalog)** |
 | Стандартная функциональность | ~120 (70%) — ожидаемая в любом AI-инструменте                                  |
@@ -605,8 +649,8 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 **Ценностный итог:**
 
 - **Реальная ценность SuperAgents OS** — в **6 уникальных подсистемах** + стандартном AI-OS-обвязке. Это **больше, чем у Dify/Flowise** (там нет кристаллов/линз/synthesis zones), **сопоставимо с LangSmith** по observability, **превосходит OpenAI Playground** по multi-agent/debate глубине.
-- **Ценностный риск** — 268 панелей создают шум, в котором 6 killer-фич теряются. Пользователь, открывший проект впервые, видит 22 раздела и не понимает, **зачем именно это**.
-- **Можно ли обойтись без 250 панелей?** **Да.** Minimum viable = 18 Critical + ~20 Important = **~40 панелей** дают 90% ценности.
+- **Ценностный риск** — 272 панели создают шум, в котором 6 killer-фич теряются. Пользователь, открывший проект впервые, видит ~22 раздела и не понимает, **зачем именно это**.
+- **Можно ли обойтись без большинства панелей?** **Да.** Minimum viable = 18 Critical + ~20 Important = **~40 панелей** дают 90% ценности.
 - **Можно ли обойтись без 6 killer-фич?** **Нет.** Без них SuperAgents OS = «multi-provider chat с Elo-leaderboard» — это уже не «когнитивная ОС», а нишевый инструмент.
 
 **Итоговая оценка ценности проекта: 8.0 / 10** — высокий потенциал, но требует ценностной фокусировки (раскрыть killer-фичи, упростить навигацию, сократить дубли).
@@ -615,57 +659,64 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ## Приложение A. Полная таблица оцененных компонентов
 
-| Панель                 | Задача (кратко)            | Полезность | Уникальность | Важность   | Без неё?            |
-| ---------------------- | -------------------------- | :--------: | :----------: | ---------- | ------------------- |
-| ChatPanel              | Чат с LLM-ансамблем        |     9      |      🟡      | Critical   | Нет                 |
-| ProviderManager        | Управление ключами         |     9      |      🟡      | Critical   | Нет                 |
-| TasksPanel             | Задачи агентов + cron      |     7      |      🟡      | Important  | Частично            |
-| DebateArena            | Дебаты 33 стратегии        |     9      |      🟢      | Critical   | Нет                 |
-| DebateLive             | Live-режим дебатов         |     8      |      🟡      | Important  | Частично            |
-| DebateReplay           | Повтор дебатов             |     6      |      🟡      | Useful     | Да                  |
-| DebateTemplates        | Шаблоны дебатов            |     6      |      🔴      | Useful     | Да                  |
-| TournamentPanel        | Турнир дебатов             |     6      |      🟡      | Useful     | Да                  |
-| SREAgentPanel          | SRE-советник               |     7      |      🟡      | Important  | Частично            |
-| GovernancePanel        | RBAC (stub)                |     3      |      🔴      | Useful     | Да                  |
-| MemoryPanel            | BM25+семантика             |     8      |      🟡      | Important  | Нет                 |
-| CrystalVaultPanel ⭐   | Кристаллы знаний           |     8      |      🟢      | Critical   | Нет                 |
-| SynthesisPanel ⭐      | Мультиперспективный синтез |     8      |      🟢      | Critical   | Нет                 |
-| LensesPanel            | Когнитивные линзы          |     7      |      🟢      | Important  | Частично            |
-| BuilderPanel ⭐        | Visual pipelines           |     8      |      🟢      | Critical   | Нет                 |
-| TimeMachinePanel ⭐    | Snapshots + diff           |     7      |      🟢      | Important  | Частично            |
-| FederatedMemoryPanel   | Federated memory (exp)     |     4      |      🟢      | Optional   | Да                  |
-| AquariumPanel          | Декоративная viz (exp)     |     3      |      🟢      | Decorative | Да                  |
-| ForumPanel             | Агентский форум            |     6      |      🟢      | Important  | Частично            |
-| DirectorPanel          | Режиссёр сценариев         |     6      |      🟢      | Important  | Частично            |
-| AgentsPanel            | Управление агентами        |     8      |      🟡      | Critical   | Нет                 |
-| RolesPanel             | Роли + консорциумы         |     7      |      🟡      | Important  | Нет                 |
-| KnowledgePanel         | RAG                        |     7      |      🔴      | Important  | Нет                 |
-| HealthPanel            | Health vitals              |     7      |      🔴      | Important  | Нет                 |
-| TracesPanel            | След исполнения            |     7      |      🟡      | Important  | Нет                 |
-| LogsPanel              | Логи                       |     7      |      🔴      | Useful     | Нет                 |
-| BudgetPanel            | Бюджеты                    |     7      |      🔴      | Useful     | Нет                 |
-| AnalyticsPanel         | Аналитика                  |     7      |      🔴      | Useful     | Нет                 |
-| SettingsPanel          | Настройки                  |     7      |      🔴      | Useful     | Нет                 |
-| WikiPanel              | Документация в-app         |     7      |      🔴      | Useful     | Нет                 |
-| ToolsPanel             | Инструменты                |     7      |      🔴      | Useful     | Нет                 |
-| MCPPanel               | MCP-серверы                |     7      |      🔴      | Useful     | Нет                 |
-| 62 TechniquePanels     | Toggle техник              |     5      |      🟡      | Useful     | Да (в виде 62 — да) |
-| SocialLeaderboardPanel | Elo leaderboard (wrapper)  |     4      |      🟡      | Optional   | Да                  |
-| OpenRouterPanel        | Дубликат (29 строк)        |     3      |      🔴      | Optional   | Да                  |
-| LearnHubPanel          | Hub для 4 панелей          |     5      |      🔴      | Optional   | Да                  |
-| ArchitectureMapPanel   | Viz архитектуры            |     5      |      🔴      | Optional   | Да                  |
+| Панель                 | Задача (кратко)                                             | Полезность | Уникальность | Важность   | Без неё?            |
+| ---------------------- | ----------------------------------------------------------- | :--------: | :----------: | ---------- | ------------------- |
+| ChatPanel              | Чат с LLM-ансамблем                                         |     9      |      🟡      | Critical   | Нет                 |
+| ProviderManager        | Управление ключами                                          |     9      |      🟡      | Critical   | Нет                 |
+| TasksPanel             | Задачи агентов + cron                                       |     7      |      🟡      | Important  | Частично            |
+| DebateArena            | Дебаты 33 стратегии                                         |     9      |      🟢      | Critical   | Нет                 |
+| DebateLive             | Live-режим дебатов                                          |     8      |      🟡      | Important  | Частично            |
+| DebateReplay           | Повтор дебатов                                              |     6      |      🟡      | Useful     | Да                  |
+| DebateTemplates        | Шаблоны дебатов                                             |     6      |      🔴      | Useful     | Да                  |
+| TournamentPanel        | Турнир дебатов                                              |     6      |      🟡      | Useful     | Да                  |
+| SREAgentPanel          | SRE-советник                                                |     7      |      🟡      | Important  | Частично            |
+| GovernancePanel        | RBAC (stub)                                                 |     3      |      🔴      | Useful     | Да                  |
+| MemoryPanel            | BM25+семантика                                              |     8      |      🟡      | Important  | Нет                 |
+| CrystalVaultPanel ⭐   | Кристаллы знаний                                            |     8      |      🟢      | Critical   | Нет                 |
+| SynthesisPanel ⭐      | Мультиперспективный синтез                                  |     8      |      🟢      | Critical   | Нет                 |
+| LensesPanel            | Когнитивные линзы                                           |     7      |      🟢      | Important  | Частично            |
+| BuilderPanel ⭐        | Visual pipelines                                            |     8      |      🟢      | Critical   | Нет                 |
+| TimeMachinePanel ⭐    | Snapshots + diff                                            |     7      |      🟢      | Important  | Частично            |
+| FederatedMemoryPanel   | Federated memory (exp)                                      |     4      |      🟢      | Optional   | Да                  |
+| AquariumPanel          | Декоративная viz (exp)                                      |     3      |      🟢      | Decorative | Да                  |
+| ForumPanel             | Агентский форум                                             |     6      |      🟢      | Important  | Частично            |
+| DirectorPanel          | Режиссёр сценариев                                          |     6      |      🟢      | Important  | Частично            |
+| AgentsPanel            | Управление агентами                                         |     8      |      🟡      | Critical   | Нет                 |
+| RolesPanel             | Роли + консорциумы                                          |     7      |      🟡      | Important  | Нет                 |
+| KnowledgePanel         | RAG                                                         |     7      |      🔴      | Important  | Нет                 |
+| HealthPanel            | Health vitals                                               |     7      |      🔴      | Important  | Нет                 |
+| TracesPanel            | След исполнения                                             |     7      |      🟡      | Important  | Нет                 |
+| LogsPanel              | Логи                                                        |     7      |      🔴      | Useful     | Нет                 |
+| BudgetPanel            | Бюджеты                                                     |     7      |      🔴      | Useful     | Нет                 |
+| AnalyticsPanel         | Аналитика                                                   |     7      |      🔴      | Useful     | Нет                 |
+| SettingsPanel          | Настройки                                                   |     7      |      🔴      | Useful     | Нет                 |
+| WikiPanel              | Документация в-app                                          |     7      |      🔴      | Useful     | Нет                 |
+| ToolsPanel             | Инструменты                                                 |     7      |      🔴      | Useful     | Нет                 |
+| MCPPanel               | MCP-серверы                                                 |     7      |      🔴      | Useful     | Нет                 |
+| 62 TechniquePanels     | Toggle техник (P2-4: generic TechniquePanel + lazy factory) |     5      |      🟡      | Useful     | Да (в виде 62 — да) |
+| SocialLeaderboardPanel | Elo leaderboard (wrapper)                                   |     4      |      🟡      | Optional   | Да                  |
+| OpenRouterPanel        | Дубликат (28 строк)                                         |     3      |      🔴      | Optional   | Да                  |
+| LearnHubPanel          | Hub для 4 панелей                                           |     5      |      🔴      | Optional   | Да                  |
+| ArchitectureMapPanel   | Viz архитектуры                                             |     5      |      🔴      | Optional   | Да                  |
+| TopicGraphPanel        | Тематический граф (topic)                                   |     6      |      🟡      | Optional   | Да                  |
+| GraphStudioPanel       | Граф-студия (physics)                                       |     6      |      🟡      | Optional   | Да                  |
+| UniversalGraphPanel    | Универсальный граф проекта                                  |     5      |      🔴      | Optional   | Да                  |
+| ModelExplorerPanel     | Каталог моделей + чат                                       |     6      |      🔴      | Useful     | Да                  |
+| PluginManagerPanel     | Плагины системы                                             |     5      |      🔴      | Useful     | Частично            |
+| PluginMarketplacePanel | Маркетплейс плагинов                                        |     4      |      🔴      | Optional   | Да                  |
 
 ---
 
 ## Приложение B. Источники и метод
 
-| Что                   | Где                                                                                                                                                                                                                           | Как                                           |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| Код панелей           | `src/components/**`                                                                                                                                                                                                           | клон репо + `wc -l` + `Read` избранных файлов |
-| Уникальные подсистемы | `CrystalVaultPanel`, `SynthesisPanel`, `BuilderPanel/CognitiveBuilder`, `TimeMachinePanel`, `FederatedMemoryPanel`, `AquariumPanel`, `LensesPanel`, `DirectorPanel`, `MetaAgentPanel`, `NavGraphPanel`, `GraphWorkbenchPanel` | полное чтение head + типов                    |
-| Конкурентный контекст | OpenAI Playground, Anthropic Console, LangSmith, LangFlow, Dify, Flowise, n8n, AutoGen, CrewAI, Helicone, Pol.is, Kialo                                                                                                       | общее знание                                  |
-| Wiki-описания         | `docs/wiki/panel-*.md`, `comp-*.md`                                                                                                                                                                                           | WebFetch + клон                               |
-| README (принципы OS)  | `README.md`, `docs/wiki/architecture.md`, `docs/wiki/what-is.md`                                                                                                                                                              | WebFetch                                      |
+| Что                     | Где                                                                                                                                                                                                                                                                                         | Как                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Код панелей             | `src/components/**`                                                                                                                                                                                                                                                                         | клон репо + `wc -l` + `Read` избранных файлов |
+| Уникальные подсистемы   | `CrystalVaultPanel`, `SynthesisPanel`, `BuilderPanel/CognitiveBuilder`, `TimeMachinePanel`, `FederatedMemoryPanel`, `AquariumPanel`, `LensesPanel`, `DirectorPanel`, `MetaAgentPanel`, `NavGraphPanel`, `GraphWorkbenchPanel`, `TopicGraphPanel`, `GraphStudioPanel`, `UniversalGraphPanel` | полное чтение head + типов                    |
+| Конкурентный контекст   | OpenAI Playground, Anthropic Console, LangSmith, LangFlow, Dify, Flowise, n8n, AutoGen, CrewAI, Helicone, Pol.is, Kialo                                                                                                                                                                     | общее знание                                  |
+| Wiki-описания           | `docs/wiki/panel-*.md`, `comp-*.md`                                                                                                                                                                                                                                                         | WebFetch + клон                               |
+| README (принципы OS)    | `README.md`, `docs/wiki/architecture.md`, `docs/wiki/what-is.md`                                                                                                                                                                                                                            | WebFetch                                      |
+| Актуализация 2026-11-17 | `git log --oneline -30`, `docs/wiki/dev-reality-map.md` (HEAD `29d85f4`), `docs/manifest.json`, `docs/inventory.json`, `docs/graph.json`, `src/components/**`, `src/kernel/services/**`                                                                                                     | чтение кода + git log по путям                |
 
 ---
 
@@ -684,4 +735,4 @@ SuperAgents OS — не чат-бот, а **операционная систе�
 
 ---
 
-_Отчёт сгенерирован 2026-10-31. Оценки ценности — субъективные, основаны на анализе кода и сравнении с 10+ конкурентными AI-инструментами. Парный отчёт «Карта готовности панелей» оценивает качество реализации; этот — зачем каждая панель нужна._
+_Отчёт сгенерирован 2026-10-31; обновлён 2026-11-17 (HEAD `ae2dad8`). Оценки ценности — субъективные, основаны на анализе кода и сравнении с 10+ конкурентными AI-инструментами. Парный отчёт «Карта готовности панелей» оценивает качество реализации; этот — зачем каждая панель нужна._

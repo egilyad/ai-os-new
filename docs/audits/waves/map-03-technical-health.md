@@ -2,41 +2,41 @@
 
 ## SuperAgents OS (`egilyad/ai-os-new`)
 
-> **Версия проекта:** commit `e08ab8e` (Oct 31, 2026, ветка `main`)
-> **Дата анализа:** 2026-10-31
-> **Метод:** статический анализ кода + метрики `wc`/`grep`/`find` + чтение `package.json`, `CHANGELOG.md`, `.github/workflows/ci.yml`, `docs/wiki/zone-*.md` (26 zone audits), `docs/wiki/diagnostics.md`
+> **Версия проекта:** commit `ae2dad8` (Nov 17, 2026, ветка `main`)
+> **Дата анализа:** 2026-11-17
+> **Метод:** статический анализ кода + метрики `wc`/`grep`/`find` + чтение `package.json`, `CHANGELOG.md`, `.github/workflows/ci.yml`, `docs/wiki/zone-*.md` (26 zone audits), `docs/wiki/diagnostics.md`, `docs/wiki/dev-reality-map.md` (автосгенерирована 2026-11-17)
 > **Парные документы:** «Карта готовности панелей» (качество 1–10) + «Карта функциональной ценности» (зачем нужно). Здесь — **здоровье кода и риски**.
 
 ---
 
 ## 1. Исполнительное резюме
 
-SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeScript/TSX в 3 114 файлах, с ядром 239 K LOC (1 754 файла) и UI-слоем 229 K LOC (1 103 файла). 58 npm-зависимостей, 48 скриптов, 26 zone-audits с **199 задокументированными исправлениями** и **101 отложенной проблемой**.
+SuperAgents OS — **крупная кодовая база**: ~569 K LOC TypeScript/TSX в 3 390 файлах, с ядром 266 K LOC (1 962 файла) и UI-слоем 260 K LOC (1 155 файлов). 59 npm-зависимостей, 54 скрипта, 26 zone-audits с **199 задокументированными исправлениями** и **101 отложенной проблемой**.
 
 **Сводные метрики здоровья:**
 
-| Метрика                            |                                         Значение |          Оценка          |
-| ---------------------------------- | -----------------------------------------------: | :----------------------: |
-| Объём кода                         |                          509 K LOC, 3 114 файлов |            —             |
-| Файлов > 500 строк (сложность)     |                                          **169** |       🟡 умеренно        |
-| Файлов > 1000 строк                |                                           **18** |     🟡 есть тяжёлые      |
-| Production deps                    |                                               25 |        🟢 разумно        |
-| TODO/FIXME/HACK/XXX                |                                **2 / 0 / 0 / 0** | 🟢🟢 исключительно чисто |
-| `as any`/`as unknown`              |                                              828 |       🟡 умеренно        |
-| `eslint-disable`                   |                                              256 |       🟡 умеренно        |
-| `@ts-ignore` / `@ts-expect-error`  |                                            **1** |       🟢🟢 отлично       |
-| Explicit `throw new Error`         |                                              992 |   🟢 хорошая обработка   |
-| Тестов всего                       |   514 (486 unit + 17 e2e + 8 server + 3 scripts) |       🟡 умеренно        |
-| Задокументированных исправлений    |                                          **199** |    🟢 зрелая история     |
-| Отложенных проблем                 |                                          **101** |        🟡 техдолг        |
-| Известных проблем (diagnostics.md) |                                 **5 глобальных** |            🟡            |
-| CI jobs                            | 5 (typecheck/lint/build/test/coverage/audit/e2e) |        🟢 зрелый         |
-| Lint warning baseline              |                            **5600** max-warnings |     🔴 очень высокий     |
-| Security audit job                 |                                          ✅ есть |            🟢            |
+| Метрика                            |                                                                                Значение |          Оценка          |
+| ---------------------------------- | --------------------------------------------------------------------------------------: | :----------------------: |
+| Объём кода                         |                                                                 569 K LOC, 3 390 файлов |            —             |
+| Файлов > 500 строк (сложность)     |                                                                                 **211** |       🟡 умеренно        |
+| Файлов > 1000 строк                |                                                                                  **26** |     🟡 есть тяжёлые      |
+| Production deps                    |                                                                                      25 |        🟢 разумно        |
+| TODO/FIXME/HACK/XXX                |                                                                       **1 / 0 / 0 / 3** | 🟢🟢 исключительно чисто |
+| `as any`/`as unknown`              |                                                                         157 / 762 (919) |       🟡 умеренно        |
+| `eslint-disable`                   |                                                                                     261 |       🟡 умеренно        |
+| `@ts-ignore` / `@ts-expect-error`  |                                                                                   **1** |       🟢🟢 отлично       |
+| Explicit `throw new Error`         |                                                                                    1048 |   🟢 хорошая обработка   |
+| Тестов всего                       |                     732 (691 unit/компонентных файлов + 24 e2e + 14 server + 3 scripts) |       🟡 умеренно        |
+| Задокументированных исправлений    |                                                                                 **199** |    🟢 зрелая история     |
+| Отложенных проблем                 |                                                                                 **101** |        🟡 техдолг        |
+| Известных проблем (diagnostics.md) |                                                                        **5 глобальных** |            🟡            |
+| CI jobs                            | 11 (typecheck/lint/build/test/coverage/full-tests/audit/circular/deps/e2e/demos/deploy) |        🟢 зрелый         |
+| Lint warning baseline              |                                                                   **4300** max-warnings |  🟡 высокий, снижается   |
+| Security audit job                 |                                                                                 ✅ есть |            🟢            |
 
-**Главный вывод:** кодовая база **в хорошем санитарном состоянии** для своего объёма. 2 TODO на 509K LOC — это **беспрецедентно чисто**. CI зрелый (5 jobs + security audit). 199 задокументированных исправлений показывают активную работу. **Главные риски:** 5600-warning baseline, 828 type-escapes, API-ключи в plaintext, 101 отложенная проблема, 18 файлов > 1000 строк.
+**Главный вывод:** кодовая база **в хорошем санитарном состоянии** для своего объёма. 4 маркера (1 TODO + 3 XXX) на 569K LOC — это **беспрецедентно чисто**. CI зрелый (11 jobs + security audit). 199 задокументированных исправлений показывают активную работу. **Главные риски:** 4300-warning baseline, 919 type-escapes, API-ключи в plaintext, 101 отложенная проблема, 26 файлов > 1000 строк.
 
-**Health score: 7.0 / 10** — зрело, но с измеримым техдолгом.
+**Health score: 7.0 / 10** — зрело, но с измеримым техдолгом (baseline снижен 5600→4300, CI расширен 5→11, покрытие получило gate; рост hotspots сдерживает оценку).
 
 ---
 
@@ -69,85 +69,92 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 ### 3.1. Объём и сложность
 
-| Метрика                    |                                      Значение |
-| -------------------------- | --------------------------------------------: |
-| TS/TSX файлов в `src/`     |                                     **3 114** |
-| Total LOC                  |                                   **508 976** |
-| Средний размер файла       |                                **163 строки** |
-| Файлов > 500 строк         |                         **169** (5.4% файлов) |
-| Файлов > 1000 строк        |                          **18** (0.6% файлов) |
-| Largest file               | `wiki-articles.ts` — 5 021 строка (generated) |
-| Largest non-generated file |              `dexie-schema.ts` — 3 764 строки |
+| Метрика                    |                                     Значение |
+| -------------------------- | -------------------------------------------: |
+| TS/TSX файлов в `src/`     |                                    **3 390** |
+| Total LOC                  |                                  **569 245** |
+| Средний размер файла       |                                **168 строк** |
+| Файлов > 500 строк         |                        **211** (6.2% файлов) |
+| Файлов > 1000 строк        |                         **26** (0.8% файлов) |
+| Largest file               | `wiki-articles.ts` — 5 039 строк (generated) |
+| Largest non-generated file |     `dexie/schema-versions.ts` — 2 949 строк |
 
 **По слоям:**
 
 | Слой          | Файлов |     LOC | Доля | Средний размер |
 | ------------- | -----: | ------: | ---: | -------------: |
-| `kernel/`     |  1 754 | 239 832 |  47% |            136 |
-| `components/` |  1 103 | 228 813 |  45% |            207 |
-| `llm/`        |     79 |  12 299 |   2% |            155 |
-| `stores/`     |     53 |   8 993 |   2% |            169 |
-| `i18n/`       |     48 |   8 618 |   2% |            179 |
-| `generated/`  |     23 |   2 112 |  <1% |             91 |
-| `hooks/`      |     15 |   1 350 |  <1% |             90 |
+| `kernel/`     |  1 962 | 266 235 |  47% |            136 |
+| `components/` |  1 155 | 260 409 |  46% |            225 |
+| `llm/`        |     79 |  12 519 |   2% |            158 |
+| `stores/`     |     53 |   9 358 |   2% |            177 |
+| `i18n/`       |     50 |   8 855 |   2% |            177 |
+| `generated/`  |     23 |   2 644 |  <1% |            115 |
+| `hooks/`      |     21 |   1 546 |  <1% |             74 |
+| `tests/`      |      7 |     406 |  <1% |             58 |
+| прочие (root) |     40 |   7 273 |   1% |            182 |
 
 ### 3.2. Зависимости
 
 | Категория                   | Кол-во | Тяжёлые                                                                                                                                                                   |
 | --------------------------- | -----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `dependencies` (production) | **25** | React 19, Vite 8, Dexie 4, React Flow 12, Mermaid 12, Monaco 0.52, TipTap 3, Zod 4, Zustand 4, Orama 3, framer-motion 12, vis-network 10, @google/generative-ai, groq-sdk |
-| `devDependencies`           | **33** | Vitest, Playwright, ESLint, Prettier, TypeScript 6, madge, dependency-cruiser, husky, commitlint                                                                          |
-| Всего                       | **58** | —                                                                                                                                                                         |
-| npm scripts                 | **48** | —                                                                                                                                                                         |
+| `devDependencies`           | **34** | Vitest, Playwright, ESLint, Prettier, TypeScript 6, madge, dependency-cruiser, husky, commitlint, rollup-plugin-visualizer, ws                                            |
+| Всего                       | **59** | —                                                                                                                                                                         |
+| npm scripts                 | **54** | —                                                                                                                                                                         |
 
 **Зрелые** зависимости (React, Vite, Dexie, Zod) — stable. **Risk:** `@google/generative-ai@^0.24.1` — pre-1.0, API может ломаться. `lucide-react@^1.14.0` — нестандартная версия (обычно 0.x).
 
 ### 3.3. Качество кода (статические маркеры)
 
-| Маркер                            |                        Кол-во | Верdict                                      |
-| --------------------------------- | ----------------------------: | -------------------------------------------- |
-| `TODO`                            |                         **2** | 🟢🟢 исключительно чисто (509K LOC / 2 TODO) |
-| `FIXME`                           |                             0 | 🟢                                           |
-| `HACK`                            |                             0 | 🟢                                           |
-| `XXX`                             |                             0 | 🟢                                           |
-| `as any` / `as unknown`           |                       **828** | 🟡 умеренно (0.16% от LOC — приемлемо)       |
-| `eslint-disable`                  |                       **256** | 🟡 умеренно                                  |
-| `@ts-ignore` / `@ts-expect-error` |                         **1** | 🟢🟢 отлично                                 |
-| `throw new Error/TypeError`       |                       **992** | 🟢 хорошая error-культура                    |
-| `console.error`                   |                            72 | 🟡 приемлемо                                 |
-| `console.warn`                    |                            16 | 🟢                                           |
-| `@deprecated MOCK`                | 1 сервис (`HealthSlaService`) | 🟡                                           |
+| Маркер                            |                                                                                                               Кол-во | Верdict                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------: | ----------------------------------------------- |
+| `TODO`                            |                                                                                                                **1** | 🟢🟢 исключительно чисто (569K LOC / 4 маркера) |
+| `FIXME`                           |                                                                                                                    0 | 🟢                                              |
+| `HACK`                            |                                                                                                                    0 | 🟢                                              |
+| `XXX`                             |                                                                                                                **3** | 🟢                                              |
+| `as any` / `as unknown`           |                                                                                                        **157 / 762** | 🟡 умеренно (0.16% от LOC — приемлемо)          |
+| `eslint-disable`                  |                                                                                                              **261** | 🟡 умеренно                                     |
+| `@ts-ignore` / `@ts-expect-error` |                                                                                                            **0 / 1** | 🟢🟢 отлично                                    |
+| `throw new Error/TypeError`       |                                                                                                             **1048** | 🟢 хорошая error-культура                       |
+| `console.error`                   |                                                                                                                   73 | 🟡 приемлемо                                    |
+| `console.warn`                    |                                                                                                                   16 | 🟢                                              |
+| `@deprecated MOCK`                | ≥6 сервисов (`HealthSlaService`, `deploy-service`, `model-distillation-service`, `provider-migration-service` и др.) | 🟡                                              |
 
-**2 TODO на 509K LOC — это аномально чисто.** Большинство зрелых проектов имеют 50–500 TODO. Это говорит о **строгой культуре уборки**.
+**4 маркера (1 TODO + 3 XXX) на 569K LOC — это аномально чисто.** Большинство зрелых проектов имеют 50–500 TODO. Это говорит о **строгой культуре уборки**.
 
 ### 3.4. Тесты
 
-| Метрика                            |                  Значение |
-| ---------------------------------- | ------------------------: |
-| Unit/компонентных тестов (src)     |                   **486** |
-| Server-тестов                      |                         8 |
-| Скрипт-тестов                      |                         3 |
-| E2E (Playwright)                   |                    **17** |
-| Всего                              |                   **514** |
-| Тестовых файлов в `src/components` |                       164 |
-| Каталогов панелей с тестом         |               104 из ~180 |
-| Stable CI gate (`test:stable`)     |                   34 пути |
-| Coverage job                       | ✅ есть (`test:coverage`) |
+| Метрика                            |                                          Значение |
+| ---------------------------------- | ------------------------------------------------: |
+| Unit/компонентных тестов (src)     |                                           **691** |
+| Server-тестов (server/tests)       |                                                14 |
+| Скрипт-тестов (scripts/tests)      |                                                 3 |
+| E2E (Playwright)                   |                                            **24** |
+| Всего                              |                                           **732** |
+| Тестовых файлов в `src/components` |                                               171 |
+| Каталогов панелей с тестом         |                                       119 из ~263 |
+| Stable CI gate (`test:stable`)     |                                           34 пути |
+| Coverage job                       | ✅ есть (`test:coverage`, thresholds 31/24/30/32) |
 
 ### 3.5. CI / Quality gates
 
-`.github/workflows/ci.yml` — 5 jobs:
+`.github/workflows/ci.yml` — 11 jobs (14 по счётчику `dev-reality-map`, включая 3 `on:`-триггерa):
 
-| Job                   | Что делает                                                                                                                                                       | Статус                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **Type-check & Lint** | `npx tsc -b --noEmit` + `npm run lint -- --max-warnings 5600` + `docs:health` + `check:circular-kernel` (madge) + `check:deps` (depcruise) + 16 `gen:*` скриптов | 🟢 зрело, **но 5600 warnings — высокий baseline** |
-| **Build**             | `npm run build` (typecheck + production build)                                                                                                                   | 🟢                                                |
-| **Unit Tests**        | `npm run test:stable` + `npm run test:server`                                                                                                                    | 🟢                                                |
-| **Test Coverage**     | `npm run test:coverage`                                                                                                                                          | 🟢                                                |
-| **Security Audit**    | (details в workflow)                                                                                                                                             | 🟢 есть                                           |
-| **E2E**               | `npm run test:e2e -- ${{ matrix.spec }}` (matrix из 17 specs)                                                                                                    | 🟢                                                |
+| Job                   | Что делает                                                                                                           | Статус                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| **Type-check & Lint** | `npx tsc -b --noEmit` + `npm run lint -- --max-warnings 4300` + `gen:*` (16 скриптов, sync-проверка) + `docs:health` | 🟢 зрело, baseline 4300 (снижен с 5600, QW-2) |
+| **Build**             | `npm run build` (typecheck + production build) + bundle-size check + `build:analyze` (visualizer)                    | 🟢                                            |
+| **Unit Tests**        | `npm run test:stable` + `npm run test:server`                                                                        | 🟢                                            |
+| **Test Coverage**     | `npm run test:coverage` (thresholds 31/24/30/32)                                                                     | 🟢                                            |
+| **Full Unit Tests**   | полный прогон (не только stable), matrix из 24 групп (`full-tests`)                                                  | 🟢                                            |
+| **Security Audit**    | `npm audit --audit-level=high`                                                                                       | 🟢 есть                                       |
+| **Circular Check**    | `npm run check:circular-kernel` (madge)                                                                              | 🟢                                            |
+| **Dependency Graph**  | `npm run check:deps` (dependency-cruiser)                                                                            | 🟢                                            |
+| **E2E**               | `npm run test:e2e -- ${{ matrix.spec }}` (matrix из 12 шардов, 17 specs)                                             | 🟢                                            |
+| **Demos**             | скриншоты панелей (Playwright, main)                                                                                 | 🟢                                            |
+| **Deploy**            | GitHub Pages + sourcemaps (Sentry/Datadog)                                                                           | 🟢                                            |
 
-**Дополнительно:** `check:circular-kernel` (madge) проверяет циклические зависимости в `src/kernel/`. `check:deps` (dependency-cruiser) — по `.dependency-cruiser.cjs`.
+**Дополнительно:** `check:circular-kernel` (madge) проверяет циклические зависимости в `src/kernel/`. `check:deps` (dependency-cruiser) — по `.dependency-cruiser.cjs`. Dependabot подключён (`.github/dependabot.yml`).
 
 ---
 
@@ -161,17 +168,20 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 | Zone      | Что исправлено | О чём зона                                                                                                                                                                                             |
 | --------- | -------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| zone-26   |            ~25 | Остатки (PolicyEditor, Analytics, Performance, Drift, VulnTargeting, Aquarium, Bookmarks, CausalDebugger, RivalsHub, AgentJournal, AlertLayer, NvidiaEnterprise, Fleet) — guards от missing arrays/NaN |
-| zone-1    |            ~12 | Панели провайдеров и чата                                                                                                                                                                              |
-| zone-4    |            ~10 | Память и знания                                                                                                                                                                                        |
-| zone-3    |            ~10 | Агенты и задачи                                                                                                                                                                                        |
-| zone-2    |            ~10 | Дебаты                                                                                                                                                                                                 |
-| zone-5    |             ~8 | Система и мониторинг                                                                                                                                                                                   |
-| zone-25   |             ~8 | Конструкторы                                                                                                                                                                                           |
-| zone-6    |             ~8 | Governance и политики                                                                                                                                                                                  |
-| zone-7    |             ~7 | Инструменты и MCP                                                                                                                                                                                      |
+| zone-26   |             16 | Остатки (PolicyEditor, Analytics, Performance, Drift, VulnTargeting, Aquarium, Bookmarks, CausalDebugger, RivalsHub, AgentJournal, AlertLayer, NvidiaEnterprise, Fleet) — guards от missing arrays/NaN |
+| zone-4    |             12 | Память и знания                                                                                                                                                                                        |
+| zone-5    |             12 | Система и мониторинг                                                                                                                                                                                   |
+| zone-22   |             12 | Смещения и доверие                                                                                                                                                                                     |
+| zone-2    |             11 | Дебаты                                                                                                                                                                                                 |
+| zone-7    |             10 | Инструменты и MCP                                                                                                                                                                                      |
+| zone-3    |              9 | Агенты и задачи                                                                                                                                                                                        |
+| zone-6    |              9 | Governance и политики                                                                                                                                                                                  |
+| zone-24   |              9 | Знания-2                                                                                                                                                                                               |
+| zone-25   |              9 | Конструкторы                                                                                                                                                                                           |
 | …         |              … | …                                                                                                                                                                                                      |
 | **Total** |        **199** | —                                                                                                                                                                                                      |
+
+_Числа — количество пунктов «Что проверено и исправлено» в зонах (пересчитано по файлам `zone-*.md`, 2026-11-17)._
 
 **Категории исправлений (по CHANGELOG + zones):**
 
@@ -205,16 +215,20 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 | zone-4    |        8 | Память: иконки, синтез без сохранения, SLA-fallback, autodiscovery off |
 | zone-1    |        7 | Дублирующие иконки поиска, локальный цвет без persist, stale-задержки  |
 | zone-3    |        6 | Агенты/задачи: i18n-пробелы                                            |
+| zone-5    |        5 | Система/мониторинг                                                     |
 | zone-23   |        5 | Коммуникации-2                                                         |
 | zone-24   |        5 | Знания-2                                                               |
-| zone-5    |        5 | Система/мониторинг                                                     |
 | zone-2    |        4 | Дебаты                                                                 |
 | zone-6    |        4 | Governance/политики                                                    |
 | zone-7    |        4 | Инструменты/MCP                                                        |
 | zone-8    |        4 | Роутер                                                                 |
+| zone-11   |        4 | Workspace и проекты                                                    |
 | zone-15   |        4 | Исследования                                                           |
+| zone-26   |        4 | Остатки                                                                |
 | …         |        … | …                                                                      |
 | **Total** |  **101** | —                                                                      |
+
+_Числа — количество пунктов «Отложено, требует проверки» в зонах (пересчитано по файлам `zone-*.md`, 2026-11-17)._
 
 **Шаблоны отложенных проблем:**
 
@@ -228,25 +242,25 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 Эти **не задокументированы** ни в diagnostics.md, ни в zone audits — найдены статическим анализом.
 
-| #   | Проблема                                                                                                                                  |                          Доказательство                           | Критичность                                                                |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------: | -------------------------------------------------------------------------- |
-| 1   | **5600-warning lint baseline**                                                                                                            | `.github/workflows/ci.yml`: `npm run lint -- --max-warnings 5600` | 🟡 MED — копится тихо                                                      |
-| 2   | **HealthSlaService = `@deprecated MOCK`**                                                                                                 |          `wiki-components.ts` + `health-sla-service.ts`           | 🟡 MED — UI показывает симулированные данные                               |
-| 3   | **828 `as any`/`as unknown` type escapes**                                                                                                |                `grep -rE "as (any\|unknown)" src/`                | 🟡 MED — 0.16% от LOC, но集中的 в Kernel/PersonalityCard/DistillationPanel |
-| 4   | **256 `eslint-disable` directives**                                                                                                       |                    `grep -rE "eslint-disable"`                    | 🟡 MED — нужно ревью                                                       |
-| 5   | **80 `localStorage` plain-text calls**                                                                                                    |           `grep -rE "localStorage\.(setItem\|getItem)"`           | 🟡 LOW-MED — prefs + SRE keyId                                             |
-| 6   | **62 идентичные TechniquePanels**                                                                                                         |         `diff HumorPanel.tsx CriticPanel.tsx` = 4 строки          | 🟡 MED — maintainability risk                                              |
-| 7   | **18 файлов > 1000 строк**                                                                                                                |                          `find … wc -l`                           | 🟡 MED — complexity hotspots                                               |
-| 8   | **`dexie-schema.ts` 3 764 строки**                                                                                                        |                    largest non-generated file                     | 🟡 MED — schema монолит                                                    |
-| 9   | **`event-registry.ts` 2 772 строки**                                                                                                      |                  198 схем событий в одном файле                   | 🟡 MED                                                                     |
-| 10  | **`sandbox-interpreter.ts` 1 906 строк**                                                                                                  |                          workers/sandbox                          | 🟡 MED — security-critical code                                            |
-| 11  | **`wiki-articles.ts` 5 021 строка**                                                                                                       |                       generated, но в src/                        | 🟢 LOW (generated)                                                         |
-| 12  | **`panel-actions-catalog.ts` 4 832 строки**                                                                                               |                             generated                             | 🟢 LOW (generated)                                                         |
-| 13  | **Tests stale** — `diagnostics.md` признаёт: «harness'ы висят, чинятся точечно»                                                           |                              🟡 MED                               |
-| 14  | **`dev-status-critical.md`, `dev-status-debt.md`, `dev-status-done.md`, `dev-status-bugs.md`, `dev-status-blocked.md` — пустые заглушки** |             WebFetch подтвердил: «текст в разработке»             | 🟡 MED — нет formal issue tracking                                         |
-| 15  | **Open `/audit/` directory empty**                                                                                                        |                     `ls docs/audits/` → empty                     | 🟡 MED — нет audit reports                                                 |
-| 16  | **Coverage threshold не задан в CI**                                                                                                      |     `test:coverage` запускается, но threshold-gate не найден      | 🟡 MED                                                                     |
-| 17  | **Mock-сервисы в production code path**                                                                                                   |    DemoGate + DemoBadge + `featureFlags.mockServices.enabled`     | 🟡 LOW (gated)                                                             |
+| #   | Проблема                                                                              |                                                            Доказательство                                                            | Критичность                                                                |
+| --- | ------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------- |
+| 1   | **4300-warning lint baseline**                                                        |                                  `.github/workflows/ci.yml`: `npm run lint -- --max-warnings 4300`                                   | 🟡 MED — снижен с 5600 (QW-2, 2026-11-09), но всё ещё копится тихо         |
+| 2   | **≥6 сервисов с `@deprecated MOCK`**                                                  | `health-sla-service.ts`, `deploy-service.ts`, `model-distillation-service.ts`, `provider-migration-service.ts`, DemoGate/Badge и др. | 🟡 MED — UI показывает симулированные данные                               |
+| 3   | **919 `as any`/`as unknown` type escapes** (157 + 762)                                |                                                 `grep -rE "as (any\|unknown)" src/`                                                  | 🟡 MED — 0.16% от LOC, но集中的 в Kernel/PersonalityCard/DistillationPanel |
+| 4   | **261 `eslint-disable` directives**                                                   |                                                     `grep -rE "eslint-disable"`                                                      | 🟡 MED — нужно ревью                                                       |
+| 5   | **216 `localStorage` plain-text calls**                                               |                                            `grep -rE "localStorage\.(setItem\|getItem)"`                                             | 🟡 LOW-MED — prefs + SRE keyId                                             |
+| 6   | **60 идентичные TechniquePanels**                                                     |                                           `diff HumorPanel.tsx CriticPanel.tsx` = 4 строки                                           | 🟡 MED — maintainability risk                                              |
+| 7   | **26 файлов > 1000 строк**                                                            |                                                            `find … wc -l`                                                            | 🟡 MED — complexity hotspots                                               |
+| 8   | **`dexie/schema-versions.ts` 2 949 строк**                                            |                                    монолит schema вынесен из `dexie-schema.ts` (теперь 339 строк)                                    | 🟡 MED — schema монолит                                                    |
+| 9   | **`event-registry.ts` 58 строк, но registry-groups до 1 231 строк**                   |                                    реестр событий разбит на `registry-groups/` (группа-1: 1 231)                                     | 🟡 MED                                                                     |
+| 10  | **`sandbox-interpreter.ts` 1 907 строк**                                              |                                                           workers/sandbox                                                            | 🟡 MED — security-critical code                                            |
+| 11  | **`wiki-articles.ts` 5 039 строк**                                                    |                                                         generated, но в src/                                                         | 🟢 LOW (generated)                                                         |
+| 12  | **`panel-actions-catalog.ts` 4 833 строки**                                           |                                                              generated                                                               | 🟢 LOW (generated)                                                         |
+| 13  | **Tests stale** — `diagnostics.md` признаёт: «harness'ы висят, чинятся точечно»       |                                                                🟡 MED                                                                |
+| 14  | **`dev-status-*.md`** — были пустые заглушки, теперь заполнены (10 файлов, 1.3–3.4KB) |                                    `dev-status-critical/debt/done/bugs/blocked/active/testing/…`                                     | 🟢 закрыто (2026-11-17)                                                    |
+| 15  | **`docs/audits/`** — была пустой, теперь содержит `waves/` с картами аудитов          |                                                  `ls docs/audits/waves/` → map-*.md                                                  | 🟢 закрыто (2026-11-17)                                                    |
+| 16  | **Coverage threshold задан в CI** — 31/24/30/32 (statements/branches/functions/lines) |                                      `vitest.config.ts` thresholds (поднят с 30/20/30/30, QW-1)                                      | 🟢 закрыто (2026-11-17), пороги низкие                                     |
+| 17  | **Mock-сервисы в production code path**                                               |                                      DemoGate + DemoBadge + `featureFlags.mockServices.enabled`                                      | 🟡 LOW (gated)                                                             |
 
 ---
 
@@ -257,9 +271,9 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 **Оценка: 6/10**
 
 - **199 исправленных** + **101 отложенных** + **5 глобальных** + **~17 не исследованных** = **~322 проблем-точки** на жизни проекта.
-- На 509K LOC это **0.63 проблемы на 1K LOC** — **в норме** для зрелой кодовой базы.
+- На 569K LOC это **0.57 проблемы на 1K LOC** — **в норме** для зрелой кодовой базы.
 - **Покрытие аудитом:** 26 zone audits + `diagnostics.md` + CHANGELOG — отличная задокументированность.
-- **Gap:** `dev-status-*.md` (5 файлов) — пустые заглушки. Это значит, что **формального issue tracker в wiki нет**, только исторические zone audits.
+- **Gap:** `dev-status-*.md` заполнены (10 файлов, были пустые), но **единого формального issue tracker в wiki нет** — только исторические zone audits + diagnostics + dev-status.
 
 ### 5.2. Критичность проблем
 
@@ -278,14 +292,14 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 - 🟡 KNOWN: Tests stale (ChatPanel, ProviderManager)
 - 🟡 KNOWN: HealthSlaService = MOCK
-- 🟡 KNOWN: 5600-warning lint baseline
+- 🟡 KNOWN: 4300-warning lint baseline
 - 🟡 KNOWN: Unbounded providers by default
 
 **P2 минорные:**
 
 - 🟡 101 deferred issue в zone audits (i18n пробелы, stale-данные, локальные настройки без persist)
-- 🟡 828 type escapes
-- 🟡 256 eslint-disable
+- 🟡 919 type escapes (157 `as any` + 762 `as unknown`)
+- 🟡 261 eslint-disable
 
 **P0 в production не найдено.** Все критические исправления уже в CHANGELOG. Это **хороший знак**.
 
@@ -293,18 +307,18 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 **Оценка: 6/10**
 
-| Источник долга                        | Объём                                                              | Вердикт                        |
-| ------------------------------------- | ------------------------------------------------------------------ | ------------------------------ |
-| 101 отложенная проблема (zone audits) | измеримый, задокументирован                                        | 🟡 управляемый                 |
-| `@deprecated MOCK` сервисы            | 1 (`HealthSlaService`)                                             | 🟢 малый                       |
-| Stub-панели                           | 3 (`GovernancePanel`, `OpenRouterPanel`, `SocialLeaderboardPanel`) | 🟡 малый                       |
-| 62 идентичные TechniquePanels         | кодогенерация, не ручной копипаст                                  | 🟡 medium-term maintainability |
-| 18 файлов > 1000 строк                | hotspots                                                           | 🟡 требует рефакторинга        |
-| 5600 lint warnings                    | копятся тихо                                                       | 🟡 нужен cleanup               |
-| `dev-status-*.md` пустые              | нет formal tracking                                                | 🟡 процессный долг             |
-| Tests stale                           | точечно чинятся                                                    | 🟡 стабильный долг             |
-| 828 type escapes                      | 0.16% от LOC                                                       | 🟢 приемлемо                   |
-| 256 eslint-disable                    | требует ревью                                                      | 🟡                             |
+| Источник долга                        | Объём                                                                                                       | Вердикт                        |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 101 отложенная проблема (zone audits) | измеримый, задокументирован                                                                                 | 🟡 управляемый                 |
+| `@deprecated MOCK` сервисы            | ≥6 (`HealthSlaService`, `deploy-service`, `model-distillation-service`, `provider-migration-service` и др.) | 🟡 растёт                      |
+| Stub-панели                           | 3 (`GovernancePanel`, `OpenRouterPanel`, `SocialLeaderboardPanel`)                                          | 🟡 малый                       |
+| 60 идентичные TechniquePanels         | кодогенерация, не ручной копипаст                                                                           | 🟡 medium-term maintainability |
+| 26 файлов > 1000 строк                | hotspots                                                                                                    | 🟡 требует рефакторинга        |
+| 4300 lint warnings                    | снижен с 5600, но копятся тихо                                                                              | 🟡 нужен cleanup               |
+| `dev-status-*.md`                     | заполнены (были пустые), единый tracker отсутствует                                                         | 🟢 частично закрыто            |
+| Tests stale                           | точечно чинятся                                                                                             | 🟡 стабильный долг             |
+| 919 type escapes                      | 0.16% от LOC                                                                                                | 🟢 приемлемо                   |
+| 261 eslint-disable                    | требует ревью                                                                                               | 🟡                             |
 
 **Долг в основном «известный и задокументированный»** — это **controlled debt**, не скрытый. Разделение «Что проверено и исправлено» / «Отложено» в zone audits = хорошая практика.
 
@@ -314,33 +328,30 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 **Top-15 крупнейших файлов (hotspots):**
 
-| Файл                                              |     Строк | Тип               | Риск                     |
-| ------------------------------------------------- | --------: | ----------------- | ------------------------ |
-| `WikiPanel/wiki-articles.ts`                      |     5 021 | generated         | 🟢 LOW — автогенерация   |
-| `Assistant/panel-actions-catalog.ts`              |     4 832 | generated         | 🟢 LOW                   |
-| `WikiPanel/wiki-components.ts`                    |     4 104 | generated         | 🟢 LOW                   |
-| **`kernel/services/dexie-schema.ts`**             | **3 764** | hand-written      | 🔴 HIGH — schema монолит |
-| `kernel/events/event-registry.ts`                 |     2 772 | 198 event схем    | 🟡 MED — единый реестр   |
-| `styles/common.ts`                                |     1 968 | styling tokens    | 🟡 MED                   |
-| **`kernel/workers/sandbox-interpreter.ts`**       | **1 906** | security-critical | 🔴 HIGH — sandbox logic  |
-| `generated/wiki-connections.ts`                   |     1 594 | generated         | 🟢 LOW                   |
-| **`debate-runtime/debate-llm-prompt-context.ts`** | **1 392** | logic             | 🟡 MED                   |
-| `research-adapters/source-adapters.ts`            |     1 291 | adapters          | 🟡 MED                   |
-| `kernel/contracts/index.ts`                       |     1 241 | contracts barrel  | 🟢 LOW (barrel)          |
-| **`FleetPanel/FleetPanel.tsx`**                   | **1 235** | UI                | 🟡 MED                   |
-| **`kernel/services/agent-service.ts`**            | **1 234** | core service      | 🔴 HIGH                  |
-| **`PolicyPanel/PolicyPanel.tsx`**                 | **1 184** | UI                | 🟡 MED                   |
-| **`debate-strategy-definitions.ts`**              | **1 157** | 33 стратегии      | 🟡 MED (но уместно)      |
-| **`key-service.ts`**                              | **1 098** | security-critical | 🔴 HIGH                  |
-| `assistant/assistant-actions.ts`                  |     1 098 | logic             | 🟡 MED                   |
-| **`memory-engine.ts`**                            | **1 088** | core              | 🟡 MED                   |
+| Файл                                                 |     Строк | Тип               | Риск                     |
+| ---------------------------------------------------- | --------: | ----------------- | ------------------------ |
+| `WikiPanel/wiki-articles.ts`                         |     5 039 | generated         | 🟢 LOW — автогенерация   |
+| `Assistant/panel-actions-catalog.ts`                 |     4 833 | generated         | 🟢 LOW                   |
+| `WikiPanel/wiki-components.ts`                       |     4 105 | generated         | 🟢 LOW                   |
+| **`kernel/services/dexie/schema-versions.ts`**       | **2 949** | hand-written      | 🔴 HIGH — schema монолит |
+| `kernel/services/assistant/assistant-ops-actions.ts` |     2 181 | logic             | 🟡 MED                   |
+| `generated/wiki-connections.ts`                      |     2 105 | generated         | 🟢 LOW                   |
+| `styles/common.ts`                                   |     1 969 | styling tokens    | 🟡 MED                   |
+| **`kernel/workers/sandbox-interpreter.ts`**          | **1 907** | security-critical | 🔴 HIGH — sandbox logic  |
+| `ProjectsPanel/ProjectsPanel.tsx`                    |     1 894 | UI                | 🟡 MED                   |
+| **`FleetPanel/FleetPanel.tsx`**                      | **1 488** | UI                | 🟡 MED                   |
+| **`debate-runtime/debate-llm-prompt-context.ts`**    | **1 406** | logic             | 🟡 MED                   |
+| `research-adapters/source-adapters.ts`               |     1 292 | adapters          | 🟡 MED                   |
+| `kernel/contracts/index.ts`                          |     1 242 | contracts barrel  | 🟢 LOW (barrel)          |
+| **`kernel/services/agent-service.ts`**               | **1 235** | core service      | 🔴 HIGH                  |
+| `AgentsPanel/AgentDetailPanel.tsx`                   |     1 232 | UI                | 🟡 MED                   |
 
 **Verdict:**
 
-- **Generated файлы** (4 из топ-5) — не реальная сложность, автогенерация.
-- **Hand-written hotspots** — `dexie-schema.ts` (3 764), `sandbox-interpreter.ts` (1 906), `agent-service.ts` (1 234), `key-service.ts` (1 098) — **требуют декомпозиции**.
-- **169 файлов > 500 строк** (5.4% от 3 114) — приемлемо, но требует внимания.
-- **Средний размер 163 строки** — в норме для React/TypeScript проекта.
+- **Generated файлы** (3 из топ-5) — не реальная сложность, автогенерация.
+- **Hand-written hotspots** — `dexie/schema-versions.ts` (2 949), `sandbox-interpreter.ts` (1 907), `agent-service.ts` (1 235), `memory-engine.ts` (1 088), `key-service.ts` (965) — **требуют декомпозиции** (для schema она уже начата: `dexie-schema.ts` сокращён с 3 764 до 339 строк).
+- **211 файлов > 500 строк** (6.2% от 3 390) — приемлемо, но требует внимания.
+- **Средний размер 168 строк** — в норме для React/TypeScript проекта.
 
 ### 5.5. Количество зависимостей
 
@@ -349,9 +360,9 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 | Группа          | Кол-во | Риск                 |
 | --------------- | -----: | -------------------- |
 | Production deps |     25 | 🟢 разумно           |
-| Dev deps        |     33 | 🟢 стандарт          |
-| Всего           | **58** | 🟢                   |
-| npm scripts     |     48 | 🟢 automation зрелая |
+| Dev deps        |     34 | 🟢 стандарт          |
+| Всего           | **59** | 🟢                   |
+| npm scripts     |     54 | 🟢 automation зрелая |
 
 **Оценка зависимостей:**
 
@@ -387,11 +398,11 @@ SuperAgents OS — **крупная кодовая база**: ~509 K LOC TypeSc
 
 | Тип дублирования                        | Где                                                                                       | Объём                                 | Риск                                                              |
 | --------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------------- |
-| **62 идентичные TechniquePanels**       | `src/components/TechniquePanels/*.tsx`                                                    | 62 × 234 строк = ~14 500 LOC          | 🟡 MED — **generator-produced**, но не вынесено в общий компонент |
+| **60 идентичные TechniquePanels**       | `src/components/TechniquePanels/*.tsx`                                                    | 60 × ~239 строк = ~14 300 LOC         | 🟡 MED — **generator-produced**, но не вынесено в общий компонент |
 | **Multiple budget panels**              | BudgetPanel + BudgetAlertsPanel + CostOptimizationPanel + CostAnalyticsPanel + CostsPanel | 5 UI-точек входа                      | 🟡 MED — overlapping UI                                           |
 | **Multiple health panels**              | HealthPanel + SystemHealthPanel + DocsHealthPanel + HealthSlaPanel                        | 4 health-точки                        | 🟡 MED                                                            |
 | **Multiple provider UIs**               | ProviderManager + ProviderDashboard + ProviderMarketplace + OpenRouterPanel               | 4 точки                               | 🟡 MED                                                            |
-| **Generated wiki files**                | `wiki-articles.ts` (5K) + `wiki-components.ts` (4K) + `wiki-connections.ts` (1.5K)        | generated                             | 🟢 LOW (auto)                                                     |
+| **Generated wiki files**                | `wiki-articles.ts` (5K) + `wiki-components.ts` (4.1K) + `wiki-connections.ts` (2.1K)      | generated                             | 🟢 LOW (auto)                                                     |
 | **Inline-стили с цветовыми литералами** | `'#3b82f6'`, `'#10b981'` в нескольких панелях                                             | violation of `fa-02` token convention | 🟡 LOW-MED                                                        |
 
 **Технический diff TechniquePanels:**
@@ -410,13 +421,13 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 | Метрика                    |                                  Значение | Оценка             |
 | -------------------------- | ----------------------------------------: | ------------------ |
-| Unit/компонентных тестов   |                                       486 | 🟡                 |
-| E2E specs                  |                                        17 | 🟢 хорошо          |
-| Total tests                |                                       514 | 🟡 умеренно        |
-| Test files в components    |                                       164 | 🟡                 |
-| Каталогов панелей с тестом |                                104 / ~180 | 🟡 58%             |
+| Unit/компонентных тестов   |                                       691 | 🟡                 |
+| E2E specs                  |                                        24 | 🟢 хорошо          |
+| Total tests                |                                       732 | 🟡 умеренно        |
+| Test files в components    |                                       171 | 🟡                 |
+| Каталогов панелей с тестом |                                119 / ~263 | 🟡 45%             |
 | Stable CI gate             |                                   34 пути | 🟡                 |
-| Coverage threshold         |                                  не задан | 🔴 нет gate        |
+| Coverage threshold         |                       31/24/30/32 (задан) | 🟡 низкий          |
 | Tests stale                |   несколько (diagnostics.md подтверждает) | 🟡                 |
 | `test:stable` pool         | `forks` (vmThreads lacks `crypto.subtle`) | 🟢 workaround есть |
 
@@ -424,44 +435,45 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 | Область          | Тестов |
 | ---------------- | -----: |
-| `src/kernel`     |    290 |
-| `src/components` |    157 |
-| `src/llm`        |     20 |
+| `src/kernel`     |    468 |
+| `src/components` |    171 |
+| `src/llm`        |     27 |
 | `src/stores`     |     14 |
 | `src/hooks`      |      3 |
 | `src/i18n`       |      1 |
-| `src` (root)     |      1 |
+| `src/tests`      |      5 |
+| `src` (root)     |      2 |
 
 **Проблемы тестирования:**
 
-1. **Coverage threshold не задан в CI** — `test:coverage` запускается, но gate не найден. Coverage может падать тихо.
-2. **Только 34 пути в `test:stable`** — многие компонентные тесты существуют, но **не в CI gate** (`dev-status-testing.md` подтверждает).
+1. **Coverage threshold задан, но низкий** — 31/24/30/32 (statements/branches/functions/lines). Пороги подняты с 30/20/30/30 (QW-1, 2026-11-08), но слабые.
+2. **Только 34 пути в `test:stable`** — многие компонентные тесты существуют, но **не в CI gate** (`dev-status-testing.md` подтверждает); полный прогон gated отдельным `full-tests` (24 группы).
 3. **`vmThreads` pool lacks `crypto.subtle`** — workaround через `forks` pool, но есть «environment issues with forks pool when running with high parallelism».
-4. **`panel-smoke-tests.test.tsx`** — покрывает только 6 панелей (BudgetPanel, CostOptimizationPanel, DebateAnalysisPanel, RotationsPanel, WebhooksPanel, DecisionLogPanel) из ~268.
-5. **`technique-panels-smoke.test.tsx`** — покрывает 62 техники, но только render (не логику).
-6. **17 E2E specs** — хорошо: data-chat, data-debate, data-dialogs, data-fleet, data-forum, data-health, data-keys, data-knowledge, data-organizer, data-projects, data-research, data-room, data-runtime, data-sync, routes-a-flow, routes-b-flow, basic-flow.
+4. **`panel-smoke-tests.test.tsx`** — покрывает только 6 панелей (BudgetPanel, CostOptimizationPanel, DebateAnalysisPanel, RotationsPanel, WebhooksPanel, DecisionLogPanel) из ~272.
+5. **`technique-panels-smoke.test.tsx`** — покрывает 60 техник, но только render (не логику).
+6. **24 E2E specs** — хорошо: data-chat, data-debate, data-dialogs, data-fleet, data-forum, data-health, data-keys, data-knowledge, data-organizer, data-projects, data-research, data-room, data-runtime, data-sync, routes-a-flow, routes-b-flow, basic-flow (+ a11y-basic, wiki-brain, visual-regression, opencode-task-cycle, assistant-panel, data-sre-health-diagnostics, screenshots). 17 из них в e2e-матрице CI.
 
 ### 5.8. Уязвимости и риски
 
 **Оценка: 6/10**
 
-| Риск                                                              |  Severity  | Где                                                            | Статус                                                                                                          |
-| ----------------------------------------------------------------- | :--------: | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **API keys в plaintext в IndexedDB**                              |  🔴 HIGH   | design choice (single-user)                                    | KNOWN, документировано в README и diagnostics.md                                                                |
-| **Sandbox code execution** (`sandbox-interpreter.ts` 1 906 строк) |   🟡 MED   | `kernel/workers/`                                              | 🟢 mitigated: `validateSandboxCode()` баннит `eval()` и `new Function()` (см. tests); Web Worker isolation; CSP |
-| **innerHTML usage**                                               |   🟢 LOW   | 7 случаев, 5 в tests, 2 в production                           | 🟢 mitigated: 56 DOMPurify usages                                                                               |
-| **localStorage plain-text**                                       | 🟡 LOW-MED | 80 случаев (prefs, SRE keyId)                                  | 🟡 acceptable for non-secret prefs                                                                              |
-| **External fetch**                                                |   🟢 LOW   | 4 случая                                                       | 🟢 acceptable                                                                                                   |
-| **`@google/generative-ai@^0.24.1`** (pre-1.0)                     |   🟡 MED   | package.json                                                   | 🟡 supply-chain risk                                                                                            |
-| **Mock services в code path**                                     |   🟡 LOW   | DemoGate + `featureFlags.mockServices.enabled`                 | 🟢 gated                                                                                                        |
-| **No hardcoded secrets в коде**                                   |     🟢     | только в `prompt-security-service.test.ts` (testing detection) | 🟢 отлично                                                                                                      |
-| **`@ts-ignore` только 1**                                         |     🟢     | type safety сильная                                            | 🟢                                                                                                              |
-| **`throw new Error` 992**                                         |     🟢     | хорошая error-культура                                         | 🟢                                                                                                              |
-| **Security audit CI job**                                         |     🟢     | `.github/workflows/ci.yml`                                     | 🟢 есть                                                                                                         |
-| **`eslint-disable` 256**                                          |     🟡     | требует ревью                                                  | 🟡 unknown content                                                                                              |
-| **Unbounded providers by default**                                |   🟡 MED   | diagnostics.md                                                 | KNOWN                                                                                                           |
-| **Husky + commitlint**                                            |     🟢     | conventional commits enforced                                  | 🟢                                                                                                              |
-| **dependabot**                                                    | не найден  | —                                                              | 🔴 нет auto-dependency-update                                                                                   |
+| Риск                                                              |  Severity  | Где                                                        | Статус                                                                                                          |
+| ----------------------------------------------------------------- | :--------: | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **API keys в plaintext в IndexedDB**                              |  🔴 HIGH   | design choice (single-user)                                | KNOWN, документировано в README и diagnostics.md                                                                |
+| **Sandbox code execution** (`sandbox-interpreter.ts` 1 907 строк) |   🟡 MED   | `kernel/workers/`                                          | 🟢 mitigated: `validateSandboxCode()` баннит `eval()` и `new Function()` (см. tests); Web Worker isolation; CSP |
+| **innerHTML usage**                                               |   🟢 LOW   | 7 случаев, 5 в tests, 2 в production                       | 🟢 mitigated: 250 DOMPurify usages                                                                              |
+| **localStorage plain-text**                                       | 🟡 LOW-MED | 216 случаев (prefs, SRE keyId)                             | 🟡 acceptable for non-secret prefs                                                                              |
+| **External fetch**                                                |   🟢 LOW   | 5 случаев                                                  | 🟢 acceptable                                                                                                   |
+| **`@google/generative-ai@^0.24.1`** (pre-1.0)                     |   🟡 MED   | package.json                                               | 🟡 supply-chain risk                                                                                            |
+| **Mock services в code path**                                     |   🟡 LOW   | DemoGate + `featureFlags.mockServices.enabled`             | 🟢 gated                                                                                                        |
+| **No hardcoded secrets в коде**                                   |     🟢     | 12 совпадений `sk-…` — все в тест-файлах (detection tests) | 🟢 отлично                                                                                                      |
+| **`@ts-ignore` 0 / `@ts-expect-error` 1**                         |     🟢     | type safety сильная                                        | 🟢                                                                                                              |
+| **`throw new Error` 1048**                                        |     🟢     | хорошая error-культура                                     | 🟢                                                                                                              |
+| **Security audit CI job**                                         |     🟢     | `.github/workflows/ci.yml`                                 | 🟢 есть                                                                                                         |
+| **`eslint-disable` 261**                                          |     🟡     | требует ревью                                              | 🟡 unknown content                                                                                              |
+| **Unbounded providers by default**                                |   🟡 MED   | diagnostics.md                                             | KNOWN                                                                                                           |
+| **Husky + commitlint**                                            |     🟢     | conventional commits enforced                              | 🟢                                                                                                              |
+| **dependabot**                                                    |  настроен  | `.github/dependabot.yml`                                   | 🟢 есть (2026-11-17)                                                                                            |
 
 **Security CI:** `npm audit` presumably в Security Audit job. `check:deps` (dependency-cruiser) контролирует архитектурные зависимости.
 
@@ -469,7 +481,7 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 1. **API keys plaintext** — design choice для single-user, но **если кто-то получит доступ к IndexedDB — все ключи видны**. README явно предупреждает: «не использовать на общих машинах».
 2. **`@google/generative-ai` pre-1.0** — supply-chain risk.
-3. **`sandbox-interpreter.ts` 1 906 строк** — security-critical код, требующий audit.
+3. **`sandbox-interpreter.ts` 1 907 строк** — security-critical код, требующий audit.
 
 **Хорошие security-практики:**
 
@@ -488,16 +500,16 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 | #   | Файл                                                          |   LOC | Почему важно                                      |
 | --- | ------------------------------------------------------------- | ----: | ------------------------------------------------- |
-| 1   | `kernel/services/dexie-schema.ts`                             | 3 764 | Schema монолит — разбить на per-table definitions |
-| 2   | `kernel/workers/sandbox-interpreter.ts`                       | 1 906 | Security-critical, требует audit + decomposition  |
-| 3   | `kernel/services/key-management/key-service.ts`               | 1 098 | Security-critical, manage keys                    |
-| 4   | `kernel/services/agent-service.ts`                            | 1 234 | Core service, central                             |
-| 5   | `kernel/services/debate-runtime/debate-llm-prompt-context.ts` | 1 392 | Prompt construction logic                         |
-| 6   | `kernel/services/research-adapters/source-adapters.ts`        | 1 291 | Adapters bundle                                   |
-| 7   | `FleetPanel/FleetPanel.tsx`                                   | 1 235 | Largest UI panel                                  |
-| 8   | `PolicyPanel/PolicyPanel.tsx`                                 | 1 184 | UI complexity                                     |
+| 1   | `kernel/services/dexie/schema-versions.ts`                    | 2 949 | Schema монолит — разбить на per-table definitions |
+| 2   | `kernel/workers/sandbox-interpreter.ts`                       | 1 907 | Security-critical, требует audit + decomposition  |
+| 3   | `kernel/services/agent-service.ts`                            | 1 235 | Core service, central                             |
+| 4   | `kernel/services/key-management/key-service.ts`               |   965 | Security-critical, manage keys                    |
+| 5   | `kernel/services/debate-runtime/debate-llm-prompt-context.ts` | 1 406 | Prompt construction logic                         |
+| 6   | `kernel/services/research-adapters/source-adapters.ts`        | 1 292 | Adapters bundle                                   |
+| 7   | `FleetPanel/FleetPanel.tsx`                                   | 1 488 | Largest UI panel                                  |
+| 8   | `PolicyPanel/PolicyPanel.tsx`                                 | 1 185 | UI complexity                                     |
 | 9   | `kernel/services/memory-engine.ts`                            | 1 088 | Core memory logic                                 |
-| 10  | `kernel/services/key-management/key-registry.ts`              |   942 | Key registry                                      |
+| 10  | `kernel/services/topic-graph/topic-graph-service.ts`          | 1 122 | Новый сервис графа тем                            |
 
 **Все 10 — в `kernel/services/` кроме 2 UI-панелей.** Это значит, что **ядро — главный кандидат на рефакторинг**.
 
@@ -510,49 +522,49 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 | #   | Долг                                                   | Действие                                                                                      |
 | --- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
 | 1   | API keys plaintext в IndexedDB                         | Документировать warning (уже есть) + рассматривать WebCrypto encryption для multi-user future |
-| 2   | `dexie-schema.ts` 3 764 строки монолит                 | Разбить на per-table schema files                                                             |
-| 3   | `sandbox-interpreter.ts` 1 906 строк security-critical | Внешний security audit + decomposition                                                        |
-| 4   | 5 600-warning lint baseline                            | Снизить до < 1000 за квартал                                                                  |
-| 5   | Coverage threshold не задан в CI                       | Добавить minimum coverage gate (80% kernel, 60% components)                                   |
+| 2   | `dexie/schema-versions.ts` 2 949 строк монолит         | Разбить на per-table schema files (начато: `dexie-schema.ts` уже 339 строк)                   |
+| 3   | `sandbox-interpreter.ts` 1 907 строк security-critical | Внешний security audit + decomposition                                                        |
+| 4   | 4 300-warning lint baseline                            | Снизить до < 2000 за квартал (уже снижен с 5600, QW-2)                                        |
+| 5   | Coverage threshold низкий (31/24/30/32)                | Поднять пороги (цель: 80% kernel, 60% components)                                             |
 
 ### P1 — важный долг
 
-| #   | Долг                                                   | Действие                                          |
-| --- | ------------------------------------------------------ | ------------------------------------------------- |
-| 6   | 62 идентичные TechniquePanels                          | Рефакторинг в generic `<TechniquePanel id="…" />` |
-| 7   | `dev-status-*.md` пустые (5 файлов)                    | Заполнить или удалить из wiki-меню                |
-| 8   | Tests stale (ChatPanel, ProviderManager)               | Починить harness'ы                                |
-| 9   | HealthSlaService `@deprecated MOCK`                    | Либо реализовать, либо удалить                    |
-| 10  | Stub-панели: Governance, OpenRouter, SocialLeaderboard | Расширить или удалить                             |
-| 11  | `@google/generative-ai` pre-1.0                        | Pin версия + мониторить breaking changes          |
-| 12  | 828 type escapes                                       | Ревью, заменить на proper types где возможно      |
+| #   | Долг                                                      | Действие                                          |
+| --- | --------------------------------------------------------- | ------------------------------------------------- |
+| 6   | 60 идентичные TechniquePanels                             | Рефакторинг в generic `<TechniquePanel id="…" />` |
+| 7   | `dev-status-*.md` заполнены, но нет единого tracker       | Поддерживать актуальность; завести единый реестр  |
+| 8   | Tests stale (ChatPanel, ProviderManager)                  | Починить harness'ы                                |
+| 9   | ≥6 сервисов `@deprecated MOCK` (`HealthSlaService` и др.) | Либо реализовать, либо удалить                    |
+| 10  | Stub-панели: Governance, OpenRouter, SocialLeaderboard    | Расширить или удалить                             |
+| 11  | `@google/generative-ai` pre-1.0                           | Pin версия + мониторить breaking changes          |
+| 12  | 919 type escapes (157 `as any` + 762 `as unknown`)        | Ревью, заменить на proper types где возможно      |
 
 ### P2 — минорный долг
 
-| #   | Долг                                           | Действие                           |
-| --- | ---------------------------------------------- | ---------------------------------- |
-| 13  | 256 eslint-disable                             | Ревью содержимого                  |
-| 14  | 101 deferred issue из zone audits              | Постепенно закрывать               |
-| 15  | i18n пробелы (английские строки в RU-панелях)  | Локализация                        |
-| 16  | Multiple budget/health/provider panels overlap | Объединить (см. Feature Value Map) |
-| 17  | `docs/audits/` пустая                          | Завести audit reports              |
-| 18  | Dependabot не настроен                         | Добавить auto-PR для deps          |
+| #   | Долг                                           | Действие                                                |
+| --- | ---------------------------------------------- | ------------------------------------------------------- |
+| 13  | 261 eslint-disable                             | Ревью содержимого                                       |
+| 14  | 101 deferred issue из zone audits              | Постепенно закрывать                                    |
+| 15  | i18n пробелы (английские строки в RU-панелях)  | Локализация                                             |
+| 16  | Multiple budget/health/provider panels overlap | Объединить (см. Feature Value Map)                      |
+| 17  | Wave-карты обновляются вручную                 | Сверять с автоматической `dev-reality-map`              |
+| 18  | Dependabot настроен                            | Контролировать создаваемые PR и не копить major-апдейты |
 
 ---
 
 ## 8. Сводная оценочная таблица по 8 критериям
 
-| #           | Критерий                     |   Оценка   | Главное доказательство                                                                                   |
-| ----------- | ---------------------------- | :--------: | -------------------------------------------------------------------------------------------------------- |
-| 1           | Количество известных проблем |  **6/10**  | 199 fixed + 101 deferred + 5 global + ~17 uninvestigated ≈ 322 problem-points                            |
-| 2           | Критичность проблем          |  **7/10**  | P0 в production не найдено; все критические уже fixed в CHANGELOG                                        |
-| 3           | Технический долг             |  **6/10**  | 101 deferred, 1 MOCK, 3 stubs, 62 duplicated panels, 18 files >1000 LOC                                  |
-| 4           | Сложность кода               |  **6/10**  | 169 files >500 LOC, 18 >1000 LOC; `dexie-schema` 3764, `sandbox` 1906                                    |
-| 5           | Количество зависимостей      |  **8/10**  | 58 deps (25 prod + 33 dev), все major stable; risk: `@google/generative-ai` pre-1.0                      |
-| 6           | Наличие дублирования         |  **5/10**  | 62 идентичные TechniquePanels (diff=4 строки); 5 budget / 4 health / 4 provider UI overlap               |
-| 7           | Состояние тестов             |  **6/10**  | 514 tests (486 unit + 17 e2e), 104/180 panel dirs tested, но coverage threshold не задан, tests stale    |
-| 8           | Уязвимости и риски           |  **6/10**  | API keys plaintext (design), DOMPurify 56, sandbox CSP, security CI job; risk: sandbox code, pre-1.0 dep |
-| **Overall** |                              | **6.9/10** | Зрело, с измеримым контролируемым долгом                                                                 |
+| #           | Критерий                     |   Оценка   | Главное доказательство                                                                                         |
+| ----------- | ---------------------------- | :--------: | -------------------------------------------------------------------------------------------------------------- |
+| 1           | Количество известных проблем |  **6/10**  | 199 fixed + 101 deferred + 5 global + ~17 uninvestigated ≈ 322 problem-points                                  |
+| 2           | Критичность проблем          |  **7/10**  | P0 в production не найдено; все критические уже fixed в CHANGELOG                                              |
+| 3           | Технический долг             |  **6/10**  | 101 deferred, ≥6 MOCK, 3 stubs, 60 duplicated panels, 26 files >1000 LOC                                       |
+| 4           | Сложность кода               |  **6/10**  | 211 files >500 LOC, 26 >1000 LOC; `schema-versions` 2949, `sandbox` 1907                                       |
+| 5           | Количество зависимостей      |  **8/10**  | 59 deps (25 prod + 34 dev), все major stable; risk: `@google/generative-ai` pre-1.0                            |
+| 6           | Наличие дублирования         |  **5/10**  | 60 идентичные TechniquePanels (diff=4 строки); 5 budget / 4 health / 4 provider UI overlap                     |
+| 7           | Состояние тестов             |  **6/10**  | 732 tests (691 unit + 24 e2e), 119/263 panel dirs tested, coverage threshold 31/24/30/32 (низкий), tests stale |
+| 8           | Уязвимости и риски           |  **6/10**  | API keys plaintext (design), DOMPurify 250, sandbox CSP, security CI job; risk: sandbox code, pre-1.0 dep      |
+| **Overall** |                              | **7.0/10** | Зрело, с измеримым контролируемым долгом (baseline 5600→4300, CI 5→11, coverage gate появился)                 |
 
 ---
 
@@ -560,19 +572,19 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 ### Быстрые победы (high-ROI, low-effort)
 
-1. **Заполнить `dev-status-*.md`** (5 файлов сейчас пустые «текст в разработке»). Либо заполнить, либо удалить из wiki-навигации. Сейчас это создаёт впечатление незавершённости.
-2. **Завести `docs/audits/`** с хотя бы 1 аудитом (security или complexity). Папка пустая.
-3. **Снизить lint warning baseline** с 5600 до 4000 за спринт ( delegated cleanup). `-max-warnings 5600` — это зелёный light для копления.
-4. **Добавить coverage threshold** в CI: `npm run test:coverage` уже запускается, добавить `--check-coverage --lines 70 --branches 60`.
+1. **Поддерживать актуальность `dev-status-*.md`** — файлы заполнены (10 шт.), но без единого реестра; завести формальный issue tracker.
+2. **Сверять wave-карты** (`docs/audits/waves/`) с автоматической `dev-reality-map` при каждом обновлении — карта реальности пересобирается в CI.
+3. **Снизить lint warning baseline** с 4300 до <3000 за спринт (delegated cleanup). `--max-warnings 4300` (уже снижен с 5600, QW-2) — всё ещё зелёный свет для копления.
+4. **Поднять coverage threshold** в CI: сейчас 31/24/30/32 (`vitest.config.ts`), целевые `--lines 70 --branches 60`.
 5. **Удалить `OpenRouterPanel.tsx`** (29 строк, дубликат) и `SocialLeaderboardPanel.tsx` (34 строки, обёртка). Это чистая чистка.
 6. **Pin `@google/generative-ai`** к конкретной версии + добавить тест на API compatibility.
-7. **Добавить Dependabot config** (`.github/dependabot.yml`) для auto-PR на dep updates.
+7. **Контролировать Dependabot** — config уже есть (`.github/dependabot.yml`); следить за auto-PR и major-апдейтами.
 
 ### Среднесрочные (квартал)
 
-8. **Рефакторинг TechniquePanels** — вынести в generic `<TechniquePanel techniqueId="humor" />`. Сэкономит ~14 500 LOC и сделает добавление новых тривиальным.
-9. **Декомпозиция `dexie-schema.ts`** (3 764 строки) — разбить на per-table schema files (`dexie-schema/keys.ts`, `dexie-schema/chat.ts`, и т.д.).
-10. **Security audit `sandbox-interpreter.ts`** (1 906 строк) — внешний review, добавить fuzzing tests.
+8. **Рефакторинг TechniquePanels** — вынести в generic `<TechniquePanel techniqueId="humor" />`. Сэкономит ~14 300 LOC и сделает добавление новых тривиальным.
+9. **Декомпозиция `dexie/schema-versions.ts`** (2 949 строк) — разбить на per-table schema files (`dexie-schema/keys.ts`, `dexie-schema/chat.ts`, и т.д.). Декомпозиция уже начата: `dexie-schema.ts` сокращён с 3 764 до 339 строк.
+10. **Security audit `sandbox-interpreter.ts`** (1 907 строк) — внешний review, добавить fuzzing tests.
 11. **Закрыть 101 deferred issue** из zone audits — schedule по 10 за спринт = 10 спринтов.
 12. **Починить stale tests** (ChatPanel, ProviderManager harnesses).
 13. **Объединить 5 budget / 4 health / 4 provider panels** (см. Feature Value Map рекомендации).
@@ -593,26 +605,26 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 | -------------------------------------- | :------------------------------------------------------------: |
 | Санитарное состояние (TODO/FIXME/HACK) |                           🟢🟢 9/10                            |
 | Архитектура (DI, EventBus, contracts)  |                            🟢 8/10                             |
-| CI/CD зрелость                         |         🟢 8/10 (5 jobs + security + circular + deps)          |
-| Тестирование                           |             🟡 6/10 (умеренно, без coverage gate)              |
-| Сложность                              |                     🟡 6/10 (18 hotspots)                      |
-| Дублирование                           |           🟡 5/10 (62 идентичные + overlapping UIs)            |
+| CI/CD зрелость                         |         🟢 8/10 (11 jobs + security + circular + deps)         |
+| Тестирование                           |            🟡 6/10 (умеренно, coverage gate низкий)            |
+| Сложность                              |                     🟡 6/10 (26 hotspots)                      |
+| Дублирование                           |           🟡 5/10 (60 идентичные + overlapping UIs)            |
 | Security                               | 🟡 6/10 (plaintext keys + pre-1.0 dep, но хорошие mitigations) |
-| Документирование проблем               |  🟢 8/10 (26 zone audits + diagnostics, но dev-status пустые)  |
+| Документирование проблем               |  🟢 8/10 (26 zone audits + diagnostics, dev-status заполнены)  |
 | Техдолг                                |          🟡 6/10 (controlled, измеримый, но copится)           |
 
-**Overall Health Score: 6.9 / 10** — зрелая кодовая база с измеримым контролируемым долгом.
+**Overall Health Score: 7.0 / 10** — зрелая кодовая база с измеримым контролируемым долгом (baseline 5600→4300, CI 5→11, coverage gate появился; рост hotspots сдерживает оценку).
 
 **Сравнение с行业标准:**
 
 | Метрика               |        SuperAgents OS         | Типичный зрелый проект | Verdict                |
 | --------------------- | :---------------------------: | :--------------------: | ---------------------- |
-| TODO per KLOC         |             0.004             |        0.1–1.0         | 🟢🟢 в 25–250 раз чище |
-| `@ts-ignore` per KLOC |             0.002             |        0.05–0.5        | 🟢🟢 в 25–250 раз чище |
-| Files > 1000 LOC      |           18 (0.6%)           |          1–3%          | 🟢 лучше среднего      |
-| Test-to-code ratio    | 514 tests / 3114 files = 0.17 |        0.2–0.5         | 🟡 ниже среднего       |
-| CI jobs               |   5 + security + e2e matrix   |          3–5           | 🟢 выше среднего       |
-| Dependencies          |              58               |         50–150         | 🟢 разумно             |
+| TODO per KLOC         |             0.007             |        0.1–1.0         | 🟢🟢 в 14–140 раз чище |
+| `@ts-ignore` per KLOC |            0.0018             |        0.05–0.5        | 🟢🟢 в 28–278 раз чище |
+| Files > 1000 LOC      |           26 (0.8%)           |          1–3%          | 🟢 лучше среднего      |
+| Test-to-code ratio    | 732 tests / 3390 files = 0.22 |        0.2–0.5         | 🟡 на нижней границе   |
+| CI jobs               |  11 + security + e2e matrix   |          3–5           | 🟢 выше среднего       |
+| Dependencies          |              59               |         50–150         | 🟢 разумно             |
 
 **Главные сильные стороны:**
 
@@ -620,17 +632,17 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 - **Зрелый CI** с typecheck + lint + build + tests + coverage + security + e2e + circular-dep + dep-cruiser
 - **199 задокументированных исправлений** — культура аудита
 - **26 zone audits** — пошаговая история работ
-- **Сильная error-культура** (992 explicit throws)
+- **Сильная error-культура** (1048 explicit throws)
 - **Security mitigations** (DOMPurify, sandbox CSP, key-vault, prompt-security-service)
 
 **Главные риски:**
 
-- **5 600-warning lint baseline** — копится тихо
-- **Coverage threshold не задан** — может падать
-- **62 идентичные TechniquePanels** — maintainability
+- **4 300-warning lint baseline** — снижен с 5600, но копится тихо
+- **Coverage threshold низкий (31/24/30/32)** — слабый gate
+- **60 идентичные TechniquePanels** — maintainability
 - **API keys plaintext** — design risk
-- **18 complexity hotspots** — требуют рефакторинга
-- **`dev-status-*.md` пустые** — нет formal issue tracking
+- **26 complexity hotspots** — требуют рефакторинга
+- **Нет единого формального issue tracker** — dev-status заполнены, но реестр разрознен
 - **`@google/generative-ai` pre-1.0** — supply-chain
 
 **Итог:** проект **готов к production** для single-user scenarios (как заявлено в README), но требует **ценностной фокусировки** (см. Feature Value Map) и **долговременной стратегии по сокращению complexity hotspots и lint baseline**.
@@ -639,40 +651,43 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 ## Приложение A. Метрики в цифрах (для сравнения)
 
-| Метрика                   |                               Значение | Источник                                          |
-| ------------------------- | -------------------------------------: | ------------------------------------------------- |
-| Total TS/TSX files        |                                  3 114 | `find src -name "*.ts" -o -name "*.tsx" \| wc -l` |
-| Total LOC                 |                                508 976 | sum of `wc -l` per file                           |
-| Avg LOC/file              |                                    163 | total/files                                       |
-| Files > 500 LOC           |                                    169 | complexity indicator                              |
-| Files > 1000 LOC          |                                     18 | hotspot indicator                                 |
-| TODO                      |                                      2 | `grep -rE "TODO" src/`                            |
-| FIXME                     |                                      0 | `grep -rE "FIXME" src/`                           |
-| HACK                      |                                      0 | `grep -rE "HACK" src/`                            |
-| `as any` / `as unknown`   |                                    828 | `grep -rE "as (any\|unknown)"`                    |
-| `eslint-disable`          |                                    256 | `grep -rE "eslint-disable"`                       |
-| `@ts-ignore`              |                                      1 | `grep -rE "@ts-ignore"`                           |
-| `throw new Error`         |                                    992 | `grep -rE "throw new (Error\|TypeError)"`         |
-| `console.error`           |                                     72 | `grep -rE "console.error"`                        |
-| `console.warn`            |                                     16 | `grep -rE "console.warn"`                         |
-| Production deps           |                                     25 | `package.json`                                    |
-| Dev deps                  |                                     33 | `package.json`                                    |
-| npm scripts               |                                     48 | `package.json`                                    |
-| Unit tests                |                                    486 | `dev-tests-catalog.md`                            |
-| E2E specs                 |                                     17 | `ls e2e/*.spec.ts`                                |
-| Total tests               |                                    514 | sum                                               |
-| Test files in components  |                                    164 | `find src/components -name "*.test.tsx"`          |
-| Zone audits               |                                     26 | `ls docs/wiki/zone-*.md`                          |
-| Fixed issues (documented) |                                    199 | sum across zones                                  |
-| Deferred issues           |                                    101 | sum across zones                                  |
-| Global known issues       |                                      5 | `diagnostics.md`                                  |
-| Lint warning CI baseline  |                                   5600 | `.github/workflows/ci.yml`                        |
-| CI jobs                   |                         5 + e2e matrix | `.github/workflows/ci.yml`                        |
-| innerHTML usages          |                          7 (5 в tests) | `grep -rE "innerHTML"`                            |
-| DOMPurify usages          |                                     56 | `grep -rE "DOMPurify\|dompurify\|sanitize"`       |
-| localStorage usages       |                                     80 | `grep -rE "localStorage"`                         |
-| External fetch calls      |                                      4 | `grep -rE "fetch\(['\"]https?://"`                |
-| Hardcoded API keys        | 0 (только в tests для prompt-security) | `grep -rE "sk-[a-zA-Z0-9]{20,}"`                  |
+| Метрика                           |                                 Значение | Источник                                            |
+| --------------------------------- | ---------------------------------------: | --------------------------------------------------- |
+| Total TS/TSX files                |                                    3 390 | `find src -name "*.ts" -o -name "*.tsx" \| wc -l`   |
+| Total LOC                         |                                  569 245 | sum of `wc -l` per file                             |
+| Avg LOC/file                      |                                      168 | total/files                                         |
+| Files > 500 LOC                   |                                      211 | complexity indicator                                |
+| Files > 1000 LOC                  |                                       26 | hotspot indicator                                   |
+| TODO                              |                                        1 | `grep -rE "\bTODO\b"` (комментарии)                 |
+| FIXME                             |                                        0 | `grep -rE "\bFIXME\b"` (комментарии)                |
+| HACK                              |                                        0 | `grep -rE "\bHACK\b"` (комментарии)                 |
+| XXX                               |                                        3 | `grep -rE "\bXXX\b"` (комментарии)                  |
+| `as any` / `as unknown`           |                                157 / 762 | `grep -rE "as (any\|unknown)"`                      |
+| `eslint-disable`                  |                                      261 | `grep -rE "eslint-disable"`                         |
+| `@ts-ignore` / `@ts-expect-error` |                                    0 / 1 | `grep -rE "@ts-ignore"`                             |
+| `throw new Error`                 |                                     1048 | `grep -rE "throw new (Error\|TypeError)"`           |
+| `console.error`                   |                                       73 | `grep -rE "console.error"`                          |
+| `console.warn`                    |                                       16 | `grep -rE "console.warn"`                           |
+| Production deps                   |                                       25 | `package.json`                                      |
+| Dev deps                          |                                       34 | `package.json`                                      |
+| npm scripts                       |                                       54 | `package.json`                                      |
+| Unit test files                   |                                      691 | `find src -name "*.test.ts*" -o -name "*.spec.ts*"` |
+| Server test files                 |                                       14 | `ls server/tests/*.test.mjs`                        |
+| Script test files                 |                                        3 | `ls scripts/tests/*.test.mjs`                       |
+| E2E specs                         |                                       24 | `ls e2e/*.spec.ts`                                  |
+| Total tests                       |                                      732 | sum                                                 |
+| Test files in components          |                                      171 | `find src/components -name "*.test.tsx"`            |
+| Zone audits                       |                                       26 | `ls docs/wiki/zone-*.md`                            |
+| Fixed issues (documented)         |                                      199 | число пунктов в зонах (пересчитано)                 |
+| Deferred issues                   |                                      101 | число пунктов в зонах (пересчитано)                 |
+| Global known issues               |                                        5 | `diagnostics.md`                                    |
+| Lint warning CI baseline          |                                     4300 | `.github/workflows/ci.yml` (QW-2)                   |
+| CI jobs                           |                   11 (14 по reality-map) | `.github/workflows/ci.yml`                          |
+| innerHTML usages                  |                            7 (5 в tests) | `grep -rE "innerHTML"`                              |
+| DOMPurify usages                  |                                      250 | `grep -rE "DOMPurify\|dompurify\|sanitize"`         |
+| localStorage usages               |                                      216 | `grep -rE "localStorage"`                           |
+| External fetch calls              |                                        5 | `grep -rE "fetch\(['\"]https?://"`                  |
+| Hardcoded API keys                | 12 — все в тест-файлах (detection tests) | `grep -rE "sk-[a-zA-Z0-9]{20,}"`                    |
 
 ---
 
@@ -711,4 +726,4 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 ---
 
-_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Все метрики — статический анализ; runtime-поведение и реальный CI run не проверялись. Парные отчёты: «Карта готовности панелей» (качество) и «Карта функциональной ценности» (зачем нужно) — dort._
+_Отчёт актуализирован 2026-11-17 на основе коммита `ae2dad8`. Все метрики — статический анализ + свежая `dev-reality-map` (2026-11-17); runtime-поведение и реальный CI run не проверялись. Парные отчёты: «Карта готовности панелей» (качество) и «Карта функциональной ценности» (зачем нужно) — dort._

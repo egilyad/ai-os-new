@@ -2,11 +2,11 @@
 
 ## SuperAgents OS (`egilyad/ai-os-new`)
 
-> **Версия проекта:** commit `e08ab8e` (Oct 31, 2026, ветка `main`)
-> **Дата анализа:** 2026-10-31
-> **Метод:** синтез всех находок из 11 предыдущих карт (готовность, ценность, техсостояние, ресурсы, дублирование, зависимости, lifecycle, доступность, пробелы, интеграция, user journeys) в **28 конкретных opportunities** с 5 параметрами и 4 квадрантами приоритизации
-> **Парные документы:** 11 предыдущих карт
-> **Главный результат:** **28 opportunities** → **8 «Do First»** (большая польза, низкий риск) → **6 «Quick Wins»** (быстрая отдача) → **9 «Strategic Bets»** (высокий риск) → **5 «Defer»** (дорогие и сомнительные)
+> **Версия проекта:** commit `ae2dad8` (Nov 17, 2026, ветка `main`)
+> **Дата анализа:** 2026-11-17 (актуализация карты от 2026-10-31)
+> **Метод:** синтез всех находок из 12 предыдущих карт (готовность, ценность, техсостояние, ресурсы, дублирование, зависимости, lifecycle, доступность, пробелы, интеграция, user journeys) в **28 конкретных opportunities** с 5 параметрами и 4 квадрантами приоритизации. Все проверки повторены 2026-11-17 (Test-Path/Select-String по `src/`, `route-imports.ts`, `vitest.config.ts`, `.github/workflows/ci.yml`, `docs/inventory.json`, wiki-coverage, `git log e08ab8e..HEAD` — 818 коммитов)
+> **Парные документы:** 12 предыдущих карт
+> **Главный результат:** **28 opportunities** → **8 «Do First»** (большая польза, низкий риск) → **6 «Quick Wins»** (быстрая отдача) → **9 «Strategic Bets»** (высокий риск) → **5 «Defer»** (дорогие и сомнительные). На 2026-11-17 **реализовано 8** (3.4, 3.5, 3.8, 3.11, 3.16, 3.17, 3.21, 3.27), **частично — 4** (3.1, 3.3, 3.22, 3.23), **открыто — 16**
 
 ---
 
@@ -35,7 +35,9 @@ SuperAgents OS имеет **5 killer-фичей** (Crystal Vault, Synthesis zone
 2. **Cross-panel navigation links** — ROI = 8 × 8 / 2 = **32.0** → fixes 12 journey dead-ends
 3. **Import в 9 панелях (broken round-trip)** — ROI = 8 × 8 / 4 = **16.0** → restores local-first principle
 
-**Главный вывод:** проект имеет **измеримый неиспользованный потенциал** — 28 identified opportunities, из которых **14 можно начать немедленно** (8 Do First + 6 Quick Wins). Стратегическое направление: **не добавлять random features, а закрыть integration gaps** между существующими зрелыми компонентами.
+**Главный вывод:** проект имеет **измеримый неиспользованный потенциал** — 28 identified opportunities, из которых на 2026-11-17 **реализовано 8** (3.4, 3.5, 3.8, 3.11, 3.16, 3.17, 3.21, 3.27), **частично — 4** (3.1, 3.3, 3.22, 3.23), **открыто — 16** (в т.ч. ~10 Do First/Quick Wins). Стратегическое направление: **не добавлять random features, а закрыть integration gaps** между существующими зрелыми компонентами.
+
+**Актуализация 2026-11-17:** самая ранняя волна реализации (2026-11-08) закрыла 3 Do First (wiki create-article, save-as-crystal, merge TechniquePanels). Активная разработка ушла в новую функциональность (topic-graph, graph-workbench, graph-studio, universal-graph, wiki-brain) — открытые opportunities по-прежнему актуальны, но требуют повторной приоритизации.
 
 **Opportunity Score: 7.0/10** — высокий потенциал, измеримая стратегия роста.
 
@@ -78,6 +80,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Добавить 8 новых node-types в Builder: `<CrystalNode>`, `<SynthesisNode>`, `<LensNode>`, `<TimeMachineNode>`, `<MemoryNode>`, `<ForumNode>`, `<DirectorNode>`, `<MemoryOrchestratorNode>`. Каждый — expose existing service as Builder-callable.
 
+**Статус:** 🟡 частично — 2026-11-08 (`1667dc3`, feat(p2-1)): 4 из 8 node-types добавлены (crystal/synthesis/lens/time-machine, runtime dispatch в `orchestration-service.ts`); memory/forum/director/orchestrator не exposed.
+
 | Параметр          | Значение | Обоснование                                                                             |
 | ----------------- | :------: | --------------------------------------------------------------------------------------- |
 | Польза            |  **9**   | Cognitive pipelines станут возможны — главный architectural unlock                      |
@@ -95,6 +99,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.2. 🟢 Cross-panel navigation links
 
 **Описание:** Добавить ~20 cross-panel `navigate()` links: HealthPanel→ProviderManager, TracesPanel→AgentsPanel, LogsPanel→ServiceRegistry, BudgetAlertsPanel→SREAgentPanel, DebateArena→AgentsPanel (history), CrystalVault→DebatePanel, etc.
+
+**Статус:** ⏳ открыто — целенаправленные ~20 cross-panel links не внедрены; onNavigate-переходы есть в DashboardPanel/Desktop/GetStartedPanel, появился NavGraphPanel (2026-10-27, `804f49a`).
 
 | Параметр          | Значение | Обоснование                                                     |
 | ----------------- | :------: | --------------------------------------------------------------- |
@@ -114,6 +120,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Добавить import функциональность в Chat, Memory, Crystal, Roles, Settings, Knowledge, Builder, Budget, Health — закрыть broken round-trip.
 
+**Статус:** 🟡 частично — импорт появился в ряде панелей (AgentsPanel `handleImportAgents`, ChatAdminPanel `handleImportSessions`, AddKeyModal/BulkImportStep — keys); полный round-trip во всех 9 панелях не подтверждён.
+
 | Параметр          | Значение | Обоснование                                                                     |
 | ----------------- | :------: | ------------------------------------------------------------------------------- |
 | Польза            |  **8**   | Local-first principle восстановлен                                              |
@@ -131,6 +139,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.4. 🟢 WikiPanel «Create article» UI
 
 **Описание:** Wire `WikiIngestService` (существует, имеет analyze/generate operations) к WikiPanel UI — добавить кнопку «Create article», editor, save.
+
+**Статус:** ✅ реализовано — 2026-11-08 (`2df1537`, feat(p2-5)): в WikiPanel появились `WikiArticleEditor` + кнопка «create» и сохранение статьи.
 
 | Параметр          | Значение | Обоснование                                        |
 | ----------------- | :------: | -------------------------------------------------- |
@@ -150,6 +160,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Добавить button в DebateArena после завершения debate: «Save conclusion as Crystal» — вызывает `crystalVault.propose(...)`.
 
+**Статус:** ✅ реализовано — 2026-11-08 (`2df1537`, feat(p2-5)): `DebatePanel/VerdictActionButtons.tsx` вызывает `crystalVault.propose` + `validate`.
+
 | Параметр          | Значение | Обоснование                                                |
 | ----------------- | :------: | ---------------------------------------------------------- |
 | Польза            |  **7**   | Cognitive chain debate→crystal, закроет Journey 6 тупик #8 |
@@ -168,6 +180,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** В TracesPanel, HealthPanel, LogsPanel, StateInspectorPanel добавить «Open in X» links к source panels.
 
+**Статус:** ⏳ открыто — «Open in X» links в диагностических панелях не выявлены.
+
 | Параметр          | Значение | Обоснование                                  |
 | ----------------- | :------: | -------------------------------------------- |
 | Польза            |  **7**   | Закроет Journey 5 тупик #6                   |
@@ -184,6 +198,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.7. 🟢 Delete 3 stub-панели
 
 **Описание:** Удалить `OpenRouterPanel` (29 строк, дубликат), `SocialLeaderboardPanel` (34 строки, обёртка), `GovernancePanel` (61 строка, stub — либо расширить, либо удалить).
+
+**Статус:** ⏳ открыто — все три панели существуют (`src/components/OpenRouterPanel.tsx`, `SocialLeaderboardPanel.tsx`, `GovernancePanel/GovernancePanel.tsx`); маршруты в `route-imports.ts` на месте.
 
 | Параметр          | Значение | Обоснование                                               |
 | ----------------- | :------: | --------------------------------------------------------- |
@@ -203,6 +219,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Заменить 62 uniform панели на 1 `<TechniquePanel techniqueId="…" />` generic + 1 catalog-страница с таблицей.
 
+**Статус:** ✅ реализовано — 2026-11-08 (`6a469ac`, feat(p2-4)): generic `TechniquePanel` + lazy factory в `TechniquePanels/technique-panels-bundle.tsx` (один компонент вместо 58 near-identical; 84 техники покрыты `panels-catalog`).
+
 | Параметр          | Значение | Обоснование                                               |
 | ----------------- | :------: | --------------------------------------------------------- |
 | Польза            |  **8**   | -14 500 LOC, -61 маршрут, unified discovery               |
@@ -220,6 +238,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.9. 🟢 OnboardingWizard: расширить до 6 шагов
 
 **Описание:** Добавить шаги: Crystal Vault tour, Synthesis demo, Builder overview, killer-фичи preview.
+
+**Статус:** ⏳ открыто — `OnboardingWizard` по-прежнему 3 шага (Welcome/AddConnection/Done, `totalSteps = 3`).
 
 | Параметр          | Значение | Обоснование                                          |
 | ----------------- | :------: | ---------------------------------------------------- |
@@ -239,6 +259,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Audit 42 eventBus.on returning `unsub` без `return () => unsub()` — добавить cleanup в каждом.
 
+**Статус:** ⏳ открыто — массовый cleanup не проведён: паттерн `return () => unsub()` встречается единично (выборка: 4 из ~237 `eventBus.on`).
+
 | Параметр          | Значение | Обоснование                           |
 | ----------------- | :------: | ------------------------------------- |
 | Польза            |  **6**   | Устранит subscription leak risk       |
@@ -256,6 +278,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.11. 🟢 Settings search + tooltips
 
 **Описание:** Добавить search box в SettingsPanel (8 табов) + tooltips к Advanced/Prompts tabs.
+
+**Статус:** ✅ реализовано (было уже на дату карты) — search-input (`type="search"`) в `SettingsPanel.tsx:656` существует с 2026-09-16 (`047d4d5`); tooltips к Advanced/Prompts не проверены.
 
 | Параметр          | Значение | Обоснование                              |
 | ----------------- | :------: | ---------------------------------------- |
@@ -275,6 +299,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Переместить 19 `rivals/` подкаталогов (~175 файлов) в `src/experimental/rivals/` или удалить неиспользуемые.
 
+**Статус:** ⏳ открыто — 19 каталогов `rivals*` остаются в `src/kernel/services/` (`rivals2`…`rivals20`, ~179 файлов); появились компоненты RivalLabs/RivalsHub.
+
 | Параметр          | Значение | Обоснование                                           |
 | ----------------- | :------: | ----------------------------------------------------- |
 | Польза            |  **7**   | -17 500 LOC в main codebase, clear canonical services |
@@ -292,6 +318,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.13. 🟡 Audit #6 — self-guard для 350 сервисов
 
 **Описание:** Добавить `private _initialized = false` guard во все ~350 сервисов без self-guard (или fix bootstrap чтобы не вызывал tryInit дважды).
+
+**Статус:** ⏳ открыто — guard есть у 169 из 235 сервисов ядра (~72%); полный аудит #6 не завершён.
 
 | Параметр          | Значение | Обоснование                                 |
 | ----------------- | :------: | ------------------------------------------- |
@@ -311,6 +339,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Объединить BudgetPanel + BudgetAlertsPanel + CostOptimizationPanel + CostAnalyticsPanel + CostsPanel в 1 BudgetHub с табами.
 
+**Статус:** ⏳ открыто — все 5 панелей существуют по отдельности (`BudgetPanel/`, `BudgetAlertsPanel.tsx`, `CostOptimizationPanel.tsx`, `CostAnalyticsPanel.tsx`, `CostsPanel.tsx`).
+
 | Параметр          | Значение | Обоснование                                   |
 | ----------------- | :------: | --------------------------------------------- |
 | Польза            |  **6**   | -4 маршрута, unified UX                       |
@@ -328,6 +358,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.15. 🟡 Merge 4 health panels в HealthPanel
 
 **Описание:** Объединить SystemHealthPanel + HealthSlaPanel (удалить, MOCK) + HealthPanel в 1 с табами. DocsHealth оставить.
+
+**Статус:** ⏳ открыто — SystemHealthPanel, HealthSlaPanel и HealthPanel существуют; HealthSlaPanel скрыт из навигации/маршрутов (с 2026-11-17), код на месте.
 
 | Параметр          | Значение | Обоснование                                        |
 | ----------------- | :------: | -------------------------------------------------- |
@@ -347,6 +379,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Добавить `--check-coverage --lines 70 --branches 60` в `test:coverage` CI gate.
 
+**Статус:** ✅ реализовано (пороги ниже заявленных) — 2026-11-15 (`d82808b`): в `vitest.config.ts` внедрены thresholds `lines: 32`, `branches: 24` (вместо 70/60 из карты).
+
 | Параметр          | Значение | Обоснование                             |
 | ----------------- | :------: | --------------------------------------- |
 | Польза            |  **6**   | Stop coverage decay                     |
@@ -364,6 +398,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.17. 🟡 Fill dev-status-*.md (5 пустых файлов)
 
 **Описание:** Заполнить или удалить из wiki-навигации 5 пустых `dev-status-*.md` файлов (critical, debt, done, bugs, blocked — сейчас «текст в разработке»).
+
+**Статус:** ✅ реализовано — 2026-10-31 (`a66ab70`): dev-status-*.md заполнены (10 файлов: active, blocked, bugs, critical, debt, docs, done, files, roadmaps, testing).
 
 | Параметр          | Значение | Обоснование                          |
 | ----------------- | :------: | ------------------------------------ |
@@ -383,6 +419,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Подписать LifecycleManager или каждый timer-service на `visibilitychange` — pause intervals при hidden tab.
 
+**Статус:** ⏳ открыто — `visibilitychange` в kernel/services отсутствует (0 совпадений).
+
 | Параметр          | Значение | Обоснование                                         |
 | ----------------- | :------: | --------------------------------------------------- |
 | Польза            |  **5**   | CPU/battery economy для mobile                      |
@@ -400,6 +438,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.19. 🔴 Strategic Bet: Chat ↔ Memory RAG integration
 
 **Описание:** chat-executor должен calling `memoryEngine.search(query)` перед response, inject context. Сейчас 0 calls.
+
+**Статус:** ⏳ открыто — `chat-executor.ts` не вызывает memory/search (RAG-вызовов нет).
 
 | Параметр          | Значение | Обоснование                                                   |
 | ----------------- | :------: | ------------------------------------------------------------- |
@@ -419,6 +459,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Unified RAG search (memory + knowledge + wiki в одном search).
 
+**Статус:** ⏳ открыто — unified search memory+knowledge+wiki отсутствует (`searchAll` есть только в `source-adapter-registry.ts` для research-алгоритмов).
+
 | Параметр          | Значение | Обоснование                                   |
 | ----------------- | :------: | --------------------------------------------- |
 | Польза            |  **8**   | One search вместо 3 separate                  |
@@ -436,6 +478,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.21. 🔴 Strategic Bet: Wiki ↔ WikiBrain integration
 
 **Описание:** WikiPanel использовать wiki-graph.service для «related articles», wiki-query.service для semantic search.
+
+**Статус:** ✅ реализовано — 2026-11-15/16 (`abcdedc`, `118dfb8`): появился WikiBrainPanel (вкладки graph/search/links/vault/ingest, маршрут `/wiki-brain`) на базе `wiki-brain` сервисов.
 
 | Параметр          | Значение | Обоснование                                        |
 | ----------------- | :------: | -------------------------------------------------- |
@@ -455,6 +499,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Заполнить `agentMemory` Dexie table + UI таб в AgentsPanel «Memory written by this agent» + filter в MemoryPanel.
 
+**Статус:** 🟡 частично — схема `agentMemory` (Dexie) есть; UI MemoryTab в AgentsPanel/AgentDetailPanel существует (с 2026-09-17, `049cd07`); факт систематической записи сервисами не подтверждён.
+
 | Параметр          | Значение | Обоснование                                                 |
 | ----------------- | :------: | ----------------------------------------------------------- |
 | Польза            |  **7**   | Provenance tracking                                         |
@@ -472,6 +518,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.23. 🔴 Strategic Bet: Crystal ↔ Debate bi-directional
 
 **Описание:** Crystal с low confidence → «Open debate to refine». Debate conclusion → «Save as Crystal» (см. #3.5).
+
+**Статус:** 🟡 частично — направление debate→crystal реализовано (#3.5); Crystal хранит `validation.debateId`, но кнопки «Open debate to refine» (crystal→debate) нет.
 
 | Параметр          | Значение | Обоснование                                  |
 | ----------------- | :------: | -------------------------------------------- |
@@ -491,6 +539,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Единый search по сообщениям + wiki + settings + capabilities + agents + debates.
 
+**Статус:** ⏳ открыто — Spotlight/global search компонент не найден.
+
 | Параметр          | Значение | Обоснование                                 |
 | ----------------- | :------: | ------------------------------------------- |
 | Польза            |  **8**   | Главный discovery mechanism                 |
@@ -508,6 +558,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.25. 🔴 Strategic Bet: Capability Registry UI
 
 **Описание:** Отдельная панель «What can this OS do?» — aggregate из `panel-actions-catalog.ts` (4 832 строки) + service registry + event registry.
+
+**Статус:** ⏳ открыто — панель Capability Registry отсутствует.
 
 | Параметр          | Значение | Обоснование                                                 |
 | ----------------- | :------: | ----------------------------------------------------------- |
@@ -527,6 +579,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** REST/CLI для Wiki, Memory, Crystal, Debate — позволить external scripts.
 
+**Статус:** ⏳ открыто — внешнего REST/CLI API нет (`deploy-bundle-service` — внутренний сервис деплоя бандла, не внешний API).
+
 | Параметр          | Значение | Обоснование                            |
 | ----------------- | :------: | -------------------------------------- |
 | Польза            |  **7**   | Programmatic access                    |
@@ -544,6 +598,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.27. ⚪ Defer: 64 wiki articles to write
 
 **Описание:** Написать wiki-статьи для 64 панелей без документации (58 technique + 6 других).
+
+**Статус:** ✅ реализовано — на 2026-11-17: 376 статей вики, панелей без статьи — 5 (wiki-coverage), техники (84) покрыты `panels-catalog`.
 
 | Параметр          | Значение | Обоснование                                     |
 | ----------------- | :------: | ----------------------------------------------- |
@@ -563,6 +619,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Mass approve/reject в ApprovalsPanel, mass role assign в Governance, mass deploy skill в Agents, mass delete/tag в Memory.
 
+**Статус:** ⏳ открыто — пакетных операций не выявлено (панель Tasks/ToolApprovalLayer не предоставляет batch-действий).
+
 | Параметр          | Значение | Обоснование                     |
 | ----------------- | :------: | ------------------------------- |
 | Польза            |  **5**   | Convenience для power-users     |
@@ -580,6 +638,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 ### 3.29. ⚪ Defer: Notifications for silent failures
 
 **Описание:** Crystal refuted, debate concluded, memory worker failed, Audit #6 double-init — все должны emit `EVENTS.NOTIFICATION`.
+
+**Статус:** ⏳ открыто — `EVENTS.NOTIFICATION` эмитится в admin-service/webhook (операционные события), но не для тихих падений (crystal refuted/debate concluded/memory worker).
 
 | Параметр          | Значение | Обоснование    |
 | ----------------- | :------: | -------------- |
@@ -599,6 +659,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Добавить Crystal/Lenses/Synthesis scopes в Time Machine.
 
+**Статус:** ⏳ открыто — `SnapshotScope` в `time-machine-service.ts`: full/config/memory/keys; Crystal/Lenses/Synthesis отсутствуют.
+
 | Параметр          | Значение | Обоснование                  |
 | ----------------- | :------: | ---------------------------- |
 | Польза            |  **4**   | Modest — backup more domains |
@@ -617,6 +679,8 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 
 **Описание:** Proactive prefetch топ-5 likely-next panels на hover по Sidebar.
 
+**Статус:** ⏳ открыто — prefetch на hover отсутствует (в Sidebar не найден).
+
 | Параметр          | Значение | Обоснование               |
 | ----------------- | :------: | ------------------------- |
 | Польза            |  **4**   | Performance improvement   |
@@ -628,6 +692,28 @@ ROI = (Польза × Ожидаемое влияние) / Стоимость �
 **Quadrant:** ⚪ **Defer**
 **ROI:** 4 × 4 / 4 = **4.0**
 **Sources:** Resource Map §9.4
+
+---
+
+### 3.32. Статус реализации на 2026-11-17
+
+| #                                                                                                            | Opportunity                     | Статус | Дата / коммит                                | Примечание                                                     |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------- | ------ | -------------------------------------------- | -------------------------------------------------------------- |
+| 3.4                                                                                                          | WikiPanel Create article UI     | ✅     | 2026-11-08 (`2df1537`)                       | WikiArticleEditor + create-кнопка в WikiPanel                  |
+| 3.5                                                                                                          | DebateArena Save as Crystal     | ✅     | 2026-11-08 (`2df1537`)                       | VerdictActionButtons → crystalVault.propose/validate           |
+| 3.8                                                                                                          | Merge 62 TechniquePanels        | ✅     | 2026-11-08 (`6a469ac`)                       | generic TechniquePanel + lazy factory (58→1)                   |
+| 3.11                                                                                                         | Settings search + tooltips      | ✅     | было на дату карты (с 2026-09-16, `047d4d5`) | search-input в SettingsPanel.tsx:656; tooltips не проверены    |
+| 3.16                                                                                                         | Coverage threshold CI           | ✅     | 2026-11-15 (`d82808b`)                       | thresholds lines 32 / branches 24 (ниже 70/60)                 |
+| 3.17                                                                                                         | Fill dev-status-*.md            | ✅     | 2026-10-31 (`a66ab70`)                       | 10 файлов заполнены                                            |
+| 3.21                                                                                                         | Wiki ↔ WikiBrain integration    | ✅     | 2026-11-15/16 (`abcdedc`, `118dfb8`)         | WikiBrainPanel: graph/search/links/vault/ingest                |
+| 3.27                                                                                                         | 64 wiki articles                | ✅     | на 2026-11-17                                | 376 статей, без статьи только 5 панелей                        |
+| 3.1                                                                                                          | Builder killer-service nodes    | 🟡     | 2026-11-08 (`1667dc3`)                       | 4 из 8 node-types (crystal/synthesis/lens/time-machine)        |
+| 3.3                                                                                                          | Import в 9 панелях              | 🟡     | —                                            | импорт есть в agents/chat-sessions/keys; полный round-trip нет |
+| 3.22                                                                                                         | Agents ↔ Memory UI              | 🟡     | UI с 2026-09-17 (`049cd07`)                  | дека agentMemory + MemoryTab; запись сервисами не подтверждена |
+| 3.23                                                                                                         | Crystal ↔ Debate bi-directional | 🟡     | —                                            | debate→crystal сделан (3.5); crystal→debate нет                |
+| 3.2, 3.6, 3.7, 3.9, 3.10, 3.12, 3.13, 3.14, 3.15, 3.18, 3.19, 3.20, 3.24, 3.25, 3.26, 3.28, 3.29, 3.30, 3.31 | остальные                       | ⏳     | —                                            | открыты, см. секции 3.x                                        |
+
+**Итог:** реализовано **8**, частично — **4**, открыто — **16** из 28.
 
 ---
 
@@ -788,44 +874,44 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 
 **Цель:** поднять overall OS score с 6.5 до 7.5
 
-1. Delete 3 stub-панели (3.7) — 2 часа
-2. Fill dev-status-*.md (3.17) — 2 дня
-3. Settings search + tooltips (3.11) — 2 дня
-4. eventBus cleanup audit (3.10) — 1 неделя
-5. Coverage threshold CI (3.16) — 2 часа
-6. Cross-panel navigation (3.2) — 1 неделя
-7. DebateArena Save as Crystal (3.5) — 1 день
-8. Diagnostics cross-nav (3.6) — 3 дня
-9. Import в 9 панелях (3.3) — 3 недели
-10. Onboarding до 6 шагов (3.9) — 1 неделя
-11. rivals/ → experimental/ (3.12) — 1 неделя
-12. WikiPanel Create article UI (3.4) — 1 неделя
+1. Delete 3 stub-панели (3.7) — 2 часа ⏳
+2. Fill dev-status-*.md (3.17) — 2 дня ✅ (2026-10-31)
+3. Settings search + tooltips (3.11) — 2 дня ✅ (было до карты)
+4. eventBus cleanup audit (3.10) — 1 неделя ⏳
+5. Coverage threshold CI (3.16) — 2 часа ✅ (2026-11-15)
+6. Cross-panel navigation (3.2) — 1 неделя ⏳
+7. DebateArena Save as Crystal (3.5) — 1 день ✅ (2026-11-08)
+8. Diagnostics cross-nav (3.6) — 3 дня ⏳
+9. Import в 9 панелях (3.3) — 3 недели 🟡 (частично)
+10. Onboarding до 6 шагов (3.9) — 1 неделя ⏳
+11. rivals/ → experimental/ (3.12) — 1 неделя ⏳
+12. WikiPanel Create article UI (3.4) — 1 неделя ✅ (2026-11-08)
 
-**Total Q1:** ~10 недель
+**Total Q1:** ~10 недель (выполнено 4 из 12 на 2026-11-17)
 
 ### Фаза 2 (Q2) — Do First remaining + Quick Wins remaining
 
 **Цель:** поднять до 7.8
 
-1. Merge 62 TechniquePanels (3.8) — 2 недели
-2. Merge 4 health panels (3.15) — 1 неделя
-3. Merge 5 budget panels (3.14) — 2 недели
-4. Audit #6 self-guard (3.13) — 3 недели
-5. Background timers pause (3.18) — 1 неделя
+1. Merge 62 TechniquePanels (3.8) — 2 недели ✅ (2026-11-08)
+2. Merge 4 health panels (3.15) — 1 неделя ⏳
+3. Merge 5 budget panels (3.14) — 2 недели ⏳
+4. Audit #6 self-guard (3.13) — 3 недели ⏳
+5. Background timers pause (3.18) — 1 неделя ⏳
 
-**Total Q2:** ~9 недель
+**Total Q2:** ~9 недель (выполнено 1 из 5)
 
 ### Фаза 3 (Q3) — Strategic Bets (после стабилизации)
 
 **Цель:** поднять до 8.5
 
-1. Builder killer-service nodes (3.1) — 2 недели
-2. Chat ↔ Memory RAG (3.19) — 3 недели
-3. Wiki ↔ WikiBrain integration (3.21) — 3 недели
-4. Agents ↔ Memory UI (3.22) — 2 недели
-5. Crystal ↔ Debate bi-directional (3.23) — 2 недели
+1. Builder killer-service nodes (3.1) — 2 недели ⏳
+2. Chat ↔ Memory RAG (3.19) — 3 недели ⏳
+3. Wiki ↔ WikiBrain integration (3.21) — 3 недели ✅ (2026-11-15/16)
+4. Agents ↔ Memory UI (3.22) — 2 недели 🟡 (частично)
+5. Crystal ↔ Debate bi-directional (3.23) — 2 недели 🟡 (частично)
 
-**Total Q3:** ~12 недель
+**Total Q3:** ~12 недель (выполнено 1 из 5)
 
 ### Фаза 4 (Q4) — Strategic Bets remaining
 
@@ -861,28 +947,30 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 
 ## 10. Итоговый вердикт по потенциалу
 
-| Метрика                             |        Оценка        | Комментарий        |
-| ----------------------------------- | :------------------: | ------------------ |
-| Количество identified opportunities |          28          | Богатый pipeline   |
-| Средняя польза                      |        7.4/10        | Высокая            |
-| Средняя стоимость                   |        5.2/10        | Умеренная          |
-| Средний риск                        |        4.8/10        | Умеренный          |
-| Среднее влияние                     |        7.2/10        | Высокое            |
-| Средняя уверенность                 |        7.6/10        | Хорошая            |
-| **Do First + Quick Wins**           | **17 opportunities** | Можно начать сразу |
-| **Strategic Bets**                  |          9           | Требует RFC        |
-| **Defer**                           |          5           | Пересмотреть позже |
-| **Top ROI**                         | 36.0 (delete stubs)  | Quick wins реально |
-| **Overall Opportunity Score**       |      **7.5/10**      | Высокий потенциал  |
+| Метрика                             |       Оценка        | Комментарий                                                                   |
+| ----------------------------------- | :-----------------: | ----------------------------------------------------------------------------- |
+| Количество identified opportunities |         28          | Богатый pipeline                                                              |
+| Средняя польза                      |       7.4/10        | Высокая                                                                       |
+| Средняя стоимость                   |       5.2/10        | Умеренная                                                                     |
+| Средний риск                        |       4.8/10        | Умеренный                                                                     |
+| Среднее влияние                     |       7.2/10        | Высокое                                                                       |
+| Средняя уверенность                 |       7.6/10        | Хорошая                                                                       |
+| **Реализовано на 2026-11-17**       | **8 + 4 частично**  | 3.4, 3.5, 3.8, 3.11, 3.16, 3.17, 3.21, 3.27 (+ 3.1, 3.3, 3.22, 3.23 частично) |
+| **Открыто (Do First + Quick Wins)** |         10          | осталось после реализации 3.4/3.5/3.8/3.11/3.16/3.17                          |
+| **Открыто (Strategic Bets)**        |          5          | 3.21 реализован; 3.1/3.22/3.23 частично                                       |
+| **Открыто (Defer)**                 |          4          | 3.27 реализован                                                               |
+| **Top ROI**                         | 36.0 (delete stubs) | Quick wins реально                                                            |
+| **Overall Opportunity Score**       |     **7.5/10**      | Высокий потенциал                                                             |
 
 **Сильные стороны:**
 
 - **28 concrete opportunities** с 5 параметрами — actionable
-- **17 immediate** (Do First + Quick Wins) — не нужно ждать
+- **8 реализовано на 2026-11-17** — карта подтверждается практикой
+- **10 осталось открытых** (Do First + Quick Wins) — не нужно ждать
 - **ROI ranking** — clear приоритизация
 - **4 квадранта** — strategic framework
 - **4-phase rollout** — последовательность
-- **Все opportunities data-backed** из 11 предыдущих карт
+- **Все opportunities data-backed** из 12 предыдущих карт
 
 **Слабые стороны:**
 
@@ -891,11 +979,11 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 - **Confidence** в Strategic Bets ниже (5–7 vs 8–9 для Do First)
 - **Нет runtime data** — оценки static analysis
 
-**Главный вывод:** SuperAgents OS имеет **измеримый неиспользованный потенциал**. После закрытия 17 immediate opportunities (Do First + Quick Wins, ~16 недель работы) overall OS score поднимется с ~6.5 до ~7.8. После 9 Strategic Bets (~5 месяцев) — до ~8.5.
+**Главный вывод:** SuperAgents OS имеет **измеримый неиспользованный потенциал**. На 2026-11-17 реализовано 8 из 28 (плюс 4 частично). После закрытия 10 оставшихся immediate opportunities (Do First + Quick Wins, ~12 недель работы) overall OS score поднимется с ~6.5 до ~7.8. После оставшихся 5 Strategic Bets (~4 месяца) — до ~8.5.
 
 **Стратегическое направление:** **не добавлять random features, а закрыть integration gaps** между существующими зрелыми компонентами. Главный architectural unlock — Builder killer-service nodes (#3.1), но highest ROI — простые fixes (delete stubs, cross-nav, Save-as-Crystal).
 
-**Opportunity Score: 7.5/10** — проект имеет clear roadmap роста, основанный на data из 11 карт.
+**Opportunity Score: 7.5/10** — проект имеет clear roadmap роста, основанный на data из 12 карт.
 
 ---
 
@@ -946,7 +1034,7 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 
 ---
 
-## Приложение B. Sources (cross-references с 11 предыдущими картами)
+## Приложение B. Sources (cross-references с 12 предыдущими картами)
 
 | Карта                           | Главные contribution в Opportunity Map                                                        |
 | ------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -980,7 +1068,7 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 
 ---
 
-_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Синтез 11 предыдущих карт в actionable strategy. Все 28 opportunities — data-backed из статического анализа кодовой базы. Runtime validation требует прототипирования._
+_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Актуализирован 2026-11-17 на основе HEAD `ae2dad8` (818 коммитов). Синтез 12 предыдущих карт в actionable strategy. Все 28 opportunities — data-backed из статического анализа кодовой базы. На 2026-11-17 реализовано 8, частично — 4, открыто — 16. Runtime validation требует прототипирования._
 
 _Парные отчёты: «Карта готовности панелей», «Карта функциональной ценности», «Карта технического состояния», «Карта использования ресурсов», «Карта функционального дублирования», «Карта зависимостей», «Карта жизненного цикла», «Карта доступности возможностей», «Карта функциональных пробелов», «Карта интеграции», «Карта пользовательских сценариев»._
 

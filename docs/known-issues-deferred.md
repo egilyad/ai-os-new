@@ -1,30 +1,35 @@
 # Карта отложенных проблем (Deferred / Known Issues)
 
 > Авторота: результат серии аудитов (data-integrity, race/lifecycle, types/contracts, performance, UX, build/deploy, logic, SSoT/state-consistency, a11y, resilience, dependencies).
-> Статус: все пункты **отложены** (требуют аккуратного рефакторинга, сигнатурных изменений или проверки регрессий).
+> Статус: часть пунктов **закрыта** с 2026-11-07 (см. раздел «Закрыто / решено» ниже); остальные — **отложены** (требуют аккуратного рефакторинга, сигнатурных изменений или проверки регрессий).
 > Формат каждого пункта: контекст → проблема → митигация.
 
 ---
 
+## Закрыто / решено (с 2026-11-07)
+
+> Пункты, перенесённые из отложенных после проверки кода и git log (коммит закрытия):
+
+- **1.1** CheckpointStore lost update — сериализованный `persistChain` + `persistQueued` re-loop (свежий снапшот не перезаписывается более старым) — `2330155` (2026-10-30), доп. merge-на-init `76db7ca` (2026-11-07).
+- **1.2** LocalSecretStore неатомарность — атомарная `batchSetKv` (Dexie-транзакция, `database-service.ts:681`) пишет значение+индекс одной записью — закрыто, проверено 2026-11-17.
+- **1.3** CacheService TTL-eviction не persists; `slice(-500)` — `evictExpired` зовёт `persist()`, кап через `maxEntries` вместо хардкода 500 — `6c9b43e` (2026-11-07).
+- **2.1–2.5** Race/lifecycle: `resume-during-pause` (re-entrant intent), auto-debate single-flight, memory-worker publish только в `tx.onCommit`, `summarizeRecent` mutex, scheduler single-flight/destroy awaits — `7f4c287` (2026-11-09, P1-16); scheduler-часть ранее `2330155` (2026-10-30).
+- **2.6** MemoryWorkerClient — `ensure()` гейтит на `isDbReady` + `workerInitPromise` — `58f932e` (2026-10-30), полнота проверена 2026-11-17.
+- **4.3** `syncSessions` — diff + `bulkPut` только изменённых (version bump только при изменении, `isStaleSessionWrite`/`mergeStaleSession`) — `a2e1759` (2026-11-09, P1-17).
+- **4.5** VisGraph — network создаётся один раз, данные через `setData` (без teardown) — `237037a` + `ae7b6c1` (2026-11-09).
+- **10.7** EmbeddingClient — retry/backoff на 429/5xx — `8a012fd` (2026-11-09, P1-17).
+- **12.1** KeyVault fail-open + deviceKey — master-key из passphrase (PBKDF2-HMAC-SHA-256, AES-GCM), fail-closed, `deviceKey` убран (`key-service.ts:229`), VaultSettingsModal UI — `2b6471d`/`c200132`/`1d74c72` (2026-11-01); P0-1 закрыт `0b5fc78` (2026-11-07).
+- **12.2** API-ключи в IndexedDB — шифруются через `vault.encryptAllKeys` при сохранении, миграция plaintext→encrypted (`isEncrypted`, reconcile) — P0-1 (см. 12.1). Примечание: `LocalSecretStore` (внешние секреты) остаётся local-first plaintext по дизайну.
+- **12.3** Multi-tenant IDOR / общий SYNC_SECRET — per-company секреты (хэши, `company-store.mjs`), company-scoped WS auth (`ws-auth.mjs`, `verifyWsUpgradeCompanyHash`) — `4e31017` (2026-11-07) + `4a4444f` (P0-2).
+- **12.4** `browser-use-service.test.ts` ожидание — выровнено с реальным сообщением (`/browser:sidecar/`) — `e3859e9` (2026-11-07).
+- **13.2** Feature-flag UI (type lie) — `flattenFeatureFlags()` в SettingsPanel/GeneralTab — `69d03b3` (2026-11-07) + тесты `0b5fc78`.
+- **13.3** Singleton ArgumentGraphService — per-session `Map<sessionId, SessionGraphState>`, тесты изоляции — `d0d524d` (2026-11-07).
+- **13.8** W6-039 streamMessage без in-flight dedup — `#streamWaiters` Map (один upstream-стрим на ключ) — `374b529` (2026-11-07).
+- **W8-005** CompressRouteDecorator — включён в дефолтную цепочку адаптеров (opt-out `compress: false`) — `9ddff68` (2026-11-08, P1-8).
+
+---
+
 ## 1. Data Integrity / Persistence
-
-### 1.1. CheckpointStore — lost update при конкурентном persist
-
-- **Файл:** `src/kernel/services/event-sourcing/checkpoint-store.ts:182-208`
-- **Проблема:** `persistQueued` сбрасывается до `save()` resolve → два `save()` в полёте; поздний завершившийся пишет стый префикс.
-- **Митигация:** единый сериализованный writer (как `KeyStateStore.persist`) + dirty-флаг.
-
-### 1.2. LocalSecretStore — неатомарная запись значения + индекса
-
-- **Файл:** `src/kernel/services/local-secret-store.ts:40-58`
-- **Проблема:** `set`/`delete` пишут значение и индекс отдельными KV-записями; краш между ними → расхождение.
-- **Митигация:** единый KV-ключ (index+values вместе) или транзакция.
-
-### 1.3. CacheService — TTL-eviction не persists; slice(-500) расходится с памятью
-
-- **Файл:** `src/kernel/services/cache-service.ts:139-144,148,177-184`
-- **Проблема:** evictExpired удаляет из памяти, но не зовёт persist; персист хранит только 500.
-- **Митигация:** dirty-флаг при eviction; персист всей карты (или инвариант лимита в обоих местах).
 
 ### 1.4. CacheService — ключ не учитывает sampling-параметры
 
@@ -42,41 +47,7 @@
 
 ## 2. Race Conditions / Lifecycle
 
-### 2.1. DebateEngine — resume-during-pause молча теряется
-
-- **Файл:** `src/kernel/services/debate-runtime/debate-engine.ts:638-672,369-374`
-- **Проблема:** `pauseSession` не убирает id из `runningSessions`; resume в окне teardown → `startSession` no-op.
-- **Митигация:** пер-сессионная карта run-промисов + `await` перед `startSession`; трактовать `phase==='paused'` как re-entrant-intent.
-
-### 2.2. AutoDebateService — `_pendingPromise` не присваивается; destroy не ждёт
-
-- **Файл:** `src/kernel/services/debate-runtime/auto-debate/auto-debate-service.ts:174-175,702-711`
-- **Проблема:** `_pendingPromise` всегда null; runAutoDebate игнорирует `_abortController` для main-debate.
-- **Митигация:** использовать общий abort; await in-flight при destroy.
-
-### 2.3. MemoryEngine — worker-publish fire-and-forget вне tx rollback
-
-- **Файл:** `src/kernel/services/memory-engine.ts:471-493,546-568`
-- **Проблема:** при откате транзакции кэш/repo откатываются, но worker уже содержит запись (dangling).
-- **Митигация:** публиковать в worker внутри `tx.onCommit`; при rollback — компенсирующий worker `remove`.
-
-### 2.4. MemoryOrchestrator.summarizeRecent — нет mutex
-
-- **Файл:** `src/kernel/services/memory-orchestrator.ts:158-205`
-- **Проблема:** перекрывающиеся вызовы дают дубли сводок и гонку `MAX_SUMMARIES`-pruning.
-- **Митигация:** single-flight + cooldown/excess pruning атомарно под `withLock`.
-
-### 2.5. SchedulerService — destroy не отменяет in-flight; ручной trigger обходит гвард
-
-- **Файл:** `src/kernel/services/scheduler-service.ts:255-336`
-- **Проблема:** `trigger()` вызывает `runSchedule` напрямую (двойной запуск при интервальном sweep); `runCount` RMW теряет апдейт.
-- **Митигация:** per-schedule single-flight; послеарный инкремент runCount.
-
-### 2.6. MemoryWorkerClient — timeout-иница против позднего ответа
-
-- **Файл:** `src/kernel/services/memory/memory-worker-client.ts:48-74`
-- **Проблема:** `ensure()` может вернуться до инициализации (worker не null, но DB не готова).
-- **Митигация:** гейтить на `isDbReady`/`workerInitPromise` (частично исправлено; проверить полноту).
+> Все пункты (2.1–2.6) закрыты — см. раздел «Закрыто / решено».
 
 ---
 
@@ -128,23 +99,11 @@
 - **Проблема:** `buildDebateCallContext` (включая сетевые verifyClaims без кэша) на каждой итерации фейловера.
 - **Митигация:** собрать контекст один раз до цикла ретраев.
 
-### 4.3. `syncSessions` — перезапись каждой сессии + version bump
-
-- **Файл:** `src/kernel/services/storage/dexie-storage.ts:409-417`
-- **Проблема:** за 1с-флаш переписываются все сессии (get+put+version++) → write-амплификация и liveQuery-петля.
-- **Митигация:** диф против персистнутого; bulkPut только изменённых; не бампать нетронутые.
-
 ### 4.4. Embedding-батчинг отсутствует (1 HTTP на чанк)
 
 - **Файлы:** `src/kernel/services/parity/knowledge-service.ts:171-181`, `rag/hybrid-retrieval-service.ts:151-157`
 - **Проблема:** последовательные `embed([chunk])`.
 - **Митигация:** один `embed(texts[])` с назначением по индексу.
-
-### 4.5. VisGraph — полный teardown + 200 physics-итераций на любое изменение
-
-- **Файл:** `src/components/**/VisGraph.tsx:49-106`
-- **Проблема:** `new Network(...)` заново при смене ref.
-- **Митигация:** `net.setData` + `setOptions({physics:{stabilization:{iterations:0}}})`.
 
 ### 4.6. ChatSidebar — подписка на весь sessions (ре-рендер ~60fps)
 
@@ -217,6 +176,7 @@
 - **Файл:** `src/kernel/workers/memory.worker.ts:210-217`
 - **Проблема:** линейный скан на каждый hit.
 - **Митигация:** Map `id→entry`.
+- **Статус:** частично исправлено — `vectors.match` теперь top-k с конечным лимитом (`03ce8a0`, 2026-11-09); `entries.find` per-hit остался (ограничен k).
 
 ### 4.18. serializeSessionsWithBudget — O(n²) stringify при trim
 
@@ -297,6 +257,7 @@
 - **Файл:** `docker-compose.quickstart.yml`
 - **Проблема:** порт недоступен с хоста; host node_modules (win32) не работает в Linux/alpine.
 - **Митигация:** `SYNC_HOST: 0.0.0.0`; отдельная build-стадия с `npm ci`.
+- **Статус:** частично — `SYNC_HOST` больше не переопределяется в compose (нет явного `127.0.0.1`), но build-стадия с `npm ci` по-прежнему отсутствует (source-mount `.:/app:ro`).
 
 ### 6.3. Дефолтные Groq-модели — невалидные id
 
@@ -383,6 +344,7 @@
 - **Файл:** `src/kernel/services/debate-runtime/debate-sync-manager.ts:780-959`
 - **Проблема:** рост `_entries`, isEngineActive() не падает, stale-проекции.
 - **Митигация:** удалять из `_entries` + `activeDebateStore.clearSession` при finalize.
+- **Статус:** частично исправлено — при finalize `debateLiveStore.clearSession` вызывается, но терминальные `SyncEntry` в `_entries` сохраняются намеренно (multi-session проекция B-15/B-16).
 
 ### 8.2. Тема — тройной mirror без sync
 
@@ -501,11 +463,6 @@
 - **Файл:** `src/kernel/services/wiki-brain/wiki-ingest.service.ts:123-158`
 - **Митигация:** try/catch всего цикла; mark failed + backoff.
 
-### 10.7. EmbeddingClient — нет retry/backoff
-
-- **Файл:** `src/llm/embeddings/embedding-client.ts:53-109`
-- **Митигация:** ограниченный retry + honor Retry-After.
-
 ### 10.8. Stream interruption — нет resume
 
 - **Файлы:** `src/llm/decorators/retry-decorator.ts:133-166`, `fallback-decorator.ts:141-143`
@@ -559,29 +516,7 @@
 
 ## 12. Security / Secrets
 
-### 12.1. KeyVault fail-open + deviceKey в plaintext (W2-005 / W4-019 / W7-CRY-001)
-
-- **Файл:** `src/kernel/services/key-management/key-service.ts:399-413`, `src/kernel/services/key-management/key-vault.ts:40-79`
-- **Проблема:** master-key AES-GCM выводится из случайного device-ключа, который хранится в plaintext в localStorage (`key-vault:device-key`). При доступе к профилю/файловой системе (XSS, расширение, кража профиля) ключ дешифрования лежит рядом с шифротекстом → шифрование-at-rest сводится к обфускации. Плюс fail-open: при залоченном vault `encryptAllKeys`/`decryptAllKeys` возвращают ключи без изменений.
-- **Митигация:** выводить master-key из passphrase пользователя (промпт при bootstrap), убрать fallback на device-key, добавить UI-экран первого запуска/миграции. Требует продуктового решения — **отложено**.
-
-### 12.2. API-ключи и внешние секреты в plaintext в IndexedDB (W5-002 / W4-084)
-
-- **Файл:** `src/kernel/services/storage/dexie-storage.ts` (apiKeys), `src/kernel/services/local-secret-store.ts:8-15`, `src/kernel/services/key-management/key-registry.ts` (doSaveKeysWithSnapshot)
-- **Проблема:** пока vault не завязан на passphrase, ключи хранятся расшифрованными (или под легко-доставаемым ключом). `LocalSecretStore` пишет секреты в plaintext в Dexie `keyValue`.
-- **Митигация:** активна только после 12.1 — маршрутизировать `LocalSecretStore.set()` и `addKey` через `KeyVault.encryptKey()`. **Отложено** вместе с 12.1.
-
-### 12.3. Multi-tenant IDOR / общий SYNC_SECRET; WS cross-tenant leak (W2-009 / W3-025 / W8-003)
-
-- **Файл:** `server/sync-server.mjs`, `server/company-store.mjs`, `server/write-queue.mjs`
-- **Проблема:** единый `SYNC_SECRET` для всех тенантов + broadcast-записи без tenant-скоупа → риск доступа одного tenant к данным другого; WS без maxPayload и O(кол-во) broadcast.
-- **Митигация:** пер-tenant секреты/токены, скоупинг записей по tenantId, maxPayload + лимит фан-аута. Серверная переработка — **отложено**.
-
-### 12.4. `browser-use-service.test.ts` — завышенное ожидание (pre-existing)
-
-- **Файл:** `src/kernel/services/browser/browser-use-service.test.ts:101`
-- **Проблема:** тест «unreachable sidecar» ожидает `/is it running/`, а код выдаёт сообщение с `npm run browser:sidecar` (без «is it running»). Уже падал до правок sidecar; требует решения: обновить ожидание или текст ошибки.
-- **Митигация:** уточнить ожидание/сообщение. **Отложено** (не влияет на прод-функционал).
+> Все пункты (12.1–12.4) закрыты — см. раздел «Закрыто / решено» (P0-1/P0-2).
 
 ---
 
@@ -595,18 +530,7 @@
 - **Файл:** `src/stores/chat/chat-send-message.ts`, `chat-event-handlers.ts`, `store.ts`
 - **Проблема:** `isAnySending()` глобальный (`activeRequestIds.size > 0`) — сессия B ждёт, пока сессия A шлёт; перекрытие очередей → потеря/задержка сообщений.
 - **Митигация:** привязка requestId → sessionId и гейт только по своей сессии. **Отложено.**
-
-### 13.2. W6-018 — feature-flag UI: `as unknown as Record<string, boolean>` (type lie)
-
-- **Файл:** `src/components/SettingsPanel/GeneralTab.tsx:408-529`
-- **Проблема:** `CONFIG.featureFlags` вложенный, а читается плоским `featureFlags['memory.enabled'] ?? true` — тумблеры показывают дефолт вместо реального значения; `setFeatureFlags(safeClone(CONFIG.featureFlags) as ...)` шлёт вложенный объект туда, где ждут плоский.
-- **Митигация:** хелперы dotted-path get/set + разобраться с получателем `setFeatureFlags`. **Отложено** (нужна проверка потребителей).
-
-### 13.3. W6-014 — singleton `ArgumentGraphService` (cross-session clobber)
-
-- **Файл:** `src/kernel/services/debate-runtime/debate-argument-graph-service.ts:156-220`
-- **Проблема:** DI-singleton; `build()` зовёт `clear()` → конкурентные дебаты затирают граф друг друга.
-- **Митигация:** per-session `Map<sessionId, GraphState>`. **Отложено.**
+- **Статус:** частично исправлено — `_sendQueue` стал per-session, добавлен `distLock.acquire('chat:{sessionId}')`, дренаж по `sessionId`; глобальный `isAnySending()` в гейте остался.
 
 ### 13.4. W6-015 — CacheDecorator in-flight timeout не абортит inner
 
@@ -631,12 +555,6 @@
 - **Файл:** image-пайплайн (нет)
 - **Проблема:** текстовый блоклист есть; модерация изображений (CSAM/PhotoDNA) отсутствует.
 - **Митигация:** внешний сервис модерации. **Отложено** (внешняя зависимость).
-
-### 13.8. W6-039 — streamMessage без in-flight dedup (cache stampede)
-
-- **Файл:** `src/llm/decorators/cache-decorator.ts:345-496`
-- **Проблема:** `sendMessage` имеет `#inFlight`, а `streamMessage` нет → параллельные идентичные стримы дублируют вызов провайдера.
-- **Митигация:** `#inFlightStream` Map: ожидать сиблинга и переиграть из кэша; требует обёртки большого блока стрима. **Отложено** (нужна проверка без регресса).
 
 ### 13.9. Остаток волны 2 (backlog)
 
@@ -663,89 +581,89 @@
 
 > Подробности — в `audit-wave3-2026-10-31.md`. Отложено (tenant/шифрование, a11y-глубина, сборка):
 
-| ID                     | Пункт                                                                   | Причина отложения    |
-| ---------------------- | ----------------------------------------------------------------------- | -------------------- |
-| W3-001/002/003/004/005 | apiKeys/tenant-скоупинг, sync blob, broadcastLive, шифрование IndexedDB | tenant/шифрование    |
-| W3-006                 | exportToJson/importFromJson частичный (16/136)                          | формат/миграция      |
-| W3-007                 | Vault envelope salt статичный                                           | vault (см. 12.1)     |
-| W3-008/027/009         | feature flags dotted vs nested, событие                                 | семантика (см. 13.2) |
-| W3-010/011             | eslint a11y не в lint; 5 UI-нарушений                                   | eslint-конфиг        |
-| W3-012                 | 212 inline outline:none / focus-visible                                 | глобальный UI-стиль  |
-| W3-013                 | build target es2023                                                     | сборка               |
-| W3-014/015             | service worker / manifest                                               | PWA                  |
-| W3-016                 | MemoryCenterPanel hardcoded русский                                     | i18n-компонент       |
-| W3-017                 | t() fallback (104 места)                                                | i18n                 |
-| W3-018                 | useFocusTrap: Escape/focusables/inert                                   | a11y-хук             |
-| W3-021                 | VisGraph canvas недоступен для AT                                       | a11y-глубина         |
-| W3-024                 | /api/approvals/:id/decide companyId                                     | authz                |
-| W3-025                 | SYNC_SECRET в нескольких местах                                         | secrets              |
-| W3-026                 | personaStore.refresh() не обновляет контексты                           | логика               |
-| W3-028                 | 4 dead/misleading feature flags                                         | проверить ссылки     |
-| W3-029                 | Sandbox DEV-флаг без UI-warning                                         | UX                   |
+| ID                     | Пункт                                                                   | Причина отложения            |
+| ---------------------- | ----------------------------------------------------------------------- | ---------------------------- |
+| W3-001/002/003/004/005 | apiKeys/tenant-скоупинг, sync blob, broadcastLive, шифрование IndexedDB | tenant/шифрование            |
+| W3-006                 | exportToJson/importFromJson частичный (16/136)                          | формат/миграция              |
+| W3-007                 | Vault envelope salt статичный                                           | см. 12.1 — закрыто           |
+| W3-008/027/009         | feature flags dotted vs nested, событие                                 | см. 13.2 — закрыто (008/009) |
+| W3-010/011             | eslint a11y не в lint; 5 UI-нарушений                                   | eslint-конфиг                |
+| W3-012                 | 212 inline outline:none / focus-visible                                 | глобальный UI-стиль          |
+| W3-013                 | build target es2023                                                     | сборка                       |
+| W3-014/015             | service worker / manifest                                               | PWA                          |
+| W3-016                 | MemoryCenterPanel hardcoded русский                                     | i18n-компонент               |
+| W3-017                 | t() fallback (104 места)                                                | i18n                         |
+| W3-018                 | useFocusTrap: Escape/focusables/inert                                   | a11y-хук                     |
+| W3-021                 | VisGraph canvas недоступен для AT                                       | a11y-глубина                 |
+| W3-024                 | /api/approvals/:id/decide companyId                                     | authz                        |
+| W3-025                 | SYNC_SECRET в нескольких местах                                         | см. 12.3 — закрыто           |
+| W3-026                 | personaStore.refresh() не обновляет контексты                           | логика                       |
+| W3-028                 | 4 dead/misleading feature flags                                         | проверить ссылки             |
+| W3-029                 | Sandbox DEV-флаг без UI-warning                                         | UX                           |
 
 ### 13.11. Остаток волны 4 (backlog)
 
 > Подробности — в `audit-wave4-2026-10-31.md`. Отложено (CI, cost-enforcement, prompt-versioning, autonomy-guardrails):
 
-| ID             | Пункт                                                       | Причина отложения |
-| -------------- | ----------------------------------------------------------- | ----------------- |
-| W4-001/002     | deploy-гейт без тестов; test:stable неполный                | CI                |
-| W4-003/004     | NotificationWebhook/BudgetAlert не заведены в bootstrap     | lifecycle-wiring  |
-| W4-005/006     | sourcemaps условно; нет zero-downtime                       | CI/deploy         |
-| W4-011         | alert-события не идут в alerting                            | wiring            |
-| W4-019         | vault passphrase (см. 12.1)                                 | vault             |
-| W4-021         | OpenRouter rotation без revoke (DELETE)                     | внешний API       |
-| W4-030/031/032 | cost-enforcement (decorator/chat/agems)                     | enforcement       |
-| W4-033/041     | prompt overrides без версий; 156 unversioned                | prompt-versioning |
-| W4-042/043     | автономные file-writes мимо ToolPipeline; autonomy agentIds | guardrails        |
-| W4-044         | AUTOPILOT для non-admin (авт-гвард сделан, admin-гейт нет)  | authz/роли        |
+| ID             | Пункт                                                       | Причина отложения  |
+| -------------- | ----------------------------------------------------------- | ------------------ |
+| W4-001/002     | deploy-гейт без тестов; test:stable неполный                | CI                 |
+| W4-003/004     | NotificationWebhook/BudgetAlert не заведены в bootstrap     | lifecycle-wiring   |
+| W4-005/006     | sourcemaps условно; нет zero-downtime                       | CI/deploy          |
+| W4-011         | alert-события не идут в alerting                            | wiring             |
+| W4-019         | vault passphrase (см. 12.1)                                 | см. 12.1 — закрыто |
+| W4-021         | OpenRouter rotation без revoke (DELETE)                     | внешний API        |
+| W4-030/031/032 | cost-enforcement (decorator/chat/agems)                     | enforcement        |
+| W4-033/041     | prompt overrides без версий; 156 unversioned                | prompt-versioning  |
+| W4-042/043     | автономные file-writes мимо ToolPipeline; autonomy agentIds | guardrails         |
+| W4-044         | AUTOPILOT для non-admin (авт-гвард сделан, admin-гейт нет)  | authz/роли         |
 
 ### 13.12. Остаток волны 5 (backlog)
 
 > Подробности — в `audit-wave5-2026-10-31.md`. Отложено (privacy/compliance, доверие прокси, стриминг, cost-attribution):
 
-| ID             | Пункт                                                                       | Причина отложения |
-| -------------- | --------------------------------------------------------------------------- | ----------------- |
-| W5-001/002     | IndexedDB dump без tenant; ключи plaintext (см. 12.1/12.2)                  | vault/tenant      |
-| W5-004/005     | «copyright holder»/NVIDIA fake-compliance бейджи                            | контент/комплаенс |
-| W5-006         | nginx отдаёт X-Real-IP/XFF провайдерам                                      | nginx-конфиг      |
-| W5-007         | Anthropic dangerous direct browser access                                   | провайдер         |
-| W5-008/009     | нет right-to-be-forgotten; нет privacy policy/согласия                      | юридическое       |
-| W5-010         | HTTP-only дефолтный nginx                                                   | deploy            |
-| W5-011         | sync ws:// без fail-closed                                                  | server            |
-| W5-014/016     | частичный стрим теряется при ошибке; нет recovery                           | стриминг          |
-| W5-015         | raw provider error утекает в UI                                             | обработка ошибок  |
-| W5-017         | tool-call errors скрыты                                                     | UX                |
-| W5-018         | budget-gating float-округление                                              | стоимость         |
-| W5-019         | hardcoded per-token цена                                                    | стоимость         |
-| W5-021/022/024 | recordSpend без enforcement; block_usage декларативно; нет cost-attribution | enforcement       |
-| W5-023         | cross-tab lock TOCTOU                                                       | конкурентность    |
+| ID             | Пункт                                                                       | Причина отложения       |
+| -------------- | --------------------------------------------------------------------------- | ----------------------- |
+| W5-001/002     | IndexedDB dump без tenant; ключи plaintext (см. 12.1/12.2)                  | см. 12.1/12.2 — закрыто |
+| W5-004/005     | «copyright holder»/NVIDIA fake-compliance бейджи                            | контент/комплаенс       |
+| W5-006         | nginx отдаёт X-Real-IP/XFF провайдерам                                      | nginx-конфиг            |
+| W5-007         | Anthropic dangerous direct browser access                                   | провайдер               |
+| W5-008/009     | нет right-to-be-forgotten; нет privacy policy/согласия                      | юридическое             |
+| W5-010         | HTTP-only дефолтный nginx                                                   | deploy                  |
+| W5-011         | sync ws:// без fail-closed                                                  | server                  |
+| W5-014/016     | частичный стрим теряется при ошибке; нет recovery                           | стриминг                |
+| W5-015         | raw provider error утекает в UI                                             | обработка ошибок        |
+| W5-017         | tool-call errors скрыты                                                     | UX                      |
+| W5-018         | budget-gating float-округление                                              | стоимость               |
+| W5-019         | hardcoded per-token цена                                                    | стоимость               |
+| W5-021/022/024 | recordSpend без enforcement; block_usage декларативно; нет cost-attribution | enforcement             |
+| W5-023         | cross-tab lock TOCTOU                                                       | конкурентность          |
 
 ### 13.13. Остаток волны 6 (backlog)
 
 > Подробности — в `audit-wave6-2026-10-31.md`. Отложено (контейнер, secrets, cost/metrics, конкурентность, ReDoS, toolchain). Часть уже закрыта ранее (W6-013/016/020/021/022/024/029/030/032/033/034/038).
 
-| ID     | Пункт                                     | Причина отложения  |
-| ------ | ----------------------------------------- | ------------------ |
-| W6-001 | sidecar root + chromium --no-sandbox      | контейнер          |
-| W6-002 | SYNC_SECRET/BROWSER_USE_LLM_API_KEY в env | secrets            |
-| W6-004 | agent budget all-time vs monthly          | cost/metrics       |
-| W6-005 | SLA неправильные поля                     | metrics            |
-| W6-006 | ExecutionQueue watchdog double-execution  | конкурентность     |
-| W6-007 | fencing token                             | лок                |
-| W6-008 | Idempotency-Key на LLM-постах             | транспорт          |
-| W6-009 | duplicate run execution                   | конкурентность     |
-| W6-010 | saga checkpoint                           | распредел. системы |
-| W6-011 | isStaleSessionWrite                       | стейт              |
-| W6-012 | tool-loop не форвардит AbortSignal        | сигнатуры          |
-| W6-014 | singleton ArgumentGraphService            | см. 13.3           |
-| W6-015 | cache decorator timeout без abort         | см. 13.4           |
-| W6-017 | один плохой ключ банит провайдера         | circuit breaker    |
-| W6-018 | feature-flag UI                           | см. 13.2           |
-| W6-019 | cross-session                             | см. 13.1           |
-| W6-023 | ReDoS 6 мест                              | регекспы           |
-| W6-025 | unpinned npx                              | supply chain       |
-| W6-026 | ws/playwright в devDependencies           | toolchain          |
+| ID     | Пункт                                     | Причина отложения   |
+| ------ | ----------------------------------------- | ------------------- |
+| W6-001 | sidecar root + chromium --no-sandbox      | контейнер           |
+| W6-002 | SYNC_SECRET/BROWSER_USE_LLM_API_KEY в env | secrets             |
+| W6-004 | agent budget all-time vs monthly          | cost/metrics        |
+| W6-005 | SLA неправильные поля                     | metrics             |
+| W6-006 | ExecutionQueue watchdog double-execution  | конкурентность      |
+| W6-007 | fencing token                             | лок                 |
+| W6-008 | Idempotency-Key на LLM-постах             | транспорт           |
+| W6-009 | duplicate run execution                   | конкурентность      |
+| W6-010 | saga checkpoint                           | распредел. системы  |
+| W6-011 | isStaleSessionWrite                       | стейт               |
+| W6-012 | tool-loop не форвардит AbortSignal        | сигнатуры           |
+| W6-014 | singleton ArgumentGraphService            | см. 13.3 — закрыто  |
+| W6-015 | cache decorator timeout без abort         | см. 13.4            |
+| W6-017 | один плохой ключ банит провайдера         | circuit breaker     |
+| W6-018 | feature-flag UI                           | см. 13.2 — закрыто  |
+| W6-019 | cross-session                             | см. 13.1 — частично |
+| W6-023 | ReDoS 6 мест                              | регекспы            |
+| W6-025 | unpinned npx                              | supply chain        |
+| W6-026 | ws/playwright в devDependencies           | toolchain           |
 
 ### 13.14. Остаток волны 7 (backlog)
 
@@ -770,22 +688,22 @@
 
 > Подробности — в `audit-wave8-2026-10-31.md`. Отложено (server-архитектура, retrieval/перф, backpressure, конкурантность). Закрыто ранее: W8-003 (maxPayload), W8-004 (sidecar), W8-008 (PII), W8-009 (tool-loop args), W8-017 (лимит очереди).
 
-| ID                 | Пункт                                                    | Причина отложения |
-| ------------------ | -------------------------------------------------------- | ----------------- |
-| W8-001             | company-store.mjs синхронный JSON-файл-как-DB            | server            |
-| W8-002             | write-queue.mjs глобальная цепочка                       | server            |
-| W8-005             | CompressRouteDecorator opt-in / truncation               | семантика         |
-| W8-006             | prod-разрыв: server workers не в Docker                  | deploy            |
-| W8-007             | cross-tenant утечка памяти (unscoped recall)             | tenant            |
-| W8-010             | Runner tools в обход wrapExternalData                    | prompt injection  |
-| W8-011             | catalog tools с пустыми schema                           | валидация         |
-| W8-012/013/014/015 | retrieval O(N), cap+sort-per-write, recall перезапись    | перф              |
-| W8-016             | LLMHttpClient семафор без fairness                       | перф              |
-| W8-018             | ChatExecutor activeRequests без cap                      | backpressure      |
-| W8-019             | ChannelService unbounded/ghost cursors/private bypass    | данные            |
-| W8-020             | SSE без Last-Event-ID resume                             | стриминг          |
-| W8-021/022         | wakeups at-most-once; in-memory очереди теряют состояние | надёжность        |
-| W8-172             | A/B single-sample winner                                 | статистика        |
+| ID                 | Пункт                                                    | Причина отложения         |
+| ------------------ | -------------------------------------------------------- | ------------------------- |
+| W8-001             | company-store.mjs синхронный JSON-файл-как-DB            | server                    |
+| W8-002             | write-queue.mjs глобальная цепочка                       | server                    |
+| W8-005             | CompressRouteDecorator opt-in / truncation               | закрыто (P1-8, `9ddff68`) |
+| W8-006             | prod-разрыв: server workers не в Docker                  | deploy                    |
+| W8-007             | cross-tenant утечка памяти (unscoped recall)             | tenant                    |
+| W8-010             | Runner tools в обход wrapExternalData                    | prompt injection          |
+| W8-011             | catalog tools с пустыми schema                           | валидация                 |
+| W8-012/013/014/015 | retrieval O(N), cap+sort-per-write, recall перезапись    | перф                      |
+| W8-016             | LLMHttpClient семафор без fairness                       | перф                      |
+| W8-018             | ChatExecutor activeRequests без cap                      | backpressure              |
+| W8-019             | ChannelService unbounded/ghost cursors/private bypass    | данные                    |
+| W8-020             | SSE без Last-Event-ID resume                             | стриминг                  |
+| W8-021/022         | wakeups at-most-once; in-memory очереди теряют состояние | надёжность                |
+| W8-172             | A/B single-sample winner                                 | статистика                |
 
 ---
 
@@ -812,17 +730,18 @@
 
 | Категория                               | Кол-во отложенных |
 | --------------------------------------- | ----------------- |
-| Data Integrity / Persistence            | 5                 |
-| Race Conditions / Lifecycle             | 6                 |
+| Data Integrity / Persistence            | 2                 |
+| Race Conditions / Lifecycle             | 0                 |
 | Types / Contracts                       | 5                 |
-| Performance                             | 19                |
+| Performance                             | 17                |
 | UX / Correctness                        | 8                 |
 | Build / Deploy / Config                 | 9                 |
 | General Logic                           | 6                 |
 | SSoT / State Consistency                | 7                 |
 | Accessibility                           | 9                 |
-| Resilience / Fault Tolerance            | 12                |
+| Resilience / Fault Tolerance            | 11                |
 | Dependencies                            | 5                 |
-| Security / Secrets                      | 4                 |
-| Deferred refactors (needs verification) | 7                 |
-| **Итого**                               | **91**            |
+| Security / Secrets                      | 0                 |
+| Deferred refactors (needs verification) | 5                 |
+| **Итого**                               | **84**            |
+| Закрыто с 2026-11-07                    | 19                |

@@ -2,9 +2,9 @@
 
 ## SuperAgents OS (`egilyad/ai-os-new`)
 
-> **Версия проекта:** commit `e08ab8e` (Oct 31, 2026, ветка `main`)
-> **Дата анализа:** 2026-10-31
-> **Метод:** статический анализ кода + чтение `route-imports.ts`, `kernel/instances/`, `kernel/bootstrap*.ts`, `kernel/service-registration/phase*.ts`, `usePolling` hook, поиск `setInterval`/`eventBus.on`/cleanup-паттернов
+> **Версия проекта:** commit `ae2dad8` (Nov 17, 2026, ветка `main`)
+> **Дата анализа:** 2026-11-17
+> **Метод:** статический анализ кода + чтение `route-imports.ts`, `kernel/instances/`, `kernel/bootstrap*.ts`, `kernel/service-registration/phase*.ts`, `usePolling` hook, поиск `setInterval`/`eventBus.on`/cleanup-паттернов; все цифры повторно сверены по HEAD `ae2dad8` (2026-11-17)
 > **Парные документы:** «Карта готовности панелей» + «Карта функциональной ценности» + «Карта технического состояния»
 > **ВАЖНО:** **измеренной нагрузки нет** — приложение не запускалось. Везде ниже это **потенциальная** нагрузка и **паттерны** (что код объявляет), а не реальные цифры heap/CPU/network. Каждый раздел явно разделяет эти понятия.
 
@@ -12,34 +12,34 @@
 
 ## 1. Исполнительное резюме
 
-SuperAgents OS — браузерное приложение с **ленивой загрузкой 209 панелей** (из 268) через `React.lazy`, **407 lazyService-синглтонов** ядра, **549 регистрациями сервисов** в 81 phase-файле, и **8-tier** последовательной инициализацией при старте. В фоне постоянно работают **15+ сервисов с `setInterval`** (heartbeat, cleanup, snapshot, monitor). 79 панелей используют polling (в основном 5–15 сек), `usePolling` корректно авто-паузится при скрытой вкладке.
+SuperAgents OS — браузерное приложение с **ленивой загрузкой 216 панелей** (из 272) через `React.lazy`, **424 lazyService-синглтонов** ядра, **580 регистраций сервисов** в 114 phase-файлах, и **8-tier** последовательной инициализацией при старте. В фоне постоянно работают **15+ сервисов с `setInterval`** (heartbeat, cleanup, snapshot, monitor). **31 панель использует polling** (в основном 5–15 сек; на 2026-10-31 было 79 — использование polling сократилось более чем вдвое), `usePolling` корректно авто-паузится при скрытой вкладке.
 
 **Сводные метрики ресурсопотребления (потенциальные):**
 
-| Метрика                             |                                                                                 Значение | Тип                         |
-| ----------------------------------- | ---------------------------------------------------------------------------------------: | --------------------------- |
-| Lazy-загружаемых панелей            |                                                                            **209 / 268** | POTENTIAL — благо           |
-| Eager-импортов в route-imports      |                              **3** (ErrorBoundary, Skeleton, TECHNIQUE_PANEL_COMPONENTS) | POTENTIAL — минимум         |
-| lazyService-синглтонов ядра         |                                                                                  **407** | POTENTIAL — все lazy        |
-| Service registrations (phases)      |                                                                 **549** в 81 phase-файле | POTENTIAL                   |
-| Init tiers                          |                                                                  **8** (Tier 0 → Tier 7) | ARCHITECTURE                |
-| Background `setInterval` в сервисах |                                                           **39** (15+ активных таймеров) | POTENTIAL — фон             |
-| `usePolling` в компонентах          |                                                                           **79** вызовов | POTENTIAL — polls           |
-| `eventBus.on` в компонентах         |                                                              **97** подписок в 46 файлах | POTENTIAL — subs            |
-| Всего `eventBus.*` вызовов          |                                                                                  **997** | POTENTIAL                   |
-| `useEffect` в компонентах           |                                                                                  **461** | POTENTIAL                   |
-| `useEffect` с cleanup               |                                                                             **77** (17%) | PATTERN — внимание          |
-| Тяжёлых библиотек в use             | framer-motion **165 файлов**, React Flow 6, vis-network 5, Monaco 2, TipTap 2, Mermaid 1 | POTENTIAL                   |
-| Web Workers                         |                                                **2** (`sandbox.worker`, `memory.worker`) | ARCHITECTURE                |
-| Zustand stores                      |                                                                                   **53** | POTENTIAL — in-memory state |
+| Метрика                             |                                                                                  Значение | Тип                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------------: | --------------------------- |
+| Lazy-загружаемых панелей            |                                                                             **216 / 272** | POTENTIAL — благо           |
+| Eager-импортов в route-imports      |                               **3** (ErrorBoundary, Skeleton, TECHNIQUE_PANEL_COMPONENTS) | POTENTIAL — минимум         |
+| lazyService-синглтонов ядра         |                                                                                   **424** | POTENTIAL — все lazy        |
+| Service registrations (phases)      |                                                                **580** в 114 phase-файлах | POTENTIAL                   |
+| Init tiers                          |                                                                   **8** (Tier 0 → Tier 7) | ARCHITECTURE                |
+| Background `setInterval` в сервисах |                                                            **42** (15+ активных таймеров) | POTENTIAL — фон             |
+| `usePolling` в компонентах          |                                                                            **31** вызовов | POTENTIAL — polls           |
+| `eventBus.on` в компонентах         |                                                              **110** подписок в 51 файлах | POTENTIAL — subs            |
+| Всего `eventBus.*` вызовов          |                                                                                   **978** | POTENTIAL                   |
+| `useEffect` в компонентах           |                                                                                   **525** | POTENTIAL                   |
+| `useEffect` с cleanup               |                                                                              **83** (16%) | PATTERN — внимание          |
+| Тяжёлых библиотек в use             | framer-motion **170 файлов**, React Flow 9, vis-network 19, Monaco 2, TipTap 4, Mermaid 1 | POTENTIAL                   |
+| Web Workers                         |                                **3** (`sandbox.worker`, `memory.worker`, `plugin.worker`) | ARCHITECTURE                |
+| Zustand stores                      |                                                                                    **53** | POTENTIAL — in-memory state |
 
-**Главный вывод:** архитектура **по умолчанию ленивая** — 209/268 панелей не грузятся, пока пользователь не откроет маршрут. lazyService гарантирует, что 407 сервисов не инстанцируются, пока не запросят. **Главные ресурсные риски:**
+**Главный вывод:** архитектура **по умолчанию ленивая** — 216/272 панелей не грузятся, пока пользователь не откроет маршрут. lazyService гарантирует, что 424 сервисов не инстанцируются, пока не запросят. **Главные ресурсные риски:**
 
-1. **165 файлов импортируют framer-motion** — либа тяжёлая, тащится в каждый chunk
-2. **39 background `setInterval`** в сервисах — работают, даже когда панель закрыта
-3. **79 polling-панелей** — при открытой вкладке каждый тик = re-render + возможно DB query
-4. **Только 17% useEffect имеют cleanup** — потенциальные subscription leaks (но многие useEffect one-shot, не все требуют cleanup)
-5. **549 service registrations** — если все Tier 7 («*») инстанцируются при старте, это много
+1. **170 файлов импортируют framer-motion** — либа тяжёлая, тащится в каждый chunk
+2. **42 background `setInterval`** в сервисах — работают, даже когда панель закрыта
+3. **31 polling-панель** — при открытой вкладке каждый тик = re-render + возможно DB query (на 2026-10-31 было 79 — использование polling сократилось более чем вдвое)
+4. **Только 16% useEffect имеют cleanup** — потенциальные subscription leaks (но многие useEffect one-shot, не все требуют cleanup)
+5. **580 service registrations** — если все Tier 7 («*») инстанцируются при старте, это много
 
 **Resource Health: 6.5/10** — ленивая архитектура хорошая, но фоновые таймеры и polling могут накапливаться. **Реально измерить невозможно без runtime.**
 
@@ -120,7 +120,7 @@ const App: React.FC = () => (
 **Анализ:**
 
 - Tier 0–6 — **обязательны при старте** (≈24 сервиса). POTENTIAL memory footprint: значительный, но не измерено.
-- Tier 7 = `'*'` — **все остальные сервисы инстанцируются при старте**. Это ~525 сервисов (549 − 24). **POTENTIAL risk:** если Tier 7 инстанцирует всё, startup может быть тяжёлым.
+- Tier 7 = `'*'` — **все остальные сервисы инстанцируются при старте**. Это ~556 сервисов (580 − 24). **POTENTIAL risk:** если Tier 7 инстанцирует всё, startup может быть тяжёлым.
 - lazyService **proxy** — сервис не создаётся, пока не попросят. Но `LifecycleManager.startAll()` может вызвать `.start()` на всех зарегистрированных. **Это UNKNOWN** — зависит от того, что `startAll()` реально делает.
 
 ### 3.3. Панели, загружаемые одновременно (на активном маршруте)
@@ -131,12 +131,12 @@ const App: React.FC = () => (
 | --------------------------------------------------------------------------------------------------------- | ------------------------------------ | ----------------------- |
 | `AppLayout` + Sidebar + Topbar                                                                            | eager                                | 🟢 всегда               |
 | `route-registry` (4 файла)                                                                                | eager                                | 🟢 всегда               |
-| `ChatPanel.tsx` (609 строк) + subtree                                                                     | lazy on demand                       | 🟢 при открытии /chat   |
+| `ChatPanel.tsx` (698 строк) + subtree                                                                     | lazy on demand                       | 🟢 при открытии /chat   |
 | `ChatSidebar`, `ChatInputArea`, `ChatHeader`, `ChatMessagesSection`, `MarkdownRenderer`, `MermaidDiagram` | статические импорты внутри ChatPanel | 🟡 тянутся за ChatPanel |
-| `MessageSearchPanel` (663 строки)                                                                         | conditional render                   | 🟡 при открытии поиска  |
+| `MessageSearchPanel` (646 строк)                                                                          | conditional render                   | 🟡 при открытии поиска  |
 | `ChatExportOverlay`                                                                                       | conditional render                   | 🟡 при экспорте         |
 
-**При открытии `/debate`:** DebateArena + (lazy) DebatePanel + 9 подкомпонентов + framer-motion (165 файлов потенциально, но tree-shaking должен уменьшить).
+**При открытии `/debate`:** DebateArena + (lazy) DebatePanel + 9 подкомпонентов + framer-motion (170 файлов потенциально, но tree-shaking должен уменьшить).
 
 **Simultaneous load: обычно 1 панель + layout + shared services.** Это **хорошо** — lazy-loading делает свою работу.
 
@@ -146,7 +146,7 @@ const App: React.FC = () => (
 
 ### 4.1. Background `setInterval` в ядре (POTENTIAL — постоянно)
 
-**39 `setInterval` в `src/kernel/services/`**, 15+ активных фоновых процессов:
+**42 `setInterval` в `src/kernel/services/` (без тестов)**, 15+ активных фоновых процессов:
 
 | Сервис                                      | Что делает           |                Интервал | Стопается?            |
 | ------------------------------------------- | -------------------- | ----------------------: | --------------------- |
@@ -174,9 +174,9 @@ const App: React.FC = () => (
 
 `src/kernel/utils/memory-watchdog.ts` — логирует heap каждые 5 сек, warns при growth > 100 MB или absolute > 200 MB. **EVIDENCE:** проект **сам осознаёт** resource pressure и мониторит его.
 
-### 4.3. ILifecycle-сервисы (325 шт.)
+### 4.3. ILifecycle-сервисы (~367 refs, 12 прямых implements)
 
-**325 сервисов имеют `async init()`/`start()`** — это значит, что при `LifecycleManager.startAll()` они могут запускать фоновую работу. **POTENTIAL** — но реальные метрики UNKNOWN.
+**~367 файлов ядра ссылаются на `ILifecycle`** (12 классов реализуют его напрямую, остальные — через lazyService-прокси и сервисный контейнер) — это значит, что при `LifecycleManager.startAll()` часть из них может запускать фоновую работу. **POTENTIAL** — но реальные метрики UNKNOWN.
 
 ---
 
@@ -184,43 +184,45 @@ const App: React.FC = () => (
 
 ### 5.1. Распределение `eventBus.on` по компонентам
 
-**97 подписок в 46 файлах компонентов** (всего 997 eventBus-вызовов во всём src).
+**110 подписок в 51 файлах компонентов** (всего 978 eventBus-вызовов во всём src без тестов).
 
 **Топ-15 подписчиков:**
 
-| Файл                                     | `eventBus.on` count |
-| ---------------------------------------- | ------------------: |
-| `DebateRuntimePanel.tsx`                 |                   6 |
-| `KeyTable/SandboxTab.tsx`                |                   5 |
-| `SchedulerPanel.tsx`                     |                   4 |
-| `ProviderMarketplace.tsx`                |                   4 |
-| `ArgumentGraphPanel.tsx`                 |                   4 |
-| `SREAgentPanel.tsx`                      |                   3 |
-| `ProviderManager/QuickTestSection.tsx`   |                   3 |
-| `ProviderManager/ProviderTableRow.tsx`   |                   3 |
-| `ProviderManager/OpenRouterKeyTable.tsx` |                   3 |
-| `ProviderManager/GroqKeyTable.tsx`       |                   3 |
-| `NvidiaEnterprise/NvidiaKeyTable.tsx`    |                   3 |
-| `LiveCognition/MissionControl.tsx`       |                   3 |
-| `KnowledgeGenPanel.tsx`                  |                   3 |
-| `KeyTable/OverviewTab.tsx`               |                   3 |
-| `JunctionPanel.tsx`                      |                   3 |
+| Файл                             | `eventBus.on` count |
+| -------------------------------- | ------------------: |
+| `DebateRuntimePanel.tsx`         |                   6 |
+| `SandboxTab.tsx`                 |                   5 |
+| `ArgumentGraphPanel.tsx`         |                   4 |
+| `ProviderMarketplace.tsx`        |                   4 |
+| `PluginManagerPanel.tsx` (новый) |                   4 |
+| `SchedulerPanel.tsx`             |                   4 |
+| `BookmarksPanel.tsx`             |                   3 |
+| `OverviewTab.tsx`                |                   3 |
+| `useDebatePanelSubscriptions.ts` |                   3 |
+| `VaultSettingsModal.tsx`         |                   3 |
+| `QuickTestSection.tsx`           |                   3 |
+| `JunctionPanel.tsx`              |                   3 |
+| `ProviderTableRow.tsx`           |                   3 |
+| `NvidiaKeyTable.tsx`             |                   3 |
+| `ContributionGraphPanel.tsx`     |                   3 |
 
 ### 5.2. Подписки на высокочастотные события (POTENTIAL — hot path)
 
 **Подписки на `EVENTS.MESSAGE_RESPONSE`** (эммитится на каждый ответ LLM, может быть 10+ в секунду при стриминге):
 
-| Файл                                       | Подписка                                               |
-| ------------------------------------------ | ------------------------------------------------------ |
-| `KeyTable/SandboxTab.tsx`                  | `eventBus.on(EVENTS.MESSAGE_RESPONSE, ...)`            |
-| `KeyTable/OverviewTab.tsx`                 | `EVENTS.MESSAGE_RESPONSE`                              |
-| `AquariumPanel/hooks/useAquariumEngine.ts` | `eventBus.on(EVENTS.MESSAGE_RESPONSE, handleResponse)` |
-| `ProviderManager/QuickTestSection.tsx`     | `eventBus.on(EVENTS.MESSAGE_RESPONSE, ...)`            |
-| `ProviderManager/GroqKeyTable.tsx`         | `eventBus.on(EVENTS.MESSAGE_RESPONSE, ...)`            |
-| `ProviderManager/OpenRouterKeyTable.tsx`   | `eventBus.on(EVENTS.MESSAGE_RESPONSE, ...)`            |
-| `ProviderManager/ProviderTableRow.tsx`     | `eventBus.on(EVENTS.MESSAGE_RESPONSE, ...)`            |
+| Файл                                       | Подписок |
+| ------------------------------------------ | -------: |
+| `ProviderManager/QuickTestSection.tsx`     |        2 |
+| `WikiPanel/wiki-components.ts`             |        2 |
+| `KeyTable/SandboxTab.tsx`                  |        1 |
+| `KeyTable/OverviewTab.tsx`                 |        1 |
+| `AquariumPanel/hooks/useAquariumEngine.ts` |        1 |
+| `ProviderManager/GroqKeyTable.tsx`         |        1 |
+| `ProviderManager/OpenRouterKeyTable.tsx`   |        1 |
+| `ProviderManager/ProviderTableRow.tsx`     |        1 |
+| `NvidiaEnterprise/NvidiaKeyTable.tsx`      |        1 |
 
-**POTENTIAL risk:** **7+ панелей подписаны на `MESSAGE_RESPONSE`**. Если все 7 открыты одновременно (маловероятно, но возможно через split-view), каждый LLM-ответ триггерит 7 обработчиков. **Не измерено.**
+**POTENTIAL risk:** **9 файлов (11 подписок) на `MESSAGE_RESPONSE`**. Если несколько панелей открыты одновременно (маловероятно, но возможно через split-view), каждый LLM-ответ триггерит несколько обработчиков. **Не измерено.**
 
 **Подписки на `EVENTS.TRACE_UPDATED`** (эммитится на каждый шаг агента):
 
@@ -230,11 +232,11 @@ const App: React.FC = () => (
 
 ### 5.3. Cleanup-паттерны (PATTERN analysis)
 
-**461 `useEffect` в компонентах, только 77 с cleanup (17%).**
+**525 `useEffect` в компонентах, только 83 с cleanup (16%).**
 
-**EVIDENCE — хорошо:** `usePolling` hook **сам управляет cleanup** (см. `src/components/Common/usePolling.ts`): `clearInterval` в `stop()`, `document.removeEventListener('visibilitychange', ...)`. Все 79 polling-панелей наследуют этот cleanup.
+**EVIDENCE — хорошо:** `usePolling` hook **сам управляет cleanup** (см. `src/components/Common/usePolling.ts`): `clearInterval` в `stop()`, `document.removeEventListener('visibilitychange', ...)`. Все 31 polling-панель наследует этот cleanup.
 
-**EVIDENCE — требует проверки:** из 461 `useEffect` без cleanup — многие one-shot (fetch on mount), но **те, что подписываются на eventBus без cleanup, — leak**. Примеры для ревью:
+**EVIDENCE — требует проверки:** из 525 `useEffect` без cleanup — многие one-shot (fetch on mount), но **те, что подписываются на eventBus без cleanup, — leak**. Примеры для ревью:
 
 | Случай                                                           | Риск                                                      |
 | ---------------------------------------------------------------- | --------------------------------------------------------- |
@@ -260,28 +262,29 @@ const App: React.FC = () => (
 
 | Библиотека                   |   Файлов используют | Типичный размер             | Риск                                               |
 | ---------------------------- | ------------------: | --------------------------- | -------------------------------------------------- |
-| **framer-motion**            |             **165** | ~50 KB gzip                 | 🟡 **широко** — тащится в каждый chunk с анимацией |
-| React Flow (`@xyflow/react`) |                   6 | ~80 KB gzip                 | 🟡 только BuilderPanel и визуализации              |
-| vis-network                  |                   5 | ~200 KB gzip                | 🟡 NavGraph, GraphWorkbench                        |
+| **framer-motion**            |             **170** | ~50 KB gzip                 | 🟡 **широко** — тащится в каждый chunk с анимацией |
+| React Flow (`@xyflow/react`) |                   9 | ~80 KB gzip                 | 🟡 только BuilderPanel и визуализации              |
+| vis-network                  |              **19** | ~200 KB gzip                | 🟡 NavGraph, GraphWorkbench, DependencyMap и др.   |
 | Monaco editor                |                   2 | ~3 MB (!), но lazy-loadable | 🟢 только Monaco-using panels                      |
-| TipTap                       |                   2 | ~100 KB gzip                | 🟢 ограниченное использование                      |
+| TipTap                       |                   4 | ~100 KB gzip                | 🟢 ограниченное использование                      |
 | Mermaid                      |                   1 | ~500 KB gzip                | 🟢 только MarkdownRenderer                         |
 | Orama (BM25)                 | через memory.worker | ~100 KB                     | 🟢 в Web Worker                                    |
 | Transformers.js              | через memory.worker | ~10 MB модель               | 🟡 **модель тащится в worker**                     |
 | Dexie                        |           pervasive | ~30 KB gzip                 | 🟢 стандарт                                        |
 
-**POTENTIAL risk — framer-motion:** 165 файлов импортируют `motion` или `AnimatePresence`. Даже с tree-shaking, **каждый chunk с framer-motion платит ~30–50 KB**. Если пользователь открывает 5 панелей с анимациями, это 5 chunks с framer-motion.
+**POTENTIAL risk — framer-motion:** 170 файлов импортируют `motion` или `AnimatePresence`. Даже с tree-shaking, **каждый chunk с framer-motion платит ~30–50 KB**. Если пользователь открывает 5 панелей с анимациями, это 5 chunks с framer-motion.
 
 **EVIDENCE — Monaco lazy:** Monaco editor грузится только когда нужен (через `@monaco-editor/react` который сам lazy).
 
 ### 6.2. Web Workers (изоляция CPU-heavy)
 
-**2 worker-файла:**
+**3 worker-файла:**
 
 | Worker                             | Зачем                                | Загрузка CPU                 |
 | ---------------------------------- | ------------------------------------ | ---------------------------- |
 | `kernel/workers/sandbox.worker.ts` | Sandbox code execution (eval-banned) | 🟢 изолирован                |
 | `kernel/workers/memory.worker.ts`  | BM25 index + embeddings              | 🟡 тяжёлая (Transformers.js) |
+| `kernel/workers/plugin.worker.ts`  | RPC-контракт для плагинов (SPEC_06)  | 🟡 изолирован, таймаут 10s   |
 
 **EVIDENCE:** CPU-heavy работа вынесена в workers — **хороший паттерн**, не блокирует main thread.
 
@@ -319,23 +322,24 @@ const App: React.FC = () => (
 
 ## 7. Повторяющиеся запросы (polling duplication)
 
-### 7.1. Polling panels — 79 вызовов `usePolling`
+### 7.1. Polling panels — 31 вызов `usePolling` (было 79 на 2026-10-31)
 
 **Распределение интервалов:**
 
-|        Интервал | Кол-во панелей | Примеры                                                                                                                   |
-| --------------: | -------------: | ------------------------------------------------------------------------------------------------------------------------- |
-| 15 000 ms (15s) |          **9** | GuardiansPanel, SessionBindingsPanel, DiagnosticPanel, BudgetAlertsPanel, RotationView, DebateSystemResearch, PromptAudit |
-| 10 000 ms (10s) |              5 | (various)                                                                                                                 |
-|   5 000 ms (5s) |          **5** | SREAgentPanel, GroqSpeedDashboard, PricingPanel, DebateReplayPanel                                                        |
-| 30 000 ms (30s) |              1 | BudgetPanel                                                                                                               |
-| 60 000 ms (60s) |              1 | RotationsPanel                                                                                                            |
-|   3 000 ms (3s) |              1 | (various)                                                                                                                 |
-|   2 000 ms (2s) |              1 | TutorialPanel                                                                                                             |
-| 1 500 ms (1.5s) |              1 | AudiencePanel                                                                                                             |
-|      **300 ms** |          **1** | **GeminiLivePanel** ⚠                                                                                                     |
+|                                   Интервал | Кол-во панелей | Примеры                                                                                                                         |
+| -----------------------------------------: | -------------: | ------------------------------------------------------------------------------------------------------------------------------- |
+|                            15 000 ms (15s) |          **9** | GuardiansPanel, SessionBindingsPanel, DiagnosticPanel, BudgetAlertsPanel, RotationView, DebateSystemResearch, PromptAudit       |
+|                            10 000 ms (10s) |              5 | (various)                                                                                                                       |
+|                              5 000 ms (5s) |          **5** | SREAgentPanel, GroqSpeedDashboard, PricingPanel, DebateReplayPanel                                                              |
+|                            30 000 ms (30s) |              1 | BudgetPanel                                                                                                                     |
+|                            60 000 ms (60s) |              1 | RotationsPanel                                                                                                                  |
+|                              3 000 ms (3s) |              1 | (various)                                                                                                                       |
+|                              2 000 ms (2s) |              1 | TutorialPanel                                                                                                                   |
+|                            1 500 ms (1.5s) |              1 | AudiencePanel                                                                                                                   |
+|                                 **300 ms** |          **1** | **GeminiLivePanel** ⚠                                                                                                           |
+| inline-callback (интервал на след. строке) |              6 | CostAnalyticsPanel, PerformanceProfilerPanel (1500ms), ProviderDashboard, GeminiResearchPanel, LogsPanel, WhatIfPanel (10000ms) |
 
-**⚠ GeminiLivePanel — 300ms polling** — **3.3 запроса в секунду**. POTENTIAL: если панель открыта, это 200 fetches/мин. **Не измерено**, но это **самый агрессивный poll в проекте**.
+**⚠ GeminiLivePanel — 300ms polling остаётся** — **3.3 запроса в секунду**. POTENTIAL: если панель открыта, это 200 fetches/мин. **Не измерено**, но это **самый агрессивный poll в проекте**.
 
 ### 7.2. Дублирование polling одной и той же data (POTENTIAL)
 
@@ -355,24 +359,24 @@ const App: React.FC = () => (
 
 | Сервис             | Кол-во вызовов в компонентах | Распределение                          |
 | ------------------ | ---------------------------: | -------------------------------------- |
-| `eventBus.*`       |                      **248** | pervasive (нормально)                  |
-| `keyService.*`     |                           78 | 6+ provider panels — POTENTIAL overlap |
-| `advisorService.*` |                           25 | SRE + Budget                           |
-| `debateEngine.*`   |                           26 | debate panels                          |
-| `budgetService.*`  |                           18 | budget panels                          |
+| `eventBus.*`       |                      **260** | pervasive (нормально)                  |
+| `keyService.*`     |                           91 | 6+ provider panels — POTENTIAL overlap |
+| `advisorService.*` |                           20 | SRE + Budget                           |
+| `debateEngine.*`   |                           27 | debate panels                          |
+| `budgetService.*`  |                           21 | budget panels                          |
 | `memoryEngine.*`   |                            0 | через hooks (хорошо!)                  |
 
 **EVIDENCE — хорошо:** `memoryEngine` не вызывается из компонентов напрямую (0 calls), только через hooks — значит, **один subscription point** в hook. Это **правильный паттерн**.
 
-**POTENTIAL — внимание:** `keyService` вызывается из 78 мест в компонентах — если каждый вызов идёт в IndexedDB, это 78 точек доступа. Но `useKeyStore` (Zustand) должен агрегировать.
+**POTENTIAL — внимание:** `keyService` вызывается из 91 места в компонентах — если каждый вызов идёт в IndexedDB, это 91 точка доступа. Но `useKeyStore` (Zustand) должен агрегировать.
 
 ---
 
 ## 8. Что можно запускать лениво (lazy candidates)
 
-### 8.1. Уже lazy — 209 панелей
+### 8.1. Уже lazy — 216 панелей
 
-`src/route-imports.ts` — **209 `React.lazy()` из 268 панелей** (78%). Все основные панели (ChatPanel, ProviderManager, DebateArena, MemoryPanel, HealthPanel, SREAgentPanel, BuilderPanel и т.д.) — lazy.
+`src/route-imports.ts` — **216 `React.lazy()` из 272 панелей** (79%). Все основные панели (ChatPanel, ProviderManager, DebateArena, MemoryPanel, HealthPanel, SREAgentPanel, BuilderPanel и т.д.) — lazy.
 
 **EVIDENCE:** архитектура последовательно ленивая.
 
@@ -389,15 +393,15 @@ const App: React.FC = () => (
 
 ### 8.3. Сервисы Tier 7 (`*` — all remaining)
 
-**Проблема:** `INIT_TIERS[7] = ['*']` — означает «все остальные сервисы». Если `LifecycleManager.startAll()` инстанцирует все 525 remaining сервисов при старте — это **большая startup-нагрузка**.
+**Проблема:** `INIT_TIERS[7] = ['*']` — означает «все остальные сервисы». Если `LifecycleManager.startAll()` инстанцирует все 556 remaining сервисов при старте — это **большая startup-нагрузка**.
 
-**EVIDENCE:** lazyService создаёт proxy, не сам сервис — инстанциация происходит при первом обращении. **НО** если `startAll()` вызывает `.start()` на всех, тогда стартуют **background timers** всех 39+ сервисов с `setInterval`.
+**EVIDENCE:** lazyService создаёт proxy, не сам сервис — инстанциация происходит при первом обращении. **НО** если `startAll()` вызывает `.start()` на всех, тогда стартуют **background timers** всех 42+ сервисов с `setInterval`.
 
 **UNKNOWN:** не ясно из статического анализа, вызывает ли `startAll()` только CRITICAL_SERVICES или все. **Требует runtime-проверки.**
 
-### 8.4. Phase-by-phase registration (81 phase file)
+### 8.4. Phase-by-phase registration (114 phase files)
 
-**549 service registrations** разбиты на 81 phase-файл (`phase0-event-bridge.ts` → `phase81-wiki-brain.ts`). Это **готовая инфраструктура для ленивой регистрации** — но сейчас все phase-файлы импортируются в `service-registration/index.ts` eagerly.
+**580 service registrations** разбиты на 114 phase-файлов (`phase0-event-bridge.ts` → `phase86-topic-graph.ts`). Это **готовая инфраструктура для ленивой регистрации** — но сейчас все phase-файлы импортируются в `service-registration/index.ts` eagerly.
 
 **POTENTIAL optimization:** динамический `import('./phase75-provider-embeddings')` только когда открывается соответствующая панель.
 
@@ -411,7 +415,7 @@ const App: React.FC = () => (
 
 **ОДНАКО:**
 
-1. **Сервисы ядра не выгружаются** — 407 lazyService-синглтонов живут вечно после первого обращения. Даже если панель закрыта, сервис остаётся.
+1. **Сервисы ядра не выгружаются** — 424 lazyService-синглтонов живут вечно после первого обращения. Даже если панель закрыта, сервис остаётся.
 2. **Background timers не останавливаются** — 15+ `setInterval` тикают, пока приложение живо.
 3. **eventBus subscriptions** — если панель корректно делает cleanup в `useEffect`, подписка снимается. Если нет — остаётся (см. §5.3).
 4. **Zustand stores** — state переживает unmount компонента. `useChatStore` хранит все сессии, даже если ChatPanel закрыт.
@@ -429,7 +433,7 @@ const App: React.FC = () => (
 | `DiagnosticPanel`          | 🟢 auto              | 🟡 check          | 🟢 вероятно ОК                  |
 | `PerformanceProfilerPanel` | 🟢 auto              | 🟡 check          | 🟢 вероятно ОК                  |
 
-**EVIDENCE:** `usePolling` hook **гарантированно чистит interval** при unmount + при visibility hidden. Это **хорошо** — 79 polling panels не утекают.
+**EVIDENCE:** `usePolling` hook **гарантированно чистит interval** при unmount + при visibility hidden. Это **хорошо** — 31 polling panel не утекают.
 
 ### 9.3. Кандидаты на агрессивную выгрузку (POTENTIAL)
 
@@ -476,20 +480,20 @@ const App: React.FC = () => (
 
 ## 11. Потенциальная vs измеренная нагрузка — сводка
 
-| Что                     | POTENTIAL (статика)                  | EVIDENCE (паттерн)                               | MEASURED (runtime) |
-| ----------------------- | ------------------------------------ | ------------------------------------------------ | ------------------ |
-| Стартовый бандл         | ~150–200 KB eager JS                 | 🟢 минимальный eager                             | ❌ не измерено     |
-| Bootstrap время         | 8 tiers × ~24 сервиса + Tier 7 = 525 | lazyService proxy задерживает инстанциацию       | ❌ не измерено     |
-| Background CPU          | 15+ `setInterval` постоянно          | 🟢 все с именованными timer refs для cleanup     | ❌ не измерено     |
-| Memory framer-motion    | 165 файлов, ~50 KB per chunk         | 🟢 tree-shaking должен уменьшить                 | ❌ не измерено     |
-| Memory Monaco           | 2 панели, ~3 MB                      | 🟢 lazy через @monaco-editor/react               | ❌ не измерено     |
-| Memory Transformers.js  | через memory.worker                  | 🟡 модель ~10 MB в worker                        | ❌ не измерено     |
-| Polling load            | 79 polls, 9×15s, 5×5s, 1×300ms       | 🟢 usePolling auto-pauses on hidden              | ❌ не измерено     |
-| Subscriptions leak risk | 461 useEffect, 77 с cleanup (17%)    | 🟡 основные панели корректны, но 84% need review | ❌ не измерено     |
-| Stores memory           | 53 Zustand stores                    | 🟡 useChatStore может расти без bounds           | ❌ не измерено     |
-| Caches                  | 4+ major caches                      | 🟢 все с auto-eviction                           | ❌ не измерено     |
-| Service duplication     | keyService 78 calls, eventBus 248    | 🟢 useKeyStore агрегирует                        | ❌ не измерено     |
-| Web Workers CPU         | 2 workers (sandbox, memory)          | 🟢 изолированы от main thread                    | ❌ не измерено     |
+| Что                     | POTENTIAL (статика)                  | EVIDENCE (паттерн)                                | MEASURED (runtime) |
+| ----------------------- | ------------------------------------ | ------------------------------------------------- | ------------------ |
+| Стартовый бандл         | ~150–200 KB eager JS                 | 🟢 минимальный eager                              | ❌ не измерено     |
+| Bootstrap время         | 8 tiers × ~24 сервиса + Tier 7 = 556 | lazyService proxy задерживает инстанциацию        | ❌ не измерено     |
+| Background CPU          | 15+ `setInterval` постоянно          | 🟢 все с именованными timer refs для cleanup      | ❌ не измерено     |
+| Memory framer-motion    | 170 файлов, ~50 KB per chunk         | 🟢 tree-shaking должен уменьшить                  | ❌ не измерено     |
+| Memory Monaco           | 2 панели, ~3 MB                      | 🟢 lazy через @monaco-editor/react                | ❌ не измерено     |
+| Memory Transformers.js  | через memory.worker                  | 🟡 модель ~10 MB в worker                         | ❌ не измерено     |
+| Polling load            | 31 polls, 9×15s, 5×5s, 1×300ms       | 🟢 usePolling auto-pauses on hidden               | ❌ не измерено     |
+| Subscriptions leak risk | 525 useEffect, 83 с cleanup (16%)    | 🟡 основные панели корректны, но ~84% need review | ❌ не измерено     |
+| Stores memory           | 53 Zustand stores                    | 🟡 useChatStore может расти без bounds            | ❌ не измерено     |
+| Caches                  | 4+ major caches                      | 🟢 все с auto-eviction                            | ❌ не измерено     |
+| Service duplication     | keyService 91 calls, eventBus 260    | 🟢 useKeyStore агрегирует                         | ❌ не измерено     |
+| Web Workers CPU         | 3 workers (sandbox, memory, plugin)  | 🟢 изолированы от main thread                     | ❌ не измерено     |
 
 **Главный вывод:** **ВСЕ цифры — POTENTIAL, ничего не измерено.** Архитектура хорошая (lazy везде, cleanup паттерны, auto-eviction), но **реальную нагрузку можно получить только через Chrome DevTools Performance + Memory tabs** при реальном использовании.
 
@@ -505,20 +509,20 @@ const App: React.FC = () => (
 2. **Prefetch топ-5 likely-next panels** на hover по Sidebar — ChatPanel → DebateArena + ProviderManager + MemoryPanel. React.lazy + `import()` в `onMouseEnter`.
 3. **Lazy-load `TECHNIQUE_PANEL_COMPONENTS` bundle** — сейчас eager в `route-imports.ts`, но нужен только при открытии `/techniques/*` маршрута.
 4. **Lazy-load `CommandPalette`** в `App.tsx` — нужен только при Cmd+K, можно prefetch после idle.
-5. **Аудит 461 `useEffect` без cleanup** — найти те, что подписываются на eventBus/setInterval без cleanup, добавить cleanup. ~50–100 wahrscheinlich-leak эффектов.
+5. **Аудит 525 `useEffect` (83 с cleanup)** — найти те, что подписываются на eventBus/setInterval без cleanup, добавить cleanup. ~50–100 вероятных leak-эффектов.
 
 ### Среднесрочные (квартал)
 
 6. **Объединить 5 budget panels + 4 health panels + 4 provider UIs** в табов-хабы (см. Feature Value Map §6.2) — меньше одновременно открытых polling panels.
 7. **Внедрить cache layer для polling** — если 2 панели poll одну data, debounce через shared Zustand selector. Пример: `useKeyStore` уже это делает для keys — распространить на `budgetService`, `advisorService`.
-8. **Centralize subscriptions через stores** — убрать прямые `eventBus.on` из компонентов (97 подписок), заменить на store selectors.
-9. **Service registration lazy-by-phase** — `import('./phase75-provider-embeddings')` только при открытии соответствующей панели. Сейчас все 81 phase-файла импортируются eagerly.
+8. **Centralize subscriptions через stores** — убрать прямые `eventBus.on` из компонентов (110 подписок), заменить на store selectors.
+9. **Service registration lazy-by-phase** — `import('./phase75-provider-embeddings')` только при открытии соответствующей панели. Сейчас все 114 phase-файлов импортируются eagerly.
 10. **RFC: выгрузка сервисов** — сейчас lazyService singleton живёт вечно после первого обращения. Для rarely-used сервисов (FederatedMemory, Aquarium, CrystalVault) — рассмотреть `idleTimeout` eviction.
 
 ### Стратегические
 
 11. **Runtime observability dashboard** — `MemoryWatchdog` уже собирает heap data, вывести это в UI-панель (HealthPanel или отдельная ResourceMonitorPanel). Сейчас данные только в логах.
-12. **Bundle analyzer** — `vite-bundle-visualizer` в CI, отслеживать chunk sizes. С 165 framer-motion файлов легко получить fat chunks.
+12. **Bundle analyzer** — `vite-bundle-visualizer` в CI, отслеживать chunk sizes. С 170 framer-motion файлов легко получить fat chunks.
 13. **Service worker for caching** — LLM responses cacheable через service worker (offline support + меньше повторных fetch).
 14. **Web Worker для MarkdownRenderer** — Mermaid rendering тяжёлый, вынести в worker.
 15. **Измерить startup time** — добавить `performance.mark` в `bootstrap.ts` на каждом tier, писать в logger. Сейчас 8 tiers инициализируются последовательно, но время не трекается.
@@ -527,41 +531,41 @@ const App: React.FC = () => (
 
 ## 13. Итоговый вердикт по ресурсам
 
-| Метрика                    |   Оценка   | Комментарий                                                          |
-| -------------------------- | :--------: | -------------------------------------------------------------------- |
-| Lazy-loading охват         |  **9/10**  | 209/268 панелей lazy, только 3 eager                                 |
-| Bootstrap архитектура      |  **8/10**  | 8 tiers, явный порядок, CRITICAL_SERVICES определены                 |
-| Cleanup паттерны           |  **7/10**  | usePolling корректный, но 84% useEffect без cleanup (нужен аудит)    |
-| Background timers          |  **6/10**  | 15+ постоянно работающих, но все с cleanup refs                      |
-| Polling discipline         |  **6/10**  | 79 polls, один 300ms (агрессивный), остальное разумное               |
-| Memory hygiene             |  **7/10**  | Caches с eviction, MemoryWatchdog, но stores без bounds              |
-| Subscription discipline    |  **6/10**  | 97 подписок в компонентах, 7+ на MESSAGE_RESPONSE — стоит centralize |
-| Web Worker usage           |  **8/10**  | 2 workers для CPU-heavy (sandbox, memory)                            |
-| Prefetch strategy          |  **3/10**  | нет proactive prefetch, только reactive lazy                         |
-| Измерение ресурсов         |  **4/10**  | только MemoryWatchdog в логах, нет UI dashboard                      |
-| **Overall Resource Score** | **6.5/10** | архитектура хорошая, измерений мало                                  |
+| Метрика                    |   Оценка   | Комментарий                                                           |
+| -------------------------- | :--------: | --------------------------------------------------------------------- |
+| Lazy-loading охват         |  **9/10**  | 216/272 панелей lazy, только 3 eager                                  |
+| Bootstrap архитектура      |  **8/10**  | 8 tiers, явный порядок, CRITICAL_SERVICES определены                  |
+| Cleanup паттерны           |  **7/10**  | usePolling корректный, но ~84% useEffect без cleanup (нужен аудит)    |
+| Background timers          |  **6/10**  | 15+ постоянно работающих, но все с cleanup refs                       |
+| Polling discipline         |  **7/10**  | 31 poll (было 79), один 300ms (агрессивный), остальное разумное       |
+| Memory hygiene             |  **7/10**  | Caches с eviction, MemoryWatchdog, но stores без bounds               |
+| Subscription discipline    |  **6/10**  | 110 подписок в компонентах, 11 на MESSAGE_RESPONSE — стоит centralize |
+| Web Worker usage           |  **8/10**  | 3 workers для CPU-heavy (sandbox, memory, plugin)                     |
+| Prefetch strategy          |  **3/10**  | нет proactive prefetch, только reactive lazy                          |
+| Измерение ресурсов         |  **4/10**  | только MemoryWatchdog в логах, нет UI dashboard                       |
+| **Overall Resource Score** | **6.5/10** | архитектура хорошая, измерений мало                                   |
 
 **Сильные стороны:**
 
-- 78% панелей lazy-loaded
-- 407 lazyService singletons — все proxy, не eager
+- 79% панелей lazy-loaded
+- 424 lazyService singletons — все proxy, не eager
 - 8-tier bootstrap с явным порядком
 - `usePolling` auto-pauses на hidden tab — **это редкая и хорошая практика**
-- 2 Web Workers изолируют CPU-heavy
+- 3 Web Workers изолируют CPU-heavy
 - MemoryWatchdog встроен
 - Все major caches с auto-eviction
 - Cleanup refs у всех background timers
 
 **Слабые стороны:**
 
-- 165 файлов с framer-motion — потенциально fat chunks
+- 170 файлов с framer-motion — потенциально fat chunks
 - 1 панель с polling 300ms (GeminiLivePanel)
-- 84% `useEffect` без cleanup (нужен аудит на leaks)
-- 97 прямых `eventBus.on` в компонентах вместо store selectors
+- ~84% `useEffect` без cleanup (нужен аудит на leaks)
+- 110 прямых `eventBus.on` в компонентах вместо store selectors
 - Нет proactive prefetch
 - Нет runtime resource dashboard в UI
 - Tier 7 = `'*'` — все remaining сервисы регистрируются eagerly
-- Все 81 phase-файла импортируются в `index.ts` eagerly
+- Все 114 phase-файлов импортируются в `index.ts` eagerly
 
 **Главный риск:** **измеренная нагрузка неизвестна.** Архитектура выглядит хорошо, но без runtime profiling нельзя сказать, **реально ли** 15 background timers проблемны, **реально ли** 300ms polling роняет CPU, **реально ли** stores растут без bounds.
 
@@ -571,39 +575,39 @@ const App: React.FC = () => (
 
 ## Приложение A. Все метрики в цифрах
 
-| Метрика                             |            Значение | Тип          | Источник                                    |
-| ----------------------------------- | ------------------: | ------------ | ------------------------------------------- |
-| Lazy panels                         |             209/268 | POTENTIAL    | `route-imports.ts` (`grep -c "React.lazy"`) |
-| Eager imports                       |                   3 | POTENTIAL    | `route-imports.ts`                          |
-| lazyService singletons              |                 407 | POTENTIAL    | `kernel/instances/*.ts`                     |
-| Service registrations               |                 549 | POTENTIAL    | `service-registration/*.ts`                 |
-| Init tiers                          |                   8 | ARCHITECTURE | `bootstrap-phases.ts`                       |
-| Background `setInterval` (services) |     39 (15+ active) | POTENTIAL    | `grep setInterval src/kernel/services`      |
-| `usePolling` calls                  |                  79 | POTENTIAL    | `grep usePolling src/components`            |
-| Polling interval 300ms              | 1 (GeminiLivePanel) | POTENTIAL    | grep                                        |
-| Polling interval 1500ms             |   1 (AudiencePanel) | POTENTIAL    | grep                                        |
-| Polling interval 15s                |            9 panels | POTENTIAL    | grep                                        |
-| `eventBus.on` in components         |                  97 | POTENTIAL    | grep                                        |
-| Files with subscriptions            |                  46 | PATTERN      | grep                                        |
-| Total `eventBus.*` calls            |                 997 | POTENTIAL    | grep                                        |
-| `useEffect` total                   |                 461 | POTENTIAL    | grep                                        |
-| `useEffect` with cleanup            |            77 (17%) | PATTERN      | grep                                        |
-| framer-motion importers             |                 165 | POTENTIAL    | grep                                        |
-| React Flow importers                |                   6 | POTENTIAL    | grep                                        |
-| vis-network importers               |                   5 | POTENTIAL    | grep                                        |
-| Monaco importers                    |                   2 | POTENTIAL    | grep                                        |
-| TipTap importers                    |                   2 | POTENTIAL    | grep                                        |
-| Mermaid importers                   |                   1 | POTENTIAL    | grep                                        |
-| Web Workers                         |                   2 | ARCHITECTURE | `find src -name "*.worker.ts"`              |
-| Zustand stores                      |                  53 | POTENTIAL    | `ls src/stores`                             |
-| ILifecycle services                 |                 325 | POTENTIAL    | grep                                        |
-| Service phase files                 |                  81 | ARCHITECTURE | `ls service-registration`                   |
-| `keyService` calls in components    |                  78 | POTENTIAL    | grep                                        |
-| `eventBus` calls in components      |                 248 | POTENTIAL    | grep                                        |
-| `MESSAGE_RESPONSE` subscribers      |                  7+ | POTENTIAL    | grep                                        |
-| `MemoryWatchdog`                    |                   1 | EVIDENCE     | `kernel/utils/memory-watchdog.ts`           |
-| `usePolling` auto-pause on hidden   |              ✅ yes | EVIDENCE     | `Common/usePolling.ts`                      |
-| Cache eviction timers               |                  4+ | EVIDENCE     | services                                    |
+| Метрика                             |              Значение | Тип          | Источник                                    |
+| ----------------------------------- | --------------------: | ------------ | ------------------------------------------- |
+| Lazy panels                         |               216/272 | POTENTIAL    | `route-imports.ts` (`grep -c "React.lazy"`) |
+| Eager imports                       |                     3 | POTENTIAL    | `route-imports.ts`                          |
+| lazyService singletons              |                   424 | POTENTIAL    | `kernel/*.ts` (`grep -c "lazyService<"`)    |
+| Service registrations               |                   580 | POTENTIAL    | `service-registration/*.ts` (114 файлов)    |
+| Init tiers                          |                     8 | ARCHITECTURE | `bootstrap-phases.ts`                       |
+| Background `setInterval` (services) |       42 (15+ active) | POTENTIAL    | `grep setInterval src/kernel/services`      |
+| `usePolling` calls                  |                    31 | POTENTIAL    | `grep usePolling src/components`            |
+| Polling interval 300ms              |   1 (GeminiLivePanel) | POTENTIAL    | grep                                        |
+| Polling interval 1500ms             |     1 (AudiencePanel) | POTENTIAL    | grep                                        |
+| Polling interval 15s                |              9 panels | POTENTIAL    | grep                                        |
+| `eventBus.on` in components         |                   110 | POTENTIAL    | grep                                        |
+| Files with subscriptions            |                    51 | PATTERN      | grep                                        |
+| Total `eventBus.*` calls            |                   978 | POTENTIAL    | grep (без тестов)                           |
+| `useEffect` total                   |                   525 | POTENTIAL    | grep                                        |
+| `useEffect` with cleanup            |              83 (16%) | PATTERN      | grep                                        |
+| framer-motion importers             |                   170 | POTENTIAL    | grep                                        |
+| React Flow importers                |                     9 | POTENTIAL    | grep                                        |
+| vis-network importers               |                    19 | POTENTIAL    | grep                                        |
+| Monaco importers                    |                     2 | POTENTIAL    | grep                                        |
+| TipTap importers                    |                     4 | POTENTIAL    | grep                                        |
+| Mermaid importers                   |                     1 | POTENTIAL    | grep                                        |
+| Web Workers                         |                     3 | ARCHITECTURE | `find src -name "*.worker.ts"`              |
+| Zustand stores                      |                    53 | POTENTIAL    | `ls src/stores`                             |
+| ILifecycle refs (services)          | 367 refs / 12 классов | POTENTIAL    | grep                                        |
+| Service phase files                 |                   114 | ARCHITECTURE | `ls service-registration`                   |
+| `keyService` calls in components    |                    91 | POTENTIAL    | grep                                        |
+| `eventBus` calls in components      |                   260 | POTENTIAL    | grep                                        |
+| `MESSAGE_RESPONSE` subscribers      |         9 файлов / 11 | POTENTIAL    | grep                                        |
+| `MemoryWatchdog`                    |                     1 | EVIDENCE     | `kernel/utils/memory-watchdog.ts`           |
+| `usePolling` auto-pause on hidden   |                ✅ yes | EVIDENCE     | `Common/usePolling.ts`                      |
+| Cache eviction timers               |                    4+ | EVIDENCE     | services                                    |
 
 ---
 
@@ -644,4 +648,4 @@ const App: React.FC = () => (
 
 ---
 
-_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Все оценки — статический анализ; **реальная нагрузка НЕ измерена**, приложение не запускалось. Парные отчёты: «Карта готовности панелей» (качество), «Карта функциональной ценности» (зачем нужно), «Карта технического состояния» (здоровье кода)._
+_Отчёт актуализирован 2026-11-17 на основе коммита `ae2dad8` (HEAD). Все оценки — статический анализ; **реальная нагрузка НЕ измерена**, приложение не запускалось. Парные отчёты: «Карта готовности панелей» (качество), «Карта функциональной ценности» (зачем нужно), «Карта технического состояния» (здоровье кода)._

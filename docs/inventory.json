@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 539,
+    "documents": 540,
     "byCategory": {
       "repo": 12,
       "top": 127,
       "audits": 25,
-      "wiki": 375
+      "wiki": 376
     },
     "byLanguage": {
       "en": 40,
       "mixed": 142,
-      "ru": 357
+      "ru": 358
     }
   },
   "duplicates": {
@@ -991,80 +991,80 @@
       "category": "audits",
       "language": "ru",
       "title": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
-      "bytes": 83538,
-      "hash": "274c97a8c8bb1908a73c965e7da1b39565a701a0"
+      "bytes": 86244,
+      "hash": "893b632e534b957fe1fcc56c0d91d2c342285643"
     },
     {
       "path": "docs/audits/waves/map-02-feature-value.md",
       "category": "audits",
       "language": "ru",
       "title": "Карта функциональной ценности — Feature Value Map",
-      "bytes": 83929,
-      "hash": "cb119a249478bda90da5d508a15d6f0f7d8f0f27"
+      "bytes": 94066,
+      "hash": "8c05572a4afff8f0100db9bda0678d8d41955415"
     },
     {
       "path": "docs/audits/waves/map-03-technical-health.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта технического состояния — Technical Health Map",
-      "bytes": 75679,
-      "hash": "f3052e3d713909e42b88ba7c8951901d7efd1b7f"
+      "bytes": 80082,
+      "hash": "00c8b4c7b5f6983b43e64848ff43bf1cee86a03c"
     },
     {
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
-      "bytes": 45780,
-      "hash": "745d6ee598fb0557640718614bde7a0e8002abaa"
+      "bytes": 55646,
+      "hash": "36e53abb0d441b2c11080aee0715a5dafe7e385c"
     },
     {
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
-      "bytes": 44755,
-      "hash": "4278736b45a2d83953a53072755c119e4d439128"
+      "bytes": 53369,
+      "hash": "8ad116a32833cf33d6336097231794e7c85b58d5"
     },
     {
       "path": "docs/audits/waves/map-06-capability-gap.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта функциональных пробелов — Capability Gap Map",
-      "bytes": 42986,
-      "hash": "8523280f99940a2037e6a0e64ec90f79dee30db3"
+      "bytes": 47033,
+      "hash": "bf5c131545ff9b7d65783ebae9d39e8957429acb"
     },
     {
       "path": "docs/audits/waves/map-07-opportunity.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта потенциала — Opportunity Map",
-      "bytes": 63177,
-      "hash": "3167f5c24177dfe6a11bbd91be985f5fb8bad389"
+      "bytes": 73849,
+      "hash": "27819fa802684c26ef2877cd178476501d997f78"
     },
     {
       "path": "docs/audits/waves/map-08-capability-accessibility.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта доступности возможностей — Capability Accessibility Map",
-      "bytes": 60605,
-      "hash": "bb3f66313cfd2f1bcea2ddbd62872e45eac1a702"
+      "bytes": 61585,
+      "hash": "8804e90198a7562b2e1cd0d29010c411791680dd"
     },
     {
       "path": "docs/audits/waves/map-09-duplication.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта функционального дублирования — Duplication Map",
-      "bytes": 59173,
-      "hash": "88697048b72ab2b02c033791a55ba131788b0c5d"
+      "bytes": 61173,
+      "hash": "5724ffe607a502d7d60fa5ea303cc9d67124b451"
     },
     {
       "path": "docs/audits/waves/map-10-resource-consumption.md",
       "category": "audits",
       "language": "mixed",
       "title": "Карта использования ресурсов — Resource Consumption Map",
-      "bytes": 66928,
-      "hash": "bb8ada9b45d05dced7bc64022c18f63f2fb749ea"
+      "bytes": 67748,
+      "hash": "17ec216b36f7aca93a200d2a5e785aaada56a70a"
     },
     {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
@@ -1119,8 +1119,8 @@
       "category": "top",
       "language": "mixed",
       "title": "Карта отложенных проблем (Deferred / Known Issues)",
-      "bytes": 57263,
-      "hash": "4d2acbf67e5aac0b0db833f7ba8d4898005808c4"
+      "bytes": 52001,
+      "hash": "82a620696730ad5cc3a490f23008134dc256cf31"
     },
     {
       "path": "docs/NAVIGATION_MAP.md",
@@ -1311,8 +1311,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 25918,
-      "hash": "c77ba818e44c525856d59fc3c6437b7c5c0ec779"
+      "bytes": 28348,
+      "hash": "fa1179f25c10aa631973699daf88daf30465fb7e"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -2425,6 +2425,14 @@
       "title": "Разработчикам: обзор и слои",
       "bytes": 3815,
       "hash": "5b958e8c6848531f003c979cc7dff913feedaa65"
+    },
+    {
+      "path": "docs/wiki/dev-reality-map.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Карта реальности проекта",
+      "bytes": 1900,
+      "hash": "6be044580c705ca4b234f7460c0d5cc1396b0c9a"
     },
     {
       "path": "docs/wiki/dev-routing.md",

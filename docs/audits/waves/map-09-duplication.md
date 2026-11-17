@@ -2,17 +2,26 @@
 
 ## SuperAgents OS (`egilyad/ai-os-new`)
 
-> **Версия проекта:** commit `e08ab8e` (Oct 31, 2026, ветка `main`)
-> **Дата анализа:** 2026-10-31
+> **Версия проекта:** commit `ae2dad85` (Nov 17, 2026, ветка `main`)
+> **Дата анализа:** 2026-10-31 (актуализация: 2026-11-17)
 > **Метод:** статический анализ: группировка панелей по именам, поиск дубликатов файлов (`find -name | uniq -d`), анализ `IMemoryStore` реализаций, поиск параллельных контрактов и сервисов
 > **Парные документы:** «Карта готовности панелей» + «Карта функциональной ценности» + «Карта технического состояния» + «Карта использования ресурсов»
 > **Главный результат:** найдено **7 категорий дублирования**, **28 кандидатов на объединение** + **12 — сохранить независимость**.
+
+**Статус актуализации (2026-11-17, ADR-007):**
+
+| Пункт                                      | Разведка                        | Итог                                                                                                | Решение                                                     |
+| ------------------------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `rivals/` 19 subdirs                       | 19 папок, ~179 файлов (~570 КБ) | **ВСЕ имеют внешние ссылки** (rivals=189, rivals2=21, остальные 4–12); мёртвых копий нет            | 🔴 HIGH — дедупликация = **отдельная ветка/задача**         |
+| cache-service.ts / gemini-cache-service.ts | разные контракты                | **НЕ дубли**: `ICacheService` (generic LLM cache) vs `ICacheRegistryService` (Gemini context-cache) | 🟢 KEEP INDEPENDENT                                         |
+| 62 TechniquePanels                         | дифф ≈ 4 строки                 | проверка каталога: 63 файла (59 панелей `.tsx` + generic `TechniquePanel.tsx`, 4 тест/bundle)       | Без изменений — **панели не трогаем** (запрет пользователя) |
+| 97 setError-паттернов                      | дублирование логики auto-clear  | набор diff большой                                                                                  | Без изменений — не трогаем                                  |
 
 ---
 
 ## 1. Исполнительное резюме
 
-В проекте **много преднамеренного и непреднамеренного дублирования**. Часть — архитектурное разделение (8 типов памяти = 8 разных `IMemoryStore` реализаций), часть — research-параллельные реализации (19 `rivals/` подкаталогов = ~175 файлов параллельных сервисов), часть — настоящая избыточность (5 budget-панелей, 4 health-панели, 4 provider-UI, 97 компонентов с дублирующим `const [error, setError]` паттерном).
+В проекте **много преднамеренного и непреднамеренного дублирования**. Часть — архитектурное разделение (8 типов памяти = 8 разных `IMemoryStore` реализаций), часть — research-параллельные реализации (19 `rivals/` подкаталогов = ~179 файлов параллельных сервисов), часть — настоящая избыточность (5 budget-панелей, 4 health-панели, 4 provider-UI, 97 компонентов с дублирующим `const [error, setError]` паттерном).
 
 **Сводные находки:**
 
@@ -25,7 +34,7 @@
 | Marketplace-панели                |                                                                         **4** | AgentMarketplace, PersonaMarketplace, ProviderMarketplace, RivalsCatalog                                                                              | 🟡 LOW           |
 | Hub-панели                        |                                                                         **6** | CommunityHub, LearnHub, MemoryCenter, ProviderDashboard, SessionHub, DebatesManager                                                                   | 🟡 LOW           |
 | 62 TechniquePanels (uniform)      |                                                                        **62** | `TechniquePanels/*.tsx` (diff = 4 строки)                                                                                                             | 🟡 MED           |
-| `rivals/` subdir (parallel impl)  |                                                 **19 каталогов, ~175 файлов** | `rivals/`, `rivals2/`…`rivals20/`                                                                                                                     | 🔴 HIGH          |
+| `rivals/` subdir (parallel impl)  |                                                 **19 каталогов, ~179 файлов** | `rivals/`, `rivals2/`…`rivals20/`                                                                                                                     | 🔴 HIGH          |
 | 8 `IMemoryStore` impl             |                                                                         **8** | working/procedural/semantic/episodic/social/service-backed/spatial/emotional                                                                          | 🟢 architectural |
 | 6 memory-сервисов верхнего уровня |                                                                         **6** | memory-engine, memory-orchestrator, memory-transfer, federated-memory, session-memory, project-memory                                                 | 🟡 MED           |
 | 10 memory-contract файлов         |                                                                        **10** | memory-store/memory-transfer/memory/federated-memory/project-memory/session-memory                                                                    | 🟡 MED           |
@@ -165,6 +174,8 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 **Verdict:** 🟡 **MERGE в 1 `<TechniquePanel techniqueId="humor" />` generic-компонент + 1 каталог-страницу.** Сэкономит ~14 500 LOC и 61 маршрут.
 
+⚠️ **Актуализация (ADR-007):** без изменений — панели запрещено удалять/менять (запрет пользователя); статус остаётся кандидатом.
+
 ### 3.8. DebateReplay — 5 файлов, это decomposition 🟢 KEEP
 
 `DebateReplayControls.tsx` (207) + `DebateReplayEventDetail.tsx` (88) + `DebateReplaySidebar.tsx` (112) + `DebateReplayTimeline.tsx` (199) + `DebateReplayLiveControls.tsx` (50) + `DebateReplayPanel.tsx` (328) + `DebateReplayTypes.ts`.
@@ -228,6 +239,8 @@ TOTAL:        ~175 files
 - Оставлены в `services/` только canonical версии
 
 **POTENTIAL waste:** ~175 файлов × средний 100 строк = **~17 500 LOC research-кода в основной кодовой базе**.
+
+⚠️ **Актуализация (ADR-007):** все 19 `rivals*` имеют внешние ссылки, мёртвых копий нет → чистка вынесена в **отдельную ветку/задачу**, в этой волне не выполняется.
 
 ### 4.3. `rivals20/` — инфраструктурные сервисы
 
@@ -389,6 +402,8 @@ rivals20/live-backends.test.ts
 | `useAutoClearError` hook                                 | components | **26** |
 
 **Verdict:** 🟡 **STANDARDIZE на `useAutoClearError` hook.** 97 ручных `setError` — дублирование логики auto-clear, dismiss timer. Hook существует, но используется только в 26 файлах. **Migration: 97 → 1 hook usage.**
+
+⚠️ **Актуализация (ADR-007):** миграция **не выполняется** (большой набор diff; решение отложено).
 
 ### 8.2. Polling — 1 canonical ✅
 
@@ -636,4 +651,4 @@ rivals20/live-backends.test.ts
 
 ---
 
-_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Анализ статический; runtime-использование дублирующих панелей/сервисов не проверялось. Парные отчёты: «Карта готовности панелей», «Карта функциональной ценности», «Карта технического состояния», «Карта использования ресурсов»._
+_Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`; актуализирован 2026-11-17 на основе HEAD `ae2dad85` и разведки ADR-007 (`docs/007-audit-dubley-map-09-rezultat-razvedki.md`). Анализ статический; runtime-использование дублирующих панелей/сервисов не проверялось. Парные отчёты: «Карта готовности панелей», «Карта функциональной ценности», «Карта технического состояния», «Карта использования ресурсов»._
