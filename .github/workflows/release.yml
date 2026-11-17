@@ -1,0 +1,37 @@
+name: Draft release
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+jobs:
+    draft:
+        name: Update draft release
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  fetch-depth: 0
+                  persist-credentials: false
+
+            - name: Generate changelog
+              id: changelog
+              run: |
+                  node scripts/gen-changelog.mjs > "$RUNNER_TEMP/changelog.md"
+                  if grep -q "Нет коммитов" "$RUNNER_TEMP/changelog.md"; then
+                      echo "nothing_new=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Replace draft release
+              if: steps.changelog.outputs.nothing_new != 'true'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release delete next --yes --cleanup-tag || true
+                  gh release create next --draft --title "Next release (draft)" \
+                      --notes-file "$RUNNER_TEMP/changelog.md"
