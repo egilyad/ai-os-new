@@ -70,6 +70,7 @@ jobs:
               run: |
                   npm run gen:wiki-libraries
                   npm run gen:wiki-docs
+                  npm run gen:reality-map
                   npm run gen:wiki-manifest
                   npm run gen:wiki-connections
                   npm run gen:wiki-docs-health

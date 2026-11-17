@@ -25,6 +25,7 @@
     "typecheck:watch": "tsc -b --noEmit --watch",
     "fix:unused": "tsx scripts/fix-unused.ts",
     "gen:wiki-docs": "node scripts/gen-wiki-docs.mjs",
+    "gen:reality-map": "node scripts/gen-reality-map.mjs",
     "gen:wiki-manifest": "node scripts/gen-wiki-manifest.mjs",
     "gen:wiki-connections": "node scripts/gen-wiki-connections.mjs",
     "gen:wiki-docs-health": "node scripts/gen-wiki-docs-health.mjs",
