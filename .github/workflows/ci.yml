@@ -139,6 +139,11 @@ jobs:
                   echo "Chunk sizes:"
                   ls -lh dist/assets/*.js 2>/dev/null | awk '{print $5, $NF}' | sort -rh | head -10
 
+            - name: Bundle analysis (visualizer)
+              # Rebuilds with VITE_BUNDLE_ANALYZE=1 → dist/stats.html
+              # (per-chunk sizes, gzip/brotli). Lands in the dist artifact.
+              run: npm run build:analyze
+
             - name: Upload build artifact
               uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
               with:

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import pkg from './package.json' with { type: 'json' };
+import { visualizer } from 'rollup-plugin-visualizer';
 import type { ProxyOptions } from 'vite';
 
 function withProxyErrorHandler(opts: ProxyOptions): ProxyOptions {
@@ -44,7 +45,21 @@ export default defineConfig({
     define: {
         'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
     },
-    plugins: [react()],
+    plugins: [
+        react(),
+        // Bundle analysis: `npm run build:analyze` (CI artifact). Generates
+        // dist/stats.html with per-chunk sizes to spot oversized vendor buckets.
+        ...(process.env.VITE_BUNDLE_ANALYZE === '1'
+            ? [
+                  visualizer({
+                      filename: 'dist/stats.html',
+                      gzipSize: true,
+                      brotliSize: true,
+                      template: 'treemap',
+                  }),
+              ]
+            : []),
+    ],
     // 8.11: both workers (sandbox, memory) are constructed with
     // `{ type: 'module' }` — build them as ES modules so ESM semantics
     // (top-level await, static imports) hold in prod, not IIFE.
