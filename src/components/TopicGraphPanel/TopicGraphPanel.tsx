@@ -13,6 +13,7 @@ import type {
 import type { TopicGraphService } from '../../kernel/contracts/topic-graph';
 import { ensureTopicGraphDemo } from '../../kernel/services/topic-graph/topic-graph-demo-seed';
 import TopicGraphFlow from './TopicGraphFlow';
+import TopicGraphVis from './TopicGraphVis';
 
 type View = 'graph' | 'knowledge' | 'sources' | 'coverage';
 
@@ -37,6 +38,7 @@ export default function TopicGraphPanel() {
     const [topics, setTopics] = useState<Topic[]>([]);
     const [selectedTopic, setSelectedTopic] = useState<string>('');
     const [view, setView] = useState<View>('graph');
+    const [graphEngine, setGraphEngine] = useState<'flow' | 'vis'>('flow');
     const [claims, setClaims] = useState<TopicClaim[]>([]);
     const [concepts, setConcepts] = useState<TopicConcept[]>([]);
     const [relations, setRelations] = useState<TopicRelation[]>([]);
@@ -323,12 +325,32 @@ export default function TopicGraphPanel() {
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {view === 'graph' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <TopicGraphFlow
-                            concepts={topConcepts}
-                            claims={claims}
-                            relations={relations}
-                            sources={sources}
-                        />
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 12 }}>
+                            <span style={{ color: 'var(--slate-400)' }}>Движок:</span>
+                            <select
+                                value={graphEngine}
+                                onChange={(e) => setGraphEngine(e.target.value as 'flow' | 'vis')}
+                                style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'var(--slate-300)' }}
+                            >
+                                <option value="flow">React Flow</option>
+                                <option value="vis">vis-network</option>
+                            </select>
+                        </div>
+                        {graphEngine === 'flow' ? (
+                            <TopicGraphFlow
+                                concepts={topConcepts}
+                                claims={claims}
+                                relations={relations}
+                                sources={sources}
+                            />
+                        ) : (
+                            <TopicGraphVis
+                                concepts={topConcepts}
+                                claims={claims}
+                                relations={relations}
+                                sources={sources}
+                            />
+                        )}
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Концепты</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                             {topConcepts.map((c) => (
