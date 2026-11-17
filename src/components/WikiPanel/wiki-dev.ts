@@ -594,7 +594,12 @@ flowchart LR
 
 - Новые решения — файлом \`docs/NNN-краткое-имя.md\` (или \`docs/reference/adr/\`) плюс строка в таблице.
 - Историю не переписываем: уточнение к принятому ADR — отдельная пометка \`Updated\` в шапке.
-- Файл считается «живым», только если на него есть входящая ссылка (этот реестр или \`DOC_FILES\`).`,
+- Файл считается «живым», только если на него есть входящая ссылка (этот реестр или \`DOC_FILES\`).
+- Авто-ADR из Sidekick: запись типа \`decision\` в памяти Sidekick автоматически создаёт файл
+  \`docs/NNN-slug.md\` по шаблону (\`Status: Proposed\`) — см. [[dev-opencode-sidekick]]. Строку в
+  таблице реестра добавляем при ближайшей сверке, статус переводим в Accepted после подтверждения.
+- Для ADR из Sidekick не обязательно сразу иметь «ручной» контекст: шаблон заполняет Decision из
+  содержимого записи; Context/Consequences расширяются при ревью решения.`,
     },
     {
         slug: 'dev-opencode-memory',
@@ -947,6 +952,7 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
 | **Codebase Memory (CBM)** | local | Граф кода: символы, вызовы, архитектура | \`search_graph\`, \`trace_path\`, \`get_architecture\`, \`detect_changes\`, \`query_graph\` |
 | **desk-mcp (Computer Use)** | local | Управление рабочим столом Windows | \`computer_*\` (46 шт: экран, мышь, клавиатура, окна, OCR, UIA, браузер CDP) |
 | **Playwright** | local | Браузерная автоматизация | \`playwright_*\` |
+| **SuperAgents (Sidekick)** | local | Память решений (SQLite), диагностика, авто-ADR | \`sidekick.recall\`, \`sidekick.remember\`, \`sidekick.status\` |
 | **aios-tasks** | local | AGEMS-задачи для внешних агентов | \`task_list/get/create/next/claim/release/set_status/delete\` |
 
 ## Команды OpenCode
@@ -1070,12 +1076,15 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
 **OpenCode Sidekick** — лёгкое внешнее приложение рядом с OpenCode Desktop: карточки команд
 (название, описание, «когда использовать», уровень риска, точная команда), поиск по всем полям,
 категории, избранное, история и копирование одной кнопкой. Не является частью SuperAgents OS —
-это независимый локальный инструмент (папка вне репозитория).
+это независимый локальный инструмент (папка вне репозитория), который из «шпаргалки» превратился
+в центр управления экосистемой OpenCode: память решений (SQLite), авто-ADR, профили ресурсов,
+MCP-сервер для OpenCode и диагностика машины.
 
 ## Зачем
 
 Пользователю не нужно помнить команды: Sidekick показывает их в виде понятных карточек и позволяет
-копировать готовую строку или отправлять её в выбранную сессию OpenCode.
+копировать готовую строку или отправлять её в выбранную сессию OpenCode. Плюс — единая точка
+входа к долговременной памяти и переключению режимов работы OpenCode.
 
 ## Функции
 
@@ -1087,6 +1096,22 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
   отправка slash-команд (\`POST /session/:id/command\`) и prompt (\`prompt_async\`).
 - Шпаргалка работает без сервера: при отсутствии API реестр грузится из локального
   \`public/commands.json\`.
+- Память (SQLite, \`node:sqlite\`): записи типов decision/error/snippet/task/note с тегами,
+  поиск, фильтр, удаление — вкладка «Память» (API: \`GET/POST /api/memory\`, \`DELETE /api/memory/:id\`).
+- Авто-ADR: при сохранении записи типа \`decision\` Sidekick создаёт файл \`docs/NNN-slug.md\`
+  в репозитории (шаблон ADR: Context/Decision/Consequences) и возвращает путь в ответе.
+- Система: диагностика машины — RAM, CPU, диск, топ-8 процессов (вкладка «Система»; \`GET /api/system\`).
+- Профили ресурсов: наборы включения/выключения MCP-серверов (\`minimal\`/\`coding\`/\`research\`/
+  \`testing\`/\`full\`) через \`profiles.mjs\` или выпадающий список в шапке UI; перед изменением
+  конфига создаётся резервная копия \`opencode.jsonc.bak\`.
+- MCP-сервер \`mcp.mjs\` (stdio, JSON-RPC 2.0, без внешних зависимостей): инструменты
+  \`sidekick.recall\` (поиск по памяти), \`sidekick.remember\` (сохранение), \`sidekick.status\`
+  (диагностика) — подключается к OpenCode как MCP-сервер \`superagents\`.
+- Живые события: \`GET /api/events\` (SSE) транслирует события сессий OpenCode при наличии токена;
+  в UI — блок «Живые события» (до 30 записей).
+- Команда \`/remember\` (глобальная, \`~/.config/opencode/commands/remember.md\`): сохранение
+  решения прямо из чата OpenCode; плагин \`remember-direct.js\` перехватывает её и пишет в БД
+  напрямую, без вызова модели.
 
 ## Запуск
 
@@ -1095,19 +1120,23 @@ cd C:\\Users\\evgeny\\Desktop\\New folder\\opencode-sidekick
 npm start          # или node server.mjs
 \`\`\`
 
-Открой \`http://127.0.0.1:4517\`.
+Открой \`http://127.0.0.1:4517\`. Автозапуск — \`autostart-sidekick.bat\` (папка \`shell:startup\`).
 
 ## Ограничения
 
 - Для фактической отправки в OpenCode нужен токен/пароль (Basic auth): Desktop не публикует свой
-  токен наружу. Без него доступен режим шпаргалки (просмотр и копирование).
+  токен наружу. Без него доступен режим шпаргалки (просмотр и копирование); SSE-события тоже
+  требуют токена.
 - Активная вкладка Desktop публичным API надёжно не определяется — Sidekick требует явного выбора
   сессии (проект/название/id).
+- Плагины OpenCode (в т.ч. \`remember-direct.js\`, \`context-compressor.js\`, \`resource-guardrail.js\`)
+  загружаются только при полном старте процесса OpenCode — после их изменения нужен рестарт.
 
 ## Связанное
 
 - Команды проекта (AGENTS.md, \`.opencode/command/\`) — [[dev-opencode-memory]].
-- GitHub-настройки (MCP, команды, агент) — [[dev-github-workflow]].`,
+- GitHub-настройки (MCP, команды, агент) — [[dev-github-workflow]].
+- Реестр ADR и правила их ведения — [[dev-adr]].`,
     },
     {
         slug: 'dev-github-workflow',

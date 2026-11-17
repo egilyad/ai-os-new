@@ -14,6 +14,7 @@
 | **Codebase Memory (CBM)** | local | Граф кода: символы, вызовы, архитектура | `search_graph`, `trace_path`, `get_architecture`, `detect_changes`, `query_graph` |
 | **desk-mcp (Computer Use)** | local | Управление рабочим столом Windows | `computer_*` (46 шт: экран, мышь, клавиатура, окна, OCR, UIA, браузер CDP) |
 | **Playwright** | local | Браузерная автоматизация | `playwright_*` |
+| **SuperAgents (Sidekick)** | local | Память решений (SQLite), диагностика, авто-ADR | `sidekick.recall`, `sidekick.remember`, `sidekick.status` |
 | **aios-tasks** | local | AGEMS-задачи для внешних агентов | `task_list/get/create/next/claim/release/set_status/delete` |
 
 ## Команды OpenCode
