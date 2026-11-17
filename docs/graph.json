@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1660,
-    "edges": 2995,
+    "nodes": 1663,
+    "edges": 2998,
     "byType": {
       "audit": 25,
       "code": 740,
-      "test": 247,
+      "test": 250,
       "panel": 272,
       "article": 376
     },
@@ -16,7 +16,7 @@
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
-      "test": 359,
+      "test": 362,
       "source": 1051,
       "related": 1246
     }
@@ -3143,6 +3143,11 @@
       "label": "src/kernel/services/dexie-schema.ts"
     },
     {
+      "id": "file:src/kernel/services/elo/elo-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/elo/elo-service.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/elo/elo-service.ts",
       "type": "code",
       "label": "src/kernel/services/elo/elo-service.ts"
@@ -3873,6 +3878,11 @@
       "label": "src/kernel/services/provider-router.ts"
     },
     {
+      "id": "file:src/kernel/services/provider-runtime/provider-budget.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/provider-runtime/provider-budget.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/provider-runtime/provider-budget.ts",
       "type": "code",
       "label": "src/kernel/services/provider-runtime/provider-budget.ts"
@@ -4046,6 +4056,11 @@
       "id": "file:src/kernel/services/router-types.ts",
       "type": "code",
       "label": "src/kernel/services/router-types.ts"
+    },
+    {
+      "id": "file:src/kernel/services/routing-policy/routing-policy-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/routing-policy/routing-policy-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/routing-policy/routing-policy-service.ts",
@@ -13547,6 +13562,11 @@
     },
     {
       "from": "wiki:comp-eval-elo",
+      "to": "file:src/kernel/services/elo/elo-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
       "to": "file:src/kernel/services/elo/elo-service.ts",
       "kind": "source"
     },
@@ -16082,6 +16102,11 @@
     },
     {
       "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-budget.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
       "to": "file:src/kernel/services/provider-runtime/provider-budget.ts",
       "kind": "source"
     },
@@ -16809,6 +16834,11 @@
       "from": "wiki:comp-tool-capability",
       "to": "file:src/kernel/services/deploy/deploy-bundle-service.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/routing-policy/routing-policy-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-tool-capability",

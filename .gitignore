@@ -108,3 +108,5 @@ docs/fetched-sites/
 !.opencode/agent/**
 !.opencode/skills/
 !.opencode/skills/**
+
+docs/audits-tips/

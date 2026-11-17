@@ -234,7 +234,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 
 <!-- README-MAPS-RU:STRATEGIES:BEGIN -->
 
-_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-11-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
 <summary><b>Все 33 встроенных стратегий дебатов (из кода)</b></summary>
@@ -280,7 +280,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 
 <!-- README-MAPS-RU:TECHNIQUES:BEGIN -->
 
-_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-11-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
 <summary><b>Все 75 техник качества дебатов (из кода)</b></summary>
@@ -374,23 +374,26 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 
 <!-- README-MAPS-RU:PANELS:BEGIN -->
 
-_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-11-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
-<summary><b>Все 267 панелей по разделам (из кода)</b></summary>
+<summary><b>Все 272 панелей по разделам (из кода)</b></summary>
 
-**Панель** (`dashboard`, 28)
+**Панель** (`dashboard`, 31)
 
 - Обзор (`dashboard`)
 - Помощник (`assistant`)
 - провайдеры (`keys`)
 - знания (`knowledge`)
+- Topic Graph (`topic-graph`)
 - проводник Project OS (`project-os`)
 - Когнитивные линзы (`lenses`)
 - Исключения (вето) (`exceptions`)
 - Memory Center (`memory-center`)
 - Граф навигации (`nav-graph`)
 - Graph Workbench (`graph-workbench`)
+- Graph Studio (`graph-studio`)
+- Universal Graph (`universal-graph`)
 - Карта дефектов (`defect-map`)
 - Хранилище кристаллов (`crystals`)
 - Движок связей (`junctions`)
@@ -541,13 +544,14 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - Semantic Blending (`semantic-blending`)
 - Judge Deliberation (`judge-deliberation`)
 
-**Агенты** (`agents`, 15)
+**Агенты** (`agents`, 16)
 
 - агенты (`agents`)
 - роли (`roles`)
 - роли: консорциумы (`roles-consortia`)
 - SRE-агент (`sre`)
 - Журнал агента (`agent-journal`)
+- Админка ассистента (`assistant-admin`)
 - Контроль миссии (`mission`)
 - живое рабочее пространство (`live`)
 - Маркетплейс агентов (`agent-marketplace`)
@@ -559,7 +563,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - таблица лидеров (`leaderboard`)
 - Мета-агент (`meta-agent`)
 
-**Диагностика** (`diagnostics`, 20)
+**Диагностика** (`diagnostics`, 19)
 
 - Лог Браузер (`logs`)
 - трейсы (`debugger`)
@@ -579,7 +583,6 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - каузальный отладчик (`causal-debugger`)
 - контрфактический (`counterfactual`)
 - сканер пробелов наблюдаемости (`obs-gaps`)
-- Здоровье SLA (`health-sla`)
 - Пользовательский Метрики (`custom-metrics`)
 
 **Вики** (`wiki`, 3)
@@ -610,9 +613,10 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - Gemini Live (`gemini-live`)
 - исследование Gemini (`research-gemini`)
 
-**Исследования** (`research`, 7)
+**Исследования** (`research`, 8)
 
 - Исследовательский движок (`research-engine`)
+- Research Cockpit (`research-cockpit`)
 - Исследование дебатов (`debate-system-research`)
 - исследовательские отчёты (`research-reports`)
 - Расширенное исследование (`research-advanced`)
@@ -629,7 +633,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - руководства (`tutorials`)
 - Общий доступ к шаблону (`template-sharing`)
 
-**AI провайдеры и ключи** (`ai-providers`, 13)
+**AI провайдеры и ключи** (`ai-providers`, 14)
 
 - Пулы ключей (`pools`)
 - группы (`groups`)
@@ -639,13 +643,14 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - Умная маршрутизация (`smart-routing`)
 - Маршрутизация Ии (`routing`)
 - Провайдер Панель (`provider-dashboard`)
+- Модели (Model Explorer) (`model-explorer`)
 - Маркетплейс провайдеров (`provider-marketplace`)
 - Аналитика использования ключей (`key-usage-analytics`)
 - Скорость Groq (`groq-speed`)
 - Nvidia Enterprise (`nvidia-enterprise`)
 - OpenRouter ◈ (`openrouter`)
 
-**Системные сервисы** (`system`, 11)
+**Системные сервисы** (`system`, 13)
 
 - инструменты (`tools`)
 - коннекторы (`connectors`)
@@ -655,6 +660,8 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - Кэш (`cache`)
 - Вебхуки (`webhooks`)
 - Плагин Сдк (`plugin-sdk`)
+- Плагин Сдк (`plugins`)
+- Плагин Сдк (`plugin-marketplace`)
 - стражи (`guardians`)
 - Адаптеры агентов (`adapters`)
 - Переносимость (`portability`)
@@ -690,7 +697,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - Лаборатория симуляций (`simulation`)
 - Стресс-тест управления (`gov-stress-test`)
 
-**Остальное** (`other`, 13)
+**Остальное** (`other`, 11)
 
 - редакторы (`editors`)
 - промпты (`prompts`)
@@ -698,8 +705,6 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - пакетная обработка (`batch`)
 - командная работа (`team-collaboration`)
 - сообщество (`community-hub`)
-- Дистилляция моделей (`model-distillation`)
-- Деплой (`deploy`)
 - Голосовой ввод (`voice-input`)
 - аквариум (`aquarium`)
 - Граф вклада (`contribution-graph`)

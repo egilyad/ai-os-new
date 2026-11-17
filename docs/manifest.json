@@ -4751,6 +4751,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/provider-runtime/provider-budget.test.ts",
         "src/kernel/services/provider-adapter-registry.test.ts"
       ]
     },
@@ -5009,7 +5010,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/eval/scorer-registry-service.test.ts"
+        "src/kernel/services/eval/scorer-registry-service.test.ts",
+        "src/kernel/services/elo/elo-service.test.ts"
       ]
     },
     {
@@ -5211,6 +5213,7 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/catalog/tool-catalog-service.test.ts",
+        "src/kernel/services/routing-policy/routing-policy-service.test.ts",
         "src/kernel/services/sandbox/code-sandbox-service.test.ts",
         "src/kernel/services/deploy/deploy-bundle-service.test.ts"
       ]

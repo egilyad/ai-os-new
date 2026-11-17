@@ -182,7 +182,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 
 <!-- README-MAPS:STRATEGIES:BEGIN -->
 
-_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-11-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 33 built-in debate strategies (from code)</b></summary>
@@ -228,7 +228,7 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 
 <!-- README-MAPS:TECHNIQUES:BEGIN -->
 
-_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-11-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 75 debate quality techniques (from code)</b></summary>
@@ -465,23 +465,26 @@ src/
 
 <!-- README-MAPS:PANELS:BEGIN -->
 
-_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-11-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
-<summary><b>All 267 statically-wired nav panels by section (from code)</b></summary>
+<summary><b>All 272 statically-wired nav panels by section (from code)</b></summary>
 
-**DASHBOARD** (`dashboard`, 28)
+**DASHBOARD** (`dashboard`, 31)
 
 - Overview (`dashboard`)
 - Assistant (`assistant`)
 - Providers (`keys`)
 - Knowledge (`knowledge`)
+- Topic Graph (`topic-graph`)
 - Project OS Explorer (`project-os`)
 - Cognitive Lenses (`lenses`)
 - Exceptions (veto) (`exceptions`)
 - Memory Center (`memory-center`)
 - Navigation Graph (`nav-graph`)
 - Graph Workbench (`graph-workbench`)
+- Graph Studio (`graph-studio`)
+- Universal Graph (`universal-graph`)
 - Defect Map (`defect-map`)
 - Crystal Vault (`crystals`)
 - Junction Engine (`junctions`)
@@ -632,13 +635,14 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Semantic Blending (`semantic-blending`)
 - Judge Deliberation (`judge-deliberation`)
 
-**AGENTS** (`agents`, 15)
+**AGENTS** (`agents`, 16)
 
 - Agents (`agents`)
 - Roles (`roles`)
 - Roles & Consortia (`roles-consortia`)
 - SRE Agent (`sre`)
 - Agent Journal (`agent-journal`)
+- Assistant Admin (`assistant-admin`)
 - Mission Control (`mission`)
 - Live Workspace (`live`)
 - Agent Marketplace (`agent-marketplace`)
@@ -650,7 +654,7 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Leaderboard (`leaderboard`)
 - Meta Agent (`meta-agent`)
 
-**DIAGNOSTICS** (`diagnostics`, 20)
+**DIAGNOSTICS** (`diagnostics`, 19)
 
 - Activity Log (`logs`)
 - Traces (`debugger`)
@@ -670,7 +674,6 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Causal Debugger (`causal-debugger`)
 - Counterfactual (`counterfactual`)
 - Observability Gaps Scanner (`obs-gaps`)
-- Health SLA (`health-sla`)
 - Custom Metrics (`custom-metrics`)
 
 **WIKI** (`wiki`, 3)
@@ -701,9 +704,10 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Gemini Live (`gemini-live`)
 - Research: Gemini AI (`research-gemini`)
 
-**RESEARCH** (`research`, 7)
+**RESEARCH** (`research`, 8)
 
 - Research Engine (`research-engine`)
+- Research Cockpit (`research-cockpit`)
 - Debate System Research (`debate-system-research`)
 - Research Reports (`research-reports`)
 - Research: Advanced (`research-advanced`)
@@ -720,7 +724,7 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Tutorials (`tutorials`)
 - Template Sharing (`template-sharing`)
 
-**AI PROVIDERS & KEYS** (`ai-providers`, 13)
+**AI PROVIDERS & KEYS** (`ai-providers`, 14)
 
 - Key Pools (`pools`)
 - Key Groups (`groups`)
@@ -730,13 +734,14 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Smart Routing 🧭 (`smart-routing`)
 - Routing AI (`routing`)
 - Provider Dashboard (`provider-dashboard`)
+- Model Explorer (`model-explorer`)
 - Provider Marketplace (`provider-marketplace`)
 - Key Usage Analytics (`key-usage-analytics`)
 - Groq Speed ⚡ (`groq-speed`)
 - NVIDIA Enterprise 🏢 (`nvidia-enterprise`)
 - OpenRouter ◈ (`openrouter`)
 
-**SYSTEM SERVICES** (`system`, 11)
+**SYSTEM SERVICES** (`system`, 13)
 
 - Tools (`tools`)
 - Connectors (`connectors`)
@@ -746,6 +751,8 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Cache (`cache`)
 - Webhooks (`webhooks`)
 - Plugin SDK (`plugin-sdk`)
+- Plugin SDK (`plugins`)
+- Plugin SDK (`plugin-marketplace`)
 - Bridge-Keepers (`guardians`)
 - Agent Adapters (`adapters`)
 - Portability (`portability`)
@@ -781,7 +788,7 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Simulation Lab (`simulation`)
 - Governance Stress-Test (`gov-stress-test`)
 
-**OTHER** (`other`, 13)
+**OTHER** (`other`, 11)
 
 - Editors (`editors`)
 - Prompt Library (`prompts`)
@@ -789,8 +796,6 @@ _Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do 
 - Batch Processing (`batch`)
 - Team Collaboration (`team-collaboration`)
 - Community Hub (`community-hub`)
-- Model Distillation (`model-distillation`)
-- Deploy to Production (`deploy`)
 - Voice & Multimodal (`voice-input`)
 - Aquarium (`aquarium`)
 - Contribution Graph (`contribution-graph`)
