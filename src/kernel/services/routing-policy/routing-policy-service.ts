@@ -157,7 +157,7 @@ export class RoutingPolicyService implements ILifecycle, IRoutingPolicy {
     }
 
     getFallbackHistory(): FallbackRecord[] {
-        return [...this.fallbackHistory];
+        return this.fallbackHistory.map((r) => ({ ...r }));
     }
 
     getDowngradeChain(model: string): string[] {
@@ -270,7 +270,7 @@ export class RoutingPolicyService implements ILifecycle, IRoutingPolicy {
     }
 
     getPenaltyHistory(): PenaltyRecord[] {
-        return [...this.penaltyHistory];
+        return this.penaltyHistory.map((r) => ({ ...r }));
     }
 
     getSLAWeights(slaMode: string): { ttft: number; tps: number; reliability: number } {
