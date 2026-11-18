@@ -13131,7 +13131,7 @@
       "type": "audit",
       "path": "docs/audits/waves/map-01-requirements.md",
       "title": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
         "src/components/ChatPanel/ChatPanel.tsx",
         "src/components/GovernancePanel/GovernancePanel.test.tsx",
@@ -13162,16 +13162,20 @@
       "type": "audit",
       "path": "docs/audits/waves/map-02-feature-value.md",
       "title": "Карта функциональной ценности — Feature Value Map",
-      "date": "2026-10-31",
-      "mentions": [],
-      "tests": []
+      "date": "2026-11-17",
+      "mentions": [
+        "src/kernel/services/deploy/deploy-bundle-service.ts"
+      ],
+      "tests": [
+        "src/kernel/services/deploy/deploy-bundle-service.test.ts"
+      ]
     },
     {
       "id": "audit:waves--map-03-technical-health",
       "type": "audit",
       "path": "docs/audits/waves/map-03-technical-health.md",
       "title": "Карта технического состояния — Technical Health Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [],
       "tests": []
     },
@@ -13180,20 +13184,26 @@
       "type": "audit",
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",
       "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
         "src/components/Common/ErrorBoundary.tsx",
         "src/components/Sidebar.tsx",
         "src/kernel/bootstrap.ts",
         "src/kernel/events/event-names.ts",
+        "src/kernel/services/dead-letter-queue-service.ts",
         "src/kernel/services/lifecycle-manager.ts",
-        "src/kernel/utils/memory-watchdog.ts"
+        "src/kernel/services/trace-service.ts",
+        "src/kernel/utils/memory-watchdog.ts",
+        "src/llm/decorators/circuit-breaker.ts",
+        "src/route-imports.ts"
       ],
       "tests": [
         "src/components/Common/ErrorBoundary.test.tsx",
         "src/kernel/bootstrap.test.ts",
         "src/kernel/services/lifecycle-manager.test.ts",
-        "src/kernel/utils/memory-watchdog.test.ts"
+        "src/kernel/services/trace-service.test.ts",
+        "src/kernel/utils/memory-watchdog.test.ts",
+        "src/llm/decorators/circuit-breaker.test.ts"
       ]
     },
     {
@@ -13201,10 +13211,10 @@
       "type": "audit",
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
       "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
-        "src/components/AppLayout.tsx",
         "src/components/AquariumPanel/AquariumPanel.tsx",
+        "src/components/ChatPanel/ChatPanel.tsx",
         "src/components/FederatedMemoryPanel.tsx",
         "src/kernel/events/event-bus.ts",
         "src/kernel/services/config-registry.ts",
@@ -13218,6 +13228,7 @@
       ],
       "tests": [
         "src/components/AquariumPanel/AquariumPanel.test.tsx",
+        "src/components/ChatPanel/ChatPanel.test.tsx",
         "src/components/FederatedMemoryPanel.test.tsx",
         "src/kernel/events/event-bus.test.ts",
         "src/kernel/services/config-registry.test.ts",
@@ -13230,22 +13241,31 @@
       "type": "audit",
       "path": "docs/audits/waves/map-06-capability-gap.md",
       "title": "Карта функциональных пробелов — Capability Gap Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
+        "src/components/AgentsPanel/AgentDetailPanel.tsx",
         "src/components/BuilderPanel/ComponentPalette.tsx",
-        "src/components/BuilderPanel/builder-nodes.tsx",
         "src/components/ExportImportPanel.tsx",
-        "src/kernel/services/dexie-schema.ts"
+        "src/kernel/contracts/debate-types.ts",
+        "src/kernel/services/builder/node-catalog.ts",
+        "src/kernel/services/dexie-schema.ts",
+        "src/kernel/services/memory-center/memory-registry.ts",
+        "src/kernel/services/orchestration-service.ts"
       ],
-      "tests": []
+      "tests": [
+        "src/kernel/services/builder/node-catalog.test.ts",
+        "src/kernel/services/orchestration-service.test.ts"
+      ]
     },
     {
       "id": "audit:waves--map-07-opportunity",
       "type": "audit",
       "path": "docs/audits/waves/map-07-opportunity.md",
       "title": "Карта потенциала — Opportunity Map",
-      "date": "2026-10-31",
-      "mentions": [],
+      "date": "2026-11-17",
+      "mentions": [
+        "src/components/OpenRouterPanel.tsx"
+      ],
       "tests": []
     },
     {
@@ -13253,17 +13273,19 @@
       "type": "audit",
       "path": "docs/audits/waves/map-08-capability-accessibility.md",
       "title": "Карта доступности возможностей — Capability Accessibility Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
-        "src/components/AppLayout.tsx",
         "src/components/Assistant/AssistantPanel.tsx",
         "src/components/Assistant/panel-actions-catalog.ts",
         "src/components/CommandPalette.tsx",
+        "src/components/Common/Breadcrumbs.tsx",
         "src/components/Common/KeyboardShortcutsModal.tsx",
         "src/components/Layout/NextActionPredictions.tsx",
         "src/components/ModuleInfo.tsx",
         "src/components/NavGraphPanel/NavGraphPanel.tsx",
-        "src/components/Sidebar.tsx"
+        "src/components/Sidebar.tsx",
+        "src/components/TechniquePanels/technique-panels-bundle.tsx",
+        "src/routes.tsx"
       ],
       "tests": [
         "src/components/Assistant/AssistantPanel.test.tsx",
@@ -13286,7 +13308,7 @@
       "type": "audit",
       "path": "docs/audits/waves/map-10-resource-consumption.md",
       "title": "Карта использования ресурсов — Resource Consumption Map",
-      "date": "2026-10-31",
+      "date": "2026-11-17",
       "mentions": [
         "src/App.tsx",
         "src/components/Common/usePolling.ts",

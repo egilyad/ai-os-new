@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (537 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (539 документов)
 
 ## Вики по разделам
 
@@ -62,6 +62,8 @@
 - [ADR-003: Dexie.js (IndexedDB) as Primary Storage](https://github.com/egilyad/ai-os-new/blob/main/docs/003-dexie-as-primary-storage.md)
 - [ADR-004: Hybrid Search Strategy](https://github.com/egilyad/ai-os-new/blob/main/docs/004-hybrid-search-strategy.md)
 - [ADR-005: MCP Integration](https://github.com/egilyad/ai-os-new/blob/main/docs/005-mcp-integration.md)
+- [ADR-006: Правило: коммит + пуш в конце каждой сессии](https://github.com/egilyad/ai-os-new/blob/main/docs/006-pravilo-kommit-push-v-kontse-kazhdoy-sessii.md)
+- [ADR-007: Аудит дублей (map-09): результат разведки](https://github.com/egilyad/ai-os-new/blob/main/docs/007-audit-dubley-map-09-rezultat-razvedki.md)
 - [01 — System Architecture](https://github.com/egilyad/ai-os-new/blob/main/docs/01-system-architecture.md)
 - [02 — Core Concepts](https://github.com/egilyad/ai-os-new/blob/main/docs/02-core-concepts.md)
 - [03 — Cognitive Layers](https://github.com/egilyad/ai-os-new/blob/main/docs/03-cognitive-layers.md)

@@ -4,7 +4,7 @@
   "source": "docs/manifest.json",
   "stats": {
     "nodes": 1663,
-    "edges": 2998,
+    "edges": 3016,
     "byType": {
       "audit": 25,
       "code": 740,
@@ -13,8 +13,8 @@
       "article": 376
     },
     "byKind": {
-      "audit_test": 20,
-      "audit_mention": 52,
+      "audit_test": 26,
+      "audit_mention": 64,
       "documents": 267,
       "test": 362,
       "source": 1051,
@@ -132,56 +132,56 @@
       "type": "audit",
       "label": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
       "path": "docs/audits/waves/map-01-requirements.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-02-feature-value",
       "type": "audit",
       "label": "Карта функциональной ценности — Feature Value Map",
       "path": "docs/audits/waves/map-02-feature-value.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-03-technical-health",
       "type": "audit",
       "label": "Карта технического состояния — Technical Health Map",
       "path": "docs/audits/waves/map-03-technical-health.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-04-observability-diagnostics",
       "type": "audit",
       "label": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-05-dead-abandoned",
       "type": "audit",
       "label": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-06-capability-gap",
       "type": "audit",
       "label": "Карта функциональных пробелов — Capability Gap Map",
       "path": "docs/audits/waves/map-06-capability-gap.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-07-opportunity",
       "type": "audit",
       "label": "Карта потенциала — Opportunity Map",
       "path": "docs/audits/waves/map-07-opportunity.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-08-capability-accessibility",
       "type": "audit",
       "label": "Карта доступности возможностей — Capability Accessibility Map",
       "path": "docs/audits/waves/map-08-capability-accessibility.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "audit:waves--map-09-duplication",
@@ -195,7 +195,7 @@
       "type": "audit",
       "label": "Карта использования ресурсов — Resource Consumption Map",
       "path": "docs/audits/waves/map-10-resource-consumption.md",
-      "date": "2026-10-31"
+      "date": "2026-11-17"
     },
     {
       "id": "file:.dependency-cruiser.cjs",
@@ -9786,6 +9786,16 @@
       "kind": "audit_mention"
     },
     {
+      "from": "audit:waves--map-02-feature-value",
+      "to": "file:src/kernel/services/deploy/deploy-bundle-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-02-feature-value",
+      "to": "file:src/kernel/services/deploy/deploy-bundle-service.ts",
+      "kind": "audit_mention"
+    },
+    {
       "from": "audit:waves--map-04-observability-diagnostics",
       "to": "file:src/components/Common/ErrorBoundary.test.tsx",
       "kind": "audit_test"
@@ -9817,12 +9827,27 @@
     },
     {
       "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/services/dead-letter-queue-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
       "to": "file:src/kernel/services/lifecycle-manager.test.ts",
       "kind": "audit_test"
     },
     {
       "from": "audit:waves--map-04-observability-diagnostics",
       "to": "file:src/kernel/services/lifecycle-manager.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/services/trace-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/services/trace-service.ts",
       "kind": "audit_mention"
     },
     {
@@ -9836,8 +9861,18 @@
       "kind": "audit_mention"
     },
     {
-      "from": "audit:waves--map-05-dead-abandoned",
-      "to": "file:src/components/AppLayout.tsx",
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/llm/decorators/circuit-breaker.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/llm/decorators/circuit-breaker.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/route-imports.ts",
       "kind": "audit_mention"
     },
     {
@@ -9848,6 +9883,16 @@
     {
       "from": "audit:waves--map-05-dead-abandoned",
       "to": "file:src/components/AquariumPanel/AquariumPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/ChatPanel/ChatPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/ChatPanel/ChatPanel.tsx",
       "kind": "audit_mention"
     },
     {
@@ -9927,7 +9972,7 @@
     },
     {
       "from": "audit:waves--map-06-capability-gap",
-      "to": "file:src/components/BuilderPanel/builder-nodes.tsx",
+      "to": "file:src/components/AgentsPanel/AgentDetailPanel.tsx",
       "kind": "audit_mention"
     },
     {
@@ -9942,12 +9987,42 @@
     },
     {
       "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/contracts/debate-types.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/builder/node-catalog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/builder/node-catalog.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
       "to": "file:src/kernel/services/dexie-schema.ts",
       "kind": "audit_mention"
     },
     {
-      "from": "audit:waves--map-08-capability-accessibility",
-      "to": "file:src/components/AppLayout.tsx",
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/memory-center/memory-registry.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/orchestration-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/orchestration-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-07-opportunity",
+      "to": "file:src/components/OpenRouterPanel.tsx",
       "kind": "audit_mention"
     },
     {
@@ -9977,6 +10052,11 @@
     },
     {
       "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Common/Breadcrumbs.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
       "to": "file:src/components/Common/KeyboardShortcutsModal.tsx",
       "kind": "audit_mention"
     },
@@ -9998,6 +10078,16 @@
     {
       "from": "audit:waves--map-08-capability-accessibility",
       "to": "file:src/components/Sidebar.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/TechniquePanels/technique-panels-bundle.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/routes.tsx",
       "kind": "audit_mention"
     },
     {
