@@ -1,11 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-    boot,
-    dismissWizard,
-    idbPut,
-    stubOpenRouter,
-    STUB_MODEL,
-} from './helpers';
+import { boot, dismissWizard, idbPut, stubOpenRouter, STUB_MODEL } from './helpers';
 
 // Chat data-flow: send via stubbed /proxy/openrouter/* (SSE or JSON,
 // inspected from the request body), verify the reply renders, and verify
@@ -22,7 +16,8 @@ test.describe('AI-OS Data Chat', () => {
         await boot(page);
     });
 
-    test('chat send via mocked provider persists history', async ({ page }) => {        await idbPut(page, 'apiKeys', {
+    test('chat send via mocked provider persists history', async ({ page }) => {
+        await idbPut(page, 'apiKeys', {
             id: 'e2e-or-chat',
             provider: 'OpenRouter',
             key: 'sk-or-e2e-test-key-003',
@@ -56,7 +51,8 @@ test.describe('AI-OS Data Chat', () => {
 
         // Either transport marker proves the mocked provider reply rendered
         // (SSE-PATH-42 via streaming, JSON-PATH-42 via plain JSON).
-        await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 60000 });
+        // 120s: slow runners cold-start Vite preview + first chat round-trip.
+        await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 120000 });
 
         await page.reload();
         await boot(page);
