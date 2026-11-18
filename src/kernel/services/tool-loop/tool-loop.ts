@@ -5,13 +5,17 @@
  * same loop drives the chat path (streaming through the event bus) and the
  * non-streaming `ToolRunnerService.runWithTools()`.
  *
- * Rules:
+ *  Rules:
  *  - the loop never invents a tool: a call for an unknown tool comes back as
  *    an error string the model can react to;
  *  - a failing tool is reported to the model instead of aborting the turn —
  *    the model decides what to do next;
  *  - `maxRounds` bounds the loop, so a model that keeps calling tools cannot
- *    spin forever.
+ *    spin forever;
+ *  - the loop guard (inspired by PentAGI's execution monitor) watches the
+ *    tool-call pattern and injects an intervention message when the model
+ *    repeats the same tool too many times in a row or makes too many total
+ *    calls without finishing — before the round cap is hit.
  */
 import type { ToolCall } from '../../types/llm-types';
 import { redactPii } from '../../utils/pii-redact';
@@ -42,6 +46,14 @@ export interface ToolLoopToolCallInfo {
     output: string;
 }
 
+export interface ToolLoopGuardIntervention {
+    kind: 'same-tool' | 'total-calls';
+    /** Tool name for same-tool interventions. */
+    name?: string;
+    /** The count that crossed the threshold. */
+    count: number;
+}
+
 export interface ToolLoopOptions {
     /** Tools the model may call. */
     tools: ToolLoopTool[];
@@ -53,6 +65,12 @@ export interface ToolLoopOptions {
     onToolCall?(info: ToolLoopToolCallInfo): void;
     /** Abort signal — checked between rounds and before each tool call. */
     signal?: AbortSignal;
+    /** Intervene when the model repeats the same tool this many times in a row (0 disables). Default 3. */
+    sameToolLimit?: number;
+    /** Intervene after this many total tool calls made since the last intervention (0 disables). Default 8. */
+    totalToolLimit?: number;
+    /** Called when the loop guard intervenes. */
+    onGuardIntervention?(info: ToolLoopGuardIntervention): void;
 }
 
 export interface ToolLoopResult {
@@ -64,6 +82,8 @@ export interface ToolLoopResult {
     toolCalls: string[];
     /** How many LLM round-trips happened. */
     rounds: number;
+    /** How many times the loop guard intervened. */
+    guardInterventions: number;
 }
 
 const MAX_TOOL_OUTPUT = 6000;
@@ -80,10 +100,17 @@ export async function runToolLoop(
     opts: ToolLoopOptions,
 ): Promise<ToolLoopResult> {
     const maxRounds = Math.max(1, Math.min(8, opts.maxRounds ?? 4));
+    const sameToolLimit = Math.max(0, opts.sameToolLimit ?? 3);
+    const totalToolLimit = Math.max(0, opts.totalToolLimit ?? 8);
     const conversation: ToolLoopMessage[] = [...messages];
     const used: string[] = [];
     let content = '';
     let rounds = 0;
+    let sameToolName = '';
+    let sameToolCount = 0;
+    let totalToolCalls = 0;
+    let totalBaseline = 0;
+    let guardInterventions = 0;
 
     for (let round = 0; round < maxRounds; round++) {
         if (opts.signal?.aborted) break;
@@ -137,6 +164,13 @@ export async function runToolLoop(
             }
             used.push(c.function.name);
             opts.onToolCall?.({ name: c.function.name, args, ok, output });
+            totalToolCalls += 1;
+            if (c.function.name === sameToolName) {
+                sameToolCount += 1;
+            } else {
+                sameToolName = c.function.name;
+                sameToolCount = 1;
+            }
             // W4-022: never re-inject raw (possibly prompt-injected) tool output
             // into the agent context — redact PII before storing the turn.
             const safeOutput = redactPii(output.slice(0, MAX_TOOL_OUTPUT));
@@ -145,6 +179,39 @@ export async function runToolLoop(
                 content: safeOutput,
                 toolCallId: c.id,
             });
+        }
+
+        // Loop guard: watch the tool-call pattern and steer the model before
+        // the round cap is hit (same-tool repetition / total-call volume).
+        // Inspired by PentAGI's execution monitor.
+        if (!opts.signal?.aborted) {
+            let intervened = false;
+            if (sameToolLimit > 0 && sameToolCount >= sameToolLimit) {
+                intervened = true;
+                opts.onGuardIntervention?.({
+                    kind: 'same-tool',
+                    name: sameToolName,
+                    count: sameToolCount,
+                });
+                conversation.push({
+                    role: 'tool',
+                    content: `loop guard: you have called "${sameToolName}" ${sameToolCount} times in a row without adapting; step back, switch approach, or summarize what is done and what remains unfinished`,
+                });
+                sameToolName = '';
+                sameToolCount = 0;
+            } else if (totalToolLimit > 0 && totalToolCalls - totalBaseline >= totalToolLimit) {
+                intervened = true;
+                opts.onGuardIntervention?.({
+                    kind: 'total-calls',
+                    count: totalToolCalls - totalBaseline,
+                });
+                conversation.push({
+                    role: 'tool',
+                    content: `loop guard: you have made ${totalToolCalls - totalBaseline} tool calls since the last intervention without finishing; summarize progress or change strategy`,
+                });
+                totalBaseline = totalToolCalls;
+            }
+            if (intervened) guardInterventions += 1;
         }
 
         // M0.6 — round-cap awareness: if the budget is exhausted and the model
@@ -158,5 +225,5 @@ export async function runToolLoop(
         }
     }
 
-    return { content, messages: conversation, toolCalls: used, rounds };
+    return { content, messages: conversation, toolCalls: used, rounds, guardInterventions };
 }

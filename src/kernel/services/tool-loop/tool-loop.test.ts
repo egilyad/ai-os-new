@@ -8,6 +8,7 @@ function call(id: string, name: string, args = '{}'): ToolCall {
 
 const TOOLS = [
     { name: 'workspace.read', description: 'read', parameters: { type: 'object', properties: {} } },
+    { name: 'search.web', description: 'search', parameters: { type: 'object', properties: {} } },
 ];
 
 describe('runToolLoop', () => {
@@ -128,5 +129,112 @@ describe('runToolLoop', () => {
         const toolTurn = res.messages.find((m) => m.role === 'tool');
         expect(toolTurn?.content).toContain('invalid JSON tool arguments');
         expect(res.content).toBe('done');
+    });
+
+    it('loop guard intervenes when the same tool repeats (sameToolLimit)', async () => {
+        const onGuardIntervention = vi.fn();
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 3) {
+                return { content: '', toolCalls: [call(`c${round}`, 'workspace.read')] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'read' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 5,
+            onGuardIntervention,
+        });
+
+        expect(res.guardInterventions).toBe(1);
+        expect(onGuardIntervention).toHaveBeenCalledWith({
+            kind: 'same-tool',
+            name: 'workspace.read',
+            count: 3,
+        });
+        const guardTurn = res.messages.find(
+            (m) => m.role === 'tool' && m.content.includes('loop guard'),
+        );
+        expect(guardTurn?.content).toContain('workspace.read');
+        expect(guardTurn?.content).toContain('3 times in a row');
+        expect(res.content).toBe('done');
+        expect(call_).toHaveBeenCalledTimes(4);
+    });
+
+    it('loop guard does not fire when the model alternates tools', async () => {
+        const onGuardIntervention = vi.fn();
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 6) {
+                const name = round % 2 === 1 ? 'workspace.read' : 'search.web';
+                return { content: '', toolCalls: [call(`c${round}`, name)] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'x' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 8,
+            onGuardIntervention,
+        });
+
+        expect(res.guardInterventions).toBe(0);
+        expect(onGuardIntervention).not.toHaveBeenCalled();
+    });
+
+    it('loop guard intervenes on total call volume (totalToolLimit)', async () => {
+        const onGuardIntervention = vi.fn();
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 4) {
+                const name = round % 2 === 1 ? 'workspace.read' : 'search.web';
+                return { content: '', toolCalls: [call(`c${round}`, name)] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'x' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 6,
+            totalToolLimit: 4,
+            onGuardIntervention,
+        });
+
+        expect(res.guardInterventions).toBe(1);
+        expect(onGuardIntervention).toHaveBeenCalledWith({
+            kind: 'total-calls',
+            count: 4,
+        });
+        const guardTurn = res.messages.find(
+            (m) => m.role === 'tool' && m.content.includes('loop guard'),
+        );
+        expect(guardTurn?.content).toContain('4 tool calls');
+    });
+
+    it('loop guard can be disabled with a zero limit', async () => {
+        const onGuardIntervention = vi.fn();
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 4) {
+                return { content: '', toolCalls: [call(`c${round}`, 'workspace.read')] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'read' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 6,
+            sameToolLimit: 0,
+            totalToolLimit: 0,
+            onGuardIntervention,
+        });
+
+        expect(res.guardInterventions).toBe(0);
+        expect(onGuardIntervention).not.toHaveBeenCalled();
     });
 });
