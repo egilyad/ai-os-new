@@ -82,6 +82,8 @@ describe('assistant ops actions', () => {
             'graph.propose',
             'graph.activate',
             'graph.supersede',
+            'topic.create',
+            'topic.ingest',
         ]);
         const execs = new Set([
             'invocation.run',
