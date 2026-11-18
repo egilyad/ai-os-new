@@ -58,17 +58,6 @@ function countAsAny() {
     return n;
 }
 
-function headSha() {
-    try {
-        return execSync('git rev-parse --short HEAD', {
-            encoding: 'utf8',
-            stdio: ['ignore', 'pipe', 'ignore'],
-        }).trim();
-    } catch {
-        return 'n/a';
-    }
-}
-
 function servicesCount() {
     const dir = join(SRC, 'kernel/services');
     if (!existsSync(dir)) return 0;
@@ -102,7 +91,7 @@ parts.push('');
 parts.push('# Карта реальности проекта');
 parts.push('');
 parts.push(
-    `> Раздел: **Разработчикам** · Свежесть: verified · Дата генерации: ${new Date().toISOString().slice(0, 10)} (HEAD \`${headSha()}\`)`,
+    `> Раздел: **Разработчикам** · Свежесть: verified · Дата генерации: ${new Date().toISOString().slice(0, 10)}`,
 );
 parts.push('');
 parts.push(
