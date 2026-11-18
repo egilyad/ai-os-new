@@ -4,6 +4,7 @@
 // coding agents read the whole wiki straight from the repository, no build needed.
 import { register } from 'tsx/esm/api';
 import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
+import { spawnSync } from 'child_process';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve } from 'path';
 import { parseNavSections, routeImportComponents, techniqueComponents, testsFor, panelArticles } from './lib/route-nav.mjs';
@@ -118,5 +119,13 @@ for (const section of WIKI_SECTIONS) {
     idx.push('');
 }
 writeFileSync(resolve(outDir, 'README.md'), idx.join('\n'), 'utf8');
+
+// dev-reality-map.md is not part of the static corpus (its body is derived
+// from live repo metrics) — regenerate it after the mirror is rebuilt, so a
+// standalone `gen-wiki-docs` run leaves docs/wiki complete and CI-stable.
+spawnSync(process.execPath, [resolve(root, 'scripts/gen-reality-map.mjs')], {
+    cwd: root,
+    stdio: 'inherit',
+});
 
 console.log(`wiki docs: ${WIKI_ARTICLES.length} articles -> docs/wiki/`);
