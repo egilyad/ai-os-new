@@ -2224,7 +2224,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "42c2ed925f517b471faa7160fbed7ebd46d8bc23"
+      "hash": "c7f38211b44f298c5b0e47d296c86b24792b70ad"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2344,7 +2344,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "da68b283af60998b52d8dc9951b0de1dff1f8813"
+      "hash": "32ac0488eda65f834e7ce84df0bf503a84ec370c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2431,8 +2431,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Карта реальности проекта",
-      "bytes": 1900,
-      "hash": "d265af8b3200f826980015ebc325c70446f803b8"
+      "bytes": 1883,
+      "hash": "24d64b7b982b01e77f6869eabfc7eb0b1131a9fc"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2624,7 +2624,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 59389,
-      "hash": "5fba7c847e241563560ce24d43c8b23b0dba4862"
+      "hash": "c00c37581ffb495d7914369dedd24364fe8722f4"
     },
     {
       "path": "docs/wiki/docs-standard.md",
