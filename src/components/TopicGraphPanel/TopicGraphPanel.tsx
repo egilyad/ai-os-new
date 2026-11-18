@@ -14,6 +14,9 @@ import type { TopicGraphService } from '../../kernel/contracts/topic-graph';
 import { ensureTopicGraphDemo } from '../../kernel/services/topic-graph/topic-graph-demo-seed';
 import TopicGraphFlow from './TopicGraphFlow';
 import TopicGraphVis from './TopicGraphVis';
+import TopicGraphRadial from './TopicGraphRadial';
+import TopicGraphTree from './TopicGraphTree';
+import TopicGraphMatrix from './TopicGraphMatrix';
 
 type View = 'graph' | 'knowledge' | 'sources' | 'coverage';
 
@@ -38,7 +41,9 @@ export default function TopicGraphPanel() {
     const [topics, setTopics] = useState<Topic[]>([]);
     const [selectedTopic, setSelectedTopic] = useState<string>('');
     const [view, setView] = useState<View>('graph');
-    const [graphEngine, setGraphEngine] = useState<'flow' | 'vis'>('flow');
+    const [graphEngine, setGraphEngine] = useState<'flow' | 'vis' | 'radial' | 'tree' | 'matrix'>(
+        'flow',
+    );
     const [claims, setClaims] = useState<TopicClaim[]>([]);
     const [concepts, setConcepts] = useState<TopicConcept[]>([]);
     const [relations, setRelations] = useState<TopicRelation[]>([]);
@@ -48,7 +53,13 @@ export default function TopicGraphPanel() {
     const [newDesc, setNewDesc] = useState('');
     const [ingestText, setIngestText] = useState('');
     const [ingestTitle, setIngestTitle] = useState('');
-    const [coverage, setCoverage] = useState<{ totalClaims: number; uniqueConcepts: number; conflicts: number; sources: number; coverage: number } | null>(null);
+    const [coverage, setCoverage] = useState<{
+        totalClaims: number;
+        uniqueConcepts: number;
+        conflicts: number;
+        sources: number;
+        coverage: number;
+    } | null>(null);
     const [message, setMessage] = useState('');
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [exportProjectId, setExportProjectId] = useState('');
@@ -133,7 +144,13 @@ export default function TopicGraphPanel() {
         if (!selectedTopic || !exportProjectId) return;
         try {
             const repo = getContainer().get<{
-                putFile(input: { projectId: string; path: string; content: string; createdAt: number; updatedAt: number }): Promise<void>;
+                putFile(input: {
+                    projectId: string;
+                    path: string;
+                    content: string;
+                    createdAt: number;
+                    updatedAt: number;
+                }): Promise<void>;
             }>('projectRepository');
             const path = await svc().exportToProject(
                 { putFile: (input) => repo.putFile(input) },
@@ -156,7 +173,7 @@ export default function TopicGraphPanel() {
             const warnPart = run.warnings?.length ? `; предупреждений: ${run.warnings.length}` : '';
             setMessage(
                 `Обработка (${run.status}): ${run.stats.newClaims} новых, ${run.stats.duplicates} дублей, ` +
-                `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение${warnPart}`,
+                    `${run.stats.conflicts} конфликтов, ${run.stats.mergeCandidates} кандидатов на объединение${warnPart}`,
             );
             const [c, cp, r, cf, s, cov] = await Promise.all([
                 svc().claims(selectedTopic),
@@ -214,7 +231,15 @@ export default function TopicGraphPanel() {
     claims.forEach((c) => claimById.set(c.id, c));
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 12, padding: '1rem' }}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                gap: 12,
+                padding: '1rem',
+            }}
+        >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>Topic Graph</h2>
                 <select
@@ -229,7 +254,9 @@ export default function TopicGraphPanel() {
                     }}
                 >
                     {topics.map((t) => (
-                        <option key={t.id} value={t.id}>{t.title}</option>
+                        <option key={t.id} value={t.id}>
+                            {t.title}
+                        </option>
                     ))}
                 </select>
                 <div style={{ display: 'flex', gap: 6 }}>
@@ -253,9 +280,7 @@ export default function TopicGraphPanel() {
                 </div>
             </div>
 
-            {message && (
-                <div style={{ fontSize: 12, color: 'var(--slate-400)' }}>{message}</div>
-            )}
+            {message && <div style={{ fontSize: 12, color: 'var(--slate-400)' }}>{message}</div>}
 
             {/* Создание темы */}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -263,15 +288,40 @@ export default function TopicGraphPanel() {
                     placeholder="Название темы"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    style={{ flex: 1, minWidth: 180, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                    style={{
+                        flex: 1,
+                        minWidth: 180,
+                        padding: '6px 10px',
+                        borderRadius: 8,
+                        border: '1px solid var(--border)',
+                        background: 'var(--bg-elevated)',
+                    }}
                 />
                 <input
                     placeholder="Описание"
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
-                    style={{ flex: 1, minWidth: 180, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                    style={{
+                        flex: 1,
+                        minWidth: 180,
+                        padding: '6px 10px',
+                        borderRadius: 8,
+                        border: '1px solid var(--border)',
+                        background: 'var(--bg-elevated)',
+                    }}
                 />
-                <button onClick={() => void createTopic()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: tokens.accent, color: tokens.slate[950], fontWeight: 700, cursor: 'pointer' }}>
+                <button
+                    onClick={() => void createTopic()}
+                    style={{
+                        padding: '6px 14px',
+                        borderRadius: 8,
+                        border: 'none',
+                        background: tokens.accent,
+                        color: tokens.slate[950],
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                    }}
+                >
                     Создать тему
                 </button>
             </div>
@@ -283,13 +333,25 @@ export default function TopicGraphPanel() {
                         placeholder="Заголовок источника"
                         value={ingestTitle}
                         onChange={(e) => setIngestTitle(e.target.value)}
-                        style={{ width: 200, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                        style={{
+                            width: 200,
+                            padding: '6px 10px',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-elevated)',
+                        }}
                     />
                     <input
                         placeholder="Вставьте текст документа/ответа модели…"
                         value={ingestText}
                         onChange={(e) => setIngestText(e.target.value)}
-                        style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}
+                        style={{
+                            flex: 1,
+                            padding: '6px 10px',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-elevated)',
+                        }}
                     />
                     <input
                         type="file"
@@ -298,58 +360,128 @@ export default function TopicGraphPanel() {
                         title="Загрузить файл (.txt/.md/.json)"
                         style={{ maxWidth: 200, color: 'var(--slate-300)', fontSize: 12 }}
                     />
-                    <button onClick={() => void ingest()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: tokens.accent, color: tokens.slate[950], fontWeight: 700, cursor: 'pointer' }}>
+                    <button
+                        onClick={() => void ingest()}
+                        style={{
+                            padding: '6px 14px',
+                            borderRadius: 8,
+                            border: 'none',
+                            background: tokens.accent,
+                            color: tokens.slate[950],
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                        }}
+                    >
                         Ingest
                     </button>
                     <select
                         value={exportProjectId}
                         onChange={(e) => setExportProjectId(e.target.value)}
                         title="Проект для экспорта"
-                        style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'var(--slate-300)', maxWidth: 180 }}
+                        style={{
+                            padding: '6px 10px',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-elevated)',
+                            color: 'var(--slate-300)',
+                            maxWidth: 180,
+                        }}
                     >
                         {projects.map((p) => (
-                            <option key={p.id} value={p.id}>{p.name}</option>
+                            <option key={p.id} value={p.id}>
+                                {p.name}
+                            </option>
                         ))}
                     </select>
                     <button
                         onClick={() => void exportToProject()}
                         disabled={!exportProjectId}
                         title="Экспорт отчёта темы в проект (TopicResults/)"
-                        style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'transparent', color: exportProjectId ? 'var(--slate-300)' : 'var(--slate-600)', fontWeight: 600, cursor: exportProjectId ? 'pointer' : 'not-allowed' }}
+                        style={{
+                            padding: '6px 14px',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: 'transparent',
+                            color: exportProjectId ? 'var(--slate-300)' : 'var(--slate-600)',
+                            fontWeight: 600,
+                            cursor: exportProjectId ? 'pointer' : 'not-allowed',
+                        }}
                     >
                         Экспорт в проект
                     </button>
                 </div>
             )}
 
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div
+                style={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 12,
+                }}
+            >
                 {view === 'graph' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 12 }}>
+                        <div
+                            style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 12 }}
+                        >
                             <span style={{ color: 'var(--slate-400)' }}>Движок:</span>
                             <select
                                 value={graphEngine}
-                                onChange={(e) => setGraphEngine(e.target.value as 'flow' | 'vis')}
-                                style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'var(--slate-300)' }}
+                                onChange={(e) =>
+                                    setGraphEngine(
+                                        e.target.value as
+                                            'flow' | 'vis' | 'radial' | 'tree' | 'matrix',
+                                    )
+                                }
+                                style={{
+                                    padding: '4px 8px',
+                                    borderRadius: 6,
+                                    border: '1px solid var(--border)',
+                                    background: 'var(--bg-elevated)',
+                                    color: 'var(--slate-300)',
+                                }}
                             >
                                 <option value="flow">React Flow</option>
                                 <option value="vis">vis-network</option>
+                                <option value="radial">Sunburst</option>
+                                <option value="tree">Дерево</option>
+                                <option value="matrix">Матрица</option>
                             </select>
                         </div>
-                        {graphEngine === 'flow' ? (
+                        {graphEngine === 'flow' && (
                             <TopicGraphFlow
                                 concepts={topConcepts}
                                 claims={claims}
                                 relations={relations}
                                 sources={sources}
                             />
-                        ) : (
+                        )}
+                        {graphEngine === 'vis' && (
                             <TopicGraphVis
                                 concepts={topConcepts}
                                 claims={claims}
                                 relations={relations}
                                 sources={sources}
                             />
+                        )}
+                        {graphEngine === 'radial' && (
+                            <TopicGraphRadial
+                                concepts={topConcepts}
+                                claims={claims}
+                                sources={sources}
+                            />
+                        )}
+                        {graphEngine === 'tree' && (
+                            <TopicGraphTree
+                                concepts={topConcepts}
+                                claims={claims}
+                                sources={sources}
+                            />
+                        )}
+                        {graphEngine === 'matrix' && (
+                            <TopicGraphMatrix concepts={topConcepts} relations={relations} />
                         )}
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Концепты</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -369,7 +501,9 @@ export default function TopicGraphPanel() {
                                 </span>
                             ))}
                             {topConcepts.length === 0 && (
-                                <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Нет концептов</span>
+                                <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                    Нет концептов
+                                </span>
                             )}
                         </div>
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Утверждения</div>
@@ -386,13 +520,22 @@ export default function TopicGraphPanel() {
                                     }}
                                 >
                                     <div style={{ color: 'var(--slate-200)' }}>{c.text}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4 }}>
-                                        {c.sourceIds.length} источн. · conf {c.confidence.toFixed(2)} · {c.status}
+                                    <div
+                                        style={{
+                                            fontSize: 11,
+                                            color: 'var(--slate-500)',
+                                            marginTop: 4,
+                                        }}
+                                    >
+                                        {c.sourceIds.length} источн. · conf{' '}
+                                        {c.confidence.toFixed(2)} · {c.status}
                                     </div>
                                 </div>
                             ))}
                             {claims.length === 0 && (
-                                <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Нет утверждений</span>
+                                <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                    Нет утверждений
+                                </span>
                             )}
                         </div>
                     </div>
@@ -401,58 +544,140 @@ export default function TopicGraphPanel() {
                 {view === 'knowledge' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {concepts.map((c) => (
-                            <div key={c.id} style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, padding: '8px 10px' }}>
-                                <div style={{ fontWeight: 700, fontSize: 13, color: claimColor('concept') }}>{c.name}</div>
-                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>{c.claimIds.length} утверждений</div>
+                            <div
+                                key={c.id}
+                                style={{
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    borderRadius: 8,
+                                    padding: '8px 10px',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        fontWeight: 700,
+                                        fontSize: 13,
+                                        color: claimColor('concept'),
+                                    }}
+                                >
+                                    {c.name}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                    {c.claimIds.length} утверждений
+                                </div>
                             </div>
                         ))}
-                        {concepts.length === 0 && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Пусто</span>}
+                        {concepts.length === 0 && (
+                            <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Пусто</span>
+                        )}
                     </div>
                 )}
 
                 {view === 'sources' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {sources.map((s) => (
-                            <div key={s.id} style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, padding: '8px 10px', fontSize: 12 }}>
-                                <div style={{ fontWeight: 600 }}>{s.title} <span style={{ color: 'var(--slate-500)' }}>[{s.kind}]</span></div>
-                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>{s.ref}</div>
+                            <div
+                                key={s.id}
+                                style={{
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    borderRadius: 8,
+                                    padding: '8px 10px',
+                                    fontSize: 12,
+                                }}
+                            >
+                                <div style={{ fontWeight: 600 }}>
+                                    {s.title}{' '}
+                                    <span style={{ color: 'var(--slate-500)' }}>[{s.kind}]</span>
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                    {s.ref}
+                                </div>
                             </div>
                         ))}
-                        {sources.length === 0 && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Нет источников</span>}
+                        {sources.length === 0 && (
+                            <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                Нет источников
+                            </span>
+                        )}
                     </div>
                 )}
 
                 {view === 'coverage' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 8 }}>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                                gap: 8,
+                            }}
+                        >
                             {[
                                 { k: 'Утверждения', v: coverage?.totalClaims ?? 0 },
                                 { k: 'Концепты', v: coverage?.uniqueConcepts ?? 0 },
                                 { k: 'Конфликты', v: coverage?.conflicts ?? 0 },
                                 { k: 'Источники', v: coverage?.sources ?? 0 },
                             ].map((it) => (
-                                <div key={it.k} style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8, padding: '10px' }}>
+                                <div
+                                    key={it.k}
+                                    style={{
+                                        border: '1px solid rgba(255,255,255,0.06)',
+                                        borderRadius: 8,
+                                        padding: '10px',
+                                    }}
+                                >
                                     <div style={{ fontSize: 22, fontWeight: 700 }}>{it.v}</div>
-                                    <div style={{ fontSize: 12, color: 'var(--slate-500)' }}>{it.k}</div>
+                                    <div style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                        {it.k}
+                                    </div>
                                 </div>
                             ))}
                         </div>
                         <div>
-                            <div style={{ fontSize: 12, color: 'var(--slate-500)', marginBottom: 4 }}>
+                            <div
+                                style={{ fontSize: 12, color: 'var(--slate-500)', marginBottom: 4 }}
+                            >
                                 Полнота: {Math.round((coverage?.coverage ?? 0) * 100)}%
                             </div>
-                            <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' }}>
-                                <div style={{ height: '100%', width: `${Math.round((coverage?.coverage ?? 0) * 100)}%`, background: tokens.accent }} />
+                            <div
+                                style={{
+                                    height: 6,
+                                    background: 'rgba(255,255,255,0.06)',
+                                    borderRadius: 3,
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        height: '100%',
+                                        width: `${Math.round((coverage?.coverage ?? 0) * 100)}%`,
+                                        background: tokens.accent,
+                                    }}
+                                />
                             </div>
                         </div>
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Противоречия</div>
                         {conflicts.map((c) => (
-                            <div key={c.id} style={{ border: '1px solid rgba(248,113,113,0.3)', borderRadius: 8, padding: '8px 10px', fontSize: 12 }}>
-                                <div style={{ color: 'var(--error)' }}>{c.claimAId} ↔ {c.claimBId}</div>
-                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>{c.reason} · conf {c.confidence.toFixed(2)}</div>
+                            <div
+                                key={c.id}
+                                style={{
+                                    border: '1px solid rgba(248,113,113,0.3)',
+                                    borderRadius: 8,
+                                    padding: '8px 10px',
+                                    fontSize: 12,
+                                }}
+                            >
+                                <div style={{ color: 'var(--error)' }}>
+                                    {c.claimAId} ↔ {c.claimBId}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                    {c.reason} · conf {c.confidence.toFixed(2)}
+                                </div>
                             </div>
                         ))}
-                        {conflicts.length === 0 && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>Конфликтов нет</span>}
+                        {conflicts.length === 0 && (
+                            <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                Конфликтов нет
+                            </span>
+                        )}
                     </div>
                 )}
             </div>
