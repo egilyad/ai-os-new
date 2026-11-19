@@ -27,6 +27,8 @@ export interface TopicSource {
     title: string;
     /** Хэш содержимого (для дедупликации источников). */
     sha256: string;
+    /** Фолбэк-хэш предыдущего формата (FNV-1a) для миграции старых записей. */
+    legacyHash?: string;
     content: string;
     importedAt: number;
     meta?: Record<string, unknown>;
@@ -113,12 +115,7 @@ export interface TopicConflict {
 }
 
 export type ProcessingRunStatus =
-    | 'pending'
-    | 'running'
-    | 'completed'
-    | 'partial'
-    | 'fallback'
-    | 'failed';
+    'pending' | 'running' | 'completed' | 'partial' | 'fallback' | 'failed';
 
 export interface TopicProcessingRun {
     id: string;

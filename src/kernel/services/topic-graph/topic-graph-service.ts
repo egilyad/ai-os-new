@@ -35,6 +35,23 @@ function fnv1a64(input: string): string {
     return h.toString(16).padStart(16, '0');
 }
 
+/** SHA-256 (WebCrypto) с фолбэком на FNV-1a для сред без crypto.subtle. */
+async function sha256Hex(input: string): Promise<string> {
+    const subtle = globalThis.crypto?.subtle;
+    if (subtle) {
+        try {
+            const bytes = new TextEncoder().encode(input);
+            const digest = await subtle.digest('SHA-256', bytes);
+            return Array.from(new Uint8Array(digest))
+                .map((b) => b.toString(16).padStart(2, '0'))
+                .join('');
+        } catch {
+            // fall through to legacy hash
+        }
+    }
+    return fnv1a64(input);
+}
+
 /** Простейший токенизатор + лёгкий стемминг. */
 function stem(w: string): string {
     if (w.length > 4 && w.endsWith('ing')) return w.slice(0, -3);
@@ -194,11 +211,17 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         };
         await this.db.topicProcessingRuns.put(run);
         try {
-            const sha = fnv1a64(`${payload.kind}|${payload.ref}|${payload.content}`);
+            const sha = await sha256Hex(`${payload.kind}|${payload.ref}|${payload.content}`);
+            const legacyFnv = fnv1a64(`${payload.kind}|${payload.ref}|${payload.content}`);
             const existingSource = await this.db.topicSources
                 .where('topicId')
                 .equals(topicId)
-                .filter((s) => s.sha256 === sha)
+                .filter(
+                    (s) =>
+                        s.sha256 === sha ||
+                        s.sha256 === legacyFnv ||
+                        (s.legacyHash !== undefined && s.legacyHash === legacyFnv),
+                )
                 .first();
             if (existingSource) {
                 run.status = 'completed';
@@ -215,6 +238,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 ref: payload.ref,
                 title: payload.title,
                 sha256: sha,
+                legacyHash: legacyFnv,
                 content: payload.content,
                 importedAt: Date.now(),
                 meta: payload.meta,
