@@ -19,6 +19,11 @@
  */
 import type { ToolCall } from '../../types/llm-types';
 import { redactPii } from '../../utils/pii-redact';
+import {
+    fallbackMentorText,
+    type ToolLoopMentor,
+    type ToolLoopMentorContext,
+} from './tool-guard-mentor';
 
 export interface ToolLoopTool {
     name: string;
@@ -71,6 +76,8 @@ export interface ToolLoopOptions {
     totalToolLimit?: number;
     /** Called when the loop guard intervenes. */
     onGuardIntervention?(info: ToolLoopGuardIntervention): void;
+    /** Optional mentor: async context-aware guidance instead of fixed text. */
+    mentor?: ToolLoopMentor;
 }
 
 export interface ToolLoopResult {
@@ -111,6 +118,7 @@ export async function runToolLoop(
     let totalToolCalls = 0;
     let totalBaseline = 0;
     let guardInterventions = 0;
+    const usedToolCalls: ToolLoopToolCallInfo[] = [];
 
     for (let round = 0; round < maxRounds; round++) {
         if (opts.signal?.aborted) break;
@@ -163,7 +171,9 @@ export async function runToolLoop(
                 }
             }
             used.push(c.function.name);
-            opts.onToolCall?.({ name: c.function.name, args, ok, output });
+            const callInfo: ToolLoopToolCallInfo = { name: c.function.name, args, ok, output };
+            opts.onToolCall?.(callInfo);
+            usedToolCalls.push(callInfo);
             totalToolCalls += 1;
             if (c.function.name === sameToolName) {
                 sameToolCount += 1;
@@ -184,31 +194,52 @@ export async function runToolLoop(
         // Loop guard: watch the tool-call pattern and steer the model before
         // the round cap is hit (same-tool repetition / total-call volume).
         // Inspired by PentAGI's execution monitor.
+        const buildMentorContext = (info: ToolLoopGuardIntervention): ToolLoopMentorContext => ({
+            kind: info.kind,
+            name: info.name,
+            count: info.count,
+            userPrompt: messages[0]?.content ?? '',
+            recentCalls: usedToolCalls,
+        });
         if (!opts.signal?.aborted) {
             let intervened = false;
             if (sameToolLimit > 0 && sameToolCount >= sameToolLimit) {
                 intervened = true;
-                opts.onGuardIntervention?.({
+                const info: ToolLoopGuardIntervention = {
                     kind: 'same-tool',
                     name: sameToolName,
                     count: sameToolCount,
-                });
-                conversation.push({
-                    role: 'tool',
-                    content: `loop guard: you have called "${sameToolName}" ${sameToolCount} times in a row without adapting; step back, switch approach, or summarize what is done and what remains unfinished`,
-                });
+                };
+                opts.onGuardIntervention?.(info);
+                const mentorCtx = buildMentorContext(info);
+                let guidance = fallbackMentorText(mentorCtx);
+                if (opts.mentor) {
+                    try {
+                        guidance = (await opts.mentor(mentorCtx)) || guidance;
+                    } catch {
+                        guidance = fallbackMentorText(mentorCtx);
+                    }
+                }
+                conversation.push({ role: 'tool', content: guidance });
                 sameToolName = '';
                 sameToolCount = 0;
             } else if (totalToolLimit > 0 && totalToolCalls - totalBaseline >= totalToolLimit) {
                 intervened = true;
-                opts.onGuardIntervention?.({
+                const info: ToolLoopGuardIntervention = {
                     kind: 'total-calls',
                     count: totalToolCalls - totalBaseline,
-                });
-                conversation.push({
-                    role: 'tool',
-                    content: `loop guard: you have made ${totalToolCalls - totalBaseline} tool calls since the last intervention without finishing; summarize progress or change strategy`,
-                });
+                };
+                opts.onGuardIntervention?.(info);
+                const mentorCtx = buildMentorContext(info);
+                let guidance = fallbackMentorText(mentorCtx);
+                if (opts.mentor) {
+                    try {
+                        guidance = (await opts.mentor(mentorCtx)) || guidance;
+                    } catch {
+                        guidance = fallbackMentorText(mentorCtx);
+                    }
+                }
+                conversation.push({ role: 'tool', content: guidance });
                 totalBaseline = totalToolCalls;
             }
             if (intervened) guardInterventions += 1;

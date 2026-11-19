@@ -237,4 +237,55 @@ describe('runToolLoop', () => {
         expect(res.guardInterventions).toBe(0);
         expect(onGuardIntervention).not.toHaveBeenCalled();
     });
+
+    it('uses the mentor guidance when one is provided', async () => {
+        const mentor = vi.fn().mockResolvedValue('mentor: switch to a different tool now');
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 3) {
+                return { content: '', toolCalls: [call(`c${round}`, 'workspace.read')] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'read' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 5,
+            mentor,
+        });
+
+        expect(mentor).toHaveBeenCalledTimes(1);
+        expect(mentor).toHaveBeenCalledWith(
+            expect.objectContaining({ kind: 'same-tool', name: 'workspace.read', count: 3 }),
+        );
+        const guardTurn = res.messages.find(
+            (m) => m.role === 'tool' && m.content.includes('mentor'),
+        );
+        expect(guardTurn?.content).toBe('mentor: switch to a different tool now');
+    });
+
+    it('falls back to the fixed text when the mentor throws', async () => {
+        const mentor = vi.fn().mockRejectedValue(new Error('LLM down'));
+        let round = 0;
+        const call_ = vi.fn().mockImplementation(async () => {
+            round += 1;
+            if (round <= 3) {
+                return { content: '', toolCalls: [call(`c${round}`, 'workspace.read')] };
+            }
+            return { content: 'done' };
+        });
+        const res = await runToolLoop([{ role: 'user', content: 'read' }], call_, {
+            tools: TOOLS,
+            runTool: vi.fn().mockResolvedValue('x'),
+            maxRounds: 5,
+            mentor,
+        });
+
+        expect(res.guardInterventions).toBe(1);
+        const guardTurn = res.messages.find(
+            (m) => m.role === 'tool' && m.content.includes('loop guard'),
+        );
+        expect(guardTurn?.content).toContain('workspace.read');
+    });
 });
