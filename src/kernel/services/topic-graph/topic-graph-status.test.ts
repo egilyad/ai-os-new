@@ -202,6 +202,29 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(relations.some((r) => r.relation === 'part_of')).toBe(true);
     });
 
+    it('clusters concepts into subtopics by shared claims', async () => {
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB());
+        const topic = await svc.createTopic('Clusters', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content:
+                'OpenCode поддерживает MCP-серверы. ' +
+                'OpenCode может работать с MCP-серверами. ' +
+                'MCP-серверы подключаются к OpenCode. ' +
+                'Квантовые вычисления используют кубиты. ' +
+                'Кубиты находятся в суперпозиции.',
+        });
+
+        const clusters = await svc.clusters(topic.id);
+        // Группы с ≥2 концептами должны получить подтему.
+        const named = clusters.filter((c) => c.name !== 'Без подтемы');
+        expect(named.length).toBeGreaterThanOrEqual(1);
+        const all = await svc.concepts(topic.id);
+        expect(all.some((c) => c.subtopic)).toBe(true);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

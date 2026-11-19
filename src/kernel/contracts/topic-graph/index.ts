@@ -92,6 +92,10 @@ export interface TopicGraphService {
         topicId: string,
         limit?: number,
     ): Promise<Array<{ a: TopicClaim; b: TopicClaim; similarity: number }>>;
+    /** Подтемы (кластеры концептов) темы. */
+    clusters(
+        topicId: string,
+    ): Promise<Array<{ name: string; conceptIds: string[]; claimCount: number }>>;
 
     /** Нормализованная степень центральности узлов (claims + концепты). */
     centrality(

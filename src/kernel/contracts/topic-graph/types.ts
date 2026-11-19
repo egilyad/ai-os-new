@@ -61,6 +61,8 @@ export interface TopicConcept {
     claimIds: string[];
     /** Вектор имени (для слияния синонимов). */
     embedding?: number[];
+    /** Имя подтемы, к которой относится концепт (Фаза 2 кластеризации). */
+    subtopic?: string;
     createdAt: number;
 }
 

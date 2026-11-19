@@ -454,6 +454,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
             // Концепты: глобальная синхронизация по всем утверждениям темы.
             await this.syncConcepts(topicId, existingClaims);
+            await this.clusterConcepts(topicId);
             // LLM-отношения (structured extraction) → рёбра между концептами.
             await this.applyLlmRelations(topicId, llmRelations);
 
@@ -770,6 +771,65 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         await this.putUniqueRelations(topicId, relations);
     }
 
+    /**
+     * Кластеризация концептов в подтемы: агломеративная группировка по
+     * пересечению claim-множеств (Jaccard >= порога). Имя подтемы — самый
+     * частый концепт кластера. Фаза 2 роадмапа.
+     */
+    private async clusterConcepts(topicId: string): Promise<void> {
+        const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        if (concepts.length < 2) return;
+        const sets = concepts.map((c) => new Set(c.claimIds));
+        const parent = concepts.map((_, i) => i);
+        const find = (i: number): number => {
+            while (parent[i] !== i) {
+                parent[i] = parent[parent[i]]!;
+                i = parent[i]!;
+            }
+            return i;
+        };
+        const union = (a: number, b: number) => {
+            const ra = find(a);
+            const rb = find(b);
+            if (ra !== rb) parent[ra] = rb;
+        };
+        for (let i = 0; i < concepts.length; i++) {
+            for (let j = i + 1; j < concepts.length; j++) {
+                const a = sets[i]!;
+                const b = sets[j]!;
+                let inter = 0;
+                for (const id of a) if (b.has(id)) inter++;
+                const unionSize = a.size + b.size - inter;
+                if (unionSize > 0 && inter / unionSize >= 0.4) union(i, j);
+            }
+        }
+        const groups = new Map<number, number[]>();
+        for (let i = 0; i < concepts.length; i++) {
+            const r = find(i);
+            let arr = groups.get(r);
+            if (!arr) {
+                arr = [];
+                groups.set(r, arr);
+            }
+            arr.push(i);
+        }
+        const updates: TopicConcept[] = [];
+        for (const memberIndexes of groups.values()) {
+            if (memberIndexes.length < 2) continue;
+            const members = memberIndexes.map((i) => concepts[i]!);
+            const name = [...members].sort((a, b) => b.claimIds.length - a.claimIds.length)[0]!
+                .name;
+            for (const m of members) {
+                if (m.subtopic !== name) {
+                    updates.push({ ...m, subtopic: name });
+                }
+            }
+        }
+        if (updates.length > 0) {
+            await this.db.topicConcepts.bulkPut(updates as never);
+        }
+    }
+
     private async rebuildConceptRelations(topicId: string): Promise<void> {
         const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         if (concepts.length < 2) return;
@@ -1053,6 +1113,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     async consolidate(topicId: string): Promise<void> {
         const claims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
         await this.syncConcepts(topicId, claims);
+        await this.clusterConcepts(topicId);
         await this.rebuildConceptRelations(topicId);
     }
 
@@ -1167,6 +1228,40 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.db.topicEvidence.bulkPut(evUpdates as never);
         }
         await this.db.topicClaims.delete(absorbId);
+    }
+
+    async clusters(
+        topicId: string,
+    ): Promise<Array<{ name: string; conceptIds: string[]; claimCount: number }>> {
+        const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        const bySubtopic = new Map<string, { conceptIds: string[]; claimCount: number }>();
+        let unnamed: { conceptIds: string[]; claimCount: number } | undefined;
+        for (const c of concepts) {
+            const sub = c.subtopic?.trim();
+            if (sub) {
+                let entry = bySubtopic.get(sub);
+                if (!entry) {
+                    entry = { conceptIds: [], claimCount: 0 };
+                    bySubtopic.set(sub, entry);
+                }
+                entry.conceptIds.push(c.id);
+                entry.claimCount += c.claimIds.length;
+            } else {
+                unnamed ??= { conceptIds: [], claimCount: 0 };
+                unnamed.conceptIds.push(c.id);
+                unnamed.claimCount += c.claimIds.length;
+            }
+        }
+        const out = [...bySubtopic.entries()].map(([name, entry]) => ({
+            name,
+            conceptIds: entry.conceptIds,
+            claimCount: entry.claimCount,
+        }));
+        if (unnamed && unnamed.conceptIds.length > 0) {
+            out.push({ name: 'Без подтемы', ...unnamed });
+        }
+        out.sort((a, b) => b.claimCount - a.claimCount);
+        return out;
     }
 
     async mergeCandidates(
