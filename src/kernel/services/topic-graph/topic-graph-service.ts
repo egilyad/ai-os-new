@@ -355,6 +355,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                         if (!found.dup.sourceIds.includes(source.id)) {
                             found.dup.sourceIds.push(source.id);
                             found.dup.updatedAt = Date.now();
+                            // Второй независимый источник подтверждает утверждение.
+                            if (found.dup.status === 'extracted') {
+                                found.dup.status = 'validated';
+                            }
                             await this.db.topicClaims.put(found.dup);
                             evidenceEntries.push(makeEvidence(found.dup.id));
                         }
@@ -392,8 +396,22 @@ export class TopicGraphServiceImpl implements TopicGraphService {
 
             // Противоречия.
             const conflicts = this.detectConflicts(newClaims, existingClaims);
+            const conflictedClaimIds = new Set<string>();
             for (const c of conflicts) {
                 await this.db.topicConflicts.put(c);
+                conflictedClaimIds.add(c.claimAId);
+                conflictedClaimIds.add(c.claimBId);
+            }
+            if (conflictedClaimIds.size > 0) {
+                const conflicted = existingClaims.filter((c) => conflictedClaimIds.has(c.id));
+                const toMark = conflicted.filter((c) => c.status !== 'contradicted');
+                if (toMark.length > 0) {
+                    for (const c of toMark) {
+                        c.status = 'contradicted';
+                        c.updatedAt = Date.now();
+                    }
+                    await this.db.topicClaims.bulkPut(toMark as never);
+                }
             }
             run.stats.conflicts = conflicts.length;
 

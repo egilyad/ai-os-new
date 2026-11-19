@@ -45,8 +45,18 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('OpenCode', '');
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: A.title, content: A.content });
-        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: B.title, content: B.content });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: A.title,
+            content: A.content,
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: B.title,
+            content: B.content,
+        });
 
         const claims = await svc.claims(topic.id);
 
@@ -54,6 +64,8 @@ describe('TopicGraph quality corpus', () => {
         const versionClaim = claims.find((c) => c.text.includes('1.19.4'));
         expect(versionClaim).toBeTruthy();
         expect(versionClaim!.sourceIds).toHaveLength(2);
+        // Второй независимый источник подтверждает утверждение → validated.
+        expect(versionClaim!.status).toBe('validated');
 
         // "10 built-in panels" уникален (из C, но C в этом тесте не грузили).
         // Проверяем, что уникальные факты из B сохранились.
@@ -62,7 +74,9 @@ describe('TopicGraph quality corpus', () => {
 
         // Evidence ссылается на оригинальный фрагмент с offset.
         const evs = await getTopicGraphDB().topicEvidence.toArray();
-        const versionEv = evs.find((e) => e.quote.startsWith('OpenCode Desktop version is 1.19.4.'));
+        const versionEv = evs.find((e) =>
+            e.quote.startsWith('OpenCode Desktop version is 1.19.4.'),
+        );
         expect(versionEv).toBeTruthy();
         expect(versionEv!.offset).toBeGreaterThan(0);
     });
@@ -71,17 +85,41 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('OpenCode', '');
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: A.title, content: A.content });
-        await svc.ingest(topic.id, { kind: 'document', ref: 'c', title: C.title, content: C.content });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: A.title,
+            content: A.content,
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'c',
+            title: C.title,
+            content: C.content,
+        });
 
         const conflicts = await svc.conflicts(topic.id);
         const mcpConflict = conflicts.find((cf) => cf.reason.includes('polarity'));
         expect(mcpConflict).toBeTruthy();
+        // Участники конфликта получают статус contradicted.
+        const all = await svc.claims(topic.id);
+        const conflicted = all.filter((c) =>
+            [mcpConflict!.claimAId, mcpConflict!.claimBId].includes(c.id),
+        );
+        expect(conflicted.length).toBe(2);
+        expect(conflicted.every((c) => c.status === 'contradicted')).toBe(true);
 
         // Связи: противоречие → contradicticts, иначе нейтральная related_to/part_of.
         const relations = await svc.relations(topic.id);
         expect(relations.some((r) => r.relation === 'contradicts')).toBe(true);
-        expect(relations.every((r) => r.relation === 'contradicts' || r.relation === 'related_to' || r.relation === 'part_of')).toBe(true);
+        expect(
+            relations.every(
+                (r) =>
+                    r.relation === 'contradicts' ||
+                    r.relation === 'related_to' ||
+                    r.relation === 'part_of',
+            ),
+        ).toBe(true);
         expect(relations.some((r) => r.relation === 'supports')).toBe(false);
     });
 
@@ -89,7 +127,12 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('Memory', '');
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'd1', title: D.title, content: D.content });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'd1',
+            title: D.title,
+            content: D.content,
+        });
 
         const claims = await svc.claims(topic.id);
         const with300 = claims.find((c) => c.text.includes('300'));
@@ -110,7 +153,12 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('Big', '');
         const big = 'Слово повторяется часто '.repeat(1500);
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'big',
+            title: 'Big',
+            content: big,
+        });
         expect(calls.length).toBeGreaterThan(1);
         expect(run.status).toBe('completed');
         expect(run.stats.extracted).toBeGreaterThan(0);
@@ -154,7 +202,12 @@ describe('TopicGraph quality corpus', () => {
         };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('Offsets', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'src', title: 'Src', content: sourceContent });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'src',
+            title: 'Src',
+            content: sourceContent,
+        });
 
         const evs = await getTopicGraphDB().topicEvidence.toArray();
         const ev = evs.find((e) => e.quote.includes('OpenCode'));
@@ -166,8 +219,18 @@ describe('TopicGraph quality corpus', () => {
     it('дубликат из второго источника получает отдельное Evidence', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('TwoSrc', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' });
-        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'According to docs, OpenCode Desktop version is 1.19.4.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop version is 1.19.4.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'According to docs, OpenCode Desktop version is 1.19.4.',
+        });
 
         const claims = await svc.claims(topic.id);
         const version = claims.find((c) => c.text.includes('1.19.4'));
@@ -185,7 +248,12 @@ describe('TopicGraph quality corpus', () => {
         const llm = { chat: async () => ({ content: '{not json' }) };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('BadJson', '');
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'x',
+            title: 'X',
+            content: 'Короткий текст.',
+        });
         expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
@@ -194,7 +262,12 @@ describe('TopicGraph quality corpus', () => {
         const llm = { chat: async () => ({ content: '' }) };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('EmptyLlm', '');
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Короткий текст.' });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'x',
+            title: 'X',
+            content: 'Короткий текст.',
+        });
         expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
@@ -203,7 +276,12 @@ describe('TopicGraph quality corpus', () => {
         const llm = { chat: async () => ({ content: '[]' }) };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('EmptyArray', '');
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'x', title: 'X', content: 'Факт о OpenCode Desktop.' });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'x',
+            title: 'X',
+            content: 'Факт о OpenCode Desktop.',
+        });
         expect(run.status).toBe('fallback');
         expect(run.warnings?.some((w) => w.includes('fallback'))).toBe(true);
         expect(run.stats.fallbackClaims).toBeGreaterThan(0);
@@ -212,7 +290,12 @@ describe('TopicGraph quality corpus', () => {
     it('повторный импорт одного источника идемпотентен', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('Idem', '');
-        const payload = { kind: 'document' as const, ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' };
+        const payload = {
+            kind: 'document' as const,
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop version is 1.19.4.',
+        };
         await svc.ingest(topic.id, payload);
         const run2 = await svc.ingest(topic.id, payload);
         expect(run2.status).toBe('completed');
@@ -233,7 +316,12 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('Partial', '');
         const big = 'Слово узкое '.repeat(800);
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'big', title: 'Big', content: big });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'big',
+            title: 'Big',
+            content: big,
+        });
         expect(run.status).toBe('partial');
         expect(run.warnings?.some((w) => w.includes('не обработал'))).toBe(true);
     });
@@ -242,10 +330,20 @@ describe('TopicGraph quality corpus', () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('OpenCode', '');
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: A.title, content: A.content });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: A.title,
+            content: A.content,
+        });
         const before = (await svc.claims(topic.id)).length;
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'd', title: D.title, content: D.content });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'd',
+            title: D.title,
+            content: D.content,
+        });
         const after = (await svc.claims(topic.id)).length;
 
         expect(after).toBeGreaterThan(before);
@@ -254,7 +352,12 @@ describe('TopicGraph quality corpus', () => {
     it('consolidate: ручные связи сохраняются, повторный прогон идемпотентен', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('Consolidate', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.',
+        });
 
         const concepts = await svc.concepts(topic.id);
         const desktop = concepts.find((c) => c.name === 'desktop');
@@ -287,7 +390,12 @@ describe('TopicGraph quality corpus', () => {
     it('мёртвый концепт удаляется при консолидации вместе с рёбрами', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('DeadConcept', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop version repeat.',
+        });
 
         const claims = await svc.claims(topic.id);
         const opencode = (await svc.concepts(topic.id)).find((c) => c.name === 'opencode');
@@ -319,22 +427,44 @@ describe('TopicGraph quality corpus', () => {
     it('новый claim связывается с существующим из прошлого импорта', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('CrossBatch', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop version is 1.19.4.',
+        });
         const oldClaims = await svc.claims(topic.id);
         const oldId = oldClaims[0]!.id;
 
-        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'OpenCode Desktop memory usage is high.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'OpenCode Desktop memory usage is high.',
+        });
         const newClaims = await svc.claims(topic.id);
         const newId = newClaims.find((c) => c.id !== oldId)!.id;
 
         const rels = await svc.relations(topic.id);
-        expect(rels.some((r) => (r.fromId === oldId && r.toId === newId) || (r.fromId === newId && r.toId === oldId))).toBe(true);
+        expect(
+            rels.some(
+                (r) =>
+                    (r.fromId === oldId && r.toId === newId) ||
+                    (r.fromId === newId && r.toId === oldId),
+            ),
+        ).toBe(true);
     });
 
     it('поиск подтягивает связанное утверждение без прямого совпадения', async () => {
         const svc = new TopicGraphServiceImpl();
         const topic = await svc.createTopic('GraphSearch', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop version is 1.19.4. OpenCode Desktop runs on Windows 10 Education.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content:
+                'OpenCode Desktop version is 1.19.4. OpenCode Desktop runs on Windows 10 Education.',
+        });
 
         const claims = await svc.claims(topic.id);
         const versionClaim = claims.find((c) => c.text.includes('1.19.4'));
@@ -370,8 +500,18 @@ describe('TopicGraph quality corpus', () => {
         };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { embedder } as never);
         const topic = await svc.createTopic('Merge', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'Workstation is useful here. Workstation matters a lot.' });
-        await svc.ingest(topic.id, { kind: 'document', ref: 'b', title: 'B', content: 'Desktop is useful here. Desktop matters a lot.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'Workstation is useful here. Workstation matters a lot.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'Desktop is useful here. Desktop matters a lot.',
+        });
 
         const concepts = await svc.concepts(topic.id);
         const workstation = concepts.find((c) => c.name.toLowerCase() === 'workstation');
@@ -385,14 +525,23 @@ describe('TopicGraph quality corpus', () => {
         const llm = {
             chat: async () => ({
                 content: JSON.stringify([
-                    { text: 'OpenCode Desktop version is 1.19.4.', entities: ['OpenCode'], relations: [] },
+                    {
+                        text: 'OpenCode Desktop version is 1.19.4.',
+                        entities: ['OpenCode'],
+                        relations: [],
+                    },
                     { text: 'It supports MCP servers.', entities: ['MCP'], relations: [] },
                 ]),
             }),
         };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('Structured', '');
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 's', title: 'S', content: 'Исходный текст для привязки.' });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 's',
+            title: 'S',
+            content: 'Исходный текст для привязки.',
+        });
         expect(run.status).toBe('completed');
         const claims = await svc.claims(topic.id);
         expect(claims.some((c) => c.text.includes('1.19.4'))).toBe(true);
@@ -429,7 +578,8 @@ describe('TopicGraph quality corpus', () => {
             kind: 'document',
             ref: 'a',
             title: 'A',
-            content: 'Workstation is useful here. Workstation matters. Desktop is useful here. Desktop matters.',
+            content:
+                'Workstation is useful here. Workstation matters. Desktop is useful here. Desktop matters.',
         });
 
         const concepts = await svc.concepts(topic.id);
@@ -446,14 +596,28 @@ describe('TopicGraph quality corpus', () => {
                 content: JSON.stringify([
                     { text: 'OpenCode Desktop works well.', entities: ['OpenCode'], relations: [] },
                     { text: 'OpenCode has features.', entities: ['OpenCode'], relations: [] },
-                    { text: 'Windows 10 and Windows 11 differ.', entities: ['Windows'], relations: [] },
-                    { text: 'Relation extra.', entities: [], relations: [{ a: 'OpenCode', b: 'Windows', kind: 'related' }] },
+                    {
+                        text: 'Windows 10 and Windows 11 differ.',
+                        entities: ['Windows'],
+                        relations: [],
+                    },
+                    {
+                        text: 'Relation extra.',
+                        entities: [],
+                        relations: [{ a: 'OpenCode', b: 'Windows', kind: 'related' }],
+                    },
                 ]),
             }),
         };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
         const topic = await svc.createTopic('LlmRels', '');
-        await svc.ingest(topic.id, { kind: 'document', ref: 's', title: 'S', content: 'OpenCode Desktop works well. OpenCode has features. Windows 10 and Windows 11 differ. Relation extra.' });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 's',
+            title: 'S',
+            content:
+                'OpenCode Desktop works well. OpenCode has features. Windows 10 and Windows 11 differ. Relation extra.',
+        });
 
         const concepts = await svc.concepts(topic.id);
         const opencode = concepts.find((c) => c.name === 'opencode');
@@ -462,7 +626,14 @@ describe('TopicGraph quality corpus', () => {
         expect(windows).toBeTruthy();
 
         const rels = await svc.relations(topic.id);
-        expect(rels.some((r) => r.relation === 'related_to' && r.fromId === opencode!.id && r.toId === windows!.id)).toBe(true);
+        expect(
+            rels.some(
+                (r) =>
+                    r.relation === 'related_to' &&
+                    r.fromId === opencode!.id &&
+                    r.toId === windows!.id,
+            ),
+        ).toBe(true);
     });
 
     it('fallback при ошибке embedder: ingest завершается, концепты без vectors', async () => {
@@ -473,7 +644,12 @@ describe('TopicGraph quality corpus', () => {
         };
         const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { embedder } as never);
         const topic = await svc.createTopic('EmbedFail', '');
-        const run = await svc.ingest(topic.id, { kind: 'document', ref: 'a', title: 'A', content: 'OpenCode Desktop is a tool. OpenCode Desktop runs locally.' });
+        const run = await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode Desktop is a tool. OpenCode Desktop runs locally.',
+        });
         expect(run.status).toBe('fallback');
         const concepts = await svc.concepts(topic.id);
         expect(concepts.some((c) => c.name === 'opencode')).toBe(true);
