@@ -25,6 +25,7 @@ import type { IGraphService } from '../contracts/graph';
 import type { IEvalService } from '../contracts/frontier';
 import type { IToolRunnerService } from '../contracts/parity';
 import type { ILtMemoryService } from '../contracts/persona';
+import type { IReplanningService } from '../contracts/replanning';
 import type { MemoryRelation } from '../types/persona-types';
 import type { DataAccessLayer } from '../dal/types';
 import { RivalRepository } from '../dal/rival-repository';
@@ -36,6 +37,7 @@ import { AutonomyService } from '../services/rivals/autonomy-service';
 import { RunQueueService } from '../services/rivals/runqueue-service';
 import { PlannerService } from '../services/rivals/planner-service';
 import { DyadService } from '../services/rivals/dyad-service';
+import { ReplanningService } from '../services/rivals/replanning-service';
 import type { MemoryBlock } from '../types/rival-types';
 
 function llmOf(c: IContainer): ILLMClientService | undefined {
@@ -181,7 +183,10 @@ export const registerPhase33: Phase = ({ register }) => {
                         const hits = await lt.recall('agent', query, limit);
                         if (hits.length === 0) return 'no memories found';
                         return hits
-                            .map((m, i) => `${i + 1}. ${m.id} [${m.tier}] ${m.content.slice(0, 240)}`)
+                            .map(
+                                (m, i) =>
+                                    `${i + 1}. ${m.id} [${m.tier}] ${m.content.slice(0, 240)}`,
+                            )
                             .join('\n');
                     },
                 });
@@ -241,7 +246,8 @@ export const registerPhase33: Phase = ({ register }) => {
                 });
                 runner.addTool({
                     name: 'memory.promote',
-                    description: 'Promote one of your memories to a higher tier (archival→recall→core).',
+                    description:
+                        'Promote one of your memories to a higher tier (archival→recall→core).',
                     parameters: {
                         type: 'object',
                         properties: { id: { type: 'string' } },
@@ -261,7 +267,8 @@ export const registerPhase33: Phase = ({ register }) => {
                 });
                 runner.addTool({
                     name: 'memory.demote',
-                    description: 'Demote one of your memories to a lower tier (core→recall→archival).',
+                    description:
+                        'Demote one of your memories to a lower tier (core→recall→archival).',
                     parameters: {
                         type: 'object',
                         properties: { id: { type: 'string' } },
@@ -281,7 +288,8 @@ export const registerPhase33: Phase = ({ register }) => {
                 });
                 runner.addTool({
                     name: 'memory.edit',
-                    description: 'Rewrite the text of one of your own long-term memories (agent-owned only).',
+                    description:
+                        'Rewrite the text of one of your own long-term memories (agent-owned only).',
                     parameters: {
                         type: 'object',
                         properties: { id: { type: 'string' }, content: { type: 'string' } },
@@ -340,14 +348,17 @@ export const registerPhase33: Phase = ({ register }) => {
         return svc;
     });
 
+    register('replanningService', (c: IContainer) => {
+        return new ReplanningService(llmOf(c));
+    });
+
     register('plannerService', (c: IContainer) => {
         return new PlannerService(
             c.get<IEventBus>('eventBus'),
             llmOf(c),
-            c.has('toolRunnerService')
-                ? c.get<IToolRunnerService>('toolRunnerService')
-                : undefined,
+            c.has('toolRunnerService') ? c.get<IToolRunnerService>('toolRunnerService') : undefined,
             c.has('dal') ? c.get<DataAccessLayer>('dal') : undefined,
+            c.has('replanningService') ? c.get<IReplanningService>('replanningService') : undefined,
         );
     });
 
