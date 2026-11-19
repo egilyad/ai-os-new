@@ -15,6 +15,7 @@ import type {
     TopicProcessingRun,
 } from '../../contracts/topic-graph/types';
 import { TopicGraphDB, createTopicGraphDB } from './topic-graph-dexie';
+import { SimHashIndex } from './simhash-index';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('TopicGraph');
@@ -82,7 +83,10 @@ const NEGATION_MARKERS = [
 ];
 
 function hasNegation(text: string): boolean {
-    const words = text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/);
+    const words = text
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+        .split(/\s+/);
     return NEGATION_MARKERS.some((m) => words.includes(m));
 }
 
@@ -176,7 +180,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             topicId,
             sourceIds: [],
             status: 'running',
-            stats: { extracted: 0, duplicates: 0, newClaims: 0, newEvidence: 0, conflicts: 0, relations: 0, mergeCandidates: 0, fallbackClaims: 0 },
+            stats: {
+                extracted: 0,
+                duplicates: 0,
+                newClaims: 0,
+                newEvidence: 0,
+                conflicts: 0,
+                relations: 0,
+                mergeCandidates: 0,
+                fallbackClaims: 0,
+            },
             createdAt: Date.now(),
         };
         await this.db.topicProcessingRuns.put(run);
@@ -209,105 +222,132 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.db.topicSources.put(source);
             run.sourceIds = [source.id];
 
-                // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
-                let sentenceUnits: Array<{ sentence: string; start?: number }>;
-                let llmWarnings: string[] = [];
-                let llmMode: 'llm' | 'fallback' = 'fallback';
-                let failedChunks = 0;
-                let llmRelations: LlmRelationDraft[] = [];
-                const llmAvailable = this.deps.llm && opts?.useLlm !== false;
-                if (llmAvailable) {
-                    const { sentences, warnings, mode, failedChunks: fc, relations } = await this.extractClaimsWithLlm(payload.content);
-                    llmRelations = relations;
-                    llmWarnings = warnings;
-                    llmMode = mode;
-                    failedChunks = fc;
-                    sentenceUnits = sentences.map((sentence) => {
-                        const loc = locateFragment(payload.content, sentence);
-                        return loc ? { sentence, start: loc.start } : { sentence };
-                    });
-                } else {
-                    sentenceUnits = splitIntoSentencesWithOffsets(payload.content);
-                }
-                const existingClaims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
-                const newClaims: TopicClaim[] = [];
-                const evidenceEntries: TopicEvidence[] = [];
-                for (const unit of sentenceUnits) {
-                    const text = normalizeClaim(unit.sentence);
-                    if (text.length < 12) continue;
-                    run.stats.extracted++;
+            // Извлечение утверждений: LLM (если есть) или фрагменты по предложениям.
+            let sentenceUnits: Array<{ sentence: string; start?: number }>;
+            let llmWarnings: string[] = [];
+            let llmMode: 'llm' | 'fallback' = 'fallback';
+            let failedChunks = 0;
+            let llmRelations: LlmRelationDraft[] = [];
+            const llmAvailable = this.deps.llm && opts?.useLlm !== false;
+            if (llmAvailable) {
+                const {
+                    sentences,
+                    warnings,
+                    mode,
+                    failedChunks: fc,
+                    relations,
+                } = await this.extractClaimsWithLlm(payload.content);
+                llmRelations = relations;
+                llmWarnings = warnings;
+                llmMode = mode;
+                failedChunks = fc;
+                sentenceUnits = sentences.map((sentence) => {
+                    const loc = locateFragment(payload.content, sentence);
+                    return loc ? { sentence, start: loc.start } : { sentence };
+                });
+            } else {
+                sentenceUnits = splitIntoSentencesWithOffsets(payload.content);
+            }
+            const existingClaims = await this.db.topicClaims
+                .where('topicId')
+                .equals(topicId)
+                .toArray();
+            // SimHash-индекс дедупликации (Фаза 0 роадмапа): сокращает
+            // проход findDuplicate с O(N) до малого числа кандидатов.
+            const dupIndex = new SimHashIndex<string>();
+            const claimById = new Map<string, TopicClaim>();
+            for (const c of existingClaims) {
+                dupIndex.add(c.text, c.id);
+                claimById.set(c.id, c);
+            }
+            const newClaims: TopicClaim[] = [];
+            const evidenceEntries: TopicEvidence[] = [];
+            for (const unit of sentenceUnits) {
+                const text = normalizeClaim(unit.sentence);
+                if (text.length < 12) continue;
+                run.stats.extracted++;
 
-                    // Эмбедддинг-близость (если доступен) поверх jaccard.
-                    let embedding: number[] | undefined;
-                    if (this.deps.embedder && opts?.useEmbedder !== false) {
-                        try {
-                            const vecs = await this.deps.embedder.embed([text]);
-                            embedding = vecs[0] ?? undefined;
-                        } catch {
-                            embedding = undefined;
-                        }
+                // Эмбедддинг-близость (если доступен) поверх jaccard.
+                let embedding: number[] | undefined;
+                if (this.deps.embedder && opts?.useEmbedder !== false) {
+                    try {
+                        const vecs = await this.deps.embedder.embed([text]);
+                        embedding = vecs[0] ?? undefined;
+                    } catch {
+                        embedding = undefined;
                     }
-                    const makeEvidence = (claimId: string): TopicEvidence => {
-                        const loc =
-                            unit.start !== undefined
-                                ? { start: unit.start }
-                                : locateFragment(payload.content, unit.sentence);
-                        const quote = loc
-                            ? payload.content.slice(loc.start, Math.min(loc.start + 300, payload.content.length))
-                            : unit.sentence.slice(0, 300);
-                        run.stats.newEvidence++;
-                        return {
-                            id: GENERIC_ID('ev'),
-                            topicId,
-                            claimId,
-                            sourceId: source.id,
-                            quote,
-                            offset: loc?.start,
-                            end: loc ? loc.start + quote.length : undefined,
-                            origin: loc ? 'source' : 'model',
-                            extraction: llmMode,
-                            createdAt: Date.now(),
-                        };
-                    };
-                    const found = findDuplicate(existingClaims, text, embedding);
-                    if (found.dup) {
-                        const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
-                        if (conflicting) {
-                            // противоречие: не схлопываем
-                        } else {
-                            if (!found.dup.sourceIds.includes(source.id)) {
-                                found.dup.sourceIds.push(source.id);
-                                found.dup.updatedAt = Date.now();
-                                await this.db.topicClaims.put(found.dup);
-                                evidenceEntries.push(makeEvidence(found.dup.id));
-                            }
-                            run.stats.duplicates++;
-                            continue;
-                        }
-                    } else if (found.candidate) {
-                        run.stats.mergeCandidates++;
-                    }
-                    const claim: TopicClaim = {
-                        id: GENERIC_ID('claim'),
+                }
+                const makeEvidence = (claimId: string): TopicEvidence => {
+                    const loc =
+                        unit.start !== undefined
+                            ? { start: unit.start }
+                            : locateFragment(payload.content, unit.sentence);
+                    const quote = loc
+                        ? payload.content.slice(
+                              loc.start,
+                              Math.min(loc.start + 300, payload.content.length),
+                          )
+                        : unit.sentence.slice(0, 300);
+                    run.stats.newEvidence++;
+                    return {
+                        id: GENERIC_ID('ev'),
                         topicId,
-                        text,
-                        sourceIds: [source.id],
-                        confidence: embedding ? 0.7 : 0.6,
-                        status: 'extracted',
-                        embedding,
+                        claimId,
+                        sourceId: source.id,
+                        quote,
+                        offset: loc?.start,
+                        end: loc ? loc.start + quote.length : undefined,
+                        origin: loc ? 'source' : 'model',
+                        extraction: llmMode,
                         createdAt: Date.now(),
-                        updatedAt: Date.now(),
                     };
-                    existingClaims.push(claim);
-                    newClaims.push(claim);
-                    evidenceEntries.push(makeEvidence(claim.id));
-                    if (llmMode === 'fallback') run.stats.fallbackClaims++;
-                    run.stats.newClaims++;
+                };
+                const idxCandidates = dupIndex
+                    .queryText(text)
+                    .map((e) => claimById.get(e.data))
+                    .filter((c): c is TopicClaim => Boolean(c));
+                const found = findDuplicate(existingClaims, text, embedding, idxCandidates);
+                if (found.dup) {
+                    const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
+                    if (conflicting) {
+                        // противоречие: не схлопываем
+                    } else {
+                        if (!found.dup.sourceIds.includes(source.id)) {
+                            found.dup.sourceIds.push(source.id);
+                            found.dup.updatedAt = Date.now();
+                            await this.db.topicClaims.put(found.dup);
+                            evidenceEntries.push(makeEvidence(found.dup.id));
+                        }
+                        run.stats.duplicates++;
+                        continue;
+                    }
+                } else if (found.candidate) {
+                    run.stats.mergeCandidates++;
                 }
-                if (llmWarnings.length > 0) {
-                    run.warnings = llmWarnings;
-                }
-                run.status = failedChunks > 0 ? 'partial' : llmMode === 'fallback' ? 'fallback' : 'completed';
+                const claim: TopicClaim = {
+                    id: GENERIC_ID('claim'),
+                    topicId,
+                    text,
+                    sourceIds: [source.id],
+                    confidence: embedding ? 0.7 : 0.6,
+                    status: 'extracted',
+                    embedding,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                };
+                existingClaims.push(claim);
+                claimById.set(claim.id, claim);
+                dupIndex.add(claim.text, claim.id);
+                newClaims.push(claim);
+                evidenceEntries.push(makeEvidence(claim.id));
+                if (llmMode === 'fallback') run.stats.fallbackClaims++;
+                run.stats.newClaims++;
+            }
+            if (llmWarnings.length > 0) {
+                run.warnings = llmWarnings;
+            }
+            run.status =
+                failedChunks > 0 ? 'partial' : llmMode === 'fallback' ? 'fallback' : 'completed';
             await this.db.topicClaims.bulkPut(newClaims as never);
 
             // Противоречия.
@@ -345,10 +385,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
     }
 
-    private detectConflicts(
-        newClaims: TopicClaim[],
-        allClaims: TopicClaim[],
-    ): TopicConflict[] {
+    private detectConflicts(newClaims: TopicClaim[], allClaims: TopicClaim[]): TopicConflict[] {
         const out: TopicConflict[] = [];
         for (let i = 0; i < newClaims.length; i++) {
             for (let j = 0; j < allClaims.length; j++) {
@@ -397,7 +434,9 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         for (const rawName of names) {
             const name = rawName.normalize('NFKC');
             activeNames.add(name);
-            const claimIds = allClaims.filter((c) => tokenize(c.text).has(rawName)).map((c) => c.id);
+            const claimIds = allClaims
+                .filter((c) => tokenize(c.text).has(rawName))
+                .map((c) => c.id);
             const prev = byName.get(name) ?? byName.get(rawName);
             if (prev) {
                 await this.db.topicConcepts.put({ ...prev, claimIds });
@@ -563,9 +602,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
     }
 
-    private async extractClaimsWithLlm(
-        content: string,
-    ): Promise<{
+    private async extractClaimsWithLlm(content: string): Promise<{
         sentences: string[];
         warnings: string[];
         mode: 'llm' | 'fallback';
@@ -608,7 +645,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 if (!Array.isArray(parsed)) throw new Error('ответ не является массивом');
                 const strings = parsed.map((x) => {
                     if (typeof x === 'string') return x;
-                    if (x && typeof x === 'object' && typeof (x as { text?: unknown }).text === 'string') {
+                    if (
+                        x &&
+                        typeof x === 'object' &&
+                        typeof (x as { text?: unknown }).text === 'string'
+                    ) {
                         const obj = x as { text: string; relations?: unknown };
                         if (Array.isArray(obj.relations)) {
                             for (const r of obj.relations) {
@@ -630,15 +671,21 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 if (strings.some((s) => s === null)) {
                     throw new Error('ответ содержит нестроковые элементы');
                 }
-                all.push(...strings.filter((s): s is string => typeof s === 'string' && s.length > 0));
+                all.push(
+                    ...strings.filter((s): s is string => typeof s === 'string' && s.length > 0),
+                );
             } catch (e) {
                 chunksFailed++;
-                warnings.push(`Чанк #${chunksTotal} (offset ${start}) не обработан: ${e instanceof Error ? e.message : String(e)}`);
+                warnings.push(
+                    `Чанк #${chunksTotal} (offset ${start}) не обработан: ${e instanceof Error ? e.message : String(e)}`,
+                );
                 LOGGER.warn('TopicGraph', 'llm extraction failed on chunk', { error: String(e) });
             }
         }
         if (chunksFailed > 0) {
-            warnings.push(`LLM не обработал ${chunksFailed} из ${chunksTotal} чанков; результат может быть неполным`);
+            warnings.push(
+                `LLM не обработал ${chunksFailed} из ${chunksTotal} чанков; результат может быть неполным`,
+            );
         }
         if (all.length === 0) {
             warnings.push('LLM ничего не извлекла; использован fallback по предложениям');
@@ -723,7 +770,8 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         const conceptScore = Math.min(1, concepts.length / 5);
         const sourceScore = Math.min(1, sources.length / 3);
         const claimScore = Math.min(1, claims.length / 20);
-        const coverage = Math.round((conceptScore * 0.5 + sourceScore * 0.3 + claimScore * 0.2) * 100) / 100;
+        const coverage =
+            Math.round((conceptScore * 0.5 + sourceScore * 0.3 + claimScore * 0.2) * 100) / 100;
         return {
             totalClaims: claims.length,
             uniqueConcepts: concepts.length,
@@ -750,7 +798,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 qEmb = undefined;
             }
         }
-        const [claims, relations] = await Promise.all([this.claims(topicId), this.relations(topicId)]);
+        const [claims, relations] = await Promise.all([
+            this.claims(topicId),
+            this.relations(topicId),
+        ]);
         const scored = claims.map((c) => {
             let sim = jaccard(q, tokenize(c.text));
             if (qEmb && c.embedding) {
@@ -769,7 +820,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         );
         const boost = new Map<string, number>();
         for (const r of relations) {
-            const neighbor = seeds.has(r.fromId) ? r.toId : seeds.has(r.toId) ? r.fromId : undefined;
+            const neighbor = seeds.has(r.fromId)
+                ? r.toId
+                : seeds.has(r.toId)
+                  ? r.fromId
+                  : undefined;
             if (neighbor) boost.set(neighbor, Math.max(boost.get(neighbor) ?? 0, r.weight));
         }
         for (const x of scored) {
@@ -777,7 +832,10 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             if (b) x.sim += b * 0.15;
         }
         scored.sort((a, b) => b.sim - a.sim);
-        return scored.filter((x) => x.sim > 0).slice(0, 20).map((x) => x.c);
+        return scored
+            .filter((x) => x.sim > 0)
+            .slice(0, 20)
+            .map((x) => x.c);
     }
 
     /** Пересборка глобальной структуры (концепты + иерархия) по требованию. */
@@ -790,7 +848,9 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     /** Нормализованная степень центральности узлов (claims + концепты). */
     async centrality(
         topicId: string,
-    ): Promise<Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>> {
+    ): Promise<
+        Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>
+    > {
         const [claims, concepts, relations] = await Promise.all([
             this.claims(topicId),
             this.concepts(topicId),
@@ -835,7 +895,9 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         lines.push(`- Concepts: ${concepts.length}`);
         lines.push(`- Relations: ${relations.length}`);
         lines.push(`- Conflicts: ${conflicts.length}`);
-        lines.push(`- Collection progress (накопление материала): ${Math.round(comp.collectionProgress * 100)}%`);
+        lines.push(
+            `- Collection progress (накопление материала): ${Math.round(comp.collectionProgress * 100)}%`,
+        );
         lines.push('');
         lines.push('## Concepts');
         lines.push('');
@@ -846,15 +908,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         lines.push('## Claims');
         lines.push('');
         claims.slice(0, 300).forEach((c) => {
-            lines.push(`- ${c.text} [${c.sourceIds.length} sources, conf ${c.confidence.toFixed(2)}]`);
+            lines.push(
+                `- ${c.text} [${c.sourceIds.length} sources, conf ${c.confidence.toFixed(2)}]`,
+            );
         });
         lines.push('');
         lines.push('## Key claims (centrality)');
         lines.push('');
         const cent = await this.centrality(topicId);
         const claimById = new Map(claims.map((c) => [c.id, c]));
-        cent
-            .filter((n) => n.kind === 'claim')
+        cent.filter((n) => n.kind === 'claim')
             .sort((a, b) => b.normalized - a.normalized)
             .slice(0, 5)
             .forEach((n) => {
@@ -929,11 +992,7 @@ function locateFragment(content: string, claim: string): { start: number } | und
     if (trimmed.length === 0) return undefined;
     const direct = content.indexOf(trimmed);
     if (direct !== -1) return { start: direct };
-    const pattern = trimmed
-        .replace(/\s+/g, ' ')
-        .split(' ')
-        .map(escapeRegExp)
-        .join('\\s+');
+    const pattern = trimmed.replace(/\s+/g, ' ').split(' ').map(escapeRegExp).join('\\s+');
     const match = new RegExp(pattern).exec(content);
     if (match) return { start: match.index };
     return undefined;
@@ -947,33 +1006,256 @@ const ENTITY_MERGE_THRESHOLD = 0.85;
 
 /** Общеупотребительные слова, не являющиеся понятиями. */
 const STOPWORDS = new Set([
-    'the', 'a', 'an', 'and', 'or', 'but', 'if', 'then', 'else', 'when', 'while',
-    'of', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'from', 'into', 'onto',
-    'about', 'over', 'under', 'between', 'against', 'through', 'during', 'after',
-    'before', 'until', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'has',
-    'have', 'had', 'do', 'does', 'did', 'will', 'would', 'shall', 'should', 'can',
-    'could', 'may', 'might', 'must', 'not', 'no', 'nor', 'so', 'too', 'very',
-    'just', 'also', 'only', 'more', 'most', 'other', 'such', 'than', 'as', 'it',
-    'its', 'this', 'that', 'these', 'those', 'he', 'she', 'they', 'we', 'you',
-    'i', 'me', 'him', 'her', 'them', 'us', 'my', 'your', 'his', 'their', 'our',
-    'what', 'which', 'who', 'whom', 'whose', 'when', 'where', 'why', 'how',
-    'all', 'any', 'both', 'each', 'few', 'many', 'much', 'some', 'several',
-    'there', 'here', 'up', 'down', 'out', 'off', 'again', 'once', 'also',
-    'и', 'в', 'на', 'с', 'со', 'по', 'для', 'от', 'из', 'к', 'ко', 'за',
-    'при', 'не', 'нет', 'ни', 'но', 'а', 'или', 'если', 'то', 'так', 'как',
-    'что', 'чтобы', 'это', 'этот', 'эта', 'это', 'эти', 'он', 'она', 'оно',
-    'они', 'мы', 'вы', 'ты', 'я', 'мне', 'меня', 'тебе', 'вам', 'нам',
-    'его', 'её', 'ее', 'их', 'мой', 'твой', 'наш', 'ваш', 'свой', 'который',
-    'которая', 'которое', 'которые', 'там', 'здесь', 'тут', 'уже', 'ещё',
-    'еще', 'только', 'более', 'менее', 'очень', 'все', 'всё', 'весь', 'сам',
-    'сама', 'само', 'сами', 'другой', 'другая', 'другое', 'другие', 'такой',
-    'такая', 'такое', 'такие', 'каждый', 'каждая', 'каждое', 'каждые',
-    'между', 'через', 'около', 'над', 'под', 'перед', 'после', 'во', 'время',
-    'дело', 'вещь', 'часть', 'год', 'года', 'лет', 'день', 'дня', 'дней',
-    'раз', 'раза', 'когда', 'потому', 'поэтому', 'хотя', 'даже', 'ли',
-    'бы', 'был', 'была', 'было', 'были', 'будет', 'будут', 'есть', 'можно',
-    'нельзя', 'нужно', 'надо', 'должен', 'должна', 'должны', 'может', 'могут',
-    'является', 'являются', 'считается', 'представляет',
+    'the',
+    'a',
+    'an',
+    'and',
+    'or',
+    'but',
+    'if',
+    'then',
+    'else',
+    'when',
+    'while',
+    'of',
+    'in',
+    'on',
+    'at',
+    'to',
+    'for',
+    'with',
+    'by',
+    'from',
+    'into',
+    'onto',
+    'about',
+    'over',
+    'under',
+    'between',
+    'against',
+    'through',
+    'during',
+    'after',
+    'before',
+    'until',
+    'is',
+    'are',
+    'was',
+    'were',
+    'be',
+    'been',
+    'being',
+    'has',
+    'have',
+    'had',
+    'do',
+    'does',
+    'did',
+    'will',
+    'would',
+    'shall',
+    'should',
+    'can',
+    'could',
+    'may',
+    'might',
+    'must',
+    'not',
+    'no',
+    'nor',
+    'so',
+    'too',
+    'very',
+    'just',
+    'also',
+    'only',
+    'more',
+    'most',
+    'other',
+    'such',
+    'than',
+    'as',
+    'it',
+    'its',
+    'this',
+    'that',
+    'these',
+    'those',
+    'he',
+    'she',
+    'they',
+    'we',
+    'you',
+    'i',
+    'me',
+    'him',
+    'her',
+    'them',
+    'us',
+    'my',
+    'your',
+    'his',
+    'their',
+    'our',
+    'what',
+    'which',
+    'who',
+    'whom',
+    'whose',
+    'when',
+    'where',
+    'why',
+    'how',
+    'all',
+    'any',
+    'both',
+    'each',
+    'few',
+    'many',
+    'much',
+    'some',
+    'several',
+    'there',
+    'here',
+    'up',
+    'down',
+    'out',
+    'off',
+    'again',
+    'once',
+    'also',
+    'и',
+    'в',
+    'на',
+    'с',
+    'со',
+    'по',
+    'для',
+    'от',
+    'из',
+    'к',
+    'ко',
+    'за',
+    'при',
+    'не',
+    'нет',
+    'ни',
+    'но',
+    'а',
+    'или',
+    'если',
+    'то',
+    'так',
+    'как',
+    'что',
+    'чтобы',
+    'это',
+    'этот',
+    'эта',
+    'это',
+    'эти',
+    'он',
+    'она',
+    'оно',
+    'они',
+    'мы',
+    'вы',
+    'ты',
+    'я',
+    'мне',
+    'меня',
+    'тебе',
+    'вам',
+    'нам',
+    'его',
+    'её',
+    'ее',
+    'их',
+    'мой',
+    'твой',
+    'наш',
+    'ваш',
+    'свой',
+    'который',
+    'которая',
+    'которое',
+    'которые',
+    'там',
+    'здесь',
+    'тут',
+    'уже',
+    'ещё',
+    'еще',
+    'только',
+    'более',
+    'менее',
+    'очень',
+    'все',
+    'всё',
+    'весь',
+    'сам',
+    'сама',
+    'само',
+    'сами',
+    'другой',
+    'другая',
+    'другое',
+    'другие',
+    'такой',
+    'такая',
+    'такое',
+    'такие',
+    'каждый',
+    'каждая',
+    'каждое',
+    'каждые',
+    'между',
+    'через',
+    'около',
+    'над',
+    'под',
+    'перед',
+    'после',
+    'во',
+    'время',
+    'дело',
+    'вещь',
+    'часть',
+    'год',
+    'года',
+    'лет',
+    'день',
+    'дня',
+    'дней',
+    'раз',
+    'раза',
+    'когда',
+    'потому',
+    'поэтому',
+    'хотя',
+    'даже',
+    'ли',
+    'бы',
+    'был',
+    'была',
+    'было',
+    'были',
+    'будет',
+    'будут',
+    'есть',
+    'можно',
+    'нельзя',
+    'нужно',
+    'надо',
+    'должен',
+    'должна',
+    'должны',
+    'может',
+    'могут',
+    'является',
+    'являются',
+    'считается',
+    'представляет',
 ]);
 
 /**
@@ -1084,27 +1366,28 @@ function differsOnlyByNumbers(a: Set<string>, b: Set<string>): boolean {
     if (an.length !== bn.length || an.some((t, i) => t !== bn[i])) return false;
     const anum = numericTokens([...a]).sort();
     const bnum = numericTokens([...b]).sort();
-    return (
-        anum.length !== bnum.length || anum.some((t, i) => t !== bnum[i])
-    );
+    return anum.length !== bnum.length || anum.some((t, i) => t !== bnum[i]);
 }
 
 /**
  * Ищет в существующих утверждениях либо уверенный дубликат (auto-merge),
  * либо кандидата на объединение (похож, но не настолько, чтобы сливать).
+ *
+ * `candidates`, если передан, ограничивает проход (результат SimHash-индекса);
+ * иначе сканируются все существующие утверждения (fallback).
  */
 function findDuplicate(
     existing: TopicClaim[],
     text: string,
     embedding?: number[],
+    candidates?: TopicClaim[],
 ): { dup?: TopicClaim; candidate?: TopicClaim } {
     const t = tokenize(text);
     let bestCandidate: TopicClaim | undefined;
     let bestSim = 0;
-    for (const claim of existing) {
+    for (const claim of candidates ?? existing) {
         const jSim = jaccard(t, tokenize(claim.text));
-        const eSim =
-            embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
+        const eSim = embedding && claim.embedding ? cosine(embedding, claim.embedding) : 0;
         const differsNumbers = differsOnlyByNumbers(t, tokenize(claim.text));
         if (
             !differsNumbers &&
