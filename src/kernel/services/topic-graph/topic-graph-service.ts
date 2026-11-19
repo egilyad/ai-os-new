@@ -454,11 +454,20 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     }
 
     private async syncConcepts(topicId: string, allClaims: TopicClaim[]): Promise<void> {
+        // Инвертированный индекс токен → Set(claimId): превращает пересчёт
+        // claimIds концепта из O(N claims) в O(1)-подобное обращение.
+        const tokenToClaims = new Map<string, Set<string>>();
         const freq = new Map<string, number>();
         for (const c of allClaims) {
             for (const w of tokenList(c.text)) {
                 if (STOPWORDS.has(w)) continue;
                 freq.set(w, (freq.get(w) ?? 0) + 1);
+                let set = tokenToClaims.get(w);
+                if (!set) {
+                    set = new Set();
+                    tokenToClaims.set(w, set);
+                }
+                set.add(c.id);
             }
         }
         const names = [...freq.entries()]
@@ -474,9 +483,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         for (const rawName of names) {
             const name = rawName.normalize('NFKC');
             activeNames.add(name);
-            const claimIds = allClaims
-                .filter((c) => tokenize(c.text).has(rawName))
-                .map((c) => c.id);
+            const claimIds = [...(tokenToClaims.get(rawName) ?? [])];
             const prev = byName.get(name) ?? byName.get(rawName);
             if (prev) {
                 await this.db.topicConcepts.put({ ...prev, claimIds });
@@ -522,7 +529,7 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         // Устаревшие: пересчитать claimIds; полностью мёртвые — удалить с рёбрами.
         for (const c of existing) {
             const nm = c.name.normalize('NFKC');
-            const claimIds = allClaims.filter((cc) => tokenize(cc.text).has(nm)).map((cc) => cc.id);
+            const claimIds = [...(tokenToClaims.get(nm) ?? [])];
             if (claimIds.length > 0) {
                 if (!activeNames.has(nm)) {
                     await this.db.topicConcepts.put({ ...c, claimIds });
@@ -545,13 +552,33 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     ): TopicRelation[] {
         const out: TopicRelation[] = [];
         const seen = new Set<string>();
+        // Инвертированный индекс токен → claims: кандидаты для каждого нового
+        // утверждения — только те claims, с которыми есть хотя бы один общий
+        // токен (вместо попарного сравнения со всеми).
+        const tokenToClaims = new Map<string, TopicClaim[]>();
+        for (const c of allClaims) {
+            for (const w of tokenize(c.text)) {
+                let arr = tokenToClaims.get(w);
+                if (!arr) {
+                    arr = [];
+                    tokenToClaims.set(w, arr);
+                }
+                arr.push(c);
+            }
+        }
         for (const a of newClaims) {
-            for (const b of allClaims) {
-                if (a.id === b.id) continue;
+            const aTokens = tokenize(a.text);
+            const candidates = new Map<string, TopicClaim>();
+            for (const w of aTokens) {
+                for (const b of tokenToClaims.get(w) ?? []) {
+                    if (b.id !== a.id && !candidates.has(b.id)) candidates.set(b.id, b);
+                }
+            }
+            for (const b of candidates.values()) {
                 const key = a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`;
                 if (seen.has(key)) continue;
                 seen.add(key);
-                const inter = [...tokenize(a.text)].filter((w) => tokenize(b.text).has(w)).length;
+                const inter = [...aTokens].filter((w) => tokenize(b.text).has(w)).length;
                 if (inter >= 2) {
                     const contradicts = hasNegation(a.text) !== hasNegation(b.text);
                     out.push({
