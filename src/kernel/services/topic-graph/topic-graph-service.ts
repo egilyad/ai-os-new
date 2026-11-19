@@ -352,8 +352,14 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     if (conflicting) {
                         // противоречие: не схлопываем
                     } else {
+                        const variants = found.dup.variants ?? [];
+                        const variant = text;
                         if (!found.dup.sourceIds.includes(source.id)) {
                             found.dup.sourceIds.push(source.id);
+                            if (variant !== found.dup.text && !variants.includes(variant)) {
+                                variants.push(variant);
+                            }
+                            found.dup.variants = variants;
                             found.dup.updatedAt = Date.now();
                             // Второй независимый источник подтверждает утверждение.
                             if (found.dup.status === 'extracted') {
@@ -987,6 +993,90 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             degree: deg.get(n.id) ?? 0,
             normalized: (deg.get(n.id) ?? 0) / max,
         }));
+    }
+
+    async mergeClaims(topicId: string, keepId: string, absorbId: string): Promise<void> {
+        if (keepId === absorbId) return;
+        const [keep, absorb] = await Promise.all([
+            this.db.topicClaims.get(keepId),
+            this.db.topicClaims.get(absorbId),
+        ]);
+        if (!keep || !absorb || keep.topicId !== topicId || absorb.topicId !== topicId) {
+            throw new Error('mergeClaims: claims not found or from another topic');
+        }
+
+        // Канон остаётся; влитое уходит в variants.
+        const variants = keep.variants ?? [];
+        if (absorb.text !== keep.text && !variants.includes(absorb.text)) {
+            variants.push(absorb.text);
+        }
+        for (const v of absorb.variants ?? []) {
+            if (!variants.includes(v)) variants.push(v);
+        }
+        const sourceIds = [...new Set([...keep.sourceIds, ...absorb.sourceIds])];
+        const merged: TopicClaim = {
+            ...keep,
+            variants: variants.slice(0, 50),
+            sourceIds,
+            status: sourceIds.length > 1 ? 'validated' : keep.status,
+            updatedAt: Date.now(),
+        };
+        await this.db.topicClaims.put(merged);
+
+        // Рёбра перенаправляются на канон.
+        const relations = await this.db.topicRelations.where('topicId').equals(topicId).toArray();
+        const redirected: TopicRelation[] = [];
+        const deadIds = new Set<string>();
+        for (const r of relations) {
+            let changed = false;
+            const next = { ...r };
+            if (r.fromId === absorbId) {
+                next.fromId = keepId;
+                changed = true;
+            }
+            if (r.toId === absorbId) {
+                next.toId = keepId;
+                changed = true;
+            }
+            if (changed) {
+                if (next.fromId === next.toId) {
+                    deadIds.add(r.id);
+                } else {
+                    redirected.push(next);
+                }
+            }
+        }
+        if (redirected.length > 0) {
+            await this.db.topicRelations.bulkPut(redirected as never);
+        }
+        if (deadIds.size > 0) {
+            await this.db.topicRelations.bulkDelete([...deadIds]);
+        }
+
+        // Концепты: заменить absorbId на keepId в claimIds.
+        const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
+        const conceptUpdates: TopicConcept[] = [];
+        for (const c of concepts) {
+            if (c.claimIds.includes(absorbId)) {
+                conceptUpdates.push({
+                    ...c,
+                    claimIds: [...new Set(c.claimIds.map((id) => (id === absorbId ? keepId : id)))],
+                });
+            }
+        }
+        if (conceptUpdates.length > 0) {
+            await this.db.topicConcepts.bulkPut(conceptUpdates as never);
+        }
+
+        // Evidence перепривязывается, само утверждение удаляется.
+        const evidence = await this.db.topicEvidence.where('topicId').equals(topicId).toArray();
+        const evUpdates = evidence
+            .filter((e) => e.claimId === absorbId)
+            .map((e) => ({ ...e, claimId: keepId }));
+        if (evUpdates.length > 0) {
+            await this.db.topicEvidence.bulkPut(evUpdates as never);
+        }
+        await this.db.topicClaims.delete(absorbId);
     }
 
     async exportReport(topicId: string): Promise<string> {

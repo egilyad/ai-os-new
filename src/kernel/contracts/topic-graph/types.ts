@@ -43,6 +43,8 @@ export interface TopicClaim {
     text: string;
     /** Все источники, где встречается это утверждение. */
     sourceIds: string[];
+    /** Поверхностные формулировки, влитые при слиянии (без канона). */
+    variants?: string[];
     confidence: number;
     status: ClaimStatus;
     /** Вектор для смысловой близости (опционально). */

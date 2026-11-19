@@ -54,7 +54,10 @@ export interface TopicGraphService {
     createTopic(title: string, description: string): Promise<Topic>;
     listTopics(): Promise<Topic[]>;
     getTopic(id: string): Promise<Topic | undefined>;
-    updateTopic(id: string, patch: Partial<Pick<Topic, 'title' | 'description' | 'status'>>): Promise<Topic | undefined>;
+    updateTopic(
+        id: string,
+        patch: Partial<Pick<Topic, 'title' | 'description' | 'status'>>,
+    ): Promise<Topic | undefined>;
     /** Удаление только при confirm: true (каскадное, уничтожает источники). */
     deleteTopic(id: string, confirm?: boolean): Promise<boolean>;
     /** Архивирование: сохраняет все данные, тема уходит из активных. */
@@ -82,11 +85,15 @@ export interface TopicGraphService {
 
     /** Ручная консолидация: глобальная синхронизация концептов и иерархии. */
     consolidate(topicId: string): Promise<void>;
+    /** Слить два утверждения: `keep` остаётся каноном, `absorb` уходит в его variants. */
+    mergeClaims(topicId: string, keepId: string, absorbId: string): Promise<void>;
 
     /** Нормализованная степень центральности узлов (claims + концепты). */
     centrality(
         topicId: string,
-    ): Promise<Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>>;
+    ): Promise<
+        Array<{ id: string; kind: 'claim' | 'concept'; degree: number; normalized: number }>
+    >;
 
     /** Экспорт отчёта темы в Markdown. */
     exportReport(topicId: string): Promise<string>;
