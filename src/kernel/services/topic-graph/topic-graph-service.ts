@@ -213,16 +213,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         try {
             const sha = await sha256Hex(`${payload.kind}|${payload.ref}|${payload.content}`);
             const legacyFnv = fnv1a64(`${payload.kind}|${payload.ref}|${payload.content}`);
-            const existingSource = await this.db.topicSources
+            const topicSources = await this.db.topicSources
                 .where('topicId')
                 .equals(topicId)
-                .filter(
-                    (s) =>
-                        s.sha256 === sha ||
-                        s.sha256 === legacyFnv ||
-                        (s.legacyHash !== undefined && s.legacyHash === legacyFnv),
-                )
-                .first();
+                .toArray();
+            const existingSource = topicSources.find(
+                (s) =>
+                    s.sha256 === sha ||
+                    s.sha256 === legacyFnv ||
+                    (s.legacyHash !== undefined && s.legacyHash === legacyFnv),
+            );
             if (existingSource) {
                 run.status = 'completed';
                 run.completedAt = Date.now();
@@ -536,11 +536,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 }
             } else {
                 await this.db.topicConcepts.delete(c.id);
-                await this.db.topicRelations
-                    .where('topicId')
-                    .equals(topicId)
-                    .filter((r) => r.fromId === c.id || r.toId === c.id)
-                    .delete();
+                const stale = (
+                    await this.db.topicRelations.where('topicId').equals(topicId).toArray()
+                ).filter((r) => r.fromId === c.id || r.toId === c.id);
+                if (stale.length > 0) {
+                    await this.db.topicRelations.bulkDelete(stale.map((r) => r.id));
+                }
             }
         }
     }
@@ -553,10 +554,14 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         const out: TopicRelation[] = [];
         const seen = new Set<string>();
         // Инвертированный индекс токен → claims: кандидаты для каждого нового
-        // утверждения — только те claims, с которыми есть хотя бы один общий
-        // токен (вместо попарного сравнения со всеми).
+        // утверждения — только те claims, с которыми есть общие токены.
+        // Чтобы рёбра не росли квадратично (все пары с общими словами),
+        // для каждого нового утверждения берём только топ-кандидатов
+        // по числу пересечений (MAX_REL_CANDIDATES).
         const tokenToClaims = new Map<string, TopicClaim[]>();
+        const claimById = new Map<string, TopicClaim>();
         for (const c of allClaims) {
+            claimById.set(c.id, c);
             for (const w of tokenize(c.text)) {
                 let arr = tokenToClaims.get(w);
                 if (!arr) {
@@ -568,31 +573,34 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
         for (const a of newClaims) {
             const aTokens = tokenize(a.text);
-            const candidates = new Map<string, TopicClaim>();
+            const overlap = new Map<string, number>();
             for (const w of aTokens) {
                 for (const b of tokenToClaims.get(w) ?? []) {
-                    if (b.id !== a.id && !candidates.has(b.id)) candidates.set(b.id, b);
+                    if (b.id === a.id) continue;
+                    overlap.set(b.id, (overlap.get(b.id) ?? 0) + 1);
                 }
             }
-            for (const b of candidates.values()) {
-                const key = a.id < b.id ? `${a.id}|${b.id}` : `${b.id}|${a.id}`;
+            const ranked = [...overlap.entries()]
+                .filter(([, n]) => n >= 2)
+                .sort((x, y) => y[1]! - x[1]!)
+                .slice(0, 30);
+            for (const [bid, inter] of ranked) {
+                const key = a.id < bid ? `${a.id}|${bid}` : `${bid}|${a.id}`;
                 if (seen.has(key)) continue;
                 seen.add(key);
-                const inter = [...aTokens].filter((w) => tokenize(b.text).has(w)).length;
-                if (inter >= 2) {
-                    const contradicts = hasNegation(a.text) !== hasNegation(b.text);
-                    out.push({
-                        id: GENERIC_ID('rel'),
-                        topicId,
-                        fromId: a.id,
-                        toId: b.id,
-                        relation: contradicts ? 'contradicts' : 'related_to',
-                        weight: contradicts
-                            ? Math.min(1, 0.4 + inter * 0.1)
-                            : Math.max(0.3, Math.min(0.6, inter * 0.15)),
-                        createdAt: Date.now(),
-                    });
-                }
+                const bText = claimById.get(bid)?.text ?? '';
+                const contradicts = hasNegation(a.text) !== hasNegation(bText);
+                out.push({
+                    id: GENERIC_ID('rel'),
+                    topicId,
+                    fromId: a.id,
+                    toId: bid,
+                    relation: contradicts ? 'contradicts' : 'related_to',
+                    weight: contradicts
+                        ? Math.min(1, 0.4 + inter * 0.1)
+                        : Math.max(0.3, Math.min(0.6, inter * 0.15)),
+                    createdAt: Date.now(),
+                });
             }
         }
         return out;
@@ -657,15 +665,37 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         const concepts = await this.db.topicConcepts.where('topicId').equals(topicId).toArray();
         if (concepts.length < 2) return;
         const conceptIds = new Set(concepts.map((c) => c.id));
-        // Полный пересчёт автоматических рёбер: ручные не трогаем.
-        await this.db.topicRelations
+        const allRelations = await this.db.topicRelations
             .where('topicId')
             .equals(topicId)
-            .filter((r) => !r.manual && conceptIds.has(r.fromId) && conceptIds.has(r.toId))
-            .delete();
-        const relations = buildConceptRelations(topicId, concepts, CONCEPT_COVER_THRESHOLD);
-        if (relations.length > 0) {
-            await this.db.topicRelations.bulkPut(relations as never);
+            .toArray();
+        const existing = new Map<string, TopicRelation>();
+        for (const r of allRelations) {
+            if (!r.manual && conceptIds.has(r.fromId) && conceptIds.has(r.toId)) {
+                existing.set(`${r.fromId}|${r.toId}|${r.relation}`, r);
+            }
+        }
+        const desired = buildConceptRelations(topicId, concepts, CONCEPT_COVER_THRESHOLD);
+        const fresh: TopicRelation[] = [];
+        for (const r of desired) {
+            const k = `${r.fromId}|${r.toId}|${r.relation}`;
+            if (!existing.has(k)) {
+                existing.set(k, r);
+                fresh.push(r);
+            }
+        }
+        const stale = allRelations.filter(
+            (r) =>
+                !r.manual &&
+                conceptIds.has(r.fromId) &&
+                conceptIds.has(r.toId) &&
+                !existing.has(`${r.fromId}|${r.toId}|${r.relation}`),
+        );
+        if (fresh.length > 0) {
+            await this.db.topicRelations.bulkPut(fresh as never);
+        }
+        if (stale.length > 0) {
+            await this.db.topicRelations.bulkDelete(stale.map((r) => r.id));
         }
     }
 
