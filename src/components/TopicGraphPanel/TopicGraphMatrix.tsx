@@ -37,8 +37,8 @@ export default function TopicGraphMatrix(props: TopicGraphMatrixProps) {
                 conflicts[i]![j] = true;
                 conflicts[j]![i] = true;
             } else {
-                weight[i]![j] += r.weight;
-                if (i !== j) weight[j]![i] += r.weight;
+                weight[i]![j] = (weight[i]![j] ?? 0) + r.weight;
+                if (i !== j) weight[j]![i] = (weight[j]![i] ?? 0) + r.weight;
             }
         }
 
@@ -99,7 +99,7 @@ export default function TopicGraphMatrix(props: TopicGraphMatrixProps) {
                         top.map((_, j) => {
                             const isDiag = i === j;
                             const isConflict = conflicts[i]![j] && !isDiag;
-                            const w = isDiag ? diag[i]! : weight[i]![j];
+                            const w = isDiag ? diag[i]! : (weight[i]![j] ?? 0);
                             const intensity = isDiag
                                 ? Math.min(1, w / 12)
                                 : Math.min(1, w / maxWeight);
