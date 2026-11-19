@@ -115,11 +115,34 @@ const DEDUPE_EMBEDDING_THRESHOLD = 0.82;
 const MERGE_CANDIDATE_THRESHOLD = 0.25;
 const CONTRADICTION_THRESHOLD = 0.4;
 
+type LlmRelationKind =
+    | 'supports'
+    | 'contradicts'
+    | 'refines'
+    | 'depends_on'
+    | 'example_of'
+    | 'same_as'
+    | 'cites'
+    | 'related_to'
+    | 'part_of';
+
 interface LlmRelationDraft {
     source: string;
     target: string;
-    kind: 'related' | 'part_of';
+    kind: LlmRelationKind;
 }
+
+const VALID_RELATION_KINDS = new Set<LlmRelationKind>([
+    'supports',
+    'contradicts',
+    'refines',
+    'depends_on',
+    'example_of',
+    'same_as',
+    'cites',
+    'related_to',
+    'part_of',
+]);
 
 export class TopicGraphServiceImpl implements TopicGraphService {
     private db: TopicGraphDB;
@@ -704,17 +727,41 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 byName.set(normKey(a), c);
             }
         }
+        // Привязка источника/цели к концепту: точное имя → эмбеддинг-близость.
+        const resolveConcept = async (label: string): Promise<TopicConcept | undefined> => {
+            const exact = byName.get(normKey(label));
+            if (exact) return exact;
+            if (!this.deps.embedder) return undefined;
+            try {
+                const vecs = await this.deps.embedder.embed([label]);
+                const vec = vecs[0];
+                if (!vec) return undefined;
+                let best: TopicConcept | undefined;
+                let bestSim = ENTITY_MERGE_THRESHOLD;
+                for (const c of concepts) {
+                    if (!c.embedding) continue;
+                    const sim = cosine(vec, c.embedding);
+                    if (sim >= bestSim) {
+                        bestSim = sim;
+                        best = c;
+                    }
+                }
+                return best;
+            } catch {
+                return undefined;
+            }
+        };
         const relations: TopicRelation[] = [];
         for (const d of drafts) {
-            const a = byName.get(normKey(d.source));
-            const b = byName.get(normKey(d.target));
+            const a = await resolveConcept(d.source);
+            const b = await resolveConcept(d.target);
             if (!a || !b || a.id === b.id) continue;
             relations.push({
                 id: GENERIC_ID('rel'),
                 topicId,
                 fromId: a.id,
                 toId: b.id,
-                relation: d.kind === 'related' ? 'related_to' : d.kind,
+                relation: d.kind,
                 weight: 0.7,
                 manual: true,
                 createdAt: Date.now(),
@@ -793,8 +840,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                         role: 'system',
                         content:
                             'Extract standalone factual claims from the text. ' +
-                            'Return ONLY a JSON array of strings: ["claim1","claim2",...]. ' +
-                            'Each claim must be a single concrete fact. No prose.',
+                            'Return ONLY a JSON array of objects: ' +
+                            '[{"text":"claim1","relations":[{"a":"X","b":"Y","kind":"supports"}]},...]. ' +
+                            'Each claim must be a single concrete fact. ' +
+                            'relation.kind must be one of: supports, contradicts, refines, ' +
+                            'depends_on, example_of, same_as, cites, related_to, part_of. ' +
+                            'No prose.',
                     },
                     { role: 'user', content: chunk },
                 ]);
@@ -815,11 +866,12 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                                 if (!r || typeof r !== 'object') continue;
                                 const rr = r as { a?: unknown; b?: unknown; kind?: unknown };
                                 if (typeof rr.a === 'string' && typeof rr.b === 'string') {
-                                    relations.push({
-                                        source: rr.a,
-                                        target: rr.b,
-                                        kind: rr.kind === 'part_of' ? 'part_of' : 'related',
-                                    });
+                                    const kind =
+                                        typeof rr.kind === 'string' &&
+                                        VALID_RELATION_KINDS.has(rr.kind as LlmRelationKind)
+                                            ? (rr.kind as LlmRelationKind)
+                                            : 'related_to';
+                                    relations.push({ source: rr.a, target: rr.b, kind });
                                 }
                             }
                         }

@@ -171,6 +171,37 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(claims.length).toBe(2);
     });
 
+    it('extracts typed relations (supports/part_of) via LLM and resolves by name', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    {
+                        text: 'OpenCode поддерживает MCP-серверы.',
+                        relations: [
+                            { a: 'OpenCode', b: 'MCP', kind: 'supports' },
+                            { a: 'MCP', b: 'OpenCode', kind: 'part_of' },
+                        ],
+                    },
+                    { text: 'OpenCode может работать с MCP-серверами.' },
+                    { text: 'MCP-серверы подключаются к OpenCode.' },
+                ]),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('TypedRels', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content:
+                'OpenCode поддерживает MCP-серверы. OpenCode может работать с MCP-серверами. MCP-серверы подключаются к OpenCode.',
+        });
+
+        const relations = await svc.relations(topic.id);
+        expect(relations.some((r) => r.relation === 'supports')).toBe(true);
+        expect(relations.some((r) => r.relation === 'part_of')).toBe(true);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');
