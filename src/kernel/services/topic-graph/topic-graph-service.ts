@@ -112,7 +112,7 @@ const DEDUPE_JACCARD_THRESHOLD = 0.6;
 /** Cosine-близость эмбеддингов для уверенного автослияния. */
 const DEDUPE_EMBEDDING_THRESHOLD = 0.82;
 /** Ниже этого порога — не кандидат на объединение. */
-const MERGE_CANDIDATE_THRESHOLD = 0.45;
+const MERGE_CANDIDATE_THRESHOLD = 0.25;
 const CONTRADICTION_THRESHOLD = 0.4;
 
 interface LlmRelationDraft {
@@ -1077,6 +1077,50 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.db.topicEvidence.bulkPut(evUpdates as never);
         }
         await this.db.topicClaims.delete(absorbId);
+    }
+
+    async mergeCandidates(
+        topicId: string,
+        limit = 20,
+    ): Promise<Array<{ a: TopicClaim; b: TopicClaim; similarity: number }>> {
+        const claims = await this.db.topicClaims.where('topicId').equals(topicId).toArray();
+        const out: Array<{ a: TopicClaim; b: TopicClaim; similarity: number }> = [];
+        const seen = new Set<string>();
+        const tokenToClaims = new Map<string, TopicClaim[]>();
+        for (const c of claims) {
+            for (const w of tokenize(c.text)) {
+                let arr = tokenToClaims.get(w);
+                if (!arr) {
+                    arr = [];
+                    tokenToClaims.set(w, arr);
+                }
+                arr.push(c);
+            }
+        }
+        for (const a of claims) {
+            const aTokens = tokenize(a.text);
+            const overlap = new Map<string, number>();
+            for (const w of aTokens) {
+                for (const b of tokenToClaims.get(w) ?? []) {
+                    if (b.id === a.id) continue;
+                    overlap.set(b.id, (overlap.get(b.id) ?? 0) + 1);
+                }
+            }
+            for (const [bid, inter] of overlap) {
+                if (inter < 2) continue;
+                const key = a.id < bid ? `${a.id}|${bid}` : `${bid}|${a.id}`;
+                if (seen.has(key)) continue;
+                seen.add(key);
+                const b = claims.find((c) => c.id === bid);
+                if (!b) continue;
+                const sim = jaccard(aTokens, tokenize(b.text));
+                if (sim >= MERGE_CANDIDATE_THRESHOLD && sim < DEDUPE_JACCARD_THRESHOLD) {
+                    out.push({ a, b, similarity: sim });
+                }
+            }
+        }
+        out.sort((x, y) => y.similarity - x.similarity);
+        return out.slice(0, limit);
     }
 
     async exportReport(topicId: string): Promise<string> {

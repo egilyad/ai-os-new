@@ -95,6 +95,34 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(merged!.sourceIds).toHaveLength(2);
     });
 
+    it('finds merge candidates for similar claims', async () => {
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB());
+        const topic = await svc.createTopic('Candidates', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content:
+                'OpenCode поддерживает MCP-серверы. ' +
+                'Скорость протокола обусловлена малым весом. ' +
+                'Панель настроек включает восемь вкладок.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content:
+                'Поддержка веб-протокола MCP встроена в OpenCode. ' +
+                'Протокол быстрый, потому что лёгкий. ' +
+                'Настройки содержат восемь вкладок интерфейса.',
+        });
+
+        const cands = await svc.mergeCandidates(topic.id, 20);
+        expect(cands.length).toBeGreaterThan(0);
+        const pair = cands.find((p) => p.similarity >= 0.25);
+        expect(pair).toBeTruthy();
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

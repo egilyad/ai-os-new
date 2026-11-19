@@ -18,13 +18,14 @@ import TopicGraphRadial from './TopicGraphRadial';
 import TopicGraphTree from './TopicGraphTree';
 import TopicGraphMatrix from './TopicGraphMatrix';
 
-type View = 'graph' | 'knowledge' | 'sources' | 'coverage';
+type View = 'graph' | 'knowledge' | 'sources' | 'coverage' | 'candidates';
 
 const VIEWS: Array<{ id: View; label: string }> = [
     { id: 'graph', label: 'Graph' },
     { id: 'knowledge', label: 'Knowledge' },
     { id: 'sources', label: 'Sources' },
     { id: 'coverage', label: 'Coverage' },
+    { id: 'candidates', label: 'Кандидаты' },
 ];
 
 const KIND_COLORS: Record<string, string> = {
@@ -61,6 +62,9 @@ export default function TopicGraphPanel() {
         coverage: number;
     } | null>(null);
     const [message, setMessage] = useState('');
+    const [candidates, setCandidates] = useState<
+        Array<{ a: TopicClaim; b: TopicClaim; similarity: number }>
+    >([]);
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [exportProjectId, setExportProjectId] = useState('');
 
@@ -120,6 +124,7 @@ export default function TopicGraphPanel() {
                 setConflicts(cf);
                 setSources(s);
                 setCoverage(cov);
+                setCandidates(await svc().mergeCandidates(selectedTopic, 20));
             } catch (e) {
                 setMessage(`Ошибка загрузки темы: ${e instanceof Error ? e.message : String(e)}`);
             }
@@ -223,6 +228,32 @@ export default function TopicGraphPanel() {
             await runIngest({ ref: file.name, title: file.name, content: text });
         } catch (err) {
             setMessage(`Ошибка чтения файла: ${err instanceof Error ? err.message : String(err)}`);
+        }
+    };
+
+    const handleMerge = async (keepId: string, absorbId: string) => {
+        if (!selectedTopic) return;
+        try {
+            await svc().mergeClaims(selectedTopic, keepId, absorbId);
+            setMessage('Утверждения объединены');
+            const [c, cp, r, cf, s, cov, cands] = await Promise.all([
+                svc().claims(selectedTopic),
+                svc().concepts(selectedTopic),
+                svc().relations(selectedTopic),
+                svc().conflicts(selectedTopic),
+                svc().sources(selectedTopic),
+                svc().completeness(selectedTopic),
+                svc().mergeCandidates(selectedTopic, 20),
+            ]);
+            setClaims(c);
+            setConcepts(cp);
+            setRelations(r);
+            setConflicts(cf);
+            setSources(s);
+            setCoverage(cov);
+            setCandidates(cands);
+        } catch (e) {
+            setMessage(`Ошибка объединения: ${e instanceof Error ? e.message : String(e)}`);
         }
     };
 
@@ -598,6 +629,79 @@ export default function TopicGraphPanel() {
                                 Нет источников
                             </span>
                         )}
+                    </div>
+                )}
+
+                {view === 'candidates' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div style={{ fontSize: 12, color: 'var(--slate-400)' }}>
+                            Похожие утверждения — кандидаты на объединение ({candidates.length})
+                        </div>
+                        {candidates.length === 0 && (
+                            <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                                Кандидатов нет
+                            </span>
+                        )}
+                        {candidates.map((pair) => (
+                            <div
+                                key={`${pair.a.id}|${pair.b.id}`}
+                                style={{
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    borderRadius: 8,
+                                    padding: '8px 10px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 6,
+                                }}
+                            >
+                                <div style={{ fontSize: 12, color: 'var(--slate-200)' }}>
+                                    {pair.a.text}
+                                </div>
+                                <div style={{ fontSize: 12, color: 'var(--slate-400)' }}>
+                                    {pair.b.text}
+                                </div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        fontSize: 11,
+                                        color: 'var(--slate-500)',
+                                    }}
+                                >
+                                    <span>похожесть: {pair.similarity.toFixed(2)}</span>
+                                    <button
+                                        onClick={() => void handleMerge(pair.a.id, pair.b.id)}
+                                        style={{
+                                            padding: '3px 10px',
+                                            borderRadius: 6,
+                                            border: 'none',
+                                            background: tokens.accent,
+                                            color: tokens.slate[950],
+                                            fontWeight: 700,
+                                            cursor: 'pointer',
+                                            fontSize: 11,
+                                        }}
+                                    >
+                                        Слить A←B
+                                    </button>
+                                    <button
+                                        onClick={() => void handleMerge(pair.b.id, pair.a.id)}
+                                        style={{
+                                            padding: '3px 10px',
+                                            borderRadius: 6,
+                                            border: '1px solid var(--border)',
+                                            background: 'transparent',
+                                            color: 'var(--slate-300)',
+                                            cursor: 'pointer',
+                                            fontSize: 11,
+                                        }}
+                                    >
+                                        Слить B←A
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
 

@@ -87,6 +87,11 @@ export interface TopicGraphService {
     consolidate(topicId: string): Promise<void>;
     /** Слить два утверждения: `keep` остаётся каноном, `absorb` уходит в его variants. */
     mergeClaims(topicId: string, keepId: string, absorbId: string): Promise<void>;
+    /** Найти пары похожих утверждений — кандидатов на объединение (merge candidates). */
+    mergeCandidates(
+        topicId: string,
+        limit?: number,
+    ): Promise<Array<{ a: TopicClaim; b: TopicClaim; similarity: number }>>;
 
     /** Нормализованная степень центральности узлов (claims + концепты). */
     centrality(
