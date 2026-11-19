@@ -11,6 +11,7 @@ import type { IEventBus } from '../../types/interfaces';
 import type { ILLMClientService } from '../../contracts/provider-adapter';
 import type { IToolRunnerService } from '../../contracts/parity';
 import type { IPlannerService, PlannerStrategy } from '../../contracts/rivals';
+import type { IReplanningService, ReplanStep } from '../../contracts/replanning';
 import type { DataAccessLayer } from '../../dal/types';
 import { EVENTS } from '../../events/event-names';
 import { rootLogger } from '../logger-service';
@@ -29,6 +30,7 @@ export class PlannerService implements IPlannerService {
         private llm?: ILLMClientService,
         private tools?: IToolRunnerService,
         private dal?: DataAccessLayer,
+        private replanner?: IReplanningService,
     ) {
         this.filters.set('trim', {
             stage: 'pre',
@@ -41,17 +43,23 @@ export class PlannerService implements IPlannerService {
         // Restore persisted filters (trim is always present, others are additive).
         if (this.dal) {
             try {
-                const saved = await this.dal.kv.get<Array<{ stage: string; name: string; key: string }>>(
-                    PlannerService.FILTERS_KEY,
-                );
+                const saved = await this.dal.kv.get<
+                    Array<{ stage: string; name: string; key: string }>
+                >(PlannerService.FILTERS_KEY);
                 if (Array.isArray(saved)) {
                     for (const entry of saved) {
                         const fn = this.builtinFilter(entry.name);
-                        if (fn) this.filters.set(entry.key, { stage: entry.stage as 'pre' | 'post', fn });
+                        if (fn)
+                            this.filters.set(entry.key, {
+                                stage: entry.stage as 'pre' | 'post',
+                                fn,
+                            });
                     }
                 }
             } catch (e) {
-                LOGGER.warn('Planner', 'planner restore filters failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner restore filters failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
     }
@@ -80,15 +88,24 @@ export class PlannerService implements IPlannerService {
         try {
             await this.dal.kv.set(PlannerService.FILTERS_KEY, toSave);
         } catch (e) {
-            LOGGER.warn('Planner', 'planner persist filters failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('Planner', 'planner persist filters failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
         }
     }
 
-    async plan(task: string, strategy: PlannerStrategy = 'function_calling'): Promise<string> {
+    async plan(
+        task: string,
+        strategy: PlannerStrategy = 'function_calling',
+        opts?: { replan?: boolean },
+    ): Promise<string> {
         const prepared = this.applyFilters('pre', task);
         let out: string;
         switch (strategy) {
-            case 'sequential': {                const steps = await this.ask(`Break into an ordered step list (one per line, "- " prefix):\n${prepared}`);
+            case 'sequential': {
+                const steps = await this.ask(
+                    `Break into an ordered step list (one per line, "- " prefix):\n${prepared}`,
+                );
                 const results: string[] = [];
                 for (const line of steps.split('\n')) {
                     const m = line.match(/^-\s*(.+)/);
@@ -107,6 +124,9 @@ export class PlannerService implements IPlannerService {
             case 'plan_and_execute': {
                 // LangChain-style: planner drafts the full step list, executor
                 // runs each, then a final synthesis pass closes the task.
+                // When `replan` is enabled and a replanner is wired in, a
+                // failing step triggers a dynamic plan revision (PentAGI-
+                // inspired) instead of failing the whole task.
                 const planText = await this.ask(
                     `Draft a complete step plan (one per line, "- " prefix) for:\n${prepared}`,
                 );
@@ -117,8 +137,35 @@ export class PlannerService implements IPlannerService {
                     if (steps.length >= 8) break;
                 }
                 const results: string[] = [];
-                for (const step of steps.length > 0 ? steps : [prepared]) {
-                    results.push(await this.executeStep(step));
+                let replansLeft = opts?.replan && this.replanner ? 2 : 0;
+                let executed = 0;
+                for (let i = 0; i < steps.length && executed < 24;) {
+                    const res = await this.executeStep(steps[i]!);
+                    results.push(res);
+                    executed += 1;
+                    if (replansLeft > 0 && res.startsWith('ERROR:')) {
+                        const state: ReplanStep[] = steps.map((desc, idx) => ({
+                            id: String(idx),
+                            description: desc,
+                            status: idx < i ? 'done' : idx === i ? 'failed' : 'pending',
+                            result: idx === i ? res : undefined,
+                        }));
+                        const replan = await this.replanner!.replan({
+                            goal: prepared,
+                            steps: state,
+                        });
+                        if (replan.changed && replan.revisedSteps.length > 0) {
+                            steps.splice(
+                                0,
+                                steps.length,
+                                ...replan.revisedSteps.map((s) => s.description),
+                            );
+                            replansLeft -= 1;
+                            i = 0;
+                            continue;
+                        }
+                    }
+                    i += 1;
                 }
                 const synthesis = await this.ask(
                     `Synthesize these step results into the final answer:\n${results.join('\n---\n').slice(0, 6000)}`,
@@ -137,12 +184,19 @@ export class PlannerService implements IPlannerService {
         if (this.dal) {
             try {
                 const hist =
-                    (await this.dal.kv.get<Array<{ task: string; strategy: string; result: string; at: number }>>(
-                        PlannerService.HISTORY_KEY,
-                    )) ?? [];
-                hist.unshift({ task: task.slice(0, 500), strategy, result: finalOut.slice(0, 4000), at: Date.now() });
+                    (await this.dal.kv.get<
+                        Array<{ task: string; strategy: string; result: string; at: number }>
+                    >(PlannerService.HISTORY_KEY)) ?? [];
+                hist.unshift({
+                    task: task.slice(0, 500),
+                    strategy,
+                    result: finalOut.slice(0, 4000),
+                    at: Date.now(),
+                });
                 await this.dal.kv.set(PlannerService.HISTORY_KEY, hist.slice(0, 20));
-            } catch { /* history best-effort */ }
+            } catch {
+                /* history best-effort */
+            }
         }
         try {
             this.events.emit(EVENTS.PLANNER_PLAN_COMPLETED, {
@@ -150,16 +204,26 @@ export class PlannerService implements IPlannerService {
                 strategy,
                 result: finalOut.slice(0, 2000),
             });
-        } catch { /* events best-effort */ }
+        } catch {
+            /* events best-effort */
+        }
         return finalOut;
     }
 
     /** Execute a single stepwise step (explicit iteration driver). */
     async planStep(step: string): Promise<string> {
-        const res = this.applyFilters('post', await this.executeStep(this.applyFilters('pre', step)));
+        const res = this.applyFilters(
+            'post',
+            await this.executeStep(this.applyFilters('pre', step)),
+        );
         try {
-            this.events.emit(EVENTS.PLANNER_STEP, { step: step.slice(0, 500), result: res.slice(0, 2000) });
-        } catch { /* events best-effort */ }
+            this.events.emit(EVENTS.PLANNER_STEP, {
+                step: step.slice(0, 500),
+                result: res.slice(0, 2000),
+            });
+        } catch {
+            /* events best-effort */
+        }
         return res;
     }
 
@@ -182,7 +246,9 @@ export class PlannerService implements IPlannerService {
                 try {
                     out = f.fn(out);
                 } catch (e) {
-                    LOGGER.warn('Planner', 'filter failed', { error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('Planner', 'filter failed', {
+                        error: e instanceof Error ? e.message : String(e),
+                    });
                 }
             }
         }
@@ -194,39 +260,57 @@ export class PlannerService implements IPlannerService {
             try {
                 const res = await this.llm.chat(
                     [
-                        { role: 'system', content: 'You are a planner. Reply with exactly what is asked, no preamble.' },
+                        {
+                            role: 'system',
+                            content:
+                                'You are a planner. Reply with exactly what is asked, no preamble.',
+                        },
                         { role: 'user', content: prompt.slice(0, 4000) },
                     ],
                     { temperature: 0.3, maxTokens: 600 },
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('Planner', 'planner ask failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner ask failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         return `- ${prompt.slice(0, 200)}`;
     }
 
-    private async executeStep(step: string): Promise<string> {        if (this.tools) {
+    private async executeStep(step: string): Promise<string> {
+        if (this.tools) {
             try {
-                const res = await this.tools.runWithTools(step, { agentId: 'planner', maxRounds: 2 });
+                const res = await this.tools.runWithTools(step, {
+                    agentId: 'planner',
+                    maxRounds: 2,
+                });
                 return res.output || '(no output)';
             } catch (e) {
-                LOGGER.warn('Planner', 'planner tools failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner tools failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         if (this.llm) {
             try {
                 const res = await this.llm.chat(
                     [
-                        { role: 'system', content: 'You are a task planner-executor. Do the step, report the result.' },
+                        {
+                            role: 'system',
+                            content:
+                                'You are a task planner-executor. Do the step, report the result.',
+                        },
                         { role: 'user', content: step.slice(0, 6000) },
                     ],
                     { temperature: 0.3, maxTokens: 800 },
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('Planner', 'planner llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner llm failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         return `[echo] ${step}`;

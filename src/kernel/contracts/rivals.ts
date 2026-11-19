@@ -59,15 +59,27 @@ export interface IGuardrailService extends ILifecycle {
 
 /** F.2 — Letta-style editable core blocks + agent-callable memory tools. */
 export interface IMemoryBlocksService extends ILifecycle {
-    setBlock(ownerId: string, section: MemoryBlock['section'], content: string, charLimit?: number): Promise<MemoryBlock>;
-    appendBlock(ownerId: string, section: MemoryBlock['section'], text: string): Promise<MemoryBlock>;
+    setBlock(
+        ownerId: string,
+        section: MemoryBlock['section'],
+        content: string,
+        charLimit?: number,
+    ): Promise<MemoryBlock>;
+    appendBlock(
+        ownerId: string,
+        section: MemoryBlock['section'],
+        text: string,
+    ): Promise<MemoryBlock>;
     getBlocks(ownerId: string): Promise<MemoryBlock[]>;
     corePrompt(ownerId: string): Promise<string>;
 }
 
 /** F.3 — MetaGPT-style SOPs, autonomy loops, run queue, planners, dyads. */
 export interface ISopService extends ILifecycle {
-    defineSop(name: string, phases: Array<{ name: string; role: string; artifact: string; instruction: string }>): Promise<SopDefinition>;
+    defineSop(
+        name: string,
+        phases: Array<{ name: string; role: string; artifact: string; instruction: string }>,
+    ): Promise<SopDefinition>;
     listSops(): Promise<SopDefinition[]>;
     runSop(sopId: string, goal: string): Promise<AgentLoop>;
 }
@@ -83,7 +95,11 @@ export interface IAutonomyService extends ILifecycle {
 }
 
 export interface IRunQueueService extends ILifecycle {
-    enqueue(kind: QueuedRun['kind'], refId: string, input?: Record<string, unknown>): Promise<QueuedRun>;
+    enqueue(
+        kind: QueuedRun['kind'],
+        refId: string,
+        input?: Record<string, unknown>,
+    ): Promise<QueuedRun>;
     /** Process the queue with a concurrency cap (sequential default). */
     drain(concurrency?: number): Promise<QueuedRun[]>;
     list(): Promise<QueuedRun[]>;
@@ -97,7 +113,7 @@ export interface IRunQueueService extends ILifecycle {
 export type PlannerStrategy = 'sequential' | 'function_calling' | 'stepwise' | 'plan_and_execute';
 
 export interface IPlannerService extends ILifecycle {
-    plan(task: string, strategy?: PlannerStrategy): Promise<string>;
+    plan(task: string, strategy?: PlannerStrategy, opts?: { replan?: boolean }): Promise<string>;
     planStep(step: string): Promise<string>;
     /** Composable pre/post middleware: audit → policy → trim. */
     addFilter(stage: 'pre' | 'post', name: string): Promise<void>;
