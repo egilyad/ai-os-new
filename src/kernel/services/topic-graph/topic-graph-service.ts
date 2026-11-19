@@ -347,6 +347,14 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                     .map((e) => claimById.get(e.data))
                     .filter((c): c is TopicClaim => Boolean(c));
                 const found = findDuplicate(existingClaims, text, embedding, idxCandidates);
+                // Каскад: если жаккар/косинус не дали уверенного ответа, а
+                // кандидат попал в серую зону — привлекаем LLM-верификацию.
+                if (!found.dup && found.candidate && this.deps.llm) {
+                    const llmDup = await this.verifyDedupeWithLlm(text, found.candidate.text);
+                    if (llmDup === true) {
+                        found.dup = found.candidate;
+                    }
+                }
                 if (found.dup) {
                     const conflicting = hasNegation(found.dup.text) !== hasNegation(text);
                     if (conflicting) {
@@ -446,6 +454,36 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             await this.db.topicProcessingRuns.put(run);
             LOGGER.warn('TopicGraph', 'ingest failed', { error: run.error });
             return run;
+        }
+    }
+
+    /**
+     * LLM-верификация пары (серая зона каскада): отвечает, являются ли два
+     * утверждения перефразировкой одного и того же факта. Возвращает
+     * true = это дубликат, false = разные факты, undefined = не удалось решить.
+     */
+    private async verifyDedupeWithLlm(a: string, b: string): Promise<boolean | undefined> {
+        if (!this.deps.llm) return undefined;
+        try {
+            const res = await this.deps.llm.chat([
+                {
+                    role: 'system',
+                    content:
+                        'Ты — проверщик дубликатов утверждений. Ответь строго "да" или "нет": ' +
+                        'означают ли два утверждения одно и то же по сути. ' +
+                        '"да" — перефразировка одного факта; "нет" — разные факты.',
+                },
+                {
+                    role: 'user',
+                    content: `1: ${a}\n2: ${b}`,
+                },
+            ]);
+            const answer = (res.content ?? '').trim().toLowerCase();
+            if (answer.startsWith('да') || answer.startsWith('yes')) return true;
+            if (answer.startsWith('нет') || answer.startsWith('no')) return false;
+            return undefined;
+        } catch {
+            return undefined;
         }
     }
 
