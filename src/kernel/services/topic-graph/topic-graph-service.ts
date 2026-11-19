@@ -286,21 +286,37 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             }
             const newClaims: TopicClaim[] = [];
             const evidenceEntries: TopicEvidence[] = [];
+            // Батчинг эмбеддингов (Фаза 0): один embed([...]) на прогон вместо
+            // одного вызова на утверждение. Слабые/пустые результаты пропускаются.
+            const embedMap = new Map<string, number[]>();
+            const embedder = this.deps.embedder;
+            if (embedder && opts?.useEmbedder !== false) {
+                const uniqueTexts = [
+                    ...new Set(
+                        sentenceUnits
+                            .map((u) => normalizeClaim(u.sentence))
+                            .filter((t) => t.length >= 12),
+                    ),
+                ];
+                if (uniqueTexts.length > 0) {
+                    try {
+                        const vecs = await embedder.embed(uniqueTexts);
+                        for (let i = 0; i < uniqueTexts.length; i++) {
+                            const v = vecs[i];
+                            if (v && v.length > 0) embedMap.set(uniqueTexts[i]!, v);
+                        }
+                    } catch {
+                        // эмбеддинги недоступны — работаем без них
+                    }
+                }
+            }
             for (const unit of sentenceUnits) {
                 const text = normalizeClaim(unit.sentence);
                 if (text.length < 12) continue;
                 run.stats.extracted++;
 
                 // Эмбедддинг-близость (если доступен) поверх jaccard.
-                let embedding: number[] | undefined;
-                if (this.deps.embedder && opts?.useEmbedder !== false) {
-                    try {
-                        const vecs = await this.deps.embedder.embed([text]);
-                        embedding = vecs[0] ?? undefined;
-                    } catch {
-                        embedding = undefined;
-                    }
-                }
+                const embedding = embedMap.get(text);
                 const makeEvidence = (claimId: string): TopicEvidence => {
                     const loc =
                         unit.start !== undefined
