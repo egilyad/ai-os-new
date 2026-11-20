@@ -31,14 +31,22 @@ export interface TopicCompleteness {
     conflicts: number;
     sources: number;
     /**
-     * Предварительная оценка накопления материала 0..1 (НЕ полнота раскрытия
-     * темы: для настоящей coverage нужны заданные аспекты/подтемы).
+     * Агрегированная оценка полноты темы 0..1 (на основе сущностей —
+     * см. примечание: для настоящей coverage нужны аспекты/подтемы).
      */
     coverage: number;
-    /** Алиас с честным именем: накопление материала. */
+    /** Прогресс в рамках темы: покрытие аспектов. */
     collectionProgress: number;
-    /** Разбиение оценки по критериям. */
+    /** Критерии полноты по сущностям. */
     criteria: TopicCompletenessCriteria[];
+    /** Покрытие по аспектам (Фаза 4): доля аспектов с фактами. */
+    aspectCoverage?: {
+        total: number;
+        covered: number;
+        partial: number;
+        empty: number;
+        byAspect: Array<{ name: string; status: 'covered' | 'partial' | 'empty'; count: number }>;
+    };
 }
 
 export interface TopicAspect {

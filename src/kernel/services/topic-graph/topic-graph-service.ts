@@ -1094,29 +1094,63 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     }
 
     async completeness(topicId: string): Promise<TopicCompleteness> {
-        const [claims, concepts, conflicts, sources] = await Promise.all([
+        const [claims, concepts, conflicts, sources, aspects] = await Promise.all([
             this.claims(topicId),
             this.concepts(topicId),
             this.conflicts(topicId),
             this.sources(topicId),
+            this.aspects(topicId),
         ]);
         const conceptScore = Math.min(1, concepts.length / 5);
         const sourceScore = Math.min(1, sources.length / 3);
         const claimScore = Math.min(1, claims.length / 20);
         const coverage =
             Math.round((conceptScore * 0.5 + sourceScore * 0.3 + claimScore * 0.2) * 100) / 100;
+
+        // Аспектное покрытие (Фаза 4): аспект с >= 2 фактами статуса
+        // validated/contradicted считается закрытым; 1 факт — частичным.
+        let aspectCoverage: TopicCompleteness['aspectCoverage'];
+        if (aspects.length > 0) {
+            const statusToClaim = new Map<string, TopicClaim>();
+            for (const c of claims) statusToClaim.set(c.id, c);
+            let covered = 0;
+            let partial = 0;
+            let empty = 0;
+            const byAspect: NonNullable<TopicCompleteness['aspectCoverage']>['byAspect'] = [];
+            for (const a of aspects) {
+                const minFacts = a.minFacts ?? 2;
+                const strong = a.claimIds.filter((id) => {
+                    const c = statusToClaim.get(id);
+                    return c && (c.status === 'validated' || c.status === 'contradicted');
+                }).length;
+                const total = a.claimIds.length;
+                const status = strong >= minFacts ? 'covered' : total > 0 ? 'partial' : 'empty';
+                if (status === 'covered') covered++;
+                else if (status === 'partial') partial++;
+                else empty++;
+                byAspect.push({ name: a.name, status, count: total });
+            }
+            aspectCoverage = { total: aspects.length, covered, partial, empty, byAspect };
+        }
+
+        const collectionProgress = aspectCoverage
+            ? aspectCoverage.total > 0
+                ? Math.round((aspectCoverage.covered / aspectCoverage.total) * 100) / 100
+                : 0
+            : coverage;
         return {
             totalClaims: claims.length,
             uniqueConcepts: concepts.length,
             conflicts: conflicts.length,
             sources: sources.length,
             coverage,
-            collectionProgress: coverage,
+            collectionProgress,
             criteria: [
                 { name: 'concepts', score: conceptScore },
                 { name: 'sources', score: sourceScore },
                 { name: 'claims', score: claimScore },
             ],
+            aspectCoverage,
         };
     }
 
@@ -1155,17 +1189,31 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             const parsed = JSON.parse(res.content.slice(start, end + 1)) as unknown;
             if (!Array.isArray(parsed)) return [];
             const now = Date.now();
+            // Привязка аспектов к утверждениям: совпадение токенов имени
+            // аспекта (или концептов) с текстом утверждения.
+            const claimTokenSets = claims.map((c) => tokenize(c.text));
             const aspects: TopicAspect[] = parsed
                 .filter((a): a is string => typeof a === 'string' && a.trim().length > 2)
                 .slice(0, 10)
-                .map((name, i) => ({
-                    id: GENERIC_ID('aspect'),
-                    topicId,
-                    name: name.trim(),
-                    claimIds: [],
-                    createdAt: now + i,
-                    updatedAt: now + i,
-                }));
+                .map((name, i) => {
+                    const nameTokens = tokenize(name);
+                    const claimIds = claims
+                        .filter((_, ci) => {
+                            const set = claimTokenSets[ci]!;
+                            let hits = 0;
+                            for (const t of nameTokens) if (set.has(t)) hits++;
+                            return hits >= 1 || nameTokens.size === 0;
+                        })
+                        .map((c) => c.id);
+                    return {
+                        id: GENERIC_ID('aspect'),
+                        topicId,
+                        name: name.trim(),
+                        claimIds,
+                        createdAt: now + i,
+                        updatedAt: now + i,
+                    };
+                });
             if (aspects.length > 0) {
                 await this.db.topicAspects.bulkPut(aspects);
             }

@@ -324,6 +324,47 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(again.length).toBe(3);
     });
 
+    it('computes aspect coverage in completeness', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify(['архитектура', 'безопасность']),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('AspectCov', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы и умеет работать с ними.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'OpenCode поддерживает MCP-серверы и умеет с ними работать.',
+        });
+
+        const aspects = await svc.decomposeAspects(topic.id);
+        expect(aspects.length).toBe(2);
+        // Привяжем оба аспекта к обоим утверждениям.
+        const claims = await svc.claims(topic.id);
+        const now = Date.now();
+        const withClaims = aspects.map((a, i) => ({
+            ...a,
+            claimIds: claims.map((c) => c.id),
+            minFacts: 1,
+            updatedAt: now + i,
+        }));
+        await getTopicGraphDB().topicAspects.bulkPut(withClaims);
+
+        const comp = await svc.completeness(topic.id);
+        expect(comp.aspectCoverage).toBeDefined();
+        expect(comp.aspectCoverage!.total).toBe(2);
+        expect(comp.aspectCoverage!.covered).toBe(2);
+        expect(comp.collectionProgress).toBe(1);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');
