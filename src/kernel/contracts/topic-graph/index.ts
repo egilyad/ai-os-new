@@ -41,6 +41,17 @@ export interface TopicCompleteness {
     criteria: TopicCompletenessCriteria[];
 }
 
+export interface TopicAspect {
+    id: string;
+    topicId: string;
+    name: string;
+    /** Аспект считается закрытым, если есть >= minFacts фактов высокого статуса. */
+    minFacts?: number;
+    claimIds: string[];
+    createdAt: number;
+    updatedAt: number;
+}
+
 export interface TopicGraphDeps {
     llm?: {
         chat(messages: Array<{ role: string; content: string }>): Promise<{ content: string }>;
@@ -79,6 +90,10 @@ export interface TopicGraphService {
     runs(topicId: string): Promise<TopicProcessingRun[]>;
 
     completeness(topicId: string): Promise<TopicCompleteness>;
+    /** Аспекты темы (Фаза 4): декомпозиция и покрытие. */
+    aspects(topicId: string): Promise<TopicAspect[]>;
+    /** LLM-декомпозиция темы на аспекты (идемпотентно). */
+    decomposeAspects(topicId: string): Promise<TopicAspect[]>;
 
     /** Поиск по утверждениям темы (jaccard + cosine + graph expansion). */
     search(topicId: string, query: string): Promise<TopicClaim[]>;

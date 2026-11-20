@@ -303,6 +303,27 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(diff.statsB.newClaims).toBeGreaterThan(0);
     });
 
+    it('decomposes topic into aspects via LLM', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify(['архитектура', 'безопасность', 'производительность']),
+            }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Aspects', 'Проект OpenCode');
+
+        const aspects = await svc.decomposeAspects(topic.id);
+        expect(aspects.length).toBe(3);
+        expect(aspects.map((a) => a.name)).toEqual([
+            'архитектура',
+            'безопасность',
+            'производительность',
+        ]);
+        // Идемпотентно: повторный вызов не плодит дубли.
+        const again = await svc.decomposeAspects(topic.id);
+        expect(again.length).toBe(3);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

@@ -8,6 +8,7 @@ import type {
     TopicEvidence,
     TopicConflict,
     TopicProcessingRun,
+    TopicAspect,
 } from '../../contracts/topic-graph/types';
 
 /**
@@ -23,6 +24,7 @@ export class TopicGraphDB extends Dexie {
     topicEvidence!: Table<TopicEvidence, string>;
     topicConflicts!: Table<TopicConflict, string>;
     topicProcessingRuns!: Table<TopicProcessingRun, string>;
+    topicAspects!: Table<TopicAspect, string>;
 
     constructor(dbName = 'aios-topic-graph') {
         super(dbName);
@@ -35,6 +37,9 @@ export class TopicGraphDB extends Dexie {
             topicEvidence: 'id, topicId, claimId, sourceId',
             topicConflicts: 'id, topicId, claimAId, claimBId, resolved',
             topicProcessingRuns: 'id, topicId, status, createdAt',
+        });
+        this.version(2).stores({
+            topicAspects: 'id, topicId, name, createdAt',
         });
     }
 }

@@ -13,6 +13,7 @@ import type {
     TopicEvidence,
     TopicConflict,
     TopicProcessingRun,
+    TopicAspect,
 } from '../../contracts/topic-graph/types';
 import { TopicGraphDB, createTopicGraphDB } from './topic-graph-dexie';
 import { SimHashIndex } from './simhash-index';
@@ -1117,6 +1118,64 @@ export class TopicGraphServiceImpl implements TopicGraphService {
                 { name: 'claims', score: claimScore },
             ],
         };
+    }
+
+    async aspects(topicId: string): Promise<TopicAspect[]> {
+        return this.db.topicAspects.where('topicId').equals(topicId).toArray();
+    }
+
+    async decomposeAspects(topicId: string): Promise<TopicAspect[]> {
+        const existing = await this.aspects(topicId);
+        if (existing.length > 0) return existing;
+        const topic = await this.db.topics.get(topicId);
+        if (!topic || !this.deps.llm) return [];
+        const claims = await this.claims(topicId);
+        try {
+            const res = await this.deps.llm.chat([
+                {
+                    role: 'system',
+                    content:
+                        'Разбей тему на 5-10 аспектов (подтем), которые нужно понять, ' +
+                        'чтобы считать тему раскрытой. Верни ТОЛЬКО JSON-массив строк: ' +
+                        '["аспект1","аспект2",...]. Без пояснений.',
+                },
+                {
+                    role: 'user',
+                    content:
+                        `Тема: ${topic.title}. ${topic.description}\n\nМатериал:\n` +
+                        claims
+                            .slice(0, 20)
+                            .map((c) => `- ${c.text}`)
+                            .join('\n'),
+                },
+            ]);
+            const start = res.content.indexOf('[');
+            const end = res.content.lastIndexOf(']');
+            if (start < 0 || end <= start) return [];
+            const parsed = JSON.parse(res.content.slice(start, end + 1)) as unknown;
+            if (!Array.isArray(parsed)) return [];
+            const now = Date.now();
+            const aspects: TopicAspect[] = parsed
+                .filter((a): a is string => typeof a === 'string' && a.trim().length > 2)
+                .slice(0, 10)
+                .map((name, i) => ({
+                    id: GENERIC_ID('aspect'),
+                    topicId,
+                    name: name.trim(),
+                    claimIds: [],
+                    createdAt: now + i,
+                    updatedAt: now + i,
+                }));
+            if (aspects.length > 0) {
+                await this.db.topicAspects.bulkPut(aspects);
+            }
+            return aspects;
+        } catch (e) {
+            LOGGER.warn('TopicGraph', 'decomposeAspects failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+            return [];
+        }
     }
 
     async search(topicId: string, query: string): Promise<TopicClaim[]> {
