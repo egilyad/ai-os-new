@@ -24,7 +24,7 @@ import { relationStyle, RELATION_STYLES } from './relation-styles';
 
 type FlowNodeData = {
     label: string;
-    kind: 'concept' | 'claim';
+    kind: 'concept' | 'claim' | 'subtopic';
     claimIds?: number;
 };
 
@@ -45,6 +45,7 @@ const DEFAULT_REL_COLOR = 'var(--slate-500)';
 
 function FlowNode({ data }: NodeProps<FlowNode>) {
     const isConcept = data.kind === 'concept';
+    const isSubtopic = data.kind === 'subtopic';
     return (
         <div
             style={{
@@ -52,16 +53,22 @@ function FlowNode({ data }: NodeProps<FlowNode>) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 textAlign: 'center',
-                minWidth: isConcept ? 68 : 130,
-                maxWidth: 190,
-                minHeight: isConcept ? 68 : 42,
-                borderRadius: isConcept ? '50%' : 10,
-                padding: isConcept ? 0 : '6px 10px',
-                background: isConcept ? 'rgba(45,212,191,0.14)' : 'rgba(59,130,246,0.14)',
-                border: `1.5px solid ${isConcept ? CONCEPT_COLOR : CLAIM_COLOR}`,
+                minWidth: isConcept ? 68 : isSubtopic ? 140 : 130,
+                maxWidth: isSubtopic ? 220 : 190,
+                minHeight: isConcept ? 68 : isSubtopic ? 56 : 42,
+                borderRadius: isConcept ? '50%' : isSubtopic ? 14 : 10,
+                padding: isConcept ? 0 : isSubtopic ? '8px 12px' : '6px 10px',
+                background: isConcept
+                    ? 'rgba(45,212,191,0.14)'
+                    : isSubtopic
+                      ? 'rgba(167,139,250,0.14)'
+                      : 'rgba(59,130,246,0.14)',
+                border: `1.5px solid ${
+                    isConcept ? CONCEPT_COLOR : isSubtopic ? '#a78bfa' : CLAIM_COLOR
+                }`,
                 color: 'var(--slate-100)',
-                fontSize: isConcept ? 13 : 11,
-                fontWeight: isConcept ? 700 : 500,
+                fontSize: isConcept ? 13 : isSubtopic ? 13 : 11,
+                fontWeight: isConcept || isSubtopic ? 700 : 500,
                 boxShadow: '0 2px 14px rgba(0,0,0,0.35)',
                 lineHeight: 1.2,
             }}
@@ -82,8 +89,108 @@ function buildLayout(
     maxConcepts: number,
     maxClaims: number,
     showConflicts: boolean,
+    aggregateSubtopic = false,
 ): { nodes: FlowNode[]; edges: Edge[] } {
-    const conceptNodes = concepts.slice(0, maxConcepts).map((c) => ({
+    // Агрегация подтем: концепты с одинаковым subtopic сворачиваются в один узел,
+    // рёбра перенаправляются на него. Фаза 3.
+    let conceptNodes: FlowNode[] = [];
+    const idToSubtopic = new Map<string, string>();
+    if (aggregateSubtopic) {
+        const groups = new Map<string, TopicConcept[]>();
+        for (const c of concepts.slice(0, maxConcepts)) {
+            const sub = c.subtopic?.trim();
+            if (sub) {
+                let arr = groups.get(sub);
+                if (!arr) {
+                    arr = [];
+                    groups.set(sub, arr);
+                }
+                arr.push(c);
+            }
+        }
+        const subNodes: FlowNode[] = [];
+        const subDeps = new Map<string, string[]>();
+        for (const [sub, members] of groups) {
+            const subId = `subtopic:${sub}`;
+            subNodes.push({
+                id: subId,
+                type: 'flow' as const,
+                data: {
+                    label: `${sub} (${members.length})`,
+                    kind: 'subtopic' as const,
+                    claimIds: members.reduce((s, m) => s + m.claimIds.length, 0),
+                },
+                position: { x: 0, y: 0 },
+                origin: [0.5, 0.5] as [number, number],
+            });
+            subDeps.set(
+                subId,
+                members.map((m) => m.id),
+            );
+            for (const m of members) idToSubtopic.set(m.id, subId);
+        }
+        conceptNodes = subNodes;
+        const claimNodes = claims.slice(0, maxClaims).map((c) => ({
+            id: c.id,
+            type: 'flow' as const,
+            data: {
+                label: c.text.length > 70 ? c.text.slice(0, 70) + '…' : c.text,
+                kind: 'claim' as const,
+            },
+            position: { x: 0, y: 0 },
+            origin: [0.5, 0.5] as [number, number],
+        }));
+        const nodes: FlowNode[] = [...conceptNodes, ...claimNodes];
+        const ids = new Set(nodes.map((n) => n.id));
+
+        const W = 1200;
+        const H = 700;
+        const outerR = Math.min(W, H) / 2 - 90;
+        const innerR = Math.min(W, H) / 2 - 220;
+        const cx = W / 2;
+        const cy = H / 2;
+        conceptNodes.forEach((n, i) => {
+            const a = (2 * Math.PI * i) / Math.max(1, conceptNodes.length) - Math.PI / 2;
+            n.position = { x: cx + outerR * Math.cos(a), y: cy + outerR * Math.sin(a) };
+        });
+        claimNodes.forEach((n, i) => {
+            const a = (2 * Math.PI * i) / Math.max(1, claimNodes.length) - Math.PI / 2;
+            n.position = { x: cx + innerR * Math.cos(a), y: cy + innerR * Math.sin(a) };
+        });
+
+        const mapId = (id: string): string => idToSubtopic.get(id) ?? id;
+
+        const edges: Edge[] = [];
+        const seen = new Set<string>();
+        for (const r of relations) {
+            const from = mapId(r.fromId);
+            const to = mapId(r.toId);
+            if (!ids.has(from) || !ids.has(to) || from === to) continue;
+            if (r.relation === 'contradicts' && !showConflicts) continue;
+            const key = from < to ? `${from}|${to}` : `${to}|${from}`;
+            if (seen.has(key)) continue;
+            seen.add(key);
+            const isConflict = r.relation === 'contradicts';
+            const vstyle = relationStyle(r.relation);
+            edges.push({
+                id: `${r.id}:agg`,
+                source: from,
+                target: to,
+                animated: isConflict,
+                label: vstyle.label,
+                style: {
+                    stroke: isConflict ? CONFLICT_COLOR : (vstyle.color ?? DEFAULT_REL_COLOR),
+                    strokeWidth: isConflict ? 2 : 0.7 + r.weight,
+                    strokeDasharray: vstyle.dasharray,
+                    opacity: 0.7,
+                },
+                type: 'smoothstep',
+            });
+        }
+        return { nodes, edges };
+    }
+
+    conceptNodes = concepts.slice(0, maxConcepts).map((c) => ({
         id: c.id,
         type: 'flow' as const,
         data: { label: c.name, kind: 'concept' as const, claimIds: c.claimIds.length },
@@ -156,6 +263,7 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [relationFilter, setRelationFilter] = useState<TopicRelationType | 'all'>('all');
     const [minWeight, setMinWeight] = useState(0);
+    const [aggregate, setAggregate] = useState(false);
 
     const filteredRelations = useMemo(
         () =>
@@ -169,8 +277,16 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
 
     const { nodes: builtNodes, edges: builtEdges } = useMemo(
         () =>
-            buildLayout(concepts, claims, filteredRelations, maxConcepts, maxClaims, showConflicts),
-        [concepts, claims, filteredRelations, maxConcepts, maxClaims, showConflicts],
+            buildLayout(
+                concepts,
+                claims,
+                filteredRelations,
+                maxConcepts,
+                maxClaims,
+                showConflicts,
+                aggregate,
+            ),
+        [concepts, claims, filteredRelations, maxConcepts, maxClaims, showConflicts, aggregate],
     );
     const [nodes, setNodes, onNodesChange] = useNodesState(builtNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(builtEdges);
@@ -319,6 +435,14 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
                         onChange={(e) => setMinWeight(Number(e.target.value))}
                     />
                     {minWeight.toFixed(1)}
+                </label>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                    <input
+                        type="checkbox"
+                        checked={aggregate}
+                        onChange={(e) => setAggregate(e.target.checked)}
+                    />
+                    Агрегировать подтемы
                 </label>
             </div>
 
