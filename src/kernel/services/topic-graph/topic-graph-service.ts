@@ -1028,6 +1028,35 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return this.db.topicConflicts.where('topicId').equals(topicId).toArray();
     }
 
+    async runDiff(
+        topicId: string,
+        runAId: string,
+        runBId: string,
+    ): Promise<{
+        addedSources: string[];
+        removedSources: string[];
+        statsA: TopicProcessingRun['stats'];
+        statsB: TopicProcessingRun['stats'];
+    }> {
+        const [runA, runB] = await Promise.all([
+            this.db.topicProcessingRuns.get(runAId),
+            this.db.topicProcessingRuns.get(runBId),
+        ]);
+        if (!runA || !runB || runA.topicId !== topicId || runB.topicId !== topicId) {
+            throw new Error('runDiff: run not found or from another topic');
+        }
+        const setA = new Set(runA.sourceIds);
+        const setB = new Set(runB.sourceIds);
+        const addedSources = runB.sourceIds.filter((id) => !setA.has(id));
+        const removedSources = runA.sourceIds.filter((id) => !setB.has(id));
+        return {
+            addedSources,
+            removedSources,
+            statsA: runA.stats,
+            statsB: runB.stats,
+        };
+    }
+
     async resolveConflict(
         topicId: string,
         conflictId: string,

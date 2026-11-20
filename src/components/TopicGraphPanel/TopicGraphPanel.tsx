@@ -9,6 +9,7 @@ import type {
     TopicConcept,
     TopicRelation,
     TopicConflict,
+    TopicProcessingRun,
 } from '../../kernel/contracts/topic-graph/types';
 import type { TopicGraphService } from '../../kernel/contracts/topic-graph';
 import { ensureTopicGraphDemo } from '../../kernel/services/topic-graph/topic-graph-demo-seed';
@@ -19,7 +20,7 @@ import TopicGraphTree from './TopicGraphTree';
 import TopicGraphMatrix from './TopicGraphMatrix';
 import { RELATION_STYLES } from './relation-styles';
 
-type View = 'graph' | 'knowledge' | 'sources' | 'coverage' | 'candidates';
+type View = 'graph' | 'knowledge' | 'sources' | 'coverage' | 'candidates' | 'diff';
 
 const VIEWS: Array<{ id: View; label: string }> = [
     { id: 'graph', label: 'Graph' },
@@ -27,6 +28,7 @@ const VIEWS: Array<{ id: View; label: string }> = [
     { id: 'sources', label: 'Sources' },
     { id: 'coverage', label: 'Coverage' },
     { id: 'candidates', label: 'Кандидаты' },
+    { id: 'diff', label: 'Diff прогонов' },
 ];
 
 const KIND_COLORS: Record<string, string> = {
@@ -66,6 +68,15 @@ export default function TopicGraphPanel() {
     const [candidates, setCandidates] = useState<
         Array<{ a: TopicClaim; b: TopicClaim; similarity: number }>
     >([]);
+    const [runs, setRuns] = useState<TopicProcessingRun[]>([]);
+    const [diffRunA, setDiffRunA] = useState('');
+    const [diffRunB, setDiffRunB] = useState('');
+    const [diffResult, setDiffResult] = useState<{
+        addedSources: string[];
+        removedSources: string[];
+        statsA: TopicProcessingRun['stats'];
+        statsB: TopicProcessingRun['stats'];
+    } | null>(null);
     const [projects, setProjects] = useState<Array<{ id: string; name: string }>>([]);
     const [exportProjectId, setExportProjectId] = useState('');
 
@@ -126,6 +137,12 @@ export default function TopicGraphPanel() {
                 setSources(s);
                 setCoverage(cov);
                 setCandidates(await svc().mergeCandidates(selectedTopic, 20));
+                const runList = await svc().runs(selectedTopic);
+                setRuns(runList);
+                if (runList.length >= 2 && !diffRunA) {
+                    setDiffRunA(runList[runList.length - 2]!.id);
+                    setDiffRunB(runList[runList.length - 1]!.id);
+                }
             } catch (e) {
                 setMessage(`Ошибка загрузки темы: ${e instanceof Error ? e.message : String(e)}`);
             }
@@ -293,6 +310,26 @@ export default function TopicGraphPanel() {
         color: 'var(--slate-300)',
         cursor: 'pointer',
         fontSize: 11,
+    };
+
+    const computeDiff = async () => {
+        if (!selectedTopic || !diffRunA || !diffRunB) return;
+        try {
+            const d = await svc().runDiff(selectedTopic, diffRunA, diffRunB);
+            setDiffResult(d);
+        } catch (e) {
+            setMessage(`Ошибка сравнения прогонов: ${e instanceof Error ? e.message : String(e)}`);
+        }
+    };
+
+    const diffSelectStyle: React.CSSProperties = {
+        padding: '4px 8px',
+        borderRadius: 6,
+        border: '1px solid var(--border)',
+        background: 'var(--bg-elevated)',
+        color: 'var(--slate-300)',
+        fontSize: 12,
+        maxWidth: 220,
     };
 
     const topConcepts = concepts.slice(0, 20);
@@ -666,6 +703,127 @@ export default function TopicGraphPanel() {
                             <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
                                 Нет источников
                             </span>
+                        )}
+                    </div>
+                )}
+
+                {view === 'diff' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: 8,
+                                alignItems: 'center',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <select
+                                value={diffRunA}
+                                onChange={(e) => setDiffRunA(e.target.value)}
+                                style={diffSelectStyle}
+                            >
+                                {runs.map((run) => (
+                                    <option key={run.id} value={run.id}>
+                                        прогон {new Date(run.createdAt).toLocaleString()} (
+                                        {run.status})
+                                    </option>
+                                ))}
+                            </select>
+                            <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>→</span>
+                            <select
+                                value={diffRunB}
+                                onChange={(e) => setDiffRunB(e.target.value)}
+                                style={diffSelectStyle}
+                            >
+                                {runs.map((run) => (
+                                    <option key={run.id} value={run.id}>
+                                        прогон {new Date(run.createdAt).toLocaleString()} (
+                                        {run.status})
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                onClick={() => void computeDiff()}
+                                style={{
+                                    padding: '4px 12px',
+                                    borderRadius: 6,
+                                    border: '1px solid var(--border)',
+                                    background: 'transparent',
+                                    color: 'var(--slate-300)',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                }}
+                            >
+                                Сравнить
+                            </button>
+                        </div>
+                        {diffResult && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 8,
+                                    fontSize: 12,
+                                }}
+                            >
+                                <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                                    <div>
+                                        Новых источников: <b>{diffResult.addedSources.length}</b>
+                                    </div>
+                                    <div>
+                                        Удалено источников:{' '}
+                                        <b>{diffResult.removedSources.length}</b>
+                                    </div>
+                                </div>
+                                <div
+                                    style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr 1fr',
+                                        gap: 8,
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            border: '1px solid var(--border)',
+                                            borderRadius: 8,
+                                            padding: 8,
+                                        }}
+                                    >
+                                        <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                                            Прогон A
+                                        </div>
+                                        <div>Утверждений: {diffResult.statsA.newClaims}</div>
+                                        <div>Дублей: {diffResult.statsA.duplicates}</div>
+                                        <div>Конфликтов: {diffResult.statsA.conflicts}</div>
+                                        <div>Связей: {diffResult.statsA.relations}</div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            border: '1px solid var(--border)',
+                                            borderRadius: 8,
+                                            padding: 8,
+                                        }}
+                                    >
+                                        <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                                            Прогон B
+                                        </div>
+                                        <div>Утверждений: {diffResult.statsB.newClaims}</div>
+                                        <div>Дублей: {diffResult.statsB.duplicates}</div>
+                                        <div>Конфликтов: {diffResult.statsB.conflicts}</div>
+                                        <div>Связей: {diffResult.statsB.relations}</div>
+                                    </div>
+                                </div>
+                                {diffResult.addedSources.length > 0 && (
+                                    <div>
+                                        <div style={{ fontWeight: 700 }}>
+                                            Добавленные источники:
+                                        </div>
+                                        <div style={{ color: 'var(--slate-400)' }}>
+                                            {diffResult.addedSources.join(', ')}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 )}

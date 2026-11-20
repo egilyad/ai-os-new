@@ -279,6 +279,30 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(claims.length).toBe(1);
     });
 
+    it('runDiff reports added/removed sources between two runs', async () => {
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB());
+        const topic = await svc.createTopic('RunDiff', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'Квантовые вычисления используют кубиты.',
+        });
+        const runs = await svc.runs(topic.id);
+        const sorted = [...runs].sort((a, b) => a.createdAt - b.createdAt);
+
+        const diff = await svc.runDiff(topic.id, sorted[0]!.id, sorted[1]!.id);
+        expect(diff.addedSources.length).toBe(1);
+        expect(diff.removedSources.length).toBe(1);
+        expect(diff.statsB.newClaims).toBeGreaterThan(0);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

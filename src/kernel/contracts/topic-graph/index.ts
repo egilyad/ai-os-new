@@ -94,6 +94,17 @@ export interface TopicGraphService {
         winnerId: string,
         loserStatus: 'superseded' | 'contradicted',
     ): Promise<void>;
+    /** Сравнить два прогона ингеста: что добавилось/слилось/породило конфликты. */
+    runDiff(
+        topicId: string,
+        runAId: string,
+        runBId: string,
+    ): Promise<{
+        addedSources: string[];
+        removedSources: string[];
+        statsA: TopicProcessingRun['stats'];
+        statsB: TopicProcessingRun['stats'];
+    }>;
     /** Найти пары похожих утверждений — кандидатов на объединение (merge candidates). */
     mergeCandidates(
         topicId: string,
