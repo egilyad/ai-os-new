@@ -225,6 +225,36 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(all.some((c) => c.subtopic)).toBe(true);
     });
 
+    it('resolves a conflict and marks the loser as superseded', async () => {
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB());
+        const topic = await svc.createTopic('Resolve', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'OpenCode не поддерживает MCP-серверы.',
+        });
+
+        const conflicts = await svc.conflicts(topic.id);
+        expect(conflicts.length).toBeGreaterThan(0);
+        const c = conflicts[0]!;
+        await svc.resolveConflict(topic.id, c.id, c.claimAId, 'superseded');
+
+        const after = await svc.conflicts(topic.id);
+        expect(after[0]!.resolved).toBe(true);
+        const claims = await svc.claims(topic.id);
+        const loser = claims.find((cl) => cl.id === c.claimBId);
+        expect(loser!.status).toBe('superseded');
+        const winner = claims.find((cl) => cl.id === c.claimAId);
+        expect(winner!.status).toBe('validated');
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

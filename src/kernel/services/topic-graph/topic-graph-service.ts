@@ -1027,6 +1027,38 @@ export class TopicGraphServiceImpl implements TopicGraphService {
     async conflicts(topicId: string): Promise<TopicConflict[]> {
         return this.db.topicConflicts.where('topicId').equals(topicId).toArray();
     }
+
+    async resolveConflict(
+        topicId: string,
+        conflictId: string,
+        winnerId: string,
+        loserStatus: 'superseded' | 'contradicted',
+    ): Promise<void> {
+        const conflict = await this.db.topicConflicts.get(conflictId);
+        if (!conflict || conflict.topicId !== topicId) {
+            throw new Error('resolveConflict: conflict not found');
+        }
+        const loserId = conflict.claimAId === winnerId ? conflict.claimBId : conflict.claimAId;
+        if (loserId === winnerId) {
+            throw new Error('resolveConflict: winner must be one of the conflict claims');
+        }
+        const [winner, loser] = await Promise.all([
+            this.db.topicClaims.get(winnerId),
+            this.db.topicClaims.get(loserId),
+        ]);
+        if (!winner || !loser) {
+            throw new Error('resolveConflict: claim not found');
+        }
+        const updates: TopicClaim[] = [{ ...loser, status: loserStatus, updatedAt: Date.now() }];
+        if (winner.status === 'contradicted' && loserStatus === 'superseded') {
+            updates.push({ ...winner, status: 'validated', updatedAt: Date.now() });
+        }
+        await this.db.topicClaims.bulkPut(updates as never);
+        await this.db.topicConflicts.put({
+            ...conflict,
+            resolved: true,
+        });
+    }
     async runs(topicId: string): Promise<TopicProcessingRun[]> {
         return this.db.topicProcessingRuns.where('topicId').equals(topicId).toArray();
     }

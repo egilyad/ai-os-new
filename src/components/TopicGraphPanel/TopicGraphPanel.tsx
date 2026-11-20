@@ -257,6 +257,43 @@ export default function TopicGraphPanel() {
         }
     };
 
+    const handleResolveConflict = async (
+        conflictId: string,
+        winnerId: string,
+        bothStale = false,
+    ) => {
+        if (!selectedTopic) return;
+        try {
+            await svc().resolveConflict(
+                selectedTopic,
+                conflictId,
+                winnerId,
+                bothStale ? 'superseded' : 'contradicted',
+            );
+            setMessage(bothStale ? 'Конфликт закрыт: оба устарели' : 'Конфликт разрешён');
+            const [c, cf] = await Promise.all([
+                svc().claims(selectedTopic),
+                svc().conflicts(selectedTopic),
+            ]);
+            setClaims(c);
+            setConflicts(cf);
+        } catch (e) {
+            setMessage(
+                `Ошибка разрешения конфликта: ${e instanceof Error ? e.message : String(e)}`,
+            );
+        }
+    };
+
+    const resolveBtnStyle: React.CSSProperties = {
+        padding: '3px 10px',
+        borderRadius: 6,
+        border: '1px solid var(--border)',
+        background: 'transparent',
+        color: 'var(--slate-300)',
+        cursor: 'pointer',
+        fontSize: 11,
+    };
+
     const topConcepts = concepts.slice(0, 20);
     const claimById = new Map<string, TopicClaim>();
     claims.forEach((c) => claimById.set(c.id, c));
@@ -759,24 +796,75 @@ export default function TopicGraphPanel() {
                             </div>
                         </div>
                         <div style={{ fontWeight: 700, fontSize: 13 }}>Противоречия</div>
-                        {conflicts.map((c) => (
-                            <div
-                                key={c.id}
-                                style={{
-                                    border: '1px solid rgba(248,113,113,0.3)',
-                                    borderRadius: 8,
-                                    padding: '8px 10px',
-                                    fontSize: 12,
-                                }}
-                            >
-                                <div style={{ color: 'var(--error)' }}>
-                                    {c.claimAId} ↔ {c.claimBId}
-                                </div>
-                                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
-                                    {c.reason} · conf {c.confidence.toFixed(2)}
-                                </div>
+                        {conflicts
+                            .filter((c) => !c.resolved)
+                            .map((c) => {
+                                const claimA = claims.find((cl) => cl.id === c.claimAId);
+                                const claimB = claims.find((cl) => cl.id === c.claimBId);
+                                if (!claimA || !claimB) return null;
+                                return (
+                                    <div
+                                        key={c.id}
+                                        style={{
+                                            border: '1px solid rgba(248,113,113,0.3)',
+                                            borderRadius: 8,
+                                            padding: '8px 10px',
+                                            fontSize: 12,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 6,
+                                        }}
+                                    >
+                                        <div style={{ color: 'var(--slate-200)' }}>
+                                            A: {claimA.text}
+                                        </div>
+                                        <div style={{ color: 'var(--slate-400)' }}>
+                                            B: {claimB.text}
+                                        </div>
+                                        <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                            {c.reason} · conf {c.confidence.toFixed(2)}
+                                        </div>
+                                        <div style={{ display: 'flex', gap: 8 }}>
+                                            <button
+                                                onClick={() =>
+                                                    void handleResolveConflict(c.id, claimA.id)
+                                                }
+                                                style={resolveBtnStyle}
+                                            >
+                                                A прав
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    void handleResolveConflict(c.id, claimB.id)
+                                                }
+                                                style={resolveBtnStyle}
+                                            >
+                                                B прав
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    void handleResolveConflict(
+                                                        c.id,
+                                                        claimA.id,
+                                                        true,
+                                                    )
+                                                }
+                                                style={{
+                                                    ...resolveBtnStyle,
+                                                    color: 'var(--slate-500)',
+                                                }}
+                                            >
+                                                Оба устарели
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        {conflicts.filter((c) => c.resolved).length > 0 && (
+                            <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                Разрешено: {conflicts.filter((c) => c.resolved).length}
                             </div>
-                        ))}
+                        )}
                         {conflicts.length === 0 && (
                             <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
                                 Конфликтов нет

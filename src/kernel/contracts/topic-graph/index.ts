@@ -87,6 +87,13 @@ export interface TopicGraphService {
     consolidate(topicId: string): Promise<void>;
     /** Слить два утверждения: `keep` остаётся каноном, `absorb` уходит в его variants. */
     mergeClaims(topicId: string, keepId: string, absorbId: string): Promise<void>;
+    /** Разрешить конфликт: проигравшая сторона помечается superseded/contradicted. */
+    resolveConflict(
+        topicId: string,
+        conflictId: string,
+        winnerId: string,
+        loserStatus: 'superseded' | 'contradicted',
+    ): Promise<void>;
     /** Найти пары похожих утверждений — кандидатов на объединение (merge candidates). */
     mergeCandidates(
         topicId: string,
