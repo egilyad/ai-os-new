@@ -17,6 +17,7 @@ import TopicGraphVis from './TopicGraphVis';
 import TopicGraphRadial from './TopicGraphRadial';
 import TopicGraphTree from './TopicGraphTree';
 import TopicGraphMatrix from './TopicGraphMatrix';
+import { RELATION_STYLES } from './relation-styles';
 
 type View = 'graph' | 'knowledge' | 'sources' | 'coverage' | 'candidates';
 
@@ -877,6 +878,30 @@ export default function TopicGraphPanel() {
             {relations.length > 0 && view === 'graph' && (
                 <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
                     Связей: {relations.length} (показаны концепты и утверждения)
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6 }}>
+                        {Object.entries(RELATION_STYLES).map(([kind, style]) => (
+                            <span
+                                key={kind}
+                                style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                            >
+                                <span
+                                    style={{
+                                        width: 18,
+                                        height: 3,
+                                        borderRadius: 2,
+                                        background: style.color,
+                                        display: 'inline-block',
+                                        ...(style.dasharray
+                                            ? {
+                                                  backgroundImage: `repeating-linear-gradient(90deg, ${style.color} 0 4px, transparent 4px 8px)`,
+                                              }
+                                            : {}),
+                                    }}
+                                />
+                                {style.label}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

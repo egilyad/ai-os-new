@@ -13,7 +13,13 @@ import {
     type NodeProps,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import type { TopicClaim, TopicConcept, TopicRelation, TopicSource } from '../../kernel/contracts/topic-graph/types';
+import type {
+    TopicClaim,
+    TopicConcept,
+    TopicRelation,
+    TopicSource,
+} from '../../kernel/contracts/topic-graph/types';
+import { relationStyle } from './relation-styles';
 
 type FlowNodeData = {
     label: string;
@@ -34,6 +40,7 @@ type TopicGraphFlowProps = {
 const CONCEPT_COLOR = '#2dd4bf';
 const CLAIM_COLOR = '#3b82f6';
 const CONFLICT_COLOR = '#f87171';
+const DEFAULT_REL_COLOR = 'var(--slate-500)';
 
 function FlowNode({ data }: NodeProps<FlowNode>) {
     const isConcept = data.kind === 'concept';
@@ -82,18 +89,16 @@ function buildLayout(
         position: { x: 0, y: 0 },
         origin: [0.5, 0.5] as [number, number],
     }));
-    const claimNodes = claims
-        .slice(0, maxClaims)
-        .map((c) => ({
-            id: c.id,
-            type: 'flow' as const,
-            data: {
-                label: c.text.length > 70 ? c.text.slice(0, 70) + '…' : c.text,
-                kind: 'claim' as const,
-            },
-            position: { x: 0, y: 0 },
-            origin: [0.5, 0.5] as [number, number],
-        }));
+    const claimNodes = claims.slice(0, maxClaims).map((c) => ({
+        id: c.id,
+        type: 'flow' as const,
+        data: {
+            label: c.text.length > 70 ? c.text.slice(0, 70) + '…' : c.text,
+            kind: 'claim' as const,
+        },
+        position: { x: 0, y: 0 },
+        origin: [0.5, 0.5] as [number, number],
+    }));
 
     const nodes: FlowNode[] = [...conceptNodes, ...claimNodes];
     const ids = new Set(nodes.map((n) => n.id));
@@ -123,15 +128,17 @@ function buildLayout(
         if (seen.has(key)) continue;
         seen.add(key);
         const isConflict = r.relation === 'contradicts';
+        const vstyle = relationStyle(r.relation);
         edges.push({
             id: r.id,
             source: r.fromId,
             target: r.toId,
             animated: isConflict,
+            label: vstyle.label,
             style: {
-                stroke: isConflict ? CONFLICT_COLOR : 'var(--slate-500)',
+                stroke: isConflict ? CONFLICT_COLOR : (vstyle.color ?? DEFAULT_REL_COLOR),
                 strokeWidth: isConflict ? 2 : 0.7 + r.weight,
-                strokeDasharray: isConflict ? '6 4' : undefined,
+                strokeDasharray: vstyle.dasharray,
                 opacity: 0.7,
             },
             type: 'smoothstep',
@@ -162,7 +169,9 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
     const applyHover = useCallback(
         (id: string | null) => {
             if (!id) {
-                setEdges((prev) => prev.map((e) => ({ ...e, style: { ...e.style, opacity: 0.7 } })));
+                setEdges((prev) =>
+                    prev.map((e) => ({ ...e, style: { ...e.style, opacity: 0.7 } })),
+                );
                 setNodes((prev) => prev.map((n) => ({ ...n, style: { opacity: 1 } })));
                 return;
             }
@@ -197,7 +206,10 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
             return {
                 kind: 'concept' as const,
                 title: concept.name,
-                lines: [`Утверждений: ${concept.claimIds.length}`, `Алиасы: ${concept.aliases.length ? concept.aliases.join(', ') : '—'}`],
+                lines: [
+                    `Утверждений: ${concept.claimIds.length}`,
+                    `Алиасы: ${concept.aliases.length ? concept.aliases.join(', ') : '—'}`,
+                ],
             };
         }
         const claim = claims.find((c) => c.id === selectedId);
@@ -220,7 +232,15 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', fontSize: 12 }}>
+            <div
+                style={{
+                    display: 'flex',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    fontSize: 12,
+                }}
+            >
                 <label style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                     Концепты
                     <input
@@ -244,13 +264,25 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
                     {maxClaims}
                 </label>
                 <label style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                    <input type="checkbox" checked={showConflicts} onChange={(e) => setShowConflicts(e.target.checked)} />
+                    <input
+                        type="checkbox"
+                        checked={showConflicts}
+                        onChange={(e) => setShowConflicts(e.target.checked)}
+                    />
                     Конфликты
                 </label>
             </div>
 
             <div style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1, height, background: 'var(--bg-elevated)', borderRadius: 12, border: '1px solid var(--border)' }}>
+                <div
+                    style={{
+                        flex: 1,
+                        height,
+                        background: 'var(--bg-elevated)',
+                        borderRadius: 12,
+                        border: '1px solid var(--border)',
+                    }}
+                >
                     <ReactFlow
                         nodes={nodes}
                         edges={edges}
@@ -274,7 +306,9 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
                         <Background gap={18} size={1.2} color="var(--slate-800)" />
                         <Controls showInteractive={false} />
                         <MiniMap
-                            nodeColor={(n) => n.data.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR}
+                            nodeColor={(n) =>
+                                n.data.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR
+                            }
                             maskColor="rgba(11,18,32,0.7)"
                             style={{ width: 160, height: 110 }}
                         />
@@ -298,12 +332,22 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
                             overflowY: 'auto',
                         }}
                     >
-                        <div style={{ fontWeight: 700, fontSize: 13, color: selected.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR }}>
+                        <div
+                            style={{
+                                fontWeight: 700,
+                                fontSize: 13,
+                                color: selected.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR,
+                            }}
+                        >
                             {selected.kind === 'concept' ? 'Концепт' : 'Утверждение'}
                         </div>
-                        <div style={{ color: 'var(--slate-100)', wordBreak: 'break-word' }}>{selected.title}</div>
+                        <div style={{ color: 'var(--slate-100)', wordBreak: 'break-word' }}>
+                            {selected.title}
+                        </div>
                         {selected.lines.map((l, i) => (
-                            <div key={i} style={{ color: 'var(--slate-400)' }}>{l}</div>
+                            <div key={i} style={{ color: 'var(--slate-400)' }}>
+                                {l}
+                            </div>
                         ))}
                     </div>
                 )}

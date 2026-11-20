@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 import VisGraph, { type VisGraphEdge, type VisGraphNode } from '../Common/VisGraph';
-import type { TopicClaim, TopicConcept, TopicRelation, TopicSource } from '../../kernel/contracts/topic-graph/types';
+import type {
+    TopicClaim,
+    TopicConcept,
+    TopicRelation,
+    TopicSource,
+} from '../../kernel/contracts/topic-graph/types';
+import { relationStyle } from './relation-styles';
 
 type TopicGraphVisProps = {
     concepts: TopicConcept[];
@@ -45,13 +51,15 @@ export default function TopicGraphVis(props: TopicGraphVisProps) {
                 .slice(0, 120)
                 .map((r) => {
                     const isConflict = r.relation === 'contradicts';
+                    const vstyle = relationStyle(r.relation);
                     return {
                         id: r.id,
                         from: r.fromId,
                         to: r.toId,
-                        color: isConflict ? CONFLICT_COLOR : '#64748b',
+                        color: isConflict ? CONFLICT_COLOR : vstyle.color,
+                        dashes: vstyle.dasharray ? true : false,
                         width: isConflict ? 2.5 : 0.8 + r.weight * 1.5,
-                        title: r.relation,
+                        title: `${vstyle.label ?? r.relation} (${r.relation})`,
                     };
                 }),
         [relations, nodeIds],
@@ -64,7 +72,10 @@ export default function TopicGraphVis(props: TopicGraphVisProps) {
             return {
                 kind: 'concept' as const,
                 title: concept.name,
-                lines: [`Утверждений: ${concept.claimIds.length}`, `Алиасы: ${concept.aliases.length ? concept.aliases.join(', ') : '—'}`],
+                lines: [
+                    `Утверждений: ${concept.claimIds.length}`,
+                    `Алиасы: ${concept.aliases.length ? concept.aliases.join(', ') : '—'}`,
+                ],
             };
         }
         const claim = claims.find((c) => c.id === selectedId);
@@ -92,7 +103,12 @@ export default function TopicGraphVis(props: TopicGraphVisProps) {
                     height={height}
                     physics
                     onClickNode={(n) => setSelectedId(String(n.id))}
-                    interactionOptions={{ hover: true, dragNodes: true, dragView: true, zoomView: true }}
+                    interactionOptions={{
+                        hover: true,
+                        dragNodes: true,
+                        dragView: true,
+                        zoomView: true,
+                    }}
                 />
             </div>
             {selected && (
@@ -112,12 +128,22 @@ export default function TopicGraphVis(props: TopicGraphVisProps) {
                         overflowY: 'auto',
                     }}
                 >
-                    <div style={{ fontWeight: 700, fontSize: 13, color: selected.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR }}>
+                    <div
+                        style={{
+                            fontWeight: 700,
+                            fontSize: 13,
+                            color: selected.kind === 'concept' ? CONCEPT_COLOR : CLAIM_COLOR,
+                        }}
+                    >
                         {selected.kind === 'concept' ? 'Концепт' : 'Утверждение'}
                     </div>
-                    <div style={{ color: 'var(--slate-100)', wordBreak: 'break-word' }}>{selected.title}</div>
+                    <div style={{ color: 'var(--slate-100)', wordBreak: 'break-word' }}>
+                        {selected.title}
+                    </div>
                     {selected.lines.map((l, i) => (
-                        <div key={i} style={{ color: 'var(--slate-400)' }}>{l}</div>
+                        <div key={i} style={{ color: 'var(--slate-400)' }}>
+                            {l}
+                        </div>
                     ))}
                     {'sourceLine' in selected && (
                         <div style={{ color: 'var(--slate-400)' }}>{selected.sourceLine}</div>
