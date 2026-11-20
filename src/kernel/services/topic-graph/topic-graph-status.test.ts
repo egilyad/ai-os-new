@@ -394,6 +394,40 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(questions[0]!.questions.length).toBeGreaterThan(0);
     });
 
+    it('builds a structured topic dossier', async () => {
+        const llm = {
+            chat: async (messages: Array<{ role: string; content: string }>) => {
+                const last = messages[messages.length - 1]!.content;
+                if (last.includes('Тема:')) {
+                    return { content: JSON.stringify(['архитектура']) };
+                }
+                return { content: JSON.stringify(['Что такое MCP?']) };
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Dossier', 'Проект OpenCode');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы и умеет работать с ними.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'OpenCode поддерживает MCP-серверы и умеет с ними работать.',
+        });
+        await svc.decomposeAspects(topic.id);
+
+        const dossier = await svc.topicDossier(topic.id);
+        expect(dossier).toContain('# Досье: Dossier');
+        expect(dossier).toContain('Покрытие аспектов');
+        expect(dossier).toContain('## Аспекты');
+        expect(dossier).toContain('## Источники');
+        expect(dossier).toContain('## Связи');
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

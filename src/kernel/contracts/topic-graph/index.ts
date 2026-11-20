@@ -104,6 +104,8 @@ export interface TopicGraphService {
     decomposeAspects(topicId: string): Promise<TopicAspect[]>;
     /** Генерация уточняющих вопросов для пустых/слабых аспектов. */
     aspectQuestions(topicId: string): Promise<Array<{ aspect: string; questions: string[] }>>;
+    /** Структурированное досье темы: аспекты, консенсусы, конфликты, источники. */
+    topicDossier(topicId: string): Promise<string>;
 
     /** Поиск по утверждениям темы (jaccard + cosine + graph expansion). */
     search(topicId: string, query: string): Promise<TopicClaim[]>;

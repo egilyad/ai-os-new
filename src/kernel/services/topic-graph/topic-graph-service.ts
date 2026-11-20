@@ -1544,6 +1544,91 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         return out.slice(0, limit);
     }
 
+    async topicDossier(topicId: string): Promise<string> {
+        const [topic, claims, relations, conflicts, sources, aspects, comp] = await Promise.all([
+            this.getTopic(topicId),
+            this.claims(topicId),
+            this.relations(topicId),
+            this.conflicts(topicId),
+            this.sources(topicId),
+            this.aspects(topicId),
+            this.completeness(topicId),
+        ]);
+        if (!topic) return '# Topic not found';
+        const claimById = new Map(claims.map((c) => [c.id, c]));
+        const lines: string[] = [];
+        lines.push(`# Досье: ${topic.title}`);
+        lines.push('');
+        lines.push(`> ${topic.description}`);
+        lines.push('');
+        lines.push(
+            `**Покрытие аспектов:** ${comp.collectionProgress * 100}% ` +
+                `(${comp.aspectCoverage?.covered ?? 0}/${comp.aspectCoverage?.total ?? 0})`,
+        );
+        lines.push('');
+
+        if (aspects.length > 0) {
+            lines.push('## Аспекты');
+            lines.push('');
+            for (const a of aspects) {
+                const facts = a.claimIds
+                    .map((id) => claimById.get(id))
+                    .filter((c): c is TopicClaim => Boolean(c));
+                const consensual = facts.filter((c) => c.status === 'validated');
+                const alternatives = facts.filter((c) => c.status === 'extracted');
+                lines.push(`### ${a.name}`);
+                lines.push('');
+                if (consensual.length > 0) {
+                    lines.push('Консенсус:');
+                    for (const c of consensual) lines.push(`- ${c.text}`);
+                    lines.push('');
+                }
+                if (alternatives.length > 0) {
+                    lines.push('Альтернативы:');
+                    for (const c of alternatives) lines.push(`- ${c.text}`);
+                    lines.push('');
+                }
+                if (facts.length === 0) {
+                    lines.push('_Нет фактов по аспекту._');
+                    lines.push('');
+                }
+            }
+        }
+
+        const openConflicts = conflicts.filter((c) => !c.resolved);
+        if (openConflicts.length > 0) {
+            lines.push('## Неразрешённые конфликты');
+            lines.push('');
+            for (const c of openConflicts) {
+                const a = claimById.get(c.claimAId);
+                const b = claimById.get(c.claimBId);
+                lines.push(`- ${a?.text ?? c.claimAId} |vs| ${b?.text ?? c.claimBId}`);
+                lines.push(`  _${c.reason} (conf ${c.confidence.toFixed(2)})_`);
+            }
+            lines.push('');
+        }
+
+        lines.push('## Источники');
+        lines.push('');
+        for (const s of sources) {
+            const title = s.title || s.ref;
+            lines.push(`- [${s.kind}] ${title} — ${s.content.length} симв.`);
+        }
+        lines.push('');
+        lines.push('## Связи');
+        lines.push('');
+        const relByType = new Map<string, number>();
+        for (const r of relations) {
+            relByType.set(r.relation, (relByType.get(r.relation) ?? 0) + 1);
+        }
+        for (const [type, count] of relByType) {
+            lines.push(`- ${type}: ${count}`);
+        }
+        lines.push('');
+        lines.push('_Автосгенерировано Topic Graph._');
+        return lines.join('\n');
+    }
+
     async exportReport(topicId: string): Promise<string> {
         const [topic, claims, concepts, relations, conflicts, sources] = await Promise.all([
             this.getTopic(topicId),
