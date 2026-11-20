@@ -18,8 +18,9 @@ import type {
     TopicConcept,
     TopicRelation,
     TopicSource,
+    TopicRelationType,
 } from '../../kernel/contracts/topic-graph/types';
-import { relationStyle } from './relation-styles';
+import { relationStyle, RELATION_STYLES } from './relation-styles';
 
 type FlowNodeData = {
     label: string;
@@ -153,10 +154,23 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
     const [maxClaims, setMaxClaims] = useState(30);
     const [showConflicts, setShowConflicts] = useState(true);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [relationFilter, setRelationFilter] = useState<TopicRelationType | 'all'>('all');
+    const [minWeight, setMinWeight] = useState(0);
+
+    const filteredRelations = useMemo(
+        () =>
+            relations.filter(
+                (r) =>
+                    (relationFilter === 'all' || r.relation === relationFilter) &&
+                    r.weight >= minWeight,
+            ),
+        [relations, relationFilter, minWeight],
+    );
 
     const { nodes: builtNodes, edges: builtEdges } = useMemo(
-        () => buildLayout(concepts, claims, relations, maxConcepts, maxClaims, showConflicts),
-        [concepts, claims, relations, maxConcepts, maxClaims, showConflicts],
+        () =>
+            buildLayout(concepts, claims, filteredRelations, maxConcepts, maxClaims, showConflicts),
+        [concepts, claims, filteredRelations, maxConcepts, maxClaims, showConflicts],
     );
     const [nodes, setNodes, onNodesChange] = useNodesState(builtNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(builtEdges);
@@ -270,6 +284,41 @@ export default function TopicGraphFlow(props: TopicGraphFlowProps) {
                         onChange={(e) => setShowConflicts(e.target.checked)}
                     />
                     Конфликты
+                </label>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                    Тип связи
+                    <select
+                        value={relationFilter}
+                        onChange={(e) =>
+                            setRelationFilter(e.target.value as TopicRelationType | 'all')
+                        }
+                        style={{
+                            padding: '2px 6px',
+                            borderRadius: 6,
+                            border: '1px solid var(--border)',
+                            background: 'var(--bg-elevated)',
+                            color: 'var(--slate-300)',
+                        }}
+                    >
+                        <option value="all">все</option>
+                        {Object.entries(RELATION_STYLES).map(([kind, style]) => (
+                            <option key={kind} value={kind}>
+                                {style.label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                    Мин. вес
+                    <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.1}
+                        value={minWeight}
+                        onChange={(e) => setMinWeight(Number(e.target.value))}
+                    />
+                    {minWeight.toFixed(1)}
                 </label>
             </div>
 
