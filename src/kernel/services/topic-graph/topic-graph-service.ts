@@ -1147,6 +1147,23 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         await this.syncConcepts(topicId, claims);
         await this.clusterConcepts(topicId);
         await this.rebuildConceptRelations(topicId);
+
+        // LLM-консолидация: для кандидатов на слияние партии решаем
+        // «слить/оставить» и применяем автоматически. Работает только при
+        // наличии LLM; иначе консолидация ограничивается пересчётом графа.
+        if (!this.deps.llm) return;
+        const candidates = await this.mergeCandidates(topicId, 10);
+        if (candidates.length === 0) return;
+        for (const pair of candidates) {
+            const verdict = await this.verifyDedupeWithLlm(pair.a.text, pair.b.text);
+            if (verdict === true) {
+                try {
+                    await this.mergeClaims(topicId, pair.a.id, pair.b.id);
+                } catch {
+                    // пара уже слита или рассинхронизирована — пропускаем
+                }
+            }
+        }
     }
 
     /** Нормализованная степень центральности узлов (claims + концепты). */

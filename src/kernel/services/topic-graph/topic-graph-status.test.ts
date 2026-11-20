@@ -255,6 +255,30 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(winner!.status).toBe('validated');
     });
 
+    it('consolidate merges near-duplicate claims via LLM verdicts', async () => {
+        const llm = {
+            chat: async () => ({ content: 'да' }),
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('ConsolidateLlm', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы и умеет работать с ними.',
+        });
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'OpenCode поддерживает MCP-серверы и умеет с ними работать.',
+        });
+
+        await svc.consolidate(topic.id);
+        const claims = await svc.claims(topic.id);
+        expect(claims.length).toBe(1);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');
