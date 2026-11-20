@@ -102,6 +102,8 @@ export interface TopicGraphService {
     aspects(topicId: string): Promise<TopicAspect[]>;
     /** LLM-декомпозиция темы на аспекты (идемпотентно). */
     decomposeAspects(topicId: string): Promise<TopicAspect[]>;
+    /** Генерация уточняющих вопросов для пустых/слабых аспектов. */
+    aspectQuestions(topicId: string): Promise<Array<{ aspect: string; questions: string[] }>>;
 
     /** Поиск по утверждениям темы (jaccard + cosine + graph expansion). */
     search(topicId: string, query: string): Promise<TopicClaim[]>;

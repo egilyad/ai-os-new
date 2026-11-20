@@ -365,6 +365,35 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(comp.collectionProgress).toBe(1);
     });
 
+    it('generates clarifying questions for weak aspects', async () => {
+        const llm = {
+            chat: async (messages: Array<{ role: string; content: string }>) => {
+                const last = messages[messages.length - 1]!.content;
+                if (last.includes('Тема:')) {
+                    return { content: JSON.stringify(['архитектура', 'безопасность']) };
+                }
+                return {
+                    content: JSON.stringify(['Что такое MCP?', 'Как OpenCode подключает MCP?']),
+                };
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Questions', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'OpenCode поддерживает MCP-серверы.',
+        });
+
+        const aspects = await svc.decomposeAspects(topic.id);
+        expect(aspects.length).toBeGreaterThan(0);
+        // Аспекты без фактов — слабые; вопросы должны сгенерироваться.
+        const questions = await svc.aspectQuestions(topic.id);
+        expect(questions.length).toBeGreaterThan(0);
+        expect(questions[0]!.questions.length).toBeGreaterThan(0);
+    });
+
     it('marks conflict participants as contradicted', async () => {
         const svc = new TopicGraphServiceImpl(getTopicGraphDB());
         const topic = await svc.createTopic('ConflictStatus', '');

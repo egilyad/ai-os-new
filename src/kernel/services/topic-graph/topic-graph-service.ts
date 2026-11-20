@@ -1226,6 +1226,57 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         }
     }
 
+    async aspectQuestions(
+        topicId: string,
+    ): Promise<Array<{ aspect: string; questions: string[] }>> {
+        const aspects = await this.aspects(topicId);
+        if (aspects.length === 0 || !this.deps.llm) return [];
+        const claims = await this.claims(topicId);
+        const claimById = new Map(claims.map((c) => [c.id, c]));
+        const weak = aspects.filter(
+            (a) => a.claimIds.filter((id) => claimById.has(id)).length < (a.minFacts ?? 2),
+        );
+        if (weak.length === 0) return [];
+        const out: Array<{ aspect: string; questions: string[] }> = [];
+        for (const a of weak.slice(0, 5)) {
+            try {
+                const topic = await this.db.topics.get(topicId);
+                const existing = a.claimIds
+                    .map((id) => claimById.get(id)?.text)
+                    .filter((t): t is string => Boolean(t))
+                    .join(' | ');
+                const res = await this.deps.llm.chat([
+                    {
+                        role: 'system',
+                        content:
+                            'Ты помогаешь исследовать тему. Для аспекта, по которому мало ' +
+                            'фактов, сформулируй 3-5 конкретных вопроса, ответы на которые ' +
+                            'закроют пробел. Верни ТОЛЬКО JSON-массив строк. Без пояснений.',
+                    },
+                    {
+                        role: 'user',
+                        content:
+                            `Тема: ${topic?.title ?? ''}\nАспект: ${a.name}\n` +
+                            `Известно: ${existing || '(ничего)'}`,
+                    },
+                ]);
+                const start = res.content.indexOf('[');
+                const end = res.content.lastIndexOf(']');
+                if (start < 0 || end <= start) continue;
+                const parsed = JSON.parse(res.content.slice(start, end + 1)) as unknown;
+                if (!Array.isArray(parsed)) continue;
+                const questions = parsed
+                    .filter((q): q is string => typeof q === 'string' && q.trim().length > 5)
+                    .map((q) => q.trim())
+                    .slice(0, 5);
+                if (questions.length > 0) out.push({ aspect: a.name, questions });
+            } catch {
+                // пропускаем аспект при ошибке LLM
+            }
+        }
+        return out;
+    }
+
     async search(topicId: string, query: string): Promise<TopicClaim[]> {
         const q = tokenize(query);
         if (q.size === 0) return [];
