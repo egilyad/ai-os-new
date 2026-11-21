@@ -71,7 +71,8 @@ const ImpactTab: React.FC = () => {
             cmp = (a.techniqueId ?? '').localeCompare(b.techniqueId ?? '');
         else if (sortKey === 'confidence')
             cmp = (CONFIDENCE_ORDER[a.confidence] ?? 0) - (CONFIDENCE_ORDER[b.confidence] ?? 0);
-        else if (sortKey === 'totalActivations') cmp = num(a.totalActivations) - num(b.totalActivations);
+        else if (sortKey === 'totalActivations')
+            cmp = num(a.totalActivations) - num(b.totalActivations);
         else cmp = num(a.avgJudgeScoreDelta) - num(b.avgJudgeScoreDelta);
         return sortDir === 'desc' ? -cmp : cmp;
     });
@@ -90,7 +91,9 @@ const ImpactTab: React.FC = () => {
                 </div>
                 <div style={statCardStyle}>
                     <div style={statValueStyle}>
-                        {totalTechniques === null ? metrics.length : `${metrics.length}/${totalTechniques}`}
+                        {totalTechniques === null
+                            ? metrics.length
+                            : `${metrics.length}/${totalTechniques}`}
                     </div>
                     <div style={statLabelStyle}>
                         {t('quality_impact.techniques') ?? 'Techniques'}
@@ -188,8 +191,8 @@ const ImpactTab: React.FC = () => {
                 {sorted.length === 0 && (
                     <div style={emptyStyle}>{t('quality_impact.empty') ?? 'No data yet.'}</div>
                 )}
-                {sorted.map((m) => (
-                    <React.Fragment key={m.techniqueId}>
+                {sorted.map((m, idx) => (
+                    <React.Fragment key={m.techniqueId || `unknown-${idx}`}>
                         <div
                             style={rowStyle}
                             role="button"
@@ -217,10 +220,15 @@ const ImpactTab: React.FC = () => {
                                 {m.techniqueId}
                             </span>
                             <span style={deltaStyle(m.avgJudgeScoreDelta)}>
-                                {typeof m.avgJudgeScoreDelta === 'number' && m.avgJudgeScoreDelta >= 0 ? '+' : ''}
+                                {typeof m.avgJudgeScoreDelta === 'number' &&
+                                m.avgJudgeScoreDelta >= 0
+                                    ? '+'
+                                    : ''}
                                 {formatPct(m.avgJudgeScoreDelta)}
                             </span>
-                            <span style={{ color: 'var(--slate-400)' }}>{num(m.totalActivations)}</span>
+                            <span style={{ color: 'var(--slate-400)' }}>
+                                {num(m.totalActivations)}
+                            </span>
                             <span>
                                 <span
                                     style={badgeStyle(CONFIDENCE_COLOR[m.confidence] ?? '#6b7280')}
@@ -228,7 +236,9 @@ const ImpactTab: React.FC = () => {
                                     {PRETTY_CONFIDENCE[m.confidence] ?? m.confidence}
                                 </span>
                             </span>
-                            <span style={{ color: 'var(--slate-400)' }}>{num(m.totalSessions)}</span>
+                            <span style={{ color: 'var(--slate-400)' }}>
+                                {num(m.totalSessions)}
+                            </span>
                             <span style={{ color: 'var(--slate-500)', fontSize: '16px' }}>
                                 {expandedId === m.techniqueId ? '−' : '+'}
                             </span>
@@ -306,12 +316,19 @@ const ImpactTab: React.FC = () => {
                                                 {t('quality_impact.frequency_title') ?? 'Frequency'}
                                                 :
                                             </span>{' '}
-                                            <span style={{ color: 'var(--purple-muted)', fontWeight: 600 }}>
+                                            <span
+                                                style={{
+                                                    color: 'var(--purple-muted)',
+                                                    fontWeight: 600,
+                                                }}
+                                            >
                                                 {((m.frequencyInBestRounds ?? 0) * 100).toFixed(0)}%
                                             </span>
                                         </div>
                                         <div>
-                                            <span style={{ color: 'var(--slate-400)' }}>Composite:</span>{' '}
+                                            <span style={{ color: 'var(--slate-400)' }}>
+                                                Composite:
+                                            </span>{' '}
                                             <span style={{ color: '#f472b6', fontWeight: 600 }}>
                                                 {(
                                                     (m.lastTouchCount ?? 0) * 2 +

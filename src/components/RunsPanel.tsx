@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Activity, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -41,7 +42,7 @@ const RunsPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -105,7 +106,7 @@ const RunsPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }

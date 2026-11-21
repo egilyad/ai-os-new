@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, ListChecks, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -59,7 +60,7 @@ const IssuesPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -141,7 +142,7 @@ const IssuesPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }
@@ -300,7 +301,9 @@ const IssuesPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && (
+                <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>
+            )}
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <ul style={{ flex: '1 1 300px', listStyle: 'none', padding: 0, margin: 0 }}>

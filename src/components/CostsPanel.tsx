@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, DollarSign, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -48,7 +49,7 @@ const CostsPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -95,7 +96,11 @@ const CostsPanel: React.FC = () => {
             const cq = agentId ? `?agentId=${encodeURIComponent(agentId)}&limit=100` : '?limit=100';
             const [b, c, a] = await Promise.all([
                 api<{ budget?: Budget }>(base, secret, `/api/companies/${companyId}/budget${bq}`),
-                api<{ costs?: CostEvent[] }>(base, secret, `/api/companies/${companyId}/costs${cq}`),
+                api<{ costs?: CostEvent[] }>(
+                    base,
+                    secret,
+                    `/api/companies/${companyId}/costs${cq}`,
+                ),
                 api<{ agents?: Agent[] }>(base, secret, `/api/companies/${companyId}/agents`),
             ]);
             setBudget(b.budget || null);
@@ -112,7 +117,7 @@ const CostsPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }
@@ -177,16 +182,32 @@ const CostsPanel: React.FC = () => {
                     costs: ['budget', 'analytics', 'key-usage-analytics', 'pricing'],
                 }}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <DollarSign size={20} />
                 <h2 style={{ margin: 0 }}>{t('costs.title')}</h2>
-                <button onClick={() => void loadMoney()} disabled={loading} style={{ marginLeft: 'auto' }}>
+                <button
+                    onClick={() => void loadMoney()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
                     {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('costs.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('costs.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('costs.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -214,11 +235,21 @@ const CostsPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && (
+                <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>
+            )}
 
             {budget && (
                 <div
@@ -239,8 +270,18 @@ const CostsPanel: React.FC = () => {
             )}
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={cents} onChange={(e) => setCents(e.target.value)} placeholder={t('costs.cents_ph')} style={{ width: 120 }} />
-                <input value={model} onChange={(e) => setModel(e.target.value)} placeholder={t('costs.model_ph')} style={{ flex: '1 1 140px' }} />
+                <input
+                    value={cents}
+                    onChange={(e) => setCents(e.target.value)}
+                    placeholder={t('costs.cents_ph')}
+                    style={{ width: 120 }}
+                />
+                <input
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                    placeholder={t('costs.model_ph')}
+                    style={{ flex: '1 1 140px' }}
+                />
                 <button onClick={() => void recordCost()} disabled={!companyId}>
                     {t('costs.record')}
                 </button>

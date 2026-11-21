@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Server, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -31,7 +32,7 @@ function loadCfg(): { url: string; secret: string } {
     try {
         return {
             url: localStorage.getItem(URL_KEY) || DEFAULT_URL,
-            secret: localStorage.getItem(SECRET_KEY) || '',
+            secret: readGatewaySecret(SECRET_KEY) || '',
         };
     } catch {
         return { url: DEFAULT_URL, secret: '' };
@@ -83,7 +84,7 @@ const CompaniesPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }

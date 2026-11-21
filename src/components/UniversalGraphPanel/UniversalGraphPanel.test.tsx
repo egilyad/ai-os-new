@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import UniversalGraphPanel from './UniversalGraphPanel';
 
 vi.mock('../../kernel/instances/services-extras', () => ({
@@ -53,7 +54,11 @@ describe('UniversalGraphPanel', () => {
     });
 
     it('рендерит проекты, узлы и рёбра', async () => {
-        render(<UniversalGraphPanel />);
+        render(
+            <MemoryRouter>
+                <UniversalGraphPanel />
+            </MemoryRouter>,
+        );
         expect(screen.getByText('Universal Graph')).toBeTruthy();
         await waitFor(() => expect(screen.getByText('Write docs')).toBeTruthy());
         expect(screen.getByText('agent-x')).toBeTruthy();

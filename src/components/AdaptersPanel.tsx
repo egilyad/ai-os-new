@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Webhook, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -37,7 +38,7 @@ const AdaptersPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -82,7 +83,7 @@ const AdaptersPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }
@@ -191,7 +192,9 @@ const AdaptersPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && (
+                <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>
+            )}
 
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1rem 0' }}>
                 {adapters.map((a) => (
@@ -202,7 +205,13 @@ const AdaptersPanel: React.FC = () => {
                 {adapters.length === 0 && <li>{t('adapters.empty')}</li>}
             </ul>
 
-            <div style={{ border: 'var(--1px solid var(--slate-200))', borderRadius: 8, padding: '1rem' }}>
+            <div
+                style={{
+                    border: 'var(--1px solid var(--slate-200))',
+                    borderRadius: 8,
+                    padding: '1rem',
+                }}
+            >
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: 8, flexWrap: 'wrap' }}>
                     <select value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
                         <option value="">{t('adapters.pick_company')}</option>

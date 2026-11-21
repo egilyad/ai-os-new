@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Share2, Loader2, AlertTriangle, Download, Upload } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -24,7 +25,7 @@ const PortabilityPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -59,7 +60,7 @@ const PortabilityPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }
@@ -178,7 +179,9 @@ const PortabilityPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && (
+                <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>
+            )}
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <div

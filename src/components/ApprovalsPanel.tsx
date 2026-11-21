@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, ShieldCheck, Loader2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
@@ -42,7 +43,7 @@ const ApprovalsPanel: React.FC = () => {
     });
     const [secret, setSecret] = useState(() => {
         try {
-            return localStorage.getItem(SECRET_KEY) || '';
+            return readGatewaySecret(SECRET_KEY) || '';
         } catch {
             return '';
         }
@@ -101,7 +102,7 @@ const ApprovalsPanel: React.FC = () => {
     useEffect(() => {
         try {
             localStorage.setItem(URL_KEY, url);
-            localStorage.setItem(SECRET_KEY, secret);
+            writeGatewaySecret(SECRET_KEY, secret);
         } catch {
             /* private mode */
         }
@@ -232,7 +233,9 @@ const ApprovalsPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && (
+                <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>
+            )}
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <ul style={{ flex: '1 1 300px', listStyle: 'none', padding: 0, margin: 0 }}>
@@ -374,7 +377,13 @@ function LocalAgentApprovals(): React.JSX.Element {
     }
 
     return (
-        <div style={{ marginTop: '2rem', borderTop: 'var(--1px solid var(--slate-200))', paddingTop: '1rem' }}>
+        <div
+            style={{
+                marginTop: '2rem',
+                borderTop: 'var(--1px solid var(--slate-200))',
+                paddingTop: '1rem',
+            }}
+        >
             <div
                 style={{
                     display: 'flex',
@@ -419,7 +428,11 @@ function LocalAgentApprovals(): React.JSX.Element {
                 {items.map((r) => (
                     <li
                         key={r.id}
-                        style={{ border: 'var(--1px solid var(--slate-200))', borderRadius: 8, padding: '0.75rem' }}
+                        style={{
+                            border: 'var(--1px solid var(--slate-200))',
+                            borderRadius: 8,
+                            padding: '0.75rem',
+                        }}
                     >
                         <div
                             style={{
@@ -520,7 +533,13 @@ function BrowserUseConfig(): React.JSX.Element {
     }
 
     return (
-        <div style={{ marginTop: '2rem', borderTop: 'var(--1px solid var(--slate-200))', paddingTop: '1rem' }}>
+        <div
+            style={{
+                marginTop: '2rem',
+                borderTop: 'var(--1px solid var(--slate-200))',
+                paddingTop: '1rem',
+            }}
+        >
             <div
                 style={{
                     display: 'flex',

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import GraphStudioPanel from './GraphStudioPanel';
 
 vi.mock('../../kernel/instances/services-extras', () => ({
@@ -61,7 +62,11 @@ describe('GraphStudioPanel', () => {
     });
 
     it('рендерит студию с контролами и данными', async () => {
-        render(<GraphStudioPanel />);
+        render(
+            <MemoryRouter>
+                <GraphStudioPanel />
+            </MemoryRouter>,
+        );
         expect(screen.getByText('Graph Studio')).toBeTruthy();
         expect(screen.getByText('Semantics')).toBeTruthy();
         expect(screen.getByText('Physics')).toBeTruthy();

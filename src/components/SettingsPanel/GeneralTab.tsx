@@ -41,11 +41,11 @@ interface GeneralTabProps {
 }
 
 // T2: global default key/model for new chats (per-chat override lives on ChatSession)
-const CHAT_MODEL_OPTIONS: Array<{ value: string; label: string }> = [
-    { value: '', label: 'Auto' },
+const CHAT_MODEL_OPTIONS: Array<{ value: string; label: string; key: string }> = [
+    { value: '', label: 'Auto', key: 'auto' },
     ...Object.entries(PROVIDER_DEFAULT_MODELS)
         .filter(([p]) => !['gemini_flash', 'gemini_pro'].includes(p))
-        .map(([p, m]) => ({ value: m, label: `${m} (${p})` })),
+        .map(([p, m]) => ({ value: m, label: `${m} (${p})`, key: `${p}:${m}` })),
 ];
 
 const ChatDefaultsRow: React.FC<{
@@ -113,7 +113,7 @@ const ChatDefaultsRow: React.FC<{
                     aria-label="Default chat model"
                 >
                     {CHAT_MODEL_OPTIONS.map((o) => (
-                        <option key={o.value || 'auto'} value={o.value}>
+                        <option key={o.key} value={o.value}>
                             {o.label}
                         </option>
                     ))}

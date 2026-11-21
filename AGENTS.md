@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Autonomous, event-driven multi-agent runtime. v4.5.0 — 326 contracts, 810 services, 569 event-registry entries, 830 UI panels (актуальные счётчики: `node scripts/opencode/stats.mjs`).
+Autonomous, event-driven multi-agent runtime. v4.5.0 — 330 contracts, 849 services, 581 event-registry entries, 846 UI panels (актуальные счётчики: `node scripts/opencode/stats.mjs`).
 
 ## Workflow Convention
 
@@ -61,12 +61,12 @@ MCP-сервер `codebase-memory` (исполняемый файл `C:/Users/ev
 
 ## Architecture Layers
 
-- `src/kernel/contracts/` — 326 interfaces + types
-- `src/kernel/services/` — 810 implementations
-- `src/kernel/events/` — event names + payloads (569 записей в registry)
+- `src/kernel/contracts/` — 330 interfaces + types
+- `src/kernel/services/` — 849 implementations
+- `src/kernel/events/` — event names + payloads (581 записей в registry)
 - `src/kernel/state/` — state shapes (19 files)
 - `src/llm/` — provider adapters + decorators
-- `src/components/` — React UI (830 panels)
+- `src/components/` — React UI (846 panels)
 - `src/stores/` — Zustand stores (22 files)
 - `docs/` — architecture docs (63 files, RU/EN)
 - `docs/wiki/` — full system Wiki mirror (markdown, GitHub-readable; regenerate with `npm run gen:wiki-docs`); panel pages end with an auto «Связи с кодом» chain (panel → route → component → tests)
