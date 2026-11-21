@@ -110,3 +110,5 @@ docs/fetched-sites/
 !.opencode/skills/**
 
 docs/audits-tips/
+
+.code-runner/
