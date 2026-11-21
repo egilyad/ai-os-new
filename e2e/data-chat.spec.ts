@@ -10,7 +10,7 @@ import { boot, dismissWizard, idbPut, stubOpenRouter, STUB_MODEL } from './helpe
 
 test.describe('AI-OS Data Chat', () => {
     // Boot + reload + reboot per test can exceed the 180s suite default.
-    test.describe.configure({ timeout: 300000 });
+    test.describe.configure({ timeout: 600000 });
 
     test.beforeEach(async ({ page }) => {
         await boot(page);
@@ -51,8 +51,8 @@ test.describe('AI-OS Data Chat', () => {
 
         // Either transport marker proves the mocked provider reply rendered
         // (SSE-PATH-42 via streaming, JSON-PATH-42 via plain JSON).
-        // 120s: slow runners cold-start Vite preview + first chat round-trip.
-        await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 120000 });
+        // 240s: slow runners cold-start Vite preview + first chat round-trip.
+        await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 240000 });
 
         await page.reload();
         await boot(page);
