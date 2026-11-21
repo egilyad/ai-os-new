@@ -15,6 +15,7 @@ import type {
 } from '../../contracts/orchestrator';
 import type { IEventBus } from '../../types/interfaces';
 import type { DispatchAssignment } from '../../contracts/dispatcher';
+import type { IMissionMetricsService } from '../../contracts/mission-metrics';
 const MAX_NODES = 12;
 const MAX_CONCURRENCY = 3;
 
@@ -27,6 +28,7 @@ export class OrchestratorService implements IOrchestratorService {
         private llm?: {
             chat(messages: Array<{ role: string; content: string }>): Promise<{ content: string }>;
         },
+        private metrics?: IMissionMetricsService,
     ) {}
 
     async init(): Promise<void> {}
@@ -143,6 +145,8 @@ export class OrchestratorService implements IOrchestratorService {
         executor: MissionExecutor,
     ): Promise<MissionResult> {
         const goal = plan.goal;
+        const startedAt = Date.now();
+        let firstArtifactMs = 0;
         const outputs: Record<string, string> = {};
         const failedNodeIds: string[] = [];
         let remaining = [...plan.nodes];
@@ -166,6 +170,7 @@ export class OrchestratorService implements IOrchestratorService {
                         node.status = 'done';
                         node.result = result;
                         outputs[node.id] = result;
+                        if (firstArtifactMs === 0) firstArtifactMs = Date.now() - startedAt;
                     } catch (e) {
                         node.status = 'failed';
                         node.result = e instanceof Error ? e.message : String(e);
@@ -184,6 +189,15 @@ export class OrchestratorService implements IOrchestratorService {
             status,
             completed: Object.keys(outputs).length,
             failed: failedNodeIds.length,
+        });
+        this.metrics?.record({
+            missionId: plan.id,
+            goal,
+            status,
+            replans: 0,
+            costUsd: 0,
+            firstArtifactMs,
+            durationMs: Date.now() - startedAt,
         });
         return { missionId: plan.id, goal, status, outputs, failedNodeIds };
     }

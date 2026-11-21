@@ -5,9 +5,12 @@ import type { IEventBus } from '../types/interfaces';
 import type { ILLMClientService } from '../contracts/provider-adapter';
 import { OrchestratorService } from '../services/orchestrator/orchestrator-service';
 import { DispatcherService } from '../services/orchestrator/dispatcher-service';
+import { MissionMetricsService } from '../services/orchestrator/mission-metrics-service';
 import type { DispatcherAgent } from '../contracts/dispatcher';
 
 export const registerPhase87: Phase = ({ register }) => {
+    register('missionMetricsService', () => new MissionMetricsService());
+
     register('dispatcherService', (c: IContainer) => {
         const directory = c.has('agentDirectoryService')
             ? c.get<{ listAgents(): DispatcherAgent[] }>('agentDirectoryService')
@@ -45,6 +48,7 @@ export const registerPhase87: Phase = ({ register }) => {
                       },
                   }
                 : undefined,
+            c.get('missionMetricsService'),
         );
     });
 };
