@@ -10,6 +10,7 @@ import type {
     IArtifactVerifierService,
     ArtifactVerification,
     VerifyArtifactInput,
+    RefinementComparison,
 } from '../../contracts/artifact-verifier';
 
 const ERROR_MARKERS = [
@@ -140,6 +141,57 @@ export class ArtifactVerifierService implements IArtifactVerifierService {
             }
         }
         return this.heuristicVerdict(checks);
+    }
+
+    compare(
+        before: { overall: number; axes?: Record<string, number> },
+        after: { overall: number; axes?: Record<string, number> },
+    ): RefinementComparison {
+        const deltas: Record<string, number> = {};
+        let totalGain = 0;
+        let totalDrop = 0;
+        const axisNames = new Set([
+            ...Object.keys(before.axes ?? {}),
+            ...Object.keys(after.axes ?? {}),
+        ]);
+        for (const axis of axisNames) {
+            if (axis === 'Overall' || axis === 'Confidence') continue;
+            const delta = (after.axes?.[axis] ?? 0) - (before.axes?.[axis] ?? 0);
+            deltas[axis] = delta;
+            if (delta > 0) totalGain += delta;
+            else if (delta < 0) totalDrop += Math.abs(delta);
+        }
+
+        let outcome: RefinementComparison['outcome'];
+        let revert: boolean;
+        let reasoning: string;
+        if (after.overall > before.overall) {
+            outcome = 'ACCEPTED_SCORE_INCREASE';
+            revert = false;
+            reasoning = `Overall improved ${before.overall} → ${after.overall}`;
+        } else if (after.overall < before.overall) {
+            outcome = 'REJECTED_SCORE_DECREASE';
+            revert = true;
+            reasoning = `Overall degraded ${before.overall} → ${after.overall}`;
+        } else if (totalDrop > totalGain) {
+            outcome = 'REJECTED_DEGRADATION';
+            revert = true;
+            reasoning = `Overall unchanged but sub-axes degraded (drop ${totalDrop} > gain ${totalGain})`;
+        } else {
+            outcome = 'ACCEPTED_NEUTRAL_IMPROVEMENT';
+            revert = false;
+            reasoning = `Overall unchanged, sub-axes stable/improved (gain ${totalGain}, drop ${totalDrop})`;
+        }
+        return {
+            before: before.overall,
+            after: after.overall,
+            deltas,
+            totalGain,
+            totalDrop,
+            outcome,
+            revert,
+            reasoning,
+        };
     }
 
     private heuristicVerdict(

@@ -17,6 +17,46 @@ describe('ArtifactVerifierService', () => {
         expect(result.checks.nonEmpty).toBe(true);
     });
 
+    it('compare: accepts a real score increase', () => {
+        const svc = new ArtifactVerifierService();
+        const r = svc.compare(
+            { overall: 6, axes: { correctness: 6, clarity: 5 } },
+            { overall: 7, axes: { correctness: 8, clarity: 5 } },
+        );
+        expect(r.outcome).toBe('ACCEPTED_SCORE_INCREASE');
+        expect(r.revert).toBe(false);
+        expect(r.deltas['correctness']).toBe(2);
+    });
+
+    it('compare: reverts when overall drops', () => {
+        const svc = new ArtifactVerifierService();
+        const r = svc.compare({ overall: 7 }, { overall: 5 });
+        expect(r.outcome).toBe('REJECTED_SCORE_DECREASE');
+        expect(r.revert).toBe(true);
+    });
+
+    it('compare: reverts on sub-axis degradation with unchanged overall', () => {
+        const svc = new ArtifactVerifierService();
+        const r = svc.compare(
+            { overall: 7, axes: { correctness: 7, clarity: 7 } },
+            { overall: 7, axes: { correctness: 8, clarity: 5 } },
+        );
+        expect(r.outcome).toBe('REJECTED_DEGRADATION');
+        expect(r.revert).toBe(true);
+        expect(r.totalDrop).toBe(2);
+        expect(r.totalGain).toBe(1);
+    });
+
+    it('compare: accepts neutral-improvement when gains outweigh drops', () => {
+        const svc = new ArtifactVerifierService();
+        const r = svc.compare(
+            { overall: 7, axes: { correctness: 7, clarity: 7 } },
+            { overall: 7, axes: { correctness: 9, clarity: 7 } },
+        );
+        expect(r.outcome).toBe('ACCEPTED_NEUTRAL_IMPROVEMENT');
+        expect(r.revert).toBe(false);
+    });
+
     it('does not pass on partial keyword overlap or stub-like output', async () => {
         const svc = new ArtifactVerifierService();
         const partial = await svc.verify({
