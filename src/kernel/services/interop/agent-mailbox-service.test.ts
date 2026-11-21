@@ -66,7 +66,11 @@ describe('AgentMailboxService', () => {
             tenantId: 't2',
         });
         expect(await svc.list('a2', 't1')).toHaveLength(1);
-        expect(await svc.list('a2')).toHaveLength(2);
+        // Without a tenant we must NOT see tenant-scoped mail.
+        expect(await svc.list('a2')).toHaveLength(0);
+        // A global message remains visible without a tenant.
+        await svc.send({ from: 'a1', to: 'a2', kind: 'event', subject: 'global', payload: {} });
+        expect(await svc.list('a2')).toHaveLength(1);
     });
 
     it('cannot reply to a non-request message', async () => {

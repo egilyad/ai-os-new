@@ -20,7 +20,46 @@ const ERROR_MARKERS = [
     'cannot complete',
     'unhandled rejection',
     'undefined is not a function',
+    'placeholder',
+    'stub',
+    'lorem ipsum',
+    'to be done',
+    'coming soon',
 ];
+
+// Generic words that cannot prove a result is correct even when present.
+const STOPWORDS = new Set([
+    'the',
+    'and',
+    'for',
+    'with',
+    'that',
+    'this',
+    'from',
+    'are',
+    'was',
+    'were',
+    'has',
+    'have',
+    'will',
+    'can',
+    'not',
+    'but',
+    'you',
+    'your',
+    'its',
+    'into',
+    'это',
+    'для',
+    'что',
+    'как',
+    'или',
+    'but',
+    'the',
+    'test',
+    'code',
+    'work',
+]);
 
 function tok(s: string): string[] {
     return s
@@ -55,23 +94,31 @@ export class ArtifactVerifierService implements IArtifactVerifierService {
         const lower = output.toLowerCase();
         const noErrorMarkers = !ERROR_MARKERS.some((m) => lower.includes(m));
 
+        // Substantive = enough distinct content tokens and not a stub.
+        const contentTokens = new Set(tok(output).filter((t) => !STOPWORDS.has(t)));
+        const substantive = contentTokens.size >= 8;
+
         let expectedOutput = true;
         let keywordScore = 1;
         if (input.expectedOutput && input.expectedOutput.trim()) {
-            const expectedTokens = [...new Set(tok(input.expectedOutput))];
+            const expectedTokens = [
+                ...new Set(tok(input.expectedOutput).filter((t) => !STOPWORDS.has(t))),
+            ];
             const outTokens = new Set(tok(output));
             const hits = expectedTokens.filter((t) => outTokens.has(t)).length;
             keywordScore = expectedTokens.length > 0 ? hits / expectedTokens.length : 1;
-            expectedOutput = keywordScore >= 0.5;
+            // 0.7 — partial keyword overlap alone must not prove correctness.
+            expectedOutput = keywordScore >= 0.7;
         }
 
-        const deterministicPass = nonEmpty && noErrorMarkers && expectedOutput;
+        const checks = { nonEmpty, expectedOutput, noErrorMarkers, substantive, keywordScore };
+        const deterministicPass = nonEmpty && noErrorMarkers && substantive && expectedOutput;
         if (deterministicPass) {
             return {
                 verdict: 'pass',
                 score: keywordScore,
-                checks: { nonEmpty, expectedOutput, noErrorMarkers },
-                reasoning: 'deterministic checks passed',
+                checks,
+                reasoning: 'deterministic checks passed (keywords filtered, substantive)',
                 via: 'heuristic',
             };
         }
@@ -83,23 +130,16 @@ export class ArtifactVerifierService implements IArtifactVerifierService {
                 return {
                     verdict,
                     score: res.score,
-                    checks: { nonEmpty, expectedOutput, noErrorMarkers, llmPassed: res.passed },
+                    checks: { ...checks, llmPassed: res.passed },
                     reasoning: res.reasoning,
                     via: res.via === 'llm' ? 'llm' : 'heuristic',
                 };
             } catch (e) {
                 // LLM failed — fall through to heuristic verdict.
-                return this.heuristicVerdict(
-                    {
-                        nonEmpty,
-                        expectedOutput,
-                        noErrorMarkers,
-                    },
-                    e instanceof Error ? e.message : String(e),
-                );
+                return this.heuristicVerdict(checks, e instanceof Error ? e.message : String(e));
             }
         }
-        return this.heuristicVerdict({ nonEmpty, expectedOutput, noErrorMarkers });
+        return this.heuristicVerdict(checks);
     }
 
     private heuristicVerdict(

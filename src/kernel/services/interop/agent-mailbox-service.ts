@@ -53,25 +53,35 @@ export class AgentMailboxService implements IAgentMailboxService {
 
     async list(agentId: string, tenantId?: string): Promise<AgentMessage[]> {
         const all = this.byAgent.get(agentId) ?? [];
-        return tenantId ? all.filter((m) => m.tenantId === tenantId) : [...all];
+        // Without an explicit tenant we return ONLY tenant-less (global) mail —
+        // never a silent mix of several tenants.
+        return tenantId
+            ? all.filter((m) => m.tenantId === tenantId)
+            : all.filter((m) => m.tenantId === undefined);
     }
 
     async waitForReply(
         requestId: string,
         timeoutMs = DEFAULT_TIMEOUT_MS,
+        tenantId?: string,
     ): Promise<AgentMessage | null> {
         const deadline = Date.now() + Math.max(0, timeoutMs);
         while (Date.now() <= deadline) {
-            const reply = this.findMessage(requestId, 'reply');
+            const reply = this.findMessage(requestId, 'reply', tenantId);
             if (reply) return reply;
             await new Promise((resolve) => setTimeout(resolve, POLL_MS));
         }
         return null;
     }
 
-    private findMessage(id: string, kind?: AgentMessage['kind']): AgentMessage | undefined {
+    private findMessage(
+        id: string,
+        kind?: AgentMessage['kind'],
+        tenantId?: string,
+    ): AgentMessage | undefined {
         for (const list of this.byAgent.values()) {
             for (const m of list) {
+                if (tenantId !== undefined && m.tenantId !== tenantId) continue;
                 if (m.replyTo === id && (!kind || m.kind === kind)) return m;
                 if (!kind && m.id === id) return m;
             }

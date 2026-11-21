@@ -6,12 +6,28 @@ describe('ArtifactVerifierService', () => {
         const svc = new ArtifactVerifierService();
         const result = await svc.verify({
             task: 'Implement auth',
-            output: 'Implemented token-based authentication with refresh rotation.',
-            expectedOutput: 'token authentication refresh',
+            output:
+                'Implemented token-based authentication with refresh rotation. ' +
+                'Access tokens expire in fifteen minutes while refresh tokens ' +
+                'rotate on every use and revoke prior sessions immediately.',
+            expectedOutput: 'token authentication refresh rotation expiry sessions',
         });
         expect(result.verdict).toBe('pass');
         expect(result.via).toBe('heuristic');
         expect(result.checks.nonEmpty).toBe(true);
+    });
+
+    it('does not pass on partial keyword overlap or stub-like output', async () => {
+        const svc = new ArtifactVerifierService();
+        const partial = await svc.verify({
+            task: 'x',
+            output: 'token authentication refresh done',
+            expectedOutput: 'token authentication refresh rotation expiry validation',
+        });
+        expect(partial.verdict).not.toBe('pass');
+        const stub = await svc.verify({ task: 'x', output: 'TODO: placeholder implementation' });
+        expect(stub.verdict).toBe('reject');
+        expect(stub.checks.substantive).toBe(false);
     });
 
     it('rejects empty output', async () => {

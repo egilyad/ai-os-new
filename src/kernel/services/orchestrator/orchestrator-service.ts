@@ -107,18 +107,48 @@ export class OrchestratorService implements IOrchestratorService {
         ];
     }
 
-    /** Drop dangling dependencies and break cycles by keeping earlier nodes. */
+    /**
+     * Drop dangling/duplicate deps and break real cycles with DFS: an edge
+     * pointing into the current recursion stack is removed. After this pass
+     * the graph is guaranteed acyclic and every node can eventually execute.
+     */
     private sanitizeDag(nodes: MissionNode[]): MissionNode[] {
         const ids = new Set(nodes.map((n) => n.id));
-        return nodes.map((n) => {
-            const seenDeps = new Set<string>();
-            const dependsOn = n.dependsOn.filter((d) => {
-                if (d === n.id || !ids.has(d) || seenDeps.has(d)) return false;
-                seenDeps.add(d);
-                return true;
-            });
-            return { ...n, dependsOn };
-        });
+        const deps = new Map<string, string[]>();
+        for (const n of nodes) {
+            const seen = new Set<string>();
+            deps.set(
+                n.id,
+                n.dependsOn.filter((d) => {
+                    if (d === n.id || !ids.has(d) || seen.has(d)) return false;
+                    seen.add(d);
+                    return true;
+                }),
+            );
+        }
+
+        const visiting = new Set<string>();
+        const done = new Set<string>();
+        const visit = (id: string) => {
+            if (done.has(id) || visiting.has(id)) return;
+            visiting.add(id);
+            for (const dep of deps.get(id) ?? []) {
+                if (visiting.has(dep)) {
+                    // Back-edge: cut dep → id, keeping id executable.
+                    deps.set(
+                        id,
+                        (deps.get(id) ?? []).filter((d) => d !== dep),
+                    );
+                } else if (!done.has(dep)) {
+                    visit(dep);
+                }
+            }
+            visiting.delete(id);
+            done.add(id);
+        };
+        for (const n of nodes) visit(n.id);
+
+        return nodes.map((n) => ({ ...n, dependsOn: deps.get(n.id) ?? [] }));
     }
 
     async run(goal: string, executor: MissionExecutor): Promise<MissionResult> {
@@ -182,7 +212,10 @@ export class OrchestratorService implements IOrchestratorService {
         }
         for (const n of remaining) n.status = 'skipped';
 
-        const status = failedNodeIds.length === 0 ? 'completed' : 'failed';
+        // A mission with unexecuted nodes is NOT completed — otherwise a
+        // malformed/cyclic plan would silently report success.
+        const status =
+            failedNodeIds.length === 0 && remaining.length === 0 ? 'completed' : 'failed';
         this.events.emit('orchestrator:mission-finished', {
             missionId: plan.id,
             goal,

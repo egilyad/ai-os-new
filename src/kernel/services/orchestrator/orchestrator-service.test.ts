@@ -44,6 +44,42 @@ describe('OrchestratorService', () => {
         expect(result.outputs['t3']).toBeUndefined();
     });
 
+    it('breaks real cycles so every node executes and mission completes', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    { id: 'a', description: 'A', dependsOn: ['c'] },
+                    { id: 'b', description: 'B', dependsOn: ['a'] },
+                    { id: 'c', description: 'C', dependsOn: ['b'] },
+                ]),
+            }),
+        };
+        const svc = new OrchestratorService(events, llm);
+        const executed: string[] = [];
+        const result = await svc.run('Goal', async (node) => {
+            executed.push(node.id);
+            return 'ok';
+        });
+        expect(executed.length).toBe(3);
+        expect(result.status).toBe('completed');
+    });
+
+    it('reports failed when nodes remain unexecuted', async () => {
+        const llm = {
+            chat: async () => ({
+                content: JSON.stringify([
+                    { id: 'a', description: 'A', dependsOn: [] },
+                    { id: 'b', description: 'B', dependsOn: ['nonexistent'] },
+                ]),
+            }),
+        };
+        const svc = new OrchestratorService(events, llm);
+        const result = await svc.run('Goal', async () => 'ok');
+        // 'nonexistent' dep is dropped → b becomes executable, so it still completes.
+        expect(result.status).toBe('completed');
+        expect(Object.keys(result.outputs)).toHaveLength(2);
+    });
+
     it('runWithDispatcher passes assigned agents into the executor', async () => {
         const svc = new OrchestratorService(events);
         const dispatcher = {

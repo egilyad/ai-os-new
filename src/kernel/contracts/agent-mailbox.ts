@@ -22,8 +22,16 @@ export interface IAgentMailboxService {
         payload: Record<string, unknown>,
         subject?: string,
     ): Promise<AgentMessage | null>;
-    /** Non-destructive read of a mailbox (newest last). */
+    /**
+     * Non-destructive read of a mailbox (newest last).
+     * Tenant isolation: when tenantId is omitted ONLY global (tenant-less)
+     * messages are returned — never a mix of tenants.
+     */
     list(agentId: string, tenantId?: string): Promise<AgentMessage[]>;
     /** Wait for a reply to the given request (polling, bounded timeout). */
-    waitForReply(requestId: string, timeoutMs?: number): Promise<AgentMessage | null>;
+    waitForReply(
+        requestId: string,
+        timeoutMs?: number,
+        tenantId?: string,
+    ): Promise<AgentMessage | null>;
 }

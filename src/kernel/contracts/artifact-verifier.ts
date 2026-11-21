@@ -7,6 +7,10 @@ export interface ArtifactVerification {
         nonEmpty: boolean;
         expectedOutput: boolean;
         noErrorMarkers: boolean;
+        /** Output does not look like a stub/placeholder. */
+        substantive: boolean;
+        /** Share of expected keywords present (0..1). */
+        keywordScore: number;
         llmPassed?: boolean;
     };
     reasoning: string;
