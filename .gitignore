@@ -112,3 +112,5 @@ docs/fetched-sites/
 docs/audits-tips/
 
 .code-runner/
+
+.archify/
