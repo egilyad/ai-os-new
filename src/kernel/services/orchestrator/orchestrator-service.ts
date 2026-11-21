@@ -12,6 +12,7 @@ import type {
     MissionNode,
     MissionPlan,
     MissionResult,
+    MissionArtifact,
 } from '../../contracts/orchestrator';
 import type { IEventBus } from '../../types/interfaces';
 import type { DispatchAssignment } from '../../contracts/dispatcher';
@@ -178,6 +179,8 @@ export class OrchestratorService implements IOrchestratorService {
         const startedAt = Date.now();
         let firstArtifactMs = 0;
         const outputs: Record<string, string> = {};
+        const artifacts: MissionArtifact[] = [];
+        const artifactsByNode = new Map<string, MissionArtifact>();
         const failedNodeIds: string[] = [];
         let remaining = [...plan.nodes];
 
@@ -191,15 +194,33 @@ export class OrchestratorService implements IOrchestratorService {
                 wave.map(async (node) => {
                     node.status = 'running';
                     const dependencyOutputs: Record<string, string> = {};
+                    const dependencyArtifacts: MissionArtifact[] = [];
                     for (const depId of node.dependsOn) {
                         if (outputs[depId] !== undefined)
                             dependencyOutputs[depId] = outputs[depId]!;
+                        const art = artifactsByNode.get(depId);
+                        if (art) dependencyArtifacts.push(art);
                     }
                     try {
-                        const result = await executor(node, { goal, dependencyOutputs });
+                        const result = await executor(node, {
+                            goal,
+                            dependencyOutputs,
+                            dependencyArtifacts,
+                        });
+                        const artifact: MissionArtifact =
+                            typeof result === 'string'
+                                ? {
+                                      nodeId: node.id,
+                                      type: 'text',
+                                      content: result,
+                                      createdAt: Date.now(),
+                                  }
+                                : result;
+                        artifacts.push(artifact);
+                        artifactsByNode.set(node.id, artifact);
                         node.status = 'done';
-                        node.result = result;
-                        outputs[node.id] = result;
+                        node.result = artifact.content;
+                        outputs[node.id] = artifact.content;
                         if (firstArtifactMs === 0) firstArtifactMs = Date.now() - startedAt;
                     } catch (e) {
                         node.status = 'failed';
@@ -232,6 +253,6 @@ export class OrchestratorService implements IOrchestratorService {
             firstArtifactMs,
             durationMs: Date.now() - startedAt,
         });
-        return { missionId: plan.id, goal, status, outputs, failedNodeIds };
+        return { missionId: plan.id, goal, status, outputs, artifacts, failedNodeIds };
     }
 }

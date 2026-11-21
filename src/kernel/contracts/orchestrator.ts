@@ -19,11 +19,25 @@ export interface MissionPlan {
     createdAt: number;
 }
 
+/**
+ * Typed artifact passed between mission nodes (PaperOrchestra-style:
+ * plan → bibliography → draft → reviewed manuscript as first-class objects).
+ */
+export interface MissionArtifact {
+    nodeId: string;
+    type: 'text' | 'json' | 'code' | 'report' | 'review';
+    content: string;
+    /** Optional metadata (producer, path, metrics, reviewer scores...). */
+    meta?: Record<string, unknown>;
+    createdAt: number;
+}
+
 export interface MissionResult {
     missionId: string;
     goal: string;
     status: 'completed' | 'failed';
     outputs: Record<string, string>;
+    artifacts: MissionArtifact[];
     failedNodeIds: string[];
 }
 
@@ -32,8 +46,10 @@ export type MissionExecutor = (
     context: {
         goal: string;
         dependencyOutputs: Record<string, string>;
+        /** Typed dependency artifacts (same data as dependencyOutputs). */
+        dependencyArtifacts: MissionArtifact[];
     },
-) => Promise<string>;
+) => Promise<string | MissionArtifact>;
 
 /** Unified orchestrator: goal → dependency DAG → dispatched execution → result. */
 export interface IOrchestratorService extends ILifecycle {

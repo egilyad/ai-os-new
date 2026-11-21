@@ -80,6 +80,33 @@ describe('OrchestratorService', () => {
         expect(Object.keys(result.outputs)).toHaveLength(2);
     });
 
+    it('wraps string outputs into typed artifacts and exposes them in result', async () => {
+        const svc = new OrchestratorService(events);
+        const result = await svc.run('Goal', async () => 'plain text');
+        expect(result.artifacts).toHaveLength(3);
+        expect(result.artifacts.every((a) => a.type === 'text')).toBe(true);
+        expect(result.artifacts[0]!.content).toBe('plain text');
+    });
+
+    it('passes typed artifacts to downstream nodes and keeps their type/meta', async () => {
+        const svc = new OrchestratorService(events);
+        const seen: string[] = [];
+        const result = await svc.run('Goal', async (node, ctx) => {
+            for (const a of ctx.dependencyArtifacts) seen.push(`${a.type}:${a.content}`);
+            return {
+                nodeId: node.id,
+                type: 'report' as const,
+                content: `artifact-${node.id}`,
+                meta: { producer: 'test-agent' },
+                createdAt: Date.now(),
+            };
+        });
+        expect(result.artifacts.every((a) => a.type === 'report')).toBe(true);
+        expect(result.artifacts[0]!.meta).toEqual({ producer: 'test-agent' });
+        expect(seen).toContain('report:artifact-t1');
+        expect(seen).toContain('report:artifact-t2');
+    });
+
     it('runWithDispatcher passes assigned agents into the executor', async () => {
         const svc = new OrchestratorService(events);
         const dispatcher = {
