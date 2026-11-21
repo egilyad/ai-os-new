@@ -9,6 +9,7 @@ import type {
     TopicEvidence,
     TopicConflict,
     TopicProcessingRun,
+    TopicAspect,
 } from './types';
 
 export interface IngestPayload {
@@ -47,17 +48,6 @@ export interface TopicCompleteness {
         empty: number;
         byAspect: Array<{ name: string; status: 'covered' | 'partial' | 'empty'; count: number }>;
     };
-}
-
-export interface TopicAspect {
-    id: string;
-    topicId: string;
-    name: string;
-    /** Аспект считается закрытым, если есть >= minFacts фактов высокого статуса. */
-    minFacts?: number;
-    claimIds: string[];
-    createdAt: number;
-    updatedAt: number;
 }
 
 export interface TopicGraphDeps {

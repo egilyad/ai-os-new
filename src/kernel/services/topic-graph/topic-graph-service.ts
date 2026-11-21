@@ -783,11 +783,16 @@ export class TopicGraphServiceImpl implements TopicGraphService {
         const sets = concepts.map((c) => new Set(c.claimIds));
         const parent = concepts.map((_, i) => i);
         const find = (i: number): number => {
-            while (parent[i] !== i) {
-                parent[i] = parent[parent[i]]!;
-                i = parent[i]!;
+            let root = i;
+            while (parent[root] !== root) {
+                root = parent[root]!;
             }
-            return i;
+            while (parent[i] !== root) {
+                const next = parent[i]!;
+                parent[i] = root;
+                i = next;
+            }
+            return root;
         };
         const union = (a: number, b: number) => {
             const ra = find(a);

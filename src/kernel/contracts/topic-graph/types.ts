@@ -144,3 +144,15 @@ export interface TopicProcessingRun {
     createdAt: number;
     completedAt?: number;
 }
+
+/** Аспект/подтема темы (Фаза 4 роадмапа Topic Graph). */
+export interface TopicAspect {
+    id: string;
+    topicId: string;
+    name: string;
+    /** Аспект считается закрытым, если есть >= minFacts фактов высокого статуса. */
+    minFacts?: number;
+    claimIds: string[];
+    createdAt: number;
+    updatedAt: number;
+}
