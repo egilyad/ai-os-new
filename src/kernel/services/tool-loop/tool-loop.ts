@@ -24,6 +24,9 @@ import {
     type ToolLoopMentor,
     type ToolLoopMentorContext,
 } from './tool-guard-mentor';
+import type { ToolLoopToolCallInfo } from './tool-loop-types';
+
+export type { ToolLoopToolCallInfo } from './tool-loop-types';
 
 export interface ToolLoopTool {
     name: string;
@@ -42,13 +45,6 @@ export interface ToolLoopMessage {
 export interface ToolLoopCallResult {
     content: string;
     toolCalls?: ToolCall[];
-}
-
-export interface ToolLoopToolCallInfo {
-    name: string;
-    args: Record<string, unknown>;
-    ok: boolean;
-    output: string;
 }
 
 export interface ToolLoopGuardIntervention {

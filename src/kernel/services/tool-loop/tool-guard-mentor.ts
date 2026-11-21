@@ -9,7 +9,7 @@
  * deterministic guidance text.
  */
 import type { ILLMClientService, AdapterMessage } from '../../contracts/provider-adapter';
-import type { ToolLoopToolCallInfo } from './tool-loop';
+import type { ToolLoopToolCallInfo } from './tool-loop-types';
 
 export interface ToolLoopMentorContext {
     kind: 'same-tool' | 'total-calls';
