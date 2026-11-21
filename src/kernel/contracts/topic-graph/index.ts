@@ -92,6 +92,8 @@ export interface TopicGraphService {
     aspects(topicId: string): Promise<TopicAspect[]>;
     /** LLM-декомпозиция темы на аспекты (идемпотентно). */
     decomposeAspects(topicId: string): Promise<TopicAspect[]>;
+    /** Перераспределить текущие утверждения по аспектам после нового ингеста. */
+    reassignAspects(topicId: string): Promise<number>;
     /** Генерация уточняющих вопросов для пустых/слабых аспектов. */
     aspectQuestions(topicId: string): Promise<Array<{ aspect: string; questions: string[] }>>;
     /** Структурированное досье темы: аспекты, консенсусы, конфликты, источники. */

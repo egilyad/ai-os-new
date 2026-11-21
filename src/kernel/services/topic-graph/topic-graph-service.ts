@@ -470,6 +470,11 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             // Evidence: для каждого нового claim — цитата из оригинала + offset.
             await this.db.topicEvidence.bulkPut(evidenceEntries as never);
 
+            // Замкнутый цикл: новые утверждения распределяются по уже
+            // существующим аспектам, чтобы покрытие и вопросы оставались
+            // актуальными после каждого ингеста.
+            await this.reassignAspects(topicId);
+
             run.completedAt = Date.now();
             await this.db.topicProcessingRuns.put(run);
             return run;
@@ -1196,29 +1201,21 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             const now = Date.now();
             // Привязка аспектов к утверждениям: совпадение токенов имени
             // аспекта (или концептов) с текстом утверждения.
-            const claimTokenSets = claims.map((c) => tokenize(c.text));
-            const aspects: TopicAspect[] = parsed
+            const aspects: TopicAspect[] = [];
+            for (const [i, rawName] of parsed
                 .filter((a): a is string => typeof a === 'string' && a.trim().length > 2)
                 .slice(0, 10)
-                .map((name, i) => {
-                    const nameTokens = tokenize(name);
-                    const claimIds = claims
-                        .filter((_, ci) => {
-                            const set = claimTokenSets[ci]!;
-                            let hits = 0;
-                            for (const t of nameTokens) if (set.has(t)) hits++;
-                            return hits >= 1 || nameTokens.size === 0;
-                        })
-                        .map((c) => c.id);
-                    return {
-                        id: GENERIC_ID('aspect'),
-                        topicId,
-                        name: name.trim(),
-                        claimIds,
-                        createdAt: now + i,
-                        updatedAt: now + i,
-                    };
+                .entries()) {
+                const name = rawName.trim();
+                aspects.push({
+                    id: GENERIC_ID('aspect'),
+                    topicId,
+                    name,
+                    claimIds: await this.matchClaimsToAspect(name, claims),
+                    createdAt: now + i,
+                    updatedAt: now + i,
                 });
+            }
             if (aspects.length > 0) {
                 await this.db.topicAspects.bulkPut(aspects);
             }
@@ -1229,6 +1226,60 @@ export class TopicGraphServiceImpl implements TopicGraphService {
             });
             return [];
         }
+    }
+
+    /**
+     * Сопоставление утверждений с аспектом: токены имени (и алиасов) в тексте
+     * + эмбеддинг-близость, если доступна. Возвращает id подходящих claims.
+     */
+    private async matchClaimsToAspect(
+        name: string,
+        claims: TopicClaim[],
+        embeddings?: number[][],
+    ): Promise<string[]> {
+        const nameTokens = [...tokenize(name)].filter((t) => !STOPWORDS.has(t));
+        let aspectEmb: number[] | undefined;
+        if (embeddings && this.deps.embedder) {
+            try {
+                aspectEmb = (await this.deps.embedder.embed([name]))[0];
+            } catch {
+                aspectEmb = undefined;
+            }
+        }
+        const out: string[] = [];
+        for (let i = 0; i < claims.length; i++) {
+            const c = claims[i]!;
+            const set = tokenize(c.text);
+            let hits = 0;
+            for (const t of nameTokens) if (set.has(t)) hits++;
+            const tokenMatch = nameTokens.length > 0 && hits >= Math.max(1, nameTokens.length - 1);
+            const embMatch = Boolean(
+                aspectEmb && embeddings?.[i] && cosine(aspectEmb, embeddings[i]!) >= 0.78,
+            );
+            if (tokenMatch || embMatch) out.push(c.id);
+        }
+        return out;
+    }
+
+    async reassignAspects(topicId: string): Promise<number> {
+        const [aspects, claims] = await Promise.all([this.aspects(topicId), this.claims(topicId)]);
+        if (aspects.length === 0) return 0;
+        let embeddings: number[][] | undefined;
+        if (this.deps.embedder && claims.length > 0) {
+            try {
+                const vecs = await this.deps.embedder.embed(claims.slice(0, 50).map((c) => c.text));
+                embeddings = vecs.length === claims.length ? vecs : undefined;
+            } catch {
+                embeddings = undefined;
+            }
+        }
+        const updated: TopicAspect[] = [];
+        for (const a of aspects) {
+            const claimIds = await this.matchClaimsToAspect(a.name, claims, embeddings);
+            updated.push({ ...a, claimIds, updatedAt: Date.now() });
+        }
+        await this.db.topicAspects.bulkPut(updated);
+        return updated.length;
     }
 
     async aspectQuestions(

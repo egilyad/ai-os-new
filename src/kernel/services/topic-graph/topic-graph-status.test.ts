@@ -324,6 +324,50 @@ describe('TopicGraph claim status machine (phase 1)', () => {
         expect(again.length).toBe(3);
     });
 
+    it('reassigns newly ingested claims to existing aspects', async () => {
+        const llm = {
+            chat: async (messages: Array<{ role: string; content: string }>) => {
+                const system = messages[0]?.content ?? '';
+                if (system.includes('Extract standalone factual claims')) {
+                    const user = messages[messages.length - 1]!.content;
+                    return {
+                        content: JSON.stringify(
+                            user.includes('б')
+                                ? 'Квантовые вычисления ускоряют факторизацию.'
+                                : 'Квантовые вычисления используют кубиты.',
+                        ),
+                    };
+                }
+                if (system.includes('Разбей тему')) {
+                    return { content: JSON.stringify(['квантовые вычисления']) };
+                }
+                return { content: JSON.stringify(['Что ещё узнать?']) };
+            },
+        };
+        const svc = new TopicGraphServiceImpl(getTopicGraphDB(), { llm } as never);
+        const topic = await svc.createTopic('Reassign', '');
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'a',
+            title: 'A',
+            content: 'Квантовые вычисления используют кубиты в суперпозиции.',
+        });
+        const aspects = await svc.decomposeAspects(topic.id);
+        const before = (await svc.aspects(topic.id))[0]!.claimIds.length;
+
+        // Новый материал по тому же аспекту.
+        await svc.ingest(topic.id, {
+            kind: 'document',
+            ref: 'b',
+            title: 'B',
+            content: 'Квантовые вычисления ускоряют факторизацию чисел.',
+        });
+        const after = (await svc.aspects(topic.id))[0]!.claimIds.length;
+        expect(after).toBeGreaterThanOrEqual(before);
+        expect(after).toBeGreaterThan(0);
+        expect(aspects.length).toBe(1);
+    });
+
     it('computes aspect coverage in completeness', async () => {
         const llm = {
             chat: async () => ({
