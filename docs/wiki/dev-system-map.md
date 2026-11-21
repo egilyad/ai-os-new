@@ -30,7 +30,7 @@
 | Стратегии дебатов | `src/components/DebatePanel/wizard-constants.ts` | этот документ |
 | Провайдеры (пулы) | `src/constants/pools.ts` | этот документ |
 
-## Роли и агенты (28)
+## Роли и агенты (32)
 
 Библиотека ролей — `src/data/role-library.ts` (`LIBRARY_ROLES`).
 
@@ -64,6 +64,10 @@
 | `ecologist` | Эколог | analysis | 0.3 | — |
 | `statistician` | Статистик / Дата-сайентист | analysis | 0.2 | — |
 | `security` | Специалист по безопасности / Криптограф | code | 0.2 | `openai:gpt-4o` |
+| `searcher` | Поисковик | analysis | 0.2 | — |
+| `coder` | Кодер | code | 0.2 | `openai:gpt-4o` |
+| `installer` | Установщик | devops | 0.2 | — |
+| `reporter` | Репортёр | writing | 0.4 | — |
 
 ## Стратегии дебатов
 
