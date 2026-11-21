@@ -3,22 +3,24 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 540,
+    "documents": 569,
     "byCategory": {
-      "repo": 12,
+      "repo": 40,
       "top": 127,
       "audits": 25,
-      "wiki": 376
+      "wiki": 377
     },
     "byLanguage": {
-      "en": 40,
-      "mixed": 142,
-      "ru": 358
+      "en": 65,
+      "mixed": 145,
+      "ru": 359
     }
   },
   "duplicates": {
     "content": [],
     "titles": [
+      "01 — system architecture",
+      "superagents os — project structure",
       "карта готовности панелей — superagents os (`egilyad/ai-os-new`)",
       "карта доступности возможностей — capability accessibility map",
       "карта использования ресурсов — resource consumption map",
@@ -30,7 +32,8 @@
       "карта функциональной ценности — feature value map",
       "карта функциональных пробелов — capability gap map",
       "каталог тестов",
-      "панель: исследовательский движок"
+      "панель: исследовательский движок",
+      "разработчикам: обзор и слои"
     ]
   },
   "documents": [
@@ -73,6 +76,230 @@
       "title": "SuperAgents OS — Core Rules",
       "bytes": 855,
       "hash": "32551ca58dd711d944a9527bc0c672df8d06de2b"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/01-system-architecture.md",
+      "category": "repo",
+      "language": "en",
+      "title": "01 — System Architecture",
+      "bytes": 242,
+      "hash": "bbc2c7f6984f31c807b3bc1a14f9ccb3deb4b1a9"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/behavior-layer.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Behavior Layer",
+      "bytes": 218,
+      "hash": "6ab9b9d24a9ad0a6b65132b3876fa72aca462f91"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/concept-layer.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Concept Layer",
+      "bytes": 216,
+      "hash": "47416f25458191acd88df5980765ee6f5639000a"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/core-service-architecture.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Core Service Architecture",
+      "bytes": 240,
+      "hash": "5e34ae52ef6d9ec2920fc4be32c8e5bcd2744ddc"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/dependency-graph-debatesyncmanager.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Dependency Graph (DebateSyncManager)",
+      "bytes": 262,
+      "hash": "50c7b9ed2ca4435aab0726f39fd2540034dc2c52"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/i18n-src-i18n.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🌐 i18n (`/src/i18n/`)",
+      "bytes": 225,
+      "hash": "fc4d15ab9893bac2f9c8ebfad2cb76db1668dad9"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/kernel-src-kernel.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🧠 Kernel (`/src/kernel/`)",
+      "bytes": 233,
+      "hash": "11d0b59b8bc3b735b70525d91cf82b0222338958"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/key-files.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Key Files",
+      "bytes": 208,
+      "hash": "cdc4e301adf806b209cd3de8e0ee226a17fb62cd"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/llm-layer-src-llm.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🤖 LLM Layer (`/src/llm/`)",
+      "bytes": 233,
+      "hash": "3a749bbf8623c6b295c5cf5c7fd29df8410c75d5"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/observability.md",
+      "category": "repo",
+      "language": "en",
+      "title": "📊 Observability",
+      "bytes": 213,
+      "hash": "d282210315a573c147c0f46583aba948351d73e7"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/root-directory.md",
+      "category": "repo",
+      "language": "en",
+      "title": "📂 Root Directory",
+      "bytes": 215,
+      "hash": "85de230ec372b43ba3a612207e23c210fc417817"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/source-code-src.md",
+      "category": "repo",
+      "language": "en",
+      "title": "📂 Source Code (`/src`)",
+      "bytes": 227,
+      "hash": "779193379fdb11d061c722cbf3db3396e6fd034f"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/stores-src-stores.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🏪 Stores (`/src/stores/`)",
+      "bytes": 233,
+      "hash": "57d8f08cbba53c74d6f36946608713f562357751"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/styles-src-styles.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🎨 Styles (`/src/styles/`)",
+      "bytes": 233,
+      "hash": "1f94bbd6f38509886f88a8745993a1cddc7149f6"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/superagents-os-project-structure.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — Project Structure",
+      "bytes": 249,
+      "hash": "bfecb9109dbe73ab27dcec33e54c730d1b4ba6ef"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/system-mapping-layer.md",
+      "category": "repo",
+      "language": "en",
+      "title": "System Mapping Layer",
+      "bytes": 230,
+      "hash": "f594062be24802bd447d5c2e767ab3d43dd599d4"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/testing-src-tests.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🧪 Testing (`/src/tests/`)",
+      "bytes": 233,
+      "hash": "0b23353fe5bc9730c54f42ef3a480e3573b2546d"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/types-src-types.md",
+      "category": "repo",
+      "language": "en",
+      "title": "📦 Types (`/src/types/`)",
+      "bytes": 229,
+      "hash": "dd5e25e31feb2f206cfe8bbc5ced6ad96f41515f"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/ui-components-src-components.md",
+      "category": "repo",
+      "language": "en",
+      "title": "🎨 UI Components (`/src/components/`)",
+      "bytes": 255,
+      "hash": "35aee800087fa4a493806ee166f9500e93f8d1a6"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/workers-src-kernel-workers-2-web-workers.md",
+      "category": "repo",
+      "language": "en",
+      "title": "⚙️ Workers (`/src/kernel/workers/`) — 2 Web Workers",
+      "bytes": 291,
+      "hash": "aedd25edc25e07c98961ff0f04dfcb2aacc6afef"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/куда-идти-дальше.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "Куда идти дальше",
+      "bytes": 245,
+      "hash": "bbbbb517ab4ce0b8aaeed6613812310c527b2463"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/разработчикам-обзор-и-слои.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "Разработчикам: обзор и слои",
+      "bytes": 285,
+      "hash": "43aa275af7f27cb75d03632c92034e292f419633"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/связанные-материалы.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "Связанные материалы",
+      "bytes": 259,
+      "hash": "7d495bb90fd37368ff903b30126bc0623652572f"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/слои-жёстко-enforced.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Слои (жёстко enforced)",
+      "bytes": 249,
+      "hash": "c63151b113d3968d93e52937ffac5977c8cb3ce0"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Chapters/что-это-за-код.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Что это за код",
+      "bytes": 235,
+      "hash": "8d05d2b19dff0ea56336ae48c45c45f15beea3ed"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Cheatsheet.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Cheatsheet",
+      "bytes": 4194,
+      "hash": "5beb4d17943120ba3679754aab5d6e2e7aa3362c"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/Patterns.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Patterns",
+      "bytes": 3569,
+      "hash": "be369cb13815b84ed90df663b30f1959eed67060"
+    },
+    {
+      "path": ".superagents/skills/superagents-architecture/SKILL.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Purpose",
+      "bytes": 2797,
+      "hash": "3c693b5db00b5906fcbe0b82dddbb8f6e17e6b19"
     },
     {
       "path": "AGENTS.md",
@@ -2299,6 +2526,14 @@
       "hash": "9779706107d66ceb1c2f125c81fbfbc59b4c6493"
     },
     {
+      "path": "docs/wiki/dev-docs-to-skills.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Из документов в навыки агентов",
+      "bytes": 4905,
+      "hash": "78bf094b5f5bfce42c91d388749263ec66d35075"
+    },
+    {
       "path": "docs/wiki/dev-event-catalog.md",
       "category": "wiki",
       "language": "en",
@@ -2432,7 +2667,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "8a8458f6294f844ed7b747fc9c4647eed89a497e"
+      "hash": "05f5a8f5b7876baae65ef02673eded30abfc8481"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3519,8 +3754,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 37645,
-      "hash": "122b7c03dece6120461152b926c2f8e7766574a8"
+      "bytes": 37746,
+      "hash": "57576b0a03c75e39f89f71d89b659a962b2c8f75"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

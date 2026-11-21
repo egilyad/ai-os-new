@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 75
+      "articles": 76
     }
   ],
   "articles": [
@@ -7712,6 +7712,34 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/research/literature-fetcher-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-docs-to-skills",
+      "type": "article",
+      "slug": "dev-docs-to-skills",
+      "title": "Из документов в навыки агентов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "навыки",
+        "документация",
+        "wiki"
+      ],
+      "sources": [
+        "scripts/gen-skill-from-docs.mjs",
+        "src/kernel/services/skills/skill-spec.ts",
+        "docs/STRUCTURE.md"
+      ],
+      "related": [
+        "dev-wiki-brain-progress",
+        "dev-assistant-progress",
+        "dev-mcp-tools"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/skills/skill-spec.test.ts"
       ]
     },
     {

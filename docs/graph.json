@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1663,
-    "edges": 3016,
+    "nodes": 1668,
+    "edges": 3023,
     "byType": {
       "audit": 25,
-      "code": 740,
-      "test": 250,
+      "code": 743,
+      "test": 251,
       "panel": 272,
-      "article": 376
+      "article": 377
     },
     "byKind": {
       "audit_test": 26,
       "audit_mention": 64,
       "documents": 267,
-      "test": 362,
-      "source": 1051,
-      "related": 1246
+      "test": 363,
+      "source": 1054,
+      "related": 1249
     }
   },
   "nodes": [
@@ -328,6 +328,11 @@
       "label": "docs/manifest.json"
     },
     {
+      "id": "file:docs/STRUCTURE.md",
+      "type": "code",
+      "label": "docs/STRUCTURE.md"
+    },
+    {
       "id": "file:docs/UNIFIED_PLAN.md",
       "type": "code",
       "label": "docs/UNIFIED_PLAN.md"
@@ -406,6 +411,11 @@
       "id": "file:scripts/gen-fetched-catalog.mjs",
       "type": "code",
       "label": "scripts/gen-fetched-catalog.mjs"
+    },
+    {
+      "id": "file:scripts/gen-skill-from-docs.mjs",
+      "type": "code",
+      "label": "scripts/gen-skill-from-docs.mjs"
     },
     {
       "id": "file:scripts/gen-wiki-capabilities.mjs",
@@ -4173,6 +4183,16 @@
       "label": "src/kernel/services/skill-service.ts"
     },
     {
+      "id": "file:src/kernel/services/skills/skill-spec.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/skills/skill-spec.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/skills/skill-spec.ts",
+      "type": "code",
+      "label": "src/kernel/services/skills/skill-spec.ts"
+    },
+    {
       "id": "file:src/kernel/services/snapshot-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/snapshot-service.test.ts"
@@ -7911,6 +7931,13 @@
       "label": "DeepWiki: облачная техническая документация на английском",
       "section": "dev",
       "status": "documented"
+    },
+    {
+      "id": "wiki:dev-docs-to-skills",
+      "type": "article",
+      "label": "Из документов в навыки агентов",
+      "section": "dev",
+      "status": "verified"
     },
     {
       "id": "wiki:dev-event-catalog",
@@ -18103,6 +18130,41 @@
     {
       "from": "wiki:dev-deepwiki",
       "to": "wiki:docs-index",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "file:docs/STRUCTURE.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "file:scripts/gen-skill-from-docs.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "file:src/kernel/services/skills/skill-spec.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "file:src/kernel/services/skills/skill-spec.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "wiki:dev-assistant-progress",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "wiki:dev-mcp-tools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-docs-to-skills",
+      "to": "wiki:dev-wiki-brain-progress",
       "kind": "related"
     },
     {
