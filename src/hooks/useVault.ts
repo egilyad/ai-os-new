@@ -48,8 +48,8 @@ export function useVault() {
         [refresh],
     );
 
-    const lock = useCallback(() => {
-        keyService.lockVault();
+    const lock = useCallback(async () => {
+        await keyService.lockVault();
         refresh();
     }, [refresh]);
 

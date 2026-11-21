@@ -141,11 +141,21 @@ const sseClients = new Set();
 // P1-17: WS broadcast backpressure — skip consumers whose send queue is
 // already backed up (1 MiB), so one slow client cannot stall the event loop.
 const WS_MAX_BUFFERED_BYTES = 1024 * 1024;
+// P1 (tenant isolation): an event carrying companyId must reach ONLY the
+// clients bound to that company. Legacy clients authenticated with the shared
+// SYNC_SECRET (ws.companyId === null) and SSE clients (global bearer) receive
+// global events only — never another company's data.
+function clientMayReceive(clientCompanyId, payload) {
+    const eventCompanyId = payload && typeof payload.companyId === 'string' ? payload.companyId : null;
+    if (!eventCompanyId) return true;
+    return clientCompanyId === eventCompanyId;
+}
 function broadcastLive(type, payload) {
     const msg = JSON.stringify({ type, timestamp: Date.now(), ...payload });
     for (const client of wssClientsSnapshot()) {
         try {
             if (client.readyState !== 1) continue;
+            if (!clientMayReceive(client.companyId ?? null, payload)) continue;
             if (
                 typeof client.bufferedAmount === 'number' &&
                 client.bufferedAmount > WS_MAX_BUFFERED_BYTES
@@ -159,6 +169,8 @@ function broadcastLive(type, payload) {
     }
     for (const res of sseClients) {
         try {
+            // SSE auth is the shared bearer (no company binding) → global events only.
+            if (!clientMayReceive(null, payload)) continue;
             res.write(`data: ${msg}\n\n`);
         } catch {
             /* ignore */

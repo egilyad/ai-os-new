@@ -68,8 +68,31 @@ function validateUrl(rawUrl, allowedDomains) {
 }
 
 function authorized(req) {
-  if (!AUTH_TOKEN) return true;
-  return (req.headers.authorization || '') === `Bearer ${AUTH_TOKEN}`;
+  if (AUTH_TOKEN && (req.headers.authorization || '') !== `Bearer ${AUTH_TOKEN}`) return false;
+  // P1: block cross-site browser requests to the loopback sidecar. Requests
+  // from local tooling (curl/node) have no Origin and stay allowed.
+  const origin = req.headers.origin;
+  if (origin) {
+    try {
+      const o = new URL(origin);
+      const loopback = ['localhost', '127.0.0.1', '::1', '[::1]'];
+      if (!loopback.includes(o.hostname.toLowerCase())) return false;
+    } catch {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** P1: запрос может только СУЗИТЬ серверный allowlist, но не расширить его. */
+function effectiveAllowedDomains(requestDomains) {
+  if (!Array.isArray(requestDomains) || requestDomains.length === 0) {
+    return DEFAULT_ALLOWED_DOMAINS;
+  }
+  const requested = requestDomains.map((d) => String(d).toLowerCase().replace(/^\./, ''));
+  if (DEFAULT_ALLOWED_DOMAINS.length === 0) return requested;
+  const server = DEFAULT_ALLOWED_DOMAINS.map((d) => String(d).toLowerCase().replace(/^\./, ''));
+  return requested.filter((d) => server.some((s) => d === s || d.endsWith(`.${s}`)));
 }
 
 /** Выполнить «задачу» (свободный текст) эвристически. */
@@ -78,8 +101,11 @@ async function handleExecute(body, ctx) {
   const page = ctx.page;
   const url = extractUrl(task) || body.url;
   if (url) {
-    const target = validateUrl(url, body.allowedDomains);
+    const domains = effectiveAllowedDomains(body.allowedDomains);
+    const target = validateUrl(url, domains);
     await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    // P1: re-validate the final URL — a redirect may have left the allowlist.
+    validateUrl(page.url(), domains);
   }
 
   let output;
@@ -125,8 +151,10 @@ async function handleAct(body, ctx) {
   switch (action) {
     case 'open_url':
     case 'browser_navigate': {
-      const target = validateUrl(body.url, body.allowedDomains);
+      const domains = effectiveAllowedDomains(body.allowedDomains);
+      const target = validateUrl(body.url, domains);
       await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      validateUrl(page.url(), domains);
       return { output: `opened ${page.url()}` };
     }
     case 'click_at': {

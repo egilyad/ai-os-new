@@ -40,6 +40,7 @@ export interface KeyRegistryDeps {
     vault: {
         encryptKey: (plaintext: string) => Promise<string | null>;
         isLocked: () => boolean;
+        hasVault?: () => boolean;
         decryptAllKeys: (keys: ApiKey[]) => Promise<ApiKey[]>;
         encryptAllKeys: (keys: ApiKey[]) => Promise<ApiKey[]>;
         stripPlaintextKeys: (keys: ApiKey[]) => ApiKey[];
@@ -584,6 +585,19 @@ export class KeyRegistry {
     }
 
     private async doSaveKeysWithSnapshot(snapshot: ApiKey[]): Promise<void> {
+        // P1 fail-closed: при заблокированном vault encryptAllKeys возвращает
+        // ключи как есть — нельзя допустить запись plaintext в IndexedDB.
+        if (
+            this.deps.vault.hasVault?.() === true &&
+            this.deps.vault.isLocked() &&
+            snapshot.some((k) => !k.isEncrypted && !!k.key)
+        ) {
+            this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                message: 'Vault locked — keys were not saved',
+                type: 'error',
+            });
+            throw new Error('KeyRegistry: refusing to save plaintext keys while vault is locked');
+        }
         let keysToSave: ApiKey[];
         try {
             keysToSave = await this.deps.vault.encryptAllKeys(snapshot);
@@ -774,6 +788,16 @@ export class KeyRegistry {
      */
     clearKeys(): void {
         this.setKeysInternal('clearKeys', [], { force: true });
+    }
+
+    /** P1: вычистить plaintext-ключи из памяти при блокировке vault. */
+    redactKeys(): void {
+        if (this.keys.length === 0) return;
+        this.setKeysInternal(
+            'redactKeys',
+            this.keys.map((k) => ({ ...k, key: '[VAULT LOCKED]' })),
+            { force: true },
+        );
     }
 
     /**

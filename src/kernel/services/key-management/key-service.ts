@@ -266,15 +266,34 @@ export class KeyService implements IKeyRotationManager {
     async unlockVaultWithPassphrase(passphrase: string): Promise<boolean> {
         const ok = await this.vault.unlockWithPassphrase(passphrase);
         if (ok) {
+            // P1: после блокировки in-memory ключи вычищены; восстановить их
+            // из зашифрованного хранилища и расшифровать заново.
+            try {
+                await this.registry.reload();
+            } catch (e) {
+                rootLogger.warn('KeyService', 'key reload after unlock failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
             this.deps.eventBus.emit(EVENTS.KEY_VAULT_UNLOCKED, {});
             this.notify();
         }
         return ok;
     }
 
-    lockVault(): void {
+    async lockVault(): Promise<void> {
         if (this.vault.isLocked()) return;
+        // Сначала зашифровать и записать, пока vault открыт, иначе saveKeys
+        // откажется сохранять plaintext (fail-closed).
+        try {
+            await this.registry.saveKeys();
+        } catch (e) {
+            rootLogger.warn('KeyService', 'key save before vault lock failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
         this.vault.lock();
+        this.registry.redactKeys();
         this.deps.eventBus.emit(EVENTS.KEY_VAULT_LOCKED, {});
         this.notify();
     }
@@ -435,10 +454,7 @@ export class KeyService implements IKeyRotationManager {
                 /* best-effort */
             }
             try {
-                if (
-                    provider &&
-                    !this.registry.getKeys().some((k) => k.provider === provider)
-                ) {
+                if (provider && !this.registry.getKeys().some((k) => k.provider === provider)) {
                     this.deps.providerAdapterRegistry?.invalidateCache(provider);
                 }
             } catch {
