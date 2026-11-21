@@ -21,8 +21,11 @@ import { A2AService } from '../services/interop/a2a-service';
 import { GatewayService } from '../services/interop/gateway-service';
 import { FederationService } from '../services/interop/federation-service';
 import { CoordinationService } from '../services/interop/coordination-service';
+import { AgentMailboxService } from '../services/interop/agent-mailbox-service';
 
 export const registerPhase28: Phase = ({ register }) => {
+    register('agentMailboxService', () => new AgentMailboxService());
+
     register('interopRepository', (c: IContainer) => {
         return new InteropRepository(c.get<DatabaseService>('database'));
     });
