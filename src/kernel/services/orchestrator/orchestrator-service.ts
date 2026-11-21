@@ -14,6 +14,7 @@ import type {
     MissionResult,
 } from '../../contracts/orchestrator';
 import type { IEventBus } from '../../types/interfaces';
+import type { DispatchAssignment } from '../../contracts/dispatcher';
 const MAX_NODES = 12;
 const MAX_CONCURRENCY = 3;
 
@@ -119,7 +120,29 @@ export class OrchestratorService implements IOrchestratorService {
     }
 
     async run(goal: string, executor: MissionExecutor): Promise<MissionResult> {
+        return this.executePlan(await this.plan(goal), executor);
+    }
+
+    async runWithDispatcher(
+        goal: string,
+        executor: MissionExecutor,
+        dispatcher: { assign(nodes: MissionNode[]): DispatchAssignment[] },
+    ): Promise<MissionResult & { assignments: DispatchAssignment[] }> {
         const plan = await this.plan(goal);
+        const assignments = dispatcher.assign(plan.nodes);
+        const byNode = new Map(assignments.map((a) => [a.nodeId, a]));
+        const result = await this.executePlan(plan, (node, ctx) =>
+            executor({ ...node, assignee: { role: byNode.get(node.id)?.agent.role } }, ctx),
+        );
+        return { ...result, assignments };
+    }
+
+    /** Shared DAG execution core used by run() and runWithDispatcher(). */
+    private async executePlan(
+        plan: MissionPlan,
+        executor: MissionExecutor,
+    ): Promise<MissionResult> {
+        const goal = plan.goal;
         const outputs: Record<string, string> = {};
         const failedNodeIds: string[] = [];
         let remaining = [...plan.nodes];

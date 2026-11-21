@@ -1,4 +1,5 @@
 import type { ILifecycle } from './lifecycle';
+import type { DispatchAssignment } from './dispatcher';
 
 export interface MissionNode {
     id: string;
@@ -38,4 +39,10 @@ export type MissionExecutor = (
 export interface IOrchestratorService extends ILifecycle {
     plan(goal: string): Promise<MissionPlan>;
     run(goal: string, executor: MissionExecutor): Promise<MissionResult>;
+    /** Run with agents assigned by the dispatcher (node.assignee → concrete agent). */
+    runWithDispatcher(
+        goal: string,
+        executor: MissionExecutor,
+        dispatcher: { assign(nodes: MissionNode[]): DispatchAssignment[] },
+    ): Promise<MissionResult & { assignments: DispatchAssignment[] }>;
 }

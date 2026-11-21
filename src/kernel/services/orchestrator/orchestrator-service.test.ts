@@ -44,6 +44,32 @@ describe('OrchestratorService', () => {
         expect(result.outputs['t3']).toBeUndefined();
     });
 
+    it('runWithDispatcher passes assigned agents into the executor', async () => {
+        const svc = new OrchestratorService(events);
+        const dispatcher = {
+            assign: vi.fn((nodes) =>
+                nodes.map((n) => ({
+                    nodeId: n.id,
+                    agent: { id: `agent-${n.id}`, role: 'researcher' },
+                    reason: 'test',
+                })),
+            ),
+        };
+        const seenRoles: string[] = [];
+        const result = await svc.runWithDispatcher(
+            'Goal',
+            async (node) => {
+                seenRoles.push(node.assignee?.role ?? '');
+                return 'ok';
+            },
+            dispatcher,
+        );
+        expect(dispatcher.assign).toHaveBeenCalled();
+        expect(result.status).toBe('completed');
+        expect(result.assignments).toHaveLength(3);
+        expect(seenRoles.every((r) => r === 'researcher')).toBe(true);
+    });
+
     it('uses the LLM plan with dependencies and sanitizes cycles', async () => {
         const llm = {
             chat: async () => ({
