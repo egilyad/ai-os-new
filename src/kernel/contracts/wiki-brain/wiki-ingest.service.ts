@@ -1,4 +1,10 @@
-import type { TWikiSource, TWikiPage, TWikiLink, TWikiLogEntry, TWikiPageFrontmatter } from './types';
+import type {
+    TWikiSource,
+    TWikiPage,
+    TWikiLink,
+    TWikiLogEntry,
+    TWikiPageFrontmatter,
+} from './types';
 
 export interface IngestAnalyzeInput {
     source: TWikiSource;
@@ -12,6 +18,7 @@ export interface IngestAnalyzeOutput {
     arguments: Array<{ claim: string; evidence: string }>;
     crossLinks: Array<{ toSlug: string; reason: string }>;
     contradictions: Array<{ with: string; description: string }>;
+    triplets?: Array<{ subject: string; predicate: string; object: string; confidence: number }>;
     wikiStructureHint: { sections: string[]; suggestedPages: string[] };
 }
 

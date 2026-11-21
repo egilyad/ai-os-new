@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import { extractJson } from '../json-extract';
 import type { WikiLlmClient } from '../../../contracts/wiki-brain/wiki-llm';
-import type { IngestAnalyzeInput, IngestAnalyzeOutput } from '../../../contracts/wiki-brain/wiki-ingest.service';
+import type {
+    IngestAnalyzeInput,
+    IngestAnalyzeOutput,
+} from '../../../contracts/wiki-brain/wiki-ingest.service';
 
 const OUTPUT_SCHEMA = z.object({
     entities: z.array(
@@ -11,6 +14,17 @@ const OUTPUT_SCHEMA = z.object({
     arguments: z.array(z.object({ claim: z.string(), evidence: z.string() })),
     crossLinks: z.array(z.object({ toSlug: z.string(), reason: z.string() })),
     contradictions: z.array(z.object({ with: z.string(), description: z.string() })),
+    // Subject–predicate–object triples for the live knowledge graph (p4).
+    triplets: z
+        .array(
+            z.object({
+                subject: z.string(),
+                predicate: z.string(),
+                object: z.string(),
+                confidence: z.number().min(0).max(1).default(0.7),
+            }),
+        )
+        .default([]),
     wikiStructureHint: z.object({
         sections: z.array(z.string()),
         suggestedPages: z.array(z.string()),
@@ -22,6 +36,8 @@ Rules:
 - "toSlug" in crossLinks MUST match existing slugs only (use kebab-case).
 - Surface contradictions with EXISTING wiki knowledge, not just internal.
 - Each entity must have a type: person | org | place | technology | concept | event | work | other.
+- "triplets" must be subject–predicate–object facts; predicate is a SHORT phrase
+  (e.g. "uses", "supports", "depends_on", "contradicts") and confidence 0..1.
 - Output JSON only, no markdown fences.`;
 
 export class IngestAnalyzeOperation {
