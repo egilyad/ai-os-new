@@ -1,11 +1,12 @@
-# Regenerate lightweight derived artifacts BEFORE staging so committed docs stay
-# in sync (CI "Wiki docs in sync" gate). Full wiki cycle is still CI-checked.
+# Run lint-staged with the LOCAL binary (npx can hang on network resolution).
+# Formatting can change line counts, so derived artifacts MUST be regenerated
+# afterwards — otherwise docs/wiki/dev-reality-map.md and inventory.json go
+# stale inside the very commit that changed the source.
+node ./node_modules/lint-staged/bin/lint-staged.js
+
 node scripts/gen-reality-map.mjs
 node scripts/gen-docs-inventory.mjs
 git add docs/wiki/dev-reality-map.md docs/inventory.json src/generated/wiki-docs-inventory.ts
-
-# Run lint-staged with the LOCAL binary (npx can hang on network resolution).
-node ./node_modules/lint-staged/bin/lint-staged.js
 
 # Type-check intentionally runs in CI (`tsc -b --noEmit`): it is too heavy
 # to block every local commit (see BLD-C3).
