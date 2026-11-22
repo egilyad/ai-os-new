@@ -107,6 +107,7 @@ import { registerPhase106 } from './phase106-reply-budget';
 import { registerPhase107 } from './phase107-steering';
 import { registerPhase108 } from './phase108-action-parser';
 import { registerPhase109 } from './phase109-history-processor';
+import { registerPhase110 } from './phase110-vlm-tool';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -226,6 +227,7 @@ export function registerServices(
     registerPhase107(helpers, ctx);
     registerPhase108(helpers, ctx);
     registerPhase109(helpers, ctx);
+    registerPhase110(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
