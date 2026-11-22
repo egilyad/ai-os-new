@@ -45,7 +45,7 @@ export class OpenApiToolService implements IOpenApiToolService {
                     name:
                         typeof o['operationId'] === 'string'
                             ? o['operationId']
-                            : `${method}_${path.replace(/[^a-zA-Z0-9]+/g, '_')}`,
+                            : `${method}_${path.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')}`,
                     description:
                         typeof o['summary'] === 'string'
                             ? o['summary']
