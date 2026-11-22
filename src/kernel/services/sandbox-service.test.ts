@@ -26,7 +26,8 @@ class FakeSandboxWorker {
 
 let behavior: FakeBehavior = () => undefined;
 
-let workerClass: (typeof FakeSandboxWorker & { lastInstance: FakeSandboxWorker | null }) | null = null;
+let workerClass: (typeof FakeSandboxWorker & { lastInstance: FakeSandboxWorker | null }) | null =
+    null;
 
 function stubWorker(b: FakeBehavior) {
     behavior = b;
@@ -85,7 +86,10 @@ describe('SandboxService.fetchUrl', () => {
 
     it('throws on non-2xx responses', async () => {
         const svc = makeService();
-        vi.stubGlobal('fetch', vi.fn(async () => jsonResponse('oops', 500)));
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => jsonResponse('oops', 500)),
+        );
         await expect(svc.fetchUrl('https://api.example.com/data')).rejects.toThrow(/HTTP 500/);
     });
 });
@@ -101,6 +105,14 @@ describe('SandboxService.execute', () => {
         const svc = makeService();
         await expect(svc.execute('return 1')).resolves.toBe('done');
         expect(lastSandboxWorker()?.terminate).toHaveBeenCalled();
+    });
+
+    it('усекает длинный observation с NOTE об elided', async () => {
+        stubWorker(() => ({ type: 'result', result: 'A'.repeat(10000) }));
+        const svc = makeService();
+        const out = (await svc.execute('long output')) as string;
+        expect(out.length).toBeLessThanOrEqual(4000);
+        expect(out).toMatch(/\[elided \d+ chars; use head\/tail\/grep on the source\]/);
     });
 
     it('rejects on worker error', async () => {

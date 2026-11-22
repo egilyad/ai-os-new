@@ -2,6 +2,7 @@ import { CONFIG } from './config-registry';
 import { rootLogger } from './logger-service';
 import { isPrivateIP } from '../utils/network';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
+import { truncateObservation } from './sandbox/aci-policy';
 
 const LOGGER = rootLogger.child('SandboxService');
 
@@ -210,7 +211,8 @@ export class SandboxService {
                 if (event.data.error) {
                     reject(new Error(event.data.error));
                 } else {
-                    resolve(event.data.result);
+                    const result = event.data.result;
+                    resolve(typeof result === 'string' ? truncateObservation(result).text : result);
                 }
             };
 

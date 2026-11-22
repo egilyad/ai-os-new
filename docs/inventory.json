@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 572,
+    "documents": 573,
     "byCategory": {
       "repo": 40,
-      "top": 130,
+      "top": 131,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 147,
+      "mixed": 148,
       "ru": 360
     }
   },
@@ -1510,6 +1510,14 @@
       "hash": "6fcb31f8fa6faee36d48a858022518272623e6ad"
     },
     {
+      "path": "docs/sessions/2026-11-22-aci-sandbox-policy.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-22 — aci-sandbox-policy",
+      "bytes": 4223,
+      "hash": "0ed72123284df5023e72902fcabb878567f3c1f9"
+    },
+    {
       "path": "docs/sessions/2026-11-22-key-vault-integration-and-p0-status.md",
       "category": "top",
       "language": "mixed",
@@ -2475,7 +2483,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "759803fd42ba09cda4912d5471cb1d29f50cbf9f"
+      "hash": "ed4ab698e81828ee62007975ec4f7d2f22c76893"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2691,7 +2699,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "63b309476170976fb43cf37d1650d8af2edb6c03"
+      "hash": "bc99b7ac0389629ab54363f2fa2bd19b2d5efed3"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2882,8 +2890,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 59643,
-      "hash": "6d125b78afa868011223ce88f15b0ff2086c1271"
+      "bytes": 59786,
+      "hash": "0a307955be11783a8965e9b6bdf44c6bddcc5e25"
     },
     {
       "path": "docs/wiki/docs-standard.md",
