@@ -196,7 +196,7 @@ export class OrchestratorService implements IOrchestratorService {
         this.cancellation = null;
         this.resultCache.clear();
         const startedAt = Date.now();
-        const ledgerId = this.ledger?.start(goal);
+        const ledgerId = this.ledger?.begin(goal);
         if (ledgerId && this.ledger) {
             this.ledger.setTasks(
                 ledgerId,

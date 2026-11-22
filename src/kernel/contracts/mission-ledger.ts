@@ -23,7 +23,8 @@ export interface LedgerSnapshot {
 
 /** Task/Fact ledger with per-step progress reflection (Magentic-One-inspired). */
 export interface IMissionLedgerService extends ILifecycle {
-    start(goal: string): string;
+    /** Begin a new mission ledger (named `begin` to avoid ILifecycle.start collision). */
+    begin(goal: string): string;
     get(missionId: string): LedgerSnapshot | undefined;
     addFact(missionId: string, text: string, sourceNodeId?: string): void;
     setTasks(missionId: string, tasks: LedgerTask[]): void;

@@ -31,7 +31,7 @@ export class MissionLedgerService implements IMissionLedgerService {
         this.ledgers.clear();
     }
 
-    start(goal: string): string {
+    begin(goal: string): string {
         const id = `ledger-${Date.now()}-${++seq}`;
         this.ledgers.set(id, {
             goal,

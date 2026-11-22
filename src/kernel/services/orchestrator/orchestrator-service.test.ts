@@ -122,7 +122,7 @@ describe('OrchestratorService', () => {
 
     it('feeds mission facts into a ledger when one is configured', async () => {
         const ledger = {
-            start: vi.fn(() => 'ledger-test'),
+            begin: vi.fn(() => 'ledger-test'),
             get: vi.fn(),
             addFact: vi.fn(),
             setTasks: vi.fn(),
@@ -134,7 +134,7 @@ describe('OrchestratorService', () => {
         const svc = new OrchestratorService(events, undefined, undefined, ledger as never);
         const result = await svc.run('Goal', async (node) => `result-${node.id}`);
         expect(result.status).toBe('completed');
-        expect(ledger.start).toHaveBeenCalledWith('Goal');
+        expect(ledger.begin).toHaveBeenCalledWith('Goal');
         expect(ledger.setTasks).toHaveBeenCalled();
         expect(ledger.addFact).toHaveBeenCalledTimes(3);
         expect(ledger.recordStep).toHaveBeenCalledTimes(3);

@@ -4,7 +4,7 @@ import { MissionLedgerService } from './mission-ledger-service';
 describe('MissionLedgerService', () => {
     it('starts a mission and tracks facts', () => {
         const svc = new MissionLedgerService();
-        const id = svc.start('Build X');
+        const id = svc.begin('Build X');
         svc.addFact(id, 'fact 1', 't1');
         const snap = svc.get(id);
         expect(snap?.facts).toHaveLength(1);
@@ -13,7 +13,7 @@ describe('MissionLedgerService', () => {
 
     it('advises replan after repeated stalls', () => {
         const svc = new MissionLedgerService();
-        const id = svc.start('Goal');
+        const id = svc.begin('Goal');
         expect(svc.recordStep(id, 'unknown', false)).toBe(false);
         expect(svc.recordStep(id, 'unknown', false)).toBe(false);
         expect(svc.recordStep(id, 'unknown', false)).toBe(true);
@@ -22,7 +22,7 @@ describe('MissionLedgerService', () => {
 
     it('resets stalls when a real task completes', () => {
         const svc = new MissionLedgerService();
-        const id = svc.start('Goal');
+        const id = svc.begin('Goal');
         svc.setTasks(id, [{ id: 't1', description: 'one', status: 'pending', dependsOn: [] }]);
         svc.recordStep(id, 'unknown', false);
         svc.recordStep(id, 'unknown', false);
@@ -34,7 +34,7 @@ describe('MissionLedgerService', () => {
 
     it('finish removes the ledger', async () => {
         const svc = new MissionLedgerService();
-        const id = svc.start('Goal');
+        const id = svc.begin('Goal');
         svc.finish(id);
         expect(svc.get(id)).toBeUndefined();
         await svc.destroy();
