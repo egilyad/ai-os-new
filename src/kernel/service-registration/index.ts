@@ -98,6 +98,7 @@ import { registerPhase97 } from './phase97-openapi-tools';
 import { registerPhase98 } from './phase98-durable-run';
 import { registerPhase99 } from './phase99-environment-rules';
 import { registerPhase100 } from './phase100-mnestic';
+import { registerPhase101 } from './phase101-model-router';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -208,6 +209,7 @@ export function registerServices(
     registerPhase98(helpers, ctx);
     registerPhase99(helpers, ctx);
     registerPhase100(helpers, ctx);
+    registerPhase101(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
