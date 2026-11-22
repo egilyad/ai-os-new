@@ -65,6 +65,35 @@ describe('RunHistoryService', () => {
         expect((await service.list()).map((r) => r.runId)).toEqual(['run-2', 'run-1']);
     });
 
+    it('находит неудачные шаги с фильтром по причине', async () => {
+        const db = fakeDatabase();
+        const service = new RunHistoryService({ database: db });
+        await service.save({
+            ...record('run-1', 100),
+            status: 'failed',
+            steps: [
+                {
+                    nodeId: 'research',
+                    input: {},
+                    output: { error: 'provider timeout' },
+                    timestamp: 90,
+                },
+                { nodeId: 'draft', input: {}, output: { draft: 'ok' }, timestamp: 95 },
+            ],
+        });
+        await service.save({
+            ...record('run-2', 200),
+            steps: [
+                { nodeId: 'verify', input: {}, output: { error: 'rate limit' }, timestamp: 195 },
+            ],
+        });
+
+        const all = await service.listFailures();
+        expect(all).toHaveLength(2);
+        expect(all[0]).toMatchObject({ runId: 'run-2', nodeId: 'verify', error: 'rate limit' });
+        expect((await service.listFailures('timeout')).map((f) => f.runId)).toEqual(['run-1']);
+    });
+
     it('не ломается при ошибке хранилища', async () => {
         const db = fakeDatabase();
         db.setKv.mockRejectedValueOnce(new Error('indexeddb down'));

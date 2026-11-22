@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (573 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (574 документов)
 
 ## Вики по разделам
 
@@ -180,6 +180,7 @@
 - [Роадмап: Инфраструктура — сервер, CLI, Docker, CI, скрипты-генераторы](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmaps/ROADMAP_10_INFRA_CI_SERVER_GENERATORS.md)
 - [Роадмап: Rivals / Parity и паритет с аналогами](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmaps/ROADMAP_11_PARITY_RIVALS_ANALOGS.md)
 - [2026-11-22 — aci-sandbox-policy](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-aci-sandbox-policy.md)
+- [2026-11-22 — e2e-run-history](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-e2e-run-history.md)
 - [2026-11-22 — key-vault-integration-and-p0-status](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-key-vault-integration-and-p0-status.md)
 - [2026-11-22 — mission-run-integration](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-mission-run-integration.md)
 - [2026-11-22 — persistent-run-history](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-persistent-run-history.md)

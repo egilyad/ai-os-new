@@ -1,4 +1,8 @@
-import type { IRunHistoryService, RunHistoryRecord } from '../../contracts/run-history';
+import type {
+    IRunHistoryService,
+    RunHistoryFailure,
+    RunHistoryRecord,
+} from '../../contracts/run-history';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('RunHistoryService');
@@ -64,5 +68,25 @@ export class RunHistoryService implements IRunHistoryService {
             LOGGER.error('RunHistoryService', 'Failed to list runs', { error: e });
             return [];
         }
+    }
+
+    async listFailures(query?: string): Promise<RunHistoryFailure[]> {
+        const needle = query?.trim().toLowerCase() ?? '';
+        const records = await this.list();
+        const failures: RunHistoryFailure[] = [];
+        for (const record of records) {
+            for (const step of record.steps) {
+                const error = step.output['error'];
+                if (typeof error !== 'string' || error.length === 0) continue;
+                if (needle && !error.toLowerCase().includes(needle)) continue;
+                failures.push({
+                    runId: record.runId,
+                    nodeId: step.nodeId,
+                    error: error.slice(0, MAX_CONTENT),
+                    timestamp: step.timestamp,
+                });
+            }
+        }
+        return failures.sort((a, b) => b.timestamp - a.timestamp);
     }
 }

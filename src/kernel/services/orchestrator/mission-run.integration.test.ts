@@ -89,6 +89,7 @@ function executorFor(options: {
             meta: {
                 agentId,
                 producer: agentId,
+                provenance: node.id === 'draft' ? 'hypothesis' : 'computed',
                 ...(node.id === 'draft' ? { basedOn: ctx.dependencyOutputs['research'] } : {}),
             },
             createdAt: Date.now(),
@@ -216,6 +217,7 @@ describe('Сквозной запуск: задача → два агента �
         expect(persisted!.steps.map((s) => s.nodeId)).toEqual(['research', 'draft']);
         expect(persisted!.artifacts).toHaveLength(2);
         expect(persisted!.artifacts[1]!.content).toBe(result.artifacts[1]!.content);
+        expect(persisted!.artifacts.map((a) => a.provenance)).toEqual(['computed', 'hypothesis']);
         expect(new ExecutionReplayService().replay(persisted!.steps).brokenLinks).toEqual([]);
         expect(p.calls.count).toBe(2);
     });

@@ -361,12 +361,21 @@ export class OrchestratorService implements IOrchestratorService {
                 startedAt,
                 finishedAt: Date.now(),
                 steps,
-                artifacts: artifacts.map((a) => ({
-                    nodeId: a.nodeId,
-                    type: a.type,
-                    content: a.content,
-                    createdAt: a.createdAt,
-                })),
+                artifacts: artifacts.map((a) => {
+                    const provenance = a.meta?.['provenance'];
+                    return {
+                        nodeId: a.nodeId,
+                        type: a.type,
+                        content: a.content,
+                        createdAt: a.createdAt,
+                        ...(provenance === 'computed' ||
+                        provenance === 'parsed' ||
+                        provenance === 'digitized' ||
+                        provenance === 'hypothesis'
+                            ? { provenance }
+                            : {}),
+                    };
+                }),
             });
         }
         return { missionId: plan.id, goal, status, outputs, artifacts, failedNodeIds };
