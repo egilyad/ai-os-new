@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 573,
+    "documents": 574,
     "byCategory": {
       "repo": 40,
-      "top": 131,
+      "top": 132,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 148,
-      "ru": 360
+      "ru": 361
     }
   },
   "duplicates": {
@@ -1518,6 +1518,14 @@
       "hash": "0ed72123284df5023e72902fcabb878567f3c1f9"
     },
     {
+      "path": "docs/sessions/2026-11-22-e2e-run-history.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-22 — e2e-run-history",
+      "bytes": 4084,
+      "hash": "bc10cbc005f3abcad76176e4cc633a556ac44729"
+    },
+    {
       "path": "docs/sessions/2026-11-22-key-vault-integration-and-p0-status.md",
       "category": "top",
       "language": "mixed",
@@ -2483,7 +2491,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "ed4ab698e81828ee62007975ec4f7d2f22c76893"
+      "hash": "754e2b0916e9fc898811dcdd420a4d991f82135c"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2699,7 +2707,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "bc99b7ac0389629ab54363f2fa2bd19b2d5efed3"
+      "hash": "4142881428ab9db5f2db2f24402a48a1799225bd"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2890,8 +2898,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 59786,
-      "hash": "0a307955be11783a8965e9b6bdf44c6bddcc5e25"
+      "bytes": 59927,
+      "hash": "125e79e78e2cca41d054175b41b5ce8194b23477"
     },
     {
       "path": "docs/wiki/docs-standard.md",

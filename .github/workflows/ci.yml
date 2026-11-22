@@ -457,7 +457,7 @@ jobs:
                     - name: health-chat-sync
                       spec: 'e2e/data-health.spec.ts e2e/data-chat.spec.ts e2e/data-keys.spec.ts e2e/data-sync.spec.ts e2e/data-room.spec.ts'
                     - name: debate
-                      spec: 'e2e/data-debate.spec.ts'
+                      spec: 'e2e/data-debate.spec.ts e2e/run-history.spec.ts'
                     - name: forum
                       spec: 'e2e/data-forum.spec.ts'
                     - name: projects
