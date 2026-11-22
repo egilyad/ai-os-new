@@ -95,6 +95,7 @@ import { registerPhase94 } from './phase94-swarm-builder';
 import { registerPhase95 } from './phase95-speaker-selector';
 import { registerPhase96 } from './phase96-middleware';
 import { registerPhase97 } from './phase97-openapi-tools';
+import { registerPhase98 } from './phase98-durable-run';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -202,6 +203,7 @@ export function registerServices(
     registerPhase95(helpers, ctx);
     registerPhase96(helpers, ctx);
     registerPhase97(helpers, ctx);
+    registerPhase98(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
