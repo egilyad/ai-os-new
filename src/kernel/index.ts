@@ -334,6 +334,11 @@ export type {
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
 export { shouldStopByConvergence } from './services/debate-runtime/debate-stop-conditions';
 export { BUILTIN_MODES, DebateModeManager } from './services/debate-runtime/debate-mode-system';
+export { classifyLlmError, LlmError } from './services/debate-runtime/debate-llm-errors';
+export type {
+    LlmErrorCode,
+    LlmErrorClassifyInput,
+} from './services/debate-runtime/debate-llm-errors';
 export type { DebateMode } from './contracts/debate-mode-system';
 export { CognitiveIntelligenceService } from './services/cognitive-intelligence/cognitive-intelligence-service';
 export type {
