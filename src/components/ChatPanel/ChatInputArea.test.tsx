@@ -28,22 +28,33 @@ afterEach(() => {
     keyListState.activeKeys = [];
 });
 
-function renderArea() {
-    return render(
+type AreaOverrides = {
+    selectedKeys?: string[];
+    selectedModel?: string;
+    selectedModelPerKey?: Record<string, string>;
+    isSending?: boolean;
+};
+
+function areaElement(overrides: AreaOverrides = {}) {
+    return (
         <MemoryRouter>
             <ChatInputArea
-                selectedKeys={[]}
-                selectedModel=""
-                selectedModelPerKey={{}}
+                selectedKeys={overrides.selectedKeys ?? []}
+                selectedModel={overrides.selectedModel ?? ''}
+                selectedModelPerKey={overrides.selectedModelPerKey ?? {}}
                 onSend={vi.fn()}
-                isSending={false}
+                isSending={overrides.isSending ?? false}
                 onError={vi.fn()}
                 onKeysChange={vi.fn()}
                 onModelChange={vi.fn()}
                 onSelectedModelsChange={vi.fn()}
             />
-        </MemoryRouter>,
+        </MemoryRouter>
     );
+}
+
+function renderArea(overrides: AreaOverrides = {}) {
+    return render(areaElement(overrides));
 }
 
 describe('ChatInputArea zero-keys CTA (Zone 1)', () => {
@@ -64,5 +75,23 @@ describe('ChatInputArea zero-keys CTA (Zone 1)', () => {
         expect(
             screen.queryByRole('button', { name: /chat\.add_provider_key|Add a provider key/ }),
         ).toBeNull();
+    });
+});
+
+describe('ChatInputArea pending switch', () => {
+    it('shows a hint when the model changes during sending', () => {
+        const view = renderArea({ selectedKeys: ['k1'], selectedModel: 'm1', isSending: true });
+        expect(screen.queryByRole('status')).toBeNull();
+        view.rerender(areaElement({ selectedKeys: ['k1'], selectedModel: 'm2', isSending: true }));
+        expect(screen.getByRole('status').textContent).toMatch(
+            /pending_switch|next message|следующему/,
+        );
+    });
+
+    it('clears the hint when sending stops', () => {
+        const view = renderArea({ selectedKeys: ['k1'], selectedModel: 'm1', isSending: true });
+        view.rerender(areaElement({ selectedKeys: ['k1'], selectedModel: 'm2', isSending: true }));
+        view.rerender(areaElement({ selectedKeys: ['k1'], selectedModel: 'm2', isSending: false }));
+        expect(screen.queryByRole('status')).toBeNull();
     });
 });

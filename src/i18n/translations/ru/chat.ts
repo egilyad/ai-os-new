@@ -112,6 +112,7 @@ const chat: Record<string, string> = {
     'chat.no_session': 'Нет сессии',
     'chat.not_helpful': 'Бесполезно',
     'chat.not_helpful_aria': 'Бесполезно',
+    'chat.pending_switch': 'Применится к следующему сообщению',
     'chat.placeholder': 'Введите сообщение...',
     'chat.previous_match': 'Предыдущее совпадение',
     'chat.regenerate_aria': 'Сгенерировать заново',

@@ -110,6 +110,7 @@ const chat: Record<string, string> = {
     'chat.no_session': 'No session selected',
     'chat.not_helpful': 'Not helpful',
     'chat.not_helpful_aria': 'Mark as not helpful',
+    'chat.pending_switch': 'Applied to the next message',
     'chat.placeholder': 'Type a message...',
     'chat.previous_match': 'Previous match',
     'chat.regenerate_aria': 'Regenerate response',

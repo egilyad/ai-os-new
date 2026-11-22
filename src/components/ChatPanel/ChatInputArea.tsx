@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Send, Square, KeyRound } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
@@ -39,6 +39,29 @@ const ChatInputArea: React.FC<Props> = ({
     const navigate = useNavigate();
 
     const [input, setInput] = useState('');
+    const [pendingSwitch, setPendingSwitch] = useState(false);
+    const sentConfigRef = useRef('');
+
+    useEffect(() => {
+        const config = [
+            [...selectedKeys].sort().join(','),
+            _selectedModel,
+            Object.keys(selectedModelPerKey)
+                .sort()
+                .map((keyId) => `${keyId}:${selectedModelPerKey[keyId]}`)
+                .join(','),
+        ].join('|');
+        if (!isSending) {
+            sentConfigRef.current = '';
+            setPendingSwitch(false);
+            return;
+        }
+        if (!sentConfigRef.current) {
+            sentConfigRef.current = config;
+            return;
+        }
+        if (sentConfigRef.current !== config) setPendingSwitch(true);
+    }, [isSending, selectedKeys, _selectedModel, selectedModelPerKey]);
 
     // M-07: clear optimistically but restore the text if the send is rejected
     // (e.g. write-through persist failure) instead of losing it silently.
@@ -153,7 +176,10 @@ const ChatInputArea: React.FC<Props> = ({
                         const models =
                             k.provider.toLowerCase() === 'gemini'
                                 ? Array.from(
-                                      new Set([...GEMINI_FREE_MODELS, ...(k.availableModels || [])]),
+                                      new Set([
+                                          ...GEMINI_FREE_MODELS,
+                                          ...(k.availableModels || []),
+                                      ]),
                                   )
                                 : k.availableModels || [];
                         const currentModel = selectedModelPerKey[k.id] || '';
@@ -251,6 +277,18 @@ const ChatInputArea: React.FC<Props> = ({
             {/* Textarea + Send */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-end' }}>
                 <div style={{ flex: 1, position: 'relative' }}>
+                    {pendingSwitch && (
+                        <div
+                            role="status"
+                            style={{
+                                marginBottom: 4,
+                                fontSize: '0.72rem',
+                                color: 'var(--slate-400)',
+                            }}
+                        >
+                            {t('chat.pending_switch')}
+                        </div>
+                    )}
                     <textarea
                         value={input}
                         aria-label={t('chat.placeholder')}
