@@ -13,6 +13,7 @@
  */
 import http from 'node:http';
 import { spawn } from 'node:child_process';
+import { checkCommandPolicy, truncateObservation } from './code-runner-policy.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
@@ -72,6 +73,8 @@ async function runCommand(body) {
     if (!bin) throw new Error(`command not allowed: ${name || '(empty)'} (allowed: ${[...ALLOWED.keys()].join(', ')})`);
     const args = Array.isArray(body.args) ? body.args.map((a) => String(a)) : [];
     if (args.some((a) => /[;&|`$<>]/.test(a))) throw new Error('shell metacharacters are not allowed in args');
+    const policyError = checkCommandPolicy(name, args);
+    if (policyError) throw new Error(policyError);
     const cwd = resolveCwd(body.cwd);
     if (!cwd) throw new Error('cwd must stay inside the sandbox directory');
     const timeoutMs = Math.min(MAX_TIMEOUT_MS, Math.max(1000, Number(body.timeoutMs) || DEFAULT_TIMEOUT_MS));
@@ -88,10 +91,15 @@ async function runCommand(body) {
                 if (done) return;
                 done = true;
                 clearTimeout(timer);
+                const out = truncateObservation(stdout, MAX_OUTPUT);
+                const err = truncateObservation(stderr + (error ? `\n${error}` : ''), MAX_OUTPUT);
+                const notes = [out.note, err.note].filter(Boolean).join(' ');
                 resolve({
                     ok: exitCode === 0,
-                    stdout: stdout.slice(0, MAX_OUTPUT),
-                    stderr: (stderr + (error ? `\n${error}` : '')).slice(0, MAX_OUTPUT),
+                    stdout: out.text,
+                    stderr: err.text,
+                    elided: { stdout: out.elided, stderr: err.elided },
+                    note: notes,
                     exitCode,
                     durationMs: Date.now() - startedAt,
                 });
