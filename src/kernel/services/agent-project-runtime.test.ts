@@ -8,6 +8,7 @@ import { ProjectService } from './project-service';
 import { ProjectWorkspaceService } from './project-workspace-service';
 import { ProjectRepository } from '../dal/project-repository';
 import { SuperAgentsDB } from './dexie-schema';
+import type { RunHistoryRecord } from '../contracts/run-history';
 
 vi.mock('./logger-service', () => ({
     rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() }) },
@@ -17,11 +18,17 @@ let db: SuperAgentsDB;
 let projectService: ProjectService;
 let workspace: ProjectWorkspaceService;
 let runtime: AgentProjectRuntime;
-let mockToolRunner: { runWithTools: Mock<(...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }>> };
+let mockToolRunner: {
+    runWithTools: Mock<(...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }>>;
+};
 const PID = 'test-project';
 
 beforeEach(async () => {
-    try { await db?.delete(); } catch { /* first test */ }
+    try {
+        await db?.delete();
+    } catch {
+        /* first test */
+    }
     db = new SuperAgentsDB();
     db.version(999).stores({
         projects: 'id, status, type, createdAt, updatedAt',
@@ -39,7 +46,10 @@ beforeEach(async () => {
     workspace = new ProjectWorkspaceService(db as any);
 
     mockToolRunner = {
-        runWithTools: vi.fn(async (..._args: unknown[]) => ({ output: 'Tool output: done', toolCalls: [] as unknown[] })),
+        runWithTools: vi.fn(async (..._args: unknown[]) => ({
+            output: 'Tool output: done',
+            toolCalls: [] as unknown[],
+        })),
     };
 
     runtime = new AgentProjectRuntime(projectService, workspace, mockToolRunner);
@@ -59,7 +69,12 @@ describe('AgentProjectRuntime', () => {
     describe('runTask', () => {
         it('runs a task and marks it completed', async () => {
             await runtime.init(PID);
-            const task = await projectService.createTask(PID, 'agent-1', 'Build page', 'Create index.html');
+            const task = await projectService.createTask(
+                PID,
+                'agent-1',
+                'Build page',
+                'Create index.html',
+            );
 
             const result = await runtime.runTask(PID, task.id, 'agent-1', task);
 
@@ -73,10 +88,84 @@ describe('AgentProjectRuntime', () => {
             expect(updatedTask!.status).toBe('completed');
         });
 
+        it('writes run history and links provenance after a completed task', async () => {
+            const saved: RunHistoryRecord[] = [];
+            const history = {
+                save: vi.fn(async (r: RunHistoryRecord) => {
+                    saved.push(r);
+                }),
+            };
+            const link = { link: vi.fn(async () => ({ linked: 1, failures: 0 })) };
+            const tracked = new AgentProjectRuntime(
+                projectService,
+                workspace,
+                mockToolRunner,
+                undefined,
+                history,
+                link,
+            );
+            await tracked.init(PID);
+            const task = await projectService.createTask(
+                PID,
+                'agent-1',
+                'Build page',
+                'Create index.html',
+            );
+
+            const result = await tracked.runTask(PID, task.id, 'agent-1', task);
+
+            expect(history.save).toHaveBeenCalledTimes(1);
+            expect(saved[0]).toMatchObject({
+                runId: result.runId,
+                goal: 'Build page',
+                status: 'completed',
+            });
+            expect(saved[0]!.artifacts[0]!.provenance).toBe('computed');
+            expect(link.link).toHaveBeenCalledWith(result.runId, PID);
+        });
+
+        it('records a failed run in history with the reason', async () => {
+            const saved: RunHistoryRecord[] = [];
+            const history = {
+                save: vi.fn(async (r: RunHistoryRecord) => {
+                    saved.push(r);
+                }),
+            };
+            const link = { link: vi.fn(async () => ({ linked: 0, failures: 1 })) };
+            const tracked = new AgentProjectRuntime(
+                projectService,
+                workspace,
+                mockToolRunner,
+                undefined,
+                history,
+                link,
+            );
+            mockToolRunner.runWithTools.mockRejectedValueOnce(new Error('LLM failed'));
+            await tracked.init(PID);
+            const task = await projectService.createTask(
+                PID,
+                'agent-1',
+                'Failing task',
+                'Will fail',
+            );
+
+            const result = await tracked.runTask(PID, task.id, 'agent-1', task);
+
+            expect(result.status).toBe('failed');
+            expect(saved[0]).toMatchObject({ runId: result.runId, status: 'failed' });
+            expect(saved[0]!.steps[0]!.output).toMatchObject({ error: 'LLM failed' });
+            expect(saved[0]!.artifacts).toHaveLength(0);
+        });
+
         it('marks task as failed on error', async () => {
             mockToolRunner.runWithTools.mockRejectedValueOnce(new Error('LLM failed'));
             await runtime.init(PID);
-            const task = await projectService.createTask(PID, 'agent-1', 'Failing task', 'Will fail');
+            const task = await projectService.createTask(
+                PID,
+                'agent-1',
+                'Failing task',
+                'Will fail',
+            );
 
             const result = await runtime.runTask(PID, task.id, 'agent-1', task);
 
@@ -97,9 +186,9 @@ describe('AgentProjectRuntime', () => {
             runtime.runTask(PID, task1.id, 'agent-1', task1).catch(() => {});
 
             // Second task should be rejected
-            await expect(
-                runtime.runTask(PID, task2.id, 'agent-1', task2),
-            ).rejects.toThrow('Runtime is busy');
+            await expect(runtime.runTask(PID, task2.id, 'agent-1', task2)).rejects.toThrow(
+                'Runtime is busy',
+            );
         });
     });
 
@@ -107,7 +196,11 @@ describe('AgentProjectRuntime', () => {
         it('runs a freeform prompt', async () => {
             await runtime.init(PID);
 
-            const result = await runtime.runPrompt(PID, 'agent-1', 'What files are in the project?');
+            const result = await runtime.runPrompt(
+                PID,
+                'agent-1',
+                'What files are in the project?',
+            );
 
             expect(result.status).toBe('completed');
             expect(result.output).toBe('Tool output: done');

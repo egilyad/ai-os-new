@@ -19,6 +19,8 @@ import type { ProjectId, ProjectTask } from '../types/project-types';
 import type { ProjectService } from './project-service';
 import type { ProjectWorkspaceService } from './project-workspace-service';
 import type { IEventBus } from '../types/interfaces';
+import type { IRunHistoryService, RunHistoryRecord } from '../contracts/run-history';
+import type { RunProvenanceLinkService } from './project-graph/run-provenance-link-service';
 import { FILE_TOOLS } from './file-toolset';
 import { rootLogger } from './logger-service';
 
@@ -56,20 +58,97 @@ function toToolCallRecords(toolCalls: unknown): Array<{
 export class AgentProjectRuntime implements IAgentProjectRuntime {
     private projectService: ProjectService;
     private workspace: ProjectWorkspaceService;
-    private toolRunner: { runWithTools: (prompt: string, opts?: { agentId?: string; system?: string; maxRounds?: number; link?: { runId?: string; taskId?: string } }) => Promise<{ output: string; toolCalls?: unknown[] }> };
+    private toolRunner: {
+        runWithTools: (
+            prompt: string,
+            opts?: {
+                agentId?: string;
+                system?: string;
+                maxRounds?: number;
+                link?: { runId?: string; taskId?: string };
+            },
+        ) => Promise<{ output: string; toolCalls?: unknown[] }>;
+    };
     private eventBus?: IEventBus;
+    private history?: Pick<IRunHistoryService, 'save'>;
+    private provenanceLink?: Pick<RunProvenanceLinkService, 'link'>;
     private states = new Map<ProjectId, ProjectRuntimeState>();
 
     constructor(
         projectService: ProjectService,
         workspace: ProjectWorkspaceService,
-        toolRunner: { runWithTools: (...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }> },
+        toolRunner: {
+            runWithTools: (
+                ...args: unknown[]
+            ) => Promise<{ output: string; toolCalls?: unknown[] }>;
+        },
         eventBus?: IEventBus,
+        history?: Pick<IRunHistoryService, 'save'>,
+        provenanceLink?: Pick<RunProvenanceLinkService, 'link'>,
     ) {
         this.projectService = projectService;
         this.workspace = workspace;
         this.toolRunner = toolRunner;
         this.eventBus = eventBus;
+        this.history = history;
+        this.provenanceLink = provenanceLink;
+    }
+
+    private async persistRunHistory(
+        runId: string,
+        projectId: ProjectId,
+        taskId: string,
+        agentId: string,
+        goal: string,
+        status: 'completed' | 'failed',
+        output: string,
+        startedAt: number,
+    ): Promise<void> {
+        if (!this.history && !this.provenanceLink) return;
+        const finishedAt = Date.now();
+        const record: RunHistoryRecord = {
+            runId,
+            goal,
+            status,
+            startedAt,
+            finishedAt,
+            steps: [
+                {
+                    nodeId: agentId,
+                    input: { taskId, task: goal },
+                    output: status === 'failed' ? { error: output } : { output },
+                    timestamp: finishedAt,
+                },
+            ],
+            artifacts:
+                status === 'completed'
+                    ? [
+                          {
+                              nodeId: agentId,
+                              type: 'text',
+                              content: output,
+                              createdAt: finishedAt,
+                              provenance: 'computed',
+                          },
+                      ]
+                    : [],
+        };
+        if (this.history) {
+            await this.history.save(record).catch((e: unknown) => {
+                LOGGER.warn('AgentProjectRuntime', 'run history save failed', {
+                    runId,
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            });
+        }
+        if (this.provenanceLink) {
+            await this.provenanceLink.link(runId, projectId).catch((e: unknown) => {
+                LOGGER.warn('AgentProjectRuntime', 'provenance link failed', {
+                    runId,
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            });
+        }
     }
 
     private getState(projectId: ProjectId): ProjectRuntimeState {
@@ -117,7 +196,13 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                 });
             }
         }
-        this.emitEvent({ type: 'runtime:status', agentId: 'system', projectId, message: 'initialized', timestamp: Date.now() });
+        this.emitEvent({
+            type: 'runtime:status',
+            agentId: 'system',
+            projectId,
+            message: 'initialized',
+            timestamp: Date.now(),
+        });
     }
 
     // ── Run task ──
@@ -130,13 +215,21 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
         context?: Partial<ProjectExecutionContext>,
     ): Promise<RuntimeRunResult> {
         const state = this.getState(projectId);
-        if (state.status === 'running') throw new Error('Runtime is busy — pause or wait for current run');
+        if (state.status === 'running')
+            throw new Error('Runtime is busy — pause or wait for current run');
 
         state.status = 'running';
         state.abortController = new AbortController();
         const startTime = Date.now();
 
-        this.emitEvent({ type: 'task:start', agentId, projectId, taskId, message: task.title, timestamp: startTime });
+        this.emitEvent({
+            type: 'task:start',
+            agentId,
+            projectId,
+            taskId,
+            message: task.title,
+            timestamp: startTime,
+        });
 
         // P2: the run row comes FIRST — its id joins every P1 trail record below.
         const run = await this.projectService.startRun(taskId, agentId);
@@ -153,7 +246,13 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             const taskPrompt = this.buildTaskPrompt(task, projectId);
 
             // Run the agentic loop
-            this.emitEvent({ type: 'llm:start', agentId, projectId, taskId, timestamp: Date.now() });
+            this.emitEvent({
+                type: 'llm:start',
+                agentId,
+                projectId,
+                taskId,
+                timestamp: Date.now(),
+            });
 
             const result = await this.toolRunner.runWithTools(taskPrompt, {
                 agentId,
@@ -162,12 +261,29 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                 link: { runId: run.id, taskId },
             });
 
-            this.emitEvent({ type: 'llm:complete', agentId, projectId, taskId, message: result.output.slice(0, 200), timestamp: Date.now() });
+            this.emitEvent({
+                type: 'llm:complete',
+                agentId,
+                projectId,
+                taskId,
+                message: result.output.slice(0, 200),
+                timestamp: Date.now(),
+            });
 
             // Complete task + run (names here, full args/results in the P1 trail under run.id)
             const toolCallRecords = toToolCallRecords(result.toolCalls);
             await this.projectService.updateTaskStatus(taskId, 'completed', result.output);
             await this.projectService.completeRun(run.id, 'completed', undefined, toolCallRecords);
+            await this.persistRunHistory(
+                run.id,
+                projectId,
+                taskId,
+                agentId,
+                task.title,
+                'completed',
+                result.output,
+                startTime,
+            );
 
             const duration = Date.now() - startTime;
             state.status = 'idle';
@@ -181,7 +297,14 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                 duration,
             };
 
-            this.emitEvent({ type: 'task:complete', agentId, projectId, taskId, message: `completed in ${duration}ms`, timestamp: Date.now() });
+            this.emitEvent({
+                type: 'task:complete',
+                agentId,
+                projectId,
+                taskId,
+                message: `completed in ${duration}ms`,
+                timestamp: Date.now(),
+            });
 
             return runResult;
         } catch (e) {
@@ -190,15 +313,13 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
 
             // Finalization failures are diagnosable (warn) but never replace
             // the original task error in the returned result.
-            await this.projectService
-                .completeRun(run.id, 'failed', msg)
-                .catch((e: unknown) => {
-                    LOGGER.warn('AgentProjectRuntime', 'completeRun failed', {
-                        runId: run.id,
-                        taskId,
-                        error: e instanceof Error ? e.message : String(e),
-                    });
+            await this.projectService.completeRun(run.id, 'failed', msg).catch((e: unknown) => {
+                LOGGER.warn('AgentProjectRuntime', 'completeRun failed', {
+                    runId: run.id,
+                    taskId,
+                    error: e instanceof Error ? e.message : String(e),
                 });
+            });
             await this.projectService
                 .updateTaskStatus(taskId, 'failed', msg)
                 .catch((e: unknown) => {
@@ -207,8 +328,25 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                         error: e instanceof Error ? e.message : String(e),
                     });
                 });
+            await this.persistRunHistory(
+                run.id,
+                projectId,
+                taskId,
+                agentId,
+                task.title,
+                'failed',
+                msg,
+                startTime,
+            );
             state.status = 'failed';
-            this.emitEvent({ type: 'task:error', agentId, projectId, taskId, message: msg, timestamp: Date.now() });
+            this.emitEvent({
+                type: 'task:error',
+                agentId,
+                projectId,
+                taskId,
+                message: msg,
+                timestamp: Date.now(),
+            });
 
             return {
                 runId: run.id,
@@ -247,7 +385,13 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                 maxRounds: context?.maxRounds ?? 5,
             });
 
-            this.emitEvent({ type: 'llm:complete', agentId, projectId, message: result.output.slice(0, 200), timestamp: Date.now() });
+            this.emitEvent({
+                type: 'llm:complete',
+                agentId,
+                projectId,
+                message: result.output.slice(0, 200),
+                timestamp: Date.now(),
+            });
 
             state.status = 'idle';
             const duration = Date.now() - startTime;
@@ -282,14 +426,26 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
         if (state.status !== 'running') return;
         state.abortController?.abort();
         state.status = 'paused';
-        this.emitEvent({ type: 'runtime:status', agentId: 'system', projectId, message: 'paused', timestamp: Date.now() });
+        this.emitEvent({
+            type: 'runtime:status',
+            agentId: 'system',
+            projectId,
+            message: 'paused',
+            timestamp: Date.now(),
+        });
     }
 
     async resume(projectId: ProjectId): Promise<void> {
         const state = this.getState(projectId);
         if (state.status !== 'paused') return;
         state.status = 'idle';
-        this.emitEvent({ type: 'runtime:status', agentId: 'system', projectId, message: 'resumed', timestamp: Date.now() });
+        this.emitEvent({
+            type: 'runtime:status',
+            agentId: 'system',
+            projectId,
+            message: 'resumed',
+            timestamp: Date.now(),
+        });
     }
 
     getStatus(projectId: ProjectId): RuntimeStatus {
@@ -354,6 +510,8 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
         if (state.events.length > 200) state.events = state.events.slice(-200);
         try {
             this.eventBus?.emit('runtime:agent:event', event);
-        } catch { /* fire-and-forget */ }
+        } catch {
+            /* fire-and-forget */
+        }
     }
 }

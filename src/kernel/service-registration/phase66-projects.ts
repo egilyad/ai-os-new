@@ -81,6 +81,8 @@ export const registerPhase66: Phase = ({ register }) => {
                 ? c.get('toolRunnerService')
                 : { runWithTools: async () => ({ output: 'stub' }) },
             c.get<IEventBus>('eventBus'),
+            c.has('runHistoryService') ? c.get('runHistoryService') : undefined,
+            c.has('runProvenanceLinkService') ? c.get('runProvenanceLinkService') : undefined,
         );
     });
 

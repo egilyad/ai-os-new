@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 577,
+    "documents": 578,
     "byCategory": {
       "repo": 40,
-      "top": 135,
+      "top": 136,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 150,
+      "mixed": 151,
       "ru": 362
     }
   },
@@ -1574,6 +1574,14 @@
       "hash": "15116a5aa7779c1b1990166161d87600a2d10f96"
     },
     {
+      "path": "docs/sessions/2026-11-22-runtime-history-wiring.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-22 — runtime-history-wiring",
+      "bytes": 4239,
+      "hash": "f96f850a81ece9e23fa9ae215564bc42ca17ba69"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2515,7 +2523,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "d6a67fc20d24992b37c16bf9dcc76f0123a25cfb"
+      "hash": "a52beeddec64637af254b93fd5819f34d68aaf53"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2731,7 +2739,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "3d2699afe6d068df0753ed438016e1e361771b06"
+      "hash": "e510e2584e6e53f4f73b1fe391dd550b34d58940"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2922,8 +2930,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 60340,
-      "hash": "031127d6faf76e9062175e97200b63cc400a18d2"
+      "bytes": 60481,
+      "hash": "3048d872f64a85c049bffed7f93b38eca592337c"
     },
     {
       "path": "docs/wiki/docs-standard.md",
