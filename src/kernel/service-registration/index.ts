@@ -90,6 +90,7 @@ import { registerPhase89 } from './phase89-termination';
 import { registerPhase90 } from './phase90-ledger';
 import { registerPhase91 } from './phase91-hitl';
 import { registerPhase92 } from './phase92-budget-guard';
+import { registerPhase93 } from './phase93-review-retry';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -192,6 +193,7 @@ export function registerServices(
     registerPhase90(helpers, ctx);
     registerPhase91(helpers, ctx);
     registerPhase92(helpers, ctx);
+    registerPhase93(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
