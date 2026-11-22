@@ -42,6 +42,7 @@ import { agemsApprovalService } from '../agems-approval-service';
 import type { ExternalToolRecord } from '../tool-executor';
 import { EVENTS } from '../../events/event-names';
 import { rootLogger } from '../logger-service';
+import { checkCommand, terminalCommandFromInput } from '../sandbox/aci-policy';
 
 const LOGGER = rootLogger.child('ComputerUseLoop');
 
@@ -116,7 +117,10 @@ export interface ComputerUseLoopDeps {
     events: IEventBus;
     llm: ILLMClientService;
     executor: ComputerExecutor;
-    approval?: Pick<typeof agemsApprovalService, 'list' | 'getPolicy' | 'claim' | 'requestApproval'>;
+    approval?: Pick<
+        typeof agemsApprovalService,
+        'list' | 'getPolicy' | 'claim' | 'requestApproval'
+    >;
     /** P1 durable trail sink (ToolService.recordExternalExecution). Absent → events only, as before. */
     toolTrail?: { record(entry: ExternalToolRecord): Promise<void> };
 }
@@ -125,8 +129,11 @@ export const REQUEST_AND_RUN_POLL_MS = 1000;
 export const REQUEST_AND_RUN_TIMEOUT_MS = 10 * 60 * 1000;
 
 /** Режим computer.use для агента из его ApprovalPolicy. */
-export function resolveComputerMode(policy: ApprovalPolicy | undefined): 'BLOCKED' | 'REQUIRES_APPROVAL' | 'FREE' {
-    const mode = policy?.toolOverrides?.['computer.use'] ?? policy?.executeMode ?? 'REQUIRES_APPROVAL';
+export function resolveComputerMode(
+    policy: ApprovalPolicy | undefined,
+): 'BLOCKED' | 'REQUIRES_APPROVAL' | 'FREE' {
+    const mode =
+        policy?.toolOverrides?.['computer.use'] ?? policy?.executeMode ?? 'REQUIRES_APPROVAL';
     if (mode === 'BLOCKED' || mode === 'FREE' || mode === 'REQUIRES_APPROVAL') return mode;
     return 'REQUIRES_APPROVAL';
 }
@@ -150,7 +157,8 @@ function parseActionInput(raw: string): ComputerActionInput {
     } catch {
         parsed = undefined;
     }
-    const obj = typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>) : {};
+    const obj =
+        typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>) : {};
     const action = typeof obj['action'] === 'string' ? (obj['action'] as string) : '';
     if (!action.trim()) throw new Error('computer input has no action');
     return { ...obj, action };
@@ -223,26 +231,40 @@ export class ComputerUseLoopService {
             riskLevel: 'high',
             description: `computer.use: ${task.slice(0, 200)}`,
         });
-        const timeoutMs = Math.max(1000, Math.floor(opts.approvalTimeoutMs ?? REQUEST_AND_RUN_TIMEOUT_MS));
+        const timeoutMs = Math.max(
+            1000,
+            Math.floor(opts.approvalTimeoutMs ?? REQUEST_AND_RUN_TIMEOUT_MS),
+        );
         const pollMs = Math.max(50, Math.floor(opts.pollIntervalMs ?? REQUEST_AND_RUN_POLL_MS));
         const deadline = Date.now() + timeoutMs;
         for (;;) {
-            const found = ((await approval.list(opts.agentId)) as ApprovalRequest[]).find((r) => r.id === req.id);
+            const found = ((await approval.list(opts.agentId)) as ApprovalRequest[]).find(
+                (r) => r.id === req.id,
+            );
             const status = found?.status;
             if (status === 'APPROVED') break;
             if (status === 'REJECTED' || status === 'EXPIRED') {
-                throw new Error(`computer.use: approval ${req.id} was ${status?.toLowerCase() ?? 'lost'}`);
+                throw new Error(
+                    `computer.use: approval ${req.id} was ${status?.toLowerCase() ?? 'lost'}`,
+                );
             }
             if (!found) throw new Error(`computer.use: approval ${req.id} disappeared`);
             if (Date.now() >= deadline) {
-                throw new Error(`computer.use: approval ${req.id} timed out waiting for human decision`);
+                throw new Error(
+                    `computer.use: approval ${req.id} timed out waiting for human decision`,
+                );
             }
             await new Promise((r) => setTimeout(r, pollMs));
         }
         // Явно требуем проверку: человек только что одобрил ЭТУ заявку —
         // run() перепроверит binding и сожжёт её через claim при любой
         // политике (иначе FREE-политика оставляла бы APPROVED переиспользуемым).
-        const res = await this.run({ ...opts, task, approvedRequestId: req.id as number, requireApproval: true });
+        const res = await this.run({
+            ...opts,
+            task,
+            approvedRequestId: req.id as number,
+            requireApproval: true,
+        });
         return { ...res, approvedRequestId: req.id as number };
     }
 
@@ -270,7 +292,9 @@ export class ComputerUseLoopService {
                 status: 'denied',
                 reason: 'computer.use: HITL approval required',
             });
-            throw new Error('computer.use: HITL approval required (pass approvedRequestId of an APPROVED request)');
+            throw new Error(
+                'computer.use: HITL approval required (pass approvedRequestId of an APPROVED request)',
+            );
         }
         const approval = this.deps.approval ?? agemsApprovalService;
         const all = (await approval.list()) as ApprovalRequest[];
@@ -303,7 +327,8 @@ export class ComputerUseLoopService {
         const task = opts.task?.trim() ?? '';
         if (!task) throw new Error('computer.use: task is required');
         // ticketId идёт в события/логи/актуатор — режем до разумного.
-        const ticketId = typeof opts.ticketId === 'string' ? opts.ticketId.slice(0, 120) : undefined;
+        const ticketId =
+            typeof opts.ticketId === 'string' ? opts.ticketId.slice(0, 120) : undefined;
         // Default совпадает с viewport sidecar (docker/browser-use-sidecar).
         const displayWidthPx = Math.max(1, Math.floor(opts.displayWidthPx ?? 1280));
         const displayHeightPx = Math.max(1, Math.floor(opts.displayHeightPx ?? 800));
@@ -353,7 +378,9 @@ export class ComputerUseLoopService {
                 // Claim ДО loop — один approve = один запуск.
                 // Транзиентный сбой loop сжигает approve (новый — новым запросом),
                 // зато исключён повторный USE без человека.
-                await (this.deps.approval ?? agemsApprovalService).claim(opts.approvedRequestId as number);
+                await (this.deps.approval ?? agemsApprovalService).claim(
+                    opts.approvedRequestId as number,
+                );
             } catch (e) {
                 const msg = e instanceof Error ? e.message : String(e);
                 await this.trail({
@@ -394,7 +421,11 @@ export class ComputerUseLoopService {
             messages.push({
                 role: 'assistant',
                 content: res.content,
-                toolCalls: (res.toolCalls ?? []).map((c) => ({ id: c.id, type: c.type, function: c.function })),
+                toolCalls: (res.toolCalls ?? []).map((c) => ({
+                    id: c.id,
+                    type: c.type,
+                    function: c.function,
+                })),
             });
 
             const calls = res.toolCalls ?? [];
@@ -414,7 +445,14 @@ export class ComputerUseLoopService {
             // Выходим только когда вызовов нет вообще: ответы-ошибки на
             // function-tools модель должна увидеть следующим ходом.
             if (computer.length === 0 && functions.length === 0) {
-                const done = { stopReason: 'done' as const, turns: turn + 1, output: res.content, computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+                const done = {
+                    stopReason: 'done' as const,
+                    turns: turn + 1,
+                    output: res.content,
+                    computerCalls,
+                    lastScreenshot,
+                    maxTurnsApplied: maxTurns,
+                };
                 await this.trail({
                     toolId: 'computer.use',
                     input: { task },
@@ -441,13 +479,33 @@ export class ComputerUseLoopService {
                     ticketId: ticketId ?? '',
                     action: `computer.${input.action.slice(0, 64)}`,
                 });
+                const commandCandidate = terminalCommandFromInput(input);
+                if (commandCandidate !== null) {
+                    const decision = checkCommand(commandCandidate);
+                    if (!decision.allowed) {
+                        const reason = `Command blocked by ACI policy: ${decision.reason}`;
+                        LOGGER.warn('ComputerUseLoop', 'command denied by ACI policy', {
+                            action: input.action,
+                            reason: decision.reason,
+                        });
+                        messages.push({
+                            role: 'tool',
+                            toolCallId: call.id,
+                            content: `ERROR: ${reason}`,
+                        });
+                        continue;
+                    }
+                }
                 let result: ComputerActionResult;
                 try {
                     result = await this.deps.executor.execute(input, { ticketId });
                 } catch (e) {
                     // Транспорт мёртв — жечь оставшиеся turns бессмысленно.
                     const msg = e instanceof Error ? e.message : String(e);
-                    LOGGER.warn('ComputerUseLoop', 'executor transport failed', { action: input.action, error: msg });
+                    LOGGER.warn('ComputerUseLoop', 'executor transport failed', {
+                        action: input.action,
+                        error: msg,
+                    });
                     const failed = {
                         stopReason: 'executor_error' as const,
                         turns: turn + 1,
@@ -469,11 +527,13 @@ export class ComputerUseLoopService {
                 computerCalls++;
                 if (result.screenshotBase64) lastScreenshot = result.screenshotBase64;
                 const shot =
-                    result.screenshotBase64 && result.screenshotBase64.length <= COMPUTER_SCREENSHOT_CHAR_LIMIT
+                    result.screenshotBase64 &&
+                    result.screenshotBase64.length <= COMPUTER_SCREENSHOT_CHAR_LIMIT
                         ? [{ mimeType: 'image/png', data: result.screenshotBase64 }]
                         : undefined;
                 const overflow =
-                    result.screenshotBase64 && result.screenshotBase64.length > COMPUTER_SCREENSHOT_CHAR_LIMIT
+                    result.screenshotBase64 &&
+                    result.screenshotBase64.length > COMPUTER_SCREENSHOT_CHAR_LIMIT
                         ? ' [screenshot dropped: exceeds context limit]'
                         : '';
                 messages.push({
@@ -487,7 +547,14 @@ export class ComputerUseLoopService {
             }
         }
 
-        const capped = { stopReason: 'max_turns' as const, turns: maxTurns, output: 'max turns reached', computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+        const capped = {
+            stopReason: 'max_turns' as const,
+            turns: maxTurns,
+            output: 'max turns reached',
+            computerCalls,
+            lastScreenshot,
+            maxTurnsApplied: maxTurns,
+        };
         await this.trail({
             toolId: 'computer.use',
             input: { task },
@@ -514,14 +581,21 @@ export class ComputerUseLoopService {
         bind?: { toolName?: string; task?: string; provider?: ComputerUseProvider },
     ): Promise<void> {
         if (approvedRequestId === undefined) {
-            throw new Error('computer.use: HITL approval required (pass approvedRequestId of an APPROVED request)');
+            throw new Error(
+                'computer.use: HITL approval required (pass approvedRequestId of an APPROVED request)',
+            );
         }
         const approval = this.deps.approval ?? agemsApprovalService;
         const reqs = (await approval.list(agentId)) as ApprovalRequest[];
         const req = reqs.find((r) => r.id === approvedRequestId);
-        if (!req) throw new Error(`computer.use: approval request ${approvedRequestId} not found for ${agentId}`);
+        if (!req)
+            throw new Error(
+                `computer.use: approval request ${approvedRequestId} not found for ${agentId}`,
+            );
         if (req.status !== 'APPROVED') {
-            throw new Error(`computer.use: approval request ${approvedRequestId} is ${req.status} (needs APPROVED)`);
+            throw new Error(
+                `computer.use: approval request ${approvedRequestId} is ${req.status} (needs APPROVED)`,
+            );
         }
         if (typeof req.expiresAt === 'number' && Date.now() > req.expiresAt) {
             throw new Error(`computer.use: approval request ${approvedRequestId} expired`);
@@ -532,13 +606,19 @@ export class ComputerUseLoopService {
             );
         }
         if (bind?.task !== undefined) {
-            const approvedTask = String((req.toolInput as Record<string, unknown> | null)?.['task'] ?? '').trim();
+            const approvedTask = String(
+                (req.toolInput as Record<string, unknown> | null)?.['task'] ?? '',
+            ).trim();
             if (approvedTask !== bind.task.trim()) {
-                throw new Error(`computer.use: approval ${approvedRequestId} covers a different task`);
+                throw new Error(
+                    `computer.use: approval ${approvedRequestId} covers a different task`,
+                );
             }
         }
         if (bind?.provider !== undefined) {
-            const approvedProvider = (req.toolInput as Record<string, unknown> | null)?.['provider'];
+            const approvedProvider = (req.toolInput as Record<string, unknown> | null)?.[
+                'provider'
+            ];
             if (typeof approvedProvider === 'string' && approvedProvider !== bind.provider) {
                 throw new Error(
                     `computer.use: approval ${approvedRequestId} covers provider '${approvedProvider}', not '${bind.provider}'`,

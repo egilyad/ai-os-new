@@ -15,7 +15,7 @@ function computerCall(id: string, input: unknown) {
 }
 
 function scriptedLlm(script: AdapterResponse[]) {
-    const seen: Array<{ messages: unknown[]; options: unknown }>= [];
+    const seen: Array<{ messages: unknown[]; options: unknown }> = [];
     let i = 0;
     return {
         seen,
@@ -68,7 +68,9 @@ function baseOpts(over: Record<string, unknown> = {}) {
 
 describe('ComputerUseLoopService (phase71)', () => {
     it('returns done immediately when LLM makes no calls', async () => {
-        const llm = scriptedLlm([{ content: 'nothing to do', latency: 1, tokens: 5 } as AdapterResponse]);
+        const llm = scriptedLlm([
+            { content: 'nothing to do', latency: 1, tokens: 5 } as AdapterResponse,
+        ]);
         const svc = new ComputerUseLoopService({
             events: { emit: vi.fn() } as never,
             llm: llm as never,
@@ -83,7 +85,12 @@ describe('ComputerUseLoopService (phase71)', () => {
 
     it('click → screenshot → done feeds image back as tool_result', async () => {
         const llm = scriptedLlm([
-            { content: '', toolCalls: [computerCall('tu_1', { action: 'left_click', coordinate: [100, 200] })], latency: 1, tokens: 9 } as AdapterResponse,
+            {
+                content: '',
+                toolCalls: [computerCall('tu_1', { action: 'left_click', coordinate: [100, 200] })],
+                latency: 1,
+                tokens: 9,
+            } as AdapterResponse,
             { content: 'clicked it', latency: 1, tokens: 4 } as AdapterResponse,
         ]);
         const execCalls: Array<{ action: string; coordinate?: unknown }> = [];
@@ -111,16 +118,27 @@ describe('ComputerUseLoopService (phase71)', () => {
         }>;
         const toolMsg = secondTurn.find((m) => m.role === 'tool');
         expect(toolMsg?.toolCallId).toBe('tu_1');
-        expect(toolMsg?.inlineData?.[0]).toMatchObject({ mimeType: 'image/png', data: 'iVBORw0KGgo=' });
+        expect(toolMsg?.inlineData?.[0]).toMatchObject({
+            mimeType: 'image/png',
+            data: 'iVBORw0KGgo=',
+        });
         // COMPUTER_ACT заэмичен.
-        expect((svc as unknown as { deps: { events: { emit: unknown } } }).deps.events.emit).toHaveBeenCalled();
+        expect(
+            (svc as unknown as { deps: { events: { emit: unknown } } }).deps.events.emit,
+        ).toHaveBeenCalled();
     });
 
     it('answers function-tools with error tool_result and continues', async () => {
         const llm = scriptedLlm([
             {
                 content: '',
-                toolCalls: [{ id: 'f1', type: 'function', function: { name: 'get_weather', arguments: '{}' } }],
+                toolCalls: [
+                    {
+                        id: 'f1',
+                        type: 'function',
+                        function: { name: 'get_weather', arguments: '{}' },
+                    },
+                ],
                 latency: 1,
                 tokens: 3,
             } as AdapterResponse,
@@ -141,7 +159,12 @@ describe('ComputerUseLoopService (phase71)', () => {
 
     it('executor transport throw aborts with executor_error', async () => {
         const llm = scriptedLlm([
-            { content: '', toolCalls: [computerCall('tu_1', { action: 'screenshot' })], latency: 1, tokens: 3 } as AdapterResponse,
+            {
+                content: '',
+                toolCalls: [computerCall('tu_1', { action: 'screenshot' })],
+                latency: 1,
+                tokens: 3,
+            } as AdapterResponse,
         ]);
         const svc = new ComputerUseLoopService({
             events: { emit: vi.fn() } as never,
@@ -159,7 +182,12 @@ describe('ComputerUseLoopService (phase71)', () => {
 
     it('action-level error continues the loop', async () => {
         const llm = scriptedLlm([
-            { content: '', toolCalls: [computerCall('tu_1', { action: 'left_click', coordinate: [5, 5] })], latency: 1, tokens: 3 } as AdapterResponse,
+            {
+                content: '',
+                toolCalls: [computerCall('tu_1', { action: 'left_click', coordinate: [5, 5] })],
+                latency: 1,
+                tokens: 3,
+            } as AdapterResponse,
             { content: 'recovered', latency: 1, tokens: 2 } as AdapterResponse,
         ]);
         const svc = new ComputerUseLoopService({
@@ -194,13 +222,20 @@ describe('ComputerUseLoopService (phase71)', () => {
 
     it('drops oversized screenshots with an overflow marker', async () => {
         const llm = scriptedLlm([
-            { content: '', toolCalls: [computerCall('tu_1', { action: 'screenshot' })], latency: 1, tokens: 2 } as AdapterResponse,
+            {
+                content: '',
+                toolCalls: [computerCall('tu_1', { action: 'screenshot' })],
+                latency: 1,
+                tokens: 2,
+            } as AdapterResponse,
             { content: 'ok', latency: 1, tokens: 1 } as AdapterResponse,
         ]);
         const svc = new ComputerUseLoopService({
             events: { emit: vi.fn() } as never,
             llm: llm as never,
-            executor: { execute: vi.fn(async () => ({ screenshotBase64: 'z'.repeat(4_000_000) })) } as never,
+            executor: {
+                execute: vi.fn(async () => ({ screenshotBase64: 'z'.repeat(4_000_000) })),
+            } as never,
         });
         const res = await svc.run(baseOpts());
         expect(res.stopReason).toBe('done');
@@ -232,13 +267,17 @@ describe('ComputerUseLoopService (phase71)', () => {
                 })),
             } as never,
         });
-        await expect(svc.run(baseOpts({ requireApproval: false }))).rejects.toThrow(/blocked by approval policy/);
+        await expect(svc.run(baseOpts({ requireApproval: false }))).rejects.toThrow(
+            /blocked by approval policy/,
+        );
         expect(llm.chat).not.toHaveBeenCalled();
         expect(exec.execute).not.toHaveBeenCalled();
     });
 
     it('policy FREE skips approval check unless caller tightens it', async () => {
-        const llm = scriptedLlm([{ content: 'free run', latency: 1, tokens: 1 } as AdapterResponse]);
+        const llm = scriptedLlm([
+            { content: 'free run', latency: 1, tokens: 1 } as AdapterResponse,
+        ]);
         const freePolicy = {
             list: vi.fn(async () => []),
             getPolicy: vi.fn(async () => ({
@@ -259,7 +298,9 @@ describe('ComputerUseLoopService (phase71)', () => {
         expect(res.stopReason).toBe('done');
         expect(freePolicy.list).not.toHaveBeenCalled();
         // Вызывающий вправе ужесточить: явный requireApproval + нет заявки → throw.
-        await expect(mk().run(baseOpts({ requireApproval: true }))).rejects.toThrow(/approvedRequestId/);
+        await expect(mk().run(baseOpts({ requireApproval: true }))).rejects.toThrow(
+            /approvedRequestId/,
+        );
     });
 
     it('preset caps maxTurns (SUPERVISED cuts 30 → 10)', async () => {
@@ -296,7 +337,10 @@ describe('ComputerUseLoopService (phase71)', () => {
         expect(resolveComputerMode({ executeMode: 'FREE' } as never)).toBe('FREE');
         expect(resolveComputerMode({ executeMode: 'BLOCKED' } as never)).toBe('BLOCKED');
         expect(
-            resolveComputerMode({ executeMode: 'FREE', toolOverrides: { 'computer.use': 'BLOCKED' } } as never),
+            resolveComputerMode({
+                executeMode: 'FREE',
+                toolOverrides: { 'computer.use': 'BLOCKED' },
+            } as never),
         ).toBe('BLOCKED');
         expect(resolveComputerMode({ executeMode: 'WRONG' } as never)).toBe('REQUIRES_APPROVAL');
         expect(presetTurnsCap(undefined)).toBe(10);
@@ -330,7 +374,11 @@ describe('ComputerUseLoopService (phase71)', () => {
             mk('browser.act', 'do it').run({ agentId: 'a1', task: 'do it', approvedRequestId: 9 }),
         ).rejects.toThrow(/covers 'browser.act', not 'computer.use'/);
         await expect(
-            mk('computer.use', 'other task').run({ agentId: 'a1', task: 'do it', approvedRequestId: 9 }),
+            mk('computer.use', 'other task').run({
+                agentId: 'a1',
+                task: 'do it',
+                approvedRequestId: 9,
+            }),
         ).rejects.toThrow(/different task/);
         expect(llm.chat).not.toHaveBeenCalled();
     });
@@ -356,7 +404,10 @@ describe('ComputerUseLoopService (phase71)', () => {
             events: { emit: vi.fn() } as never,
             llm: {
                 chat: vi.fn(async (_messages: never, options?: unknown) => {
-                    seenAgents.push(((options ?? {}) as { cacheScope?: { agentId?: string } }).cacheScope?.agentId ?? '');
+                    seenAgents.push(
+                        ((options ?? {}) as { cacheScope?: { agentId?: string } }).cacheScope
+                            ?.agentId ?? '',
+                    );
                     return { content: 'ran as victim', latency: 1, tokens: 1 };
                 }),
             } as never,
@@ -368,10 +419,12 @@ describe('ComputerUseLoopService (phase71)', () => {
         expect(seenAgents).toEqual(['victim-agent']);
         // Claim произошёл — повторный запуск по тому же id уже не пройдёт check.
         expect(approval.claim).toHaveBeenCalledWith(11);
-        await expect(svc.runApproved({ task: 'do it', approvedRequestId: 404 })).rejects.toThrow(/not found/);
-        await expect(svc.runApproved({ task: 'do it', approvedRequestId: undefined })).rejects.toThrow(
-            /HITL approval required/,
+        await expect(svc.runApproved({ task: 'do it', approvedRequestId: 404 })).rejects.toThrow(
+            /not found/,
         );
+        await expect(
+            svc.runApproved({ task: 'do it', approvedRequestId: undefined }),
+        ).rejects.toThrow(/HITL approval required/);
     });
 
     it('claim consumes the approval: second run with same id fails', async () => {
@@ -404,9 +457,9 @@ describe('ComputerUseLoopService (phase71)', () => {
         const first = await svc.run({ agentId: 'a1', task: 'do it', approvedRequestId: 12 });
         expect(first.stopReason).toBe('done');
         // Статус в сторе теперь CONSUMED — повтор упирается в check.
-        await expect(svc.run({ agentId: 'a1', task: 'do it', approvedRequestId: 12 })).rejects.toThrow(
-            /is CONSUMED/,
-        );
+        await expect(
+            svc.run({ agentId: 'a1', task: 'do it', approvedRequestId: 12 }),
+        ).rejects.toThrow(/is CONSUMED/);
     });
 
     it('requestAndRun: approve mid-poll → runs with the fresh id', async () => {
@@ -531,7 +584,12 @@ describe('ComputerUseLoopService (phase71)', () => {
         ).rejects.toThrow(/was expired/);
         const pending = mk('PENDING');
         await expect(
-            pending.svc.requestAndRun({ agentId: 'a1', task: 'do it', approvalTimeoutMs: 300, pollIntervalMs: 30 }),
+            pending.svc.requestAndRun({
+                agentId: 'a1',
+                task: 'do it',
+                approvalTimeoutMs: 300,
+                pollIntervalMs: 30,
+            }),
         ).rejects.toThrow(/timed out/);
         expect(pending.llm.chat).not.toHaveBeenCalled();
     });
@@ -556,7 +614,9 @@ describe('ComputerUseLoopService (phase71)', () => {
             executor: okExecutor() as never,
             approval: approval as never,
         });
-        await expect(svc.requestAndRun({ agentId: 'a1', task: 'do it' })).rejects.toThrow(/blocked by approval policy/);
+        await expect(svc.requestAndRun({ agentId: 'a1', task: 'do it' })).rejects.toThrow(
+            /blocked by approval policy/,
+        );
         expect(approval.requestApproval).not.toHaveBeenCalled();
         expect(llm.chat).not.toHaveBeenCalled();
     });
@@ -582,7 +642,10 @@ describe('ComputerUseLoopService (phase71)', () => {
             provider: 'gemini-computer',
         });
         expect(res.stopReason).toBe('done');
-        const o = seenOpts[0] as { provider?: string; cacheScope?: { agentId?: string; sessionId?: string } };
+        const o = seenOpts[0] as {
+            provider?: string;
+            cacheScope?: { agentId?: string; sessionId?: string };
+        };
         expect(o.provider).toBe('gemini-computer');
         expect(typeof o.cacheScope?.sessionId).toBe('string');
         expect(o.cacheScope?.sessionId?.length).toBeGreaterThan(0);
@@ -601,7 +664,12 @@ describe('ComputerUseLoopService (phase71)', () => {
                             id: 13,
                             agentId: 'a1',
                             toolName: 'computer.use',
-                            toolInput: { task: 'do it', ...(approvedProvider === undefined ? {} : { provider: approvedProvider }) },
+                            toolInput: {
+                                task: 'do it',
+                                ...(approvedProvider === undefined
+                                    ? {}
+                                    : { provider: approvedProvider }),
+                            },
                             category: 'computer',
                             riskLevel: 'high',
                             status: 'APPROVED',
@@ -613,7 +681,12 @@ describe('ComputerUseLoopService (phase71)', () => {
             });
         // Approve под anthropic нельзя проиграть через gemini-путь.
         await expect(
-            mk('anthropic').run({ agentId: 'a1', task: 'do it', approvedRequestId: 13, provider: 'gemini-computer' }),
+            mk('anthropic').run({
+                agentId: 'a1',
+                task: 'do it',
+                approvedRequestId: 13,
+                provider: 'gemini-computer',
+            }),
         ).rejects.toThrow(/covers provider 'anthropic', not 'gemini-computer'/);
         expect(llm.chat).not.toHaveBeenCalled();
         // Совпадение — ок.
@@ -626,7 +699,11 @@ describe('ComputerUseLoopService (phase71)', () => {
         });
         expect(res.stopReason).toBe('done');
         // Старые заявки без provider — только agent+tool+task.
-        const legacy = await mk(undefined).run({ agentId: 'a1', task: 'do it', approvedRequestId: 13 });
+        const legacy = await mk(undefined).run({
+            agentId: 'a1',
+            task: 'do it',
+            approvedRequestId: 13,
+        });
         expect(legacy.stopReason).toBe('done');
     });
 
@@ -646,12 +723,24 @@ describe('ComputerUseLoopService (phase71)', () => {
             mk(approvedList('PENDING')).run({ agentId: 'a1', task: 'do it', approvedRequestId: 7 }),
         ).rejects.toThrow(/is PENDING/);
         await expect(
-            mk(approvedList('APPROVED', 7, true)).run({ agentId: 'a1', task: 'do it', approvedRequestId: 7 }),
+            mk(approvedList('APPROVED', 7, true)).run({
+                agentId: 'a1',
+                task: 'do it',
+                approvedRequestId: 7,
+            }),
         ).rejects.toThrow(/expired/);
         await expect(
-            mk({ list: vi.fn(async () => []) }).run({ agentId: 'a1', task: 'do it', approvedRequestId: 7 }),
+            mk({ list: vi.fn(async () => []) }).run({
+                agentId: 'a1',
+                task: 'do it',
+                approvedRequestId: 7,
+            }),
         ).rejects.toThrow(/not found/);
-        const res = await mk(approvedList('APPROVED')).run({ agentId: 'a1', task: 'do it', approvedRequestId: 7 });
+        const res = await mk(approvedList('APPROVED')).run({
+            agentId: 'a1',
+            task: 'do it',
+            approvedRequestId: 7,
+        });
         expect(res.stopReason).toBe('done');
     });
 });
@@ -659,7 +748,9 @@ describe('ComputerUseLoopService (phase71)', () => {
 describe('ComputerUseLoopService P1 durable trail (run-level)', () => {
     function makeTrailedService(over: Record<string, unknown> = {}) {
         const trail: Array<Record<string, unknown>> = [];
-        const llm = scriptedLlm([{ content: 'nothing to do', latency: 1, tokens: 5 } as AdapterResponse]);
+        const llm = scriptedLlm([
+            { content: 'nothing to do', latency: 1, tokens: 5 } as AdapterResponse,
+        ]);
         const svc = new ComputerUseLoopService({
             events: { emit: vi.fn() } as never,
             llm: llm as never,
@@ -681,7 +772,9 @@ describe('ComputerUseLoopService P1 durable trail (run-level)', () => {
                 list: vi.fn(async () => []),
             },
         });
-        await expect(svc.run(baseOpts({ requireApproval: false }))).rejects.toThrow(/blocked by approval policy/);
+        await expect(svc.run(baseOpts({ requireApproval: false }))).rejects.toThrow(
+            /blocked by approval policy/,
+        );
         expect(trail).toHaveLength(1);
         expect(trail[0]!['toolId']).toBe('computer.use');
         expect(trail[0]!['status']).toBe('denied');
@@ -720,5 +813,63 @@ describe('ComputerUseLoopService P1 durable trail (run-level)', () => {
         );
         expect(trail).toHaveLength(1);
         expect(trail[0]!['status']).toBe('denied');
+    });
+
+    it('ACI: заблокированная терминальная команда не доходит до executor', async () => {
+        const llm = scriptedLlm([
+            {
+                content: '',
+                toolCalls: [
+                    computerCall('aci_1', {
+                        action: 'type',
+                        text: 'vim notes.txt',
+                        terminal: true,
+                    }),
+                ],
+                latency: 1,
+                tokens: 9,
+            } as AdapterResponse,
+            { content: 'stopped', latency: 1, tokens: 4 } as AdapterResponse,
+        ]);
+        const executor = okExecutor();
+        const svc = new ComputerUseLoopService({
+            events: { emit: vi.fn() } as never,
+            llm: llm as never,
+            executor: executor as never,
+        });
+        const res = await svc.run(baseOpts());
+
+        expect(res.stopReason).toBe('done');
+        expect(res.computerCalls).toBe(0);
+        expect(executor.execute).not.toHaveBeenCalled();
+        const toolMsg = (llm.seen[1]?.messages as Array<{ role: string; content?: string }>).find(
+            (m) => m.role === 'tool',
+        );
+        expect(toolMsg?.content).toContain('Command blocked by ACI policy');
+    });
+
+    it('ACI: обычный ввод текста не блокируется', async () => {
+        const llm = scriptedLlm([
+            {
+                content: '',
+                toolCalls: [computerCall('aci_2', { action: 'type', text: 'vim notes.txt' })],
+                latency: 1,
+                tokens: 9,
+            } as AdapterResponse,
+            { content: 'typed', latency: 1, tokens: 4 } as AdapterResponse,
+        ]);
+        const executor = okExecutor();
+        const svc = new ComputerUseLoopService({
+            events: { emit: vi.fn() } as never,
+            llm: llm as never,
+            executor: executor as never,
+        });
+        const res = await svc.run(baseOpts());
+
+        expect(res.computerCalls).toBe(1);
+        expect(executor.execute).toHaveBeenCalledWith(
+            expect.objectContaining({ action: 'type', text: 'vim notes.txt' }),
+            expect.anything(),
+        );
     });
 });

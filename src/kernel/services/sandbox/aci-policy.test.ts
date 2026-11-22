@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkCommand, truncateObservation } from './aci-policy';
+import { checkCommand, terminalCommandFromInput, truncateObservation } from './aci-policy';
 
 describe('ACI observation truncation (I1)', () => {
     it('короткий вывод не меняется', () => {
@@ -61,5 +61,25 @@ describe('ACI command blocklist (I2)', () => {
         expect(checkCommand('rm -rf /', { blocklist: [/^rm /] })).toMatchObject({
             allowed: false,
         });
+    });
+});
+
+describe('ACI terminal intent', () => {
+    it('извлекает команду только при явном terminal-намерении', () => {
+        expect(terminalCommandFromInput({ action: 'type', text: 'ls -la', terminal: true })).toBe(
+            'ls -la',
+        );
+        expect(terminalCommandFromInput({ action: 'key', keys: 'vim file', shell: true })).toBe(
+            'vim file',
+        );
+        expect(
+            terminalCommandFromInput({ action: 'type', text: 'ls', target: 'GNOME Terminal' }),
+        ).toBe('ls');
+    });
+
+    it('не трогает обычный ввод текста и не-терминальные действия', () => {
+        expect(terminalCommandFromInput({ action: 'type', text: 'vim file' })).toBeNull();
+        expect(terminalCommandFromInput({ action: 'left_click', terminal: true })).toBeNull();
+        expect(terminalCommandFromInput({ action: 'type', text: '', terminal: true })).toBeNull();
     });
 });

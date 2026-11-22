@@ -51,6 +51,22 @@ export function checkCommand(command: string, policy: CommandPolicy = {}): Comma
     return { allowed: true };
 }
 
+export function terminalCommandFromInput(input: Record<string, unknown>): string | null {
+    const action = typeof input['action'] === 'string' ? input['action'] : '';
+    if (!['type', 'key', 'hold_key'].includes(action)) return null;
+    const explicit =
+        input['terminal'] === true ||
+        input['shell'] === true ||
+        (typeof input['target'] === 'string' &&
+            /terminal|shell|console|cmd|powershell/i.test(input['target']));
+    if (!explicit) return null;
+    for (const key of ['text', 'command', 'keys', 'value']) {
+        const value = input[key];
+        if (typeof value === 'string' && value.trim().length > 0) return value;
+    }
+    return null;
+}
+
 function safeStringify(value: unknown): string {
     if (value === undefined) return 'undefined';
     try {
