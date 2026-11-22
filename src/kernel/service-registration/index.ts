@@ -93,6 +93,7 @@ import { registerPhase92 } from './phase92-budget-guard';
 import { registerPhase93 } from './phase93-review-retry';
 import { registerPhase94 } from './phase94-swarm-builder';
 import { registerPhase95 } from './phase95-speaker-selector';
+import { registerPhase96 } from './phase96-middleware';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -198,6 +199,7 @@ export function registerServices(
     registerPhase93(helpers, ctx);
     registerPhase94(helpers, ctx);
     registerPhase95(helpers, ctx);
+    registerPhase96(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
