@@ -4,6 +4,7 @@ import { MissionLedgerService } from './mission-ledger-service';
 import { ExecutionReplayService } from './execution-replay-service';
 import type { MissionExecutor, NodePolicy } from '../../contracts/orchestrator';
 import type { ReplayStep } from '../../contracts/execution-replay';
+import type { IRunHistoryService, RunHistoryRecord } from '../../contracts/run-history';
 
 const GOAL = 'Prepare a two-agent research brief';
 const RUN_ID = 'run-two-agents-integration';
@@ -14,7 +15,7 @@ interface StoredStep extends ReplayStep {
     status: 'done' | 'failed';
 }
 
-function harness(policies: Record<string, NodePolicy> = {}) {
+function harness(policies: Record<string, NodePolicy> = {}, history?: IRunHistoryService) {
     const events: Array<{ event: string; data: Record<string, unknown> }> = [];
     const eventBus = {
         emit: vi.fn((event: string, data?: unknown) => {
@@ -43,7 +44,7 @@ function harness(policies: Record<string, NodePolicy> = {}) {
     };
     const ledger = new MissionLedgerService();
     return {
-        svc: new OrchestratorService(eventBus, llm, undefined, ledger, policies),
+        svc: new OrchestratorService(eventBus, llm, undefined, ledger, policies, history),
         ledger,
         addFact: vi.spyOn(ledger, 'addFact'),
         recordStep: vi.spyOn(ledger, 'recordStep'),
@@ -192,5 +193,30 @@ describe('Сквозной запуск: задача → два агента �
         expect(result.outputs['draft']).toBeUndefined();
         expect(p.history[0]!.status).toBe('failed');
         expect(h.recordStep).toHaveBeenCalledWith(expect.any(String), 'research', false);
+    });
+
+    it('сохраняет историю запуска по runId: итог доступен после пересоздания сервиса', async () => {
+        const saved = new Map<string, RunHistoryRecord>();
+        const history: IRunHistoryService = {
+            save: vi.fn(async (r: RunHistoryRecord) => {
+                saved.set(r.runId, JSON.parse(JSON.stringify(r)) as RunHistoryRecord);
+            }),
+            get: vi.fn(async (runId: string) => saved.get(runId) ?? null),
+            list: vi.fn(async () => [...saved.values()]),
+        };
+        const h = harness({}, history);
+        const p = probe();
+        const result = await h.svc.run(GOAL, executorFor(p));
+
+        expect(history.save).toHaveBeenCalledTimes(1);
+        const persisted = await history.get(result.missionId);
+        expect(persisted).not.toBeNull();
+        expect(persisted!.runId).toBe(result.missionId);
+        expect(persisted!.status).toBe('completed');
+        expect(persisted!.steps.map((s) => s.nodeId)).toEqual(['research', 'draft']);
+        expect(persisted!.artifacts).toHaveLength(2);
+        expect(persisted!.artifacts[1]!.content).toBe(result.artifacts[1]!.content);
+        expect(new ExecutionReplayService().replay(persisted!.steps).brokenLinks).toEqual([]);
+        expect(p.calls.count).toBe(2);
     });
 });

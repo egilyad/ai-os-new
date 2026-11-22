@@ -50,6 +50,8 @@ export const registerPhase87: Phase = ({ register }) => {
                 : undefined,
             c.get('missionMetricsService'),
             c.get('missionLedgerService'),
+            {},
+            c.has('runHistoryService') ? c.get('runHistoryService') : undefined,
         );
     });
 };

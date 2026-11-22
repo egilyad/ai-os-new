@@ -20,6 +20,7 @@ import type { IEventBus } from '../../types/interfaces';
 import type { DispatchAssignment } from '../../contracts/dispatcher';
 import type { IMissionMetricsService } from '../../contracts/mission-metrics';
 import type { IMissionLedgerService } from '../../contracts/mission-ledger';
+import type { IRunHistoryService, RunHistoryStep } from '../../contracts/run-history';
 const MAX_NODES = 12;
 const MAX_CONCURRENCY = 3;
 
@@ -35,6 +36,7 @@ export class OrchestratorService implements IOrchestratorService {
         private metrics?: IMissionMetricsService,
         private ledger?: IMissionLedgerService,
         private policies: Record<string, NodePolicy> = {},
+        private history?: IRunHistoryService,
     ) {}
     private cancellation: CancellationRequest | null = null;
     private resultCache = new Map<string, MissionArtifact>();
@@ -42,6 +44,10 @@ export class OrchestratorService implements IOrchestratorService {
     /** Cooperatively stop an in-flight mission with a human-readable reason. */
     cancel(reason: string): void {
         this.cancellation = { reason, requestedAt: Date.now() };
+    }
+
+    clearCancellation(): void {
+        this.cancellation = null;
     }
 
     /** Get the active cancellation request, if any. */
@@ -193,9 +199,9 @@ export class OrchestratorService implements IOrchestratorService {
         executor: MissionExecutor,
     ): Promise<MissionResult> {
         const goal = plan.goal;
-        this.cancellation = null;
         this.resultCache.clear();
         const startedAt = Date.now();
+        const steps: RunHistoryStep[] = [];
         const ledgerId = this.ledger?.begin(goal);
         if (ledgerId && this.ledger) {
             this.ledger.setTasks(
@@ -298,10 +304,22 @@ export class OrchestratorService implements IOrchestratorService {
                         node.status = 'done';
                         node.result = artifact.content;
                         outputs[node.id] = artifact.content;
+                        steps.push({
+                            nodeId: node.id,
+                            input: { ...dependencyOutputs },
+                            output: { [node.id]: artifact.content },
+                            timestamp: Date.now(),
+                        });
                         if (firstArtifactMs === 0) firstArtifactMs = Date.now() - startedAt;
                     } catch (e) {
                         node.status = 'failed';
                         node.result = e instanceof Error ? e.message : String(e);
+                        steps.push({
+                            nodeId: node.id,
+                            input: { ...dependencyOutputs },
+                            output: { error: node.result },
+                            timestamp: Date.now(),
+                        });
                         if (ledgerId && this.ledger)
                             this.ledger.recordStep(ledgerId, node.id, false);
                         failedNodeIds.push(node.id);
@@ -335,6 +353,22 @@ export class OrchestratorService implements IOrchestratorService {
             durationMs: Date.now() - startedAt,
         });
         if (ledgerId) this.ledger?.finish(ledgerId);
+        if (this.history) {
+            await this.history.save({
+                runId: plan.id,
+                goal,
+                status,
+                startedAt,
+                finishedAt: Date.now(),
+                steps,
+                artifacts: artifacts.map((a) => ({
+                    nodeId: a.nodeId,
+                    type: a.type,
+                    content: a.content,
+                    createdAt: a.createdAt,
+                })),
+            });
+        }
         return { missionId: plan.id, goal, status, outputs, artifacts, failedNodeIds };
     }
 }
