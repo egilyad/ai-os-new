@@ -11,7 +11,7 @@ const entries = [
         createdAt: now - 72 * 3600_000,
         relevance: 1,
     },
-    { id: 'low', text: 'fresh trivial', importance: 0.1, createdAt: now, relevance: 0.5 },
+    { id: 'low', text: 'fresh trivial', importance: 0.02, createdAt: now, relevance: 0.5 },
 ];
 
 describe('MnesticService', () => {
