@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 576,
+    "documents": 577,
     "byCategory": {
       "repo": 40,
-      "top": 134,
+      "top": 135,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 149,
+      "mixed": 150,
       "ru": 362
     }
   },
@@ -1558,6 +1558,14 @@
       "hash": "b60db6da33a4676e3e23730da69dad55ece1347d"
     },
     {
+      "path": "docs/sessions/2026-11-22-provenance-graph-link.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-22 — provenance-graph-link",
+      "bytes": 4134,
+      "hash": "c6b4286ed9b8b90f547db2f7bddf502451af3b08"
+    },
+    {
       "path": "docs/sessions/2026-11-22-run-history-provenance.md",
       "category": "top",
       "language": "mixed",
@@ -2507,7 +2515,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "0a79c2cf5ac3305d64b1c05eadbc192102dd4a6d"
+      "hash": "d6a67fc20d24992b37c16bf9dcc76f0123a25cfb"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2723,7 +2731,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "6cfa6c197a262fa2a7a33899d7a985356f643395"
+      "hash": "3d2699afe6d068df0753ed438016e1e361771b06"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2914,8 +2922,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 60187,
-      "hash": "17ff0429471d8bbdbba7073657dfa90175fa6676"
+      "bytes": 60340,
+      "hash": "031127d6faf76e9062175e97200b63cc400a18d2"
     },
     {
       "path": "docs/wiki/docs-standard.md",
