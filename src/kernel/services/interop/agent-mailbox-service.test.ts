@@ -73,6 +73,24 @@ describe('AgentMailboxService', () => {
         expect(await svc.list('a2')).toHaveLength(1);
     });
 
+    it('waitForReply without tenant never returns a tenant-scoped reply', async () => {
+        const svc = new AgentMailboxService();
+        const req = await svc.send({
+            from: 'a1',
+            to: 'a2',
+            kind: 'request',
+            subject: 'tenant request',
+            payload: {},
+            tenantId: 't1',
+        });
+        await svc.reply(req.id, 'a2', { secret: 't1-only' });
+        // No tenant supplied → must NOT see the tenant-scoped reply.
+        expect(await svc.waitForReply(req.id, 40)).toBeNull();
+        // Explicit tenant → visible.
+        const found = await svc.waitForReply(req.id, 200, 't1');
+        expect(found?.payload).toEqual({ secret: 't1-only' });
+    });
+
     it('cannot reply to a non-request message', async () => {
         const svc = new AgentMailboxService();
         const event = await svc.send({

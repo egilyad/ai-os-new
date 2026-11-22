@@ -7,6 +7,7 @@
  */
 import http from 'node:http';
 import { chromium } from 'playwright';
+import { validateUrl, effectiveAllowedDomains, guardPageNavigations } from './browser-sidecar-url-guard.mjs';
 
 const PORT = Number(process.env.BROWSER_SIDECAR_PORT || 3100);
 // W4-025 / W8-004: bind to loopback only by default — never expose the
@@ -42,31 +43,6 @@ function extractUrl(task) {
   return m ? m[0] : null;
 }
 
-/** W4-025: reject non-http(s) URLs and hosts outside the allowlist (SSRF guard). */
-function validateUrl(rawUrl, allowedDomains) {
-  let u;
-  try {
-    u = new URL(String(rawUrl || ''));
-  } catch {
-    throw new Error('url must be valid http(s)');
-  }
-  if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-    throw new Error('url must be http(s)');
-  }
-  const list =
-    Array.isArray(allowedDomains) && allowedDomains.length > 0
-      ? allowedDomains
-      : DEFAULT_ALLOWED_DOMAINS;
-  if (list.length === 0) return u;
-  const host = u.hostname.toLowerCase();
-  const ok = list.some((d) => {
-    const dd = String(d).toLowerCase().replace(/^\./, '');
-    return host === dd || host.endsWith(`.${dd}`);
-  });
-  if (!ok) throw new Error(`url host ${u.hostname} not in allowlist`);
-  return u;
-}
-
 function authorized(req) {
   if (AUTH_TOKEN && (req.headers.authorization || '') !== `Bearer ${AUTH_TOKEN}`) return false;
   // P1: block cross-site browser requests to the loopback sidecar. Requests
@@ -84,25 +60,15 @@ function authorized(req) {
   return true;
 }
 
-/** P1: запрос может только СУЗИТЬ серверный allowlist, но не расширить его. */
-function effectiveAllowedDomains(requestDomains) {
-  if (!Array.isArray(requestDomains) || requestDomains.length === 0) {
-    return DEFAULT_ALLOWED_DOMAINS;
-  }
-  const requested = requestDomains.map((d) => String(d).toLowerCase().replace(/^\./, ''));
-  if (DEFAULT_ALLOWED_DOMAINS.length === 0) return requested;
-  const server = DEFAULT_ALLOWED_DOMAINS.map((d) => String(d).toLowerCase().replace(/^\./, ''));
-  return requested.filter((d) => server.some((s) => d === s || d.endsWith(`.${s}`)));
-}
-
 /** Выполнить «задачу» (свободный текст) эвристически. */
 async function handleExecute(body, ctx) {
   const task = String(body.task || '');
   const page = ctx.page;
   const url = extractUrl(task) || body.url;
   if (url) {
-    const domains = effectiveAllowedDomains(body.allowedDomains);
+    const domains = effectiveAllowedDomains(body.allowedDomains, DEFAULT_ALLOWED_DOMAINS);
     const target = validateUrl(url, domains);
+    await guardPageNavigations(page, domains);
     await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
     // P1: re-validate the final URL — a redirect may have left the allowlist.
     validateUrl(page.url(), domains);
@@ -151,8 +117,9 @@ async function handleAct(body, ctx) {
   switch (action) {
     case 'open_url':
     case 'browser_navigate': {
-      const domains = effectiveAllowedDomains(body.allowedDomains);
+      const domains = effectiveAllowedDomains(body.allowedDomains, DEFAULT_ALLOWED_DOMAINS);
       const target = validateUrl(body.url, domains);
+      await guardPageNavigations(page, domains);
       await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
       validateUrl(page.url(), domains);
       return { output: `opened ${page.url()}` };

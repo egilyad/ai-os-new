@@ -67,7 +67,9 @@ export class AgentMailboxService implements IAgentMailboxService {
     ): Promise<AgentMessage | null> {
         const deadline = Date.now() + Math.max(0, timeoutMs);
         while (Date.now() <= deadline) {
-            const reply = this.findMessage(requestId, 'reply', tenantId);
+            // Without an explicit tenant only global (tenant-less) replies may
+            // satisfy the wait — never a reply from a different tenant.
+            const reply = this.findMessage(requestId, 'reply', tenantId, tenantId === undefined);
             if (reply) return reply;
             await new Promise((resolve) => setTimeout(resolve, POLL_MS));
         }
@@ -78,9 +80,11 @@ export class AgentMailboxService implements IAgentMailboxService {
         id: string,
         kind?: AgentMessage['kind'],
         tenantId?: string,
+        globalOnly = false,
     ): AgentMessage | undefined {
         for (const list of this.byAgent.values()) {
             for (const m of list) {
+                if (globalOnly && m.tenantId !== undefined) continue;
                 if (tenantId !== undefined && m.tenantId !== tenantId) continue;
                 if (m.replyTo === id && (!kind || m.kind === kind)) return m;
                 if (!kind && m.id === id) return m;
