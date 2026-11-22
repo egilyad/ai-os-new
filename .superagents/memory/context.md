@@ -1,19 +1,17 @@
-# Контекст: SuperAgents OS — 2026-11-13
+# Контекст: SuperAgents OS — 2026-11-22
 
 ## Подтверждено
 
-- Ветка: main @ 64cc73a 64cc73accbe36d1322ada913a5033e6c3dfc0aec
+- Ветка: main @ 787f2f0 787f2f049d28d7092a200fba51c5d96248e9f32b
 - HEAD±5:
-  - 64cc73a feat(devtools): команды /context /status /checkpoint + скрипты состояния проекта
-  - 406138c feat(devtools): сборка контекста сессии (context-build.mjs)
-  - 86f71e9 feat(devtools): read-only индекс сессий OpenCode
-  - bec48c4 ci: retrigger (flaky e2e data-chat)
-  - 2cc024d ci: retrigger (flaky kernel-rest)
-  - af67b56 test(e2e): кнопка QA переименована в Run QA
-- Статус: 3 грязных файлов
-  - M AGENTS.md
-  - ?? .opencode/command/sessions.md
-  - ?? scripts/opencode/session-search.mjs
+  - 787f2f0 feat(chat): ttl cache for model auto-refresh
+  - 4fb3ab4 feat(chat): pending switch indicator while sending
+  - a9abd99 feat(chat): unified llm error advice in diagnostics
+  - 0cb8737 fix(forum): monotonic post timestamps for stable ordering
+  - f9dd183 fix(tools): openapi fallback tool name normalization
+  - d77f143 fix(memory): mnestic test weights (old-important > trivial)
+- Статус: 1 грязных файлов
+  - ?? src/kernel/services/key-management/key-vault-migration.integration.test.ts
 - Stash (5):
   - stash@{0}: lint-staged automatic backup
   - stash@{1}: lint-staged automatic backup

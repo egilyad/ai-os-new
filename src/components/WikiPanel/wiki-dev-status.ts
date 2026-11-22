@@ -49,10 +49,12 @@ const BODIES: Record<string, string> = {
     'dev-status-critical': [
         'Актуальные критические проблемы (не закрыты, отложены до продуктового решения):',
         '',
-        '- **KeyVault fail-open + deviceKey в plaintext** (localStorage) — шифрование ключей обесценивается; нужен passphrase-UI.',
-        '- **API-ключи/секреты в открытом виде в IndexedDB** — зависит от vault.',
-        '- **Multi-tenant IDOR / общий SYNC_SECRET / WS cross-tenant leak** — нужен server-скоупинг.',
-        '- **CSAM/модерация изображений отсутствует** — требуется внешний сервис.',
+        '- **Authz/роли** — fail-open в permission middleware (W2-001), мутации без авторизации (W2-002/017/018), admin-гейт AUTOPILOT (W4-044), bearer-токен в localStorage (W2-015).',
+        '- **CSAM/модерация изображений отсутствует** — требуется внешний сервис (W7-UGC-009).',
+        '- **Cost-enforcement** — CostManagerDecorator только логирует, не блокирует (W2-012, W4-030/031/032).',
+        '- **Внешний аудит sandbox** — нужен до того, как предлагать расширения как безопасные (Tech Map §6).',
+        '',
+        'Закрыто 07.11.2026: **P0-1** passphrase-vault (шифрование at-rest, fail-closed, миграция ключей) и **P0-2** multi-tenant IDOR (per-company секреты, WS-скоупинг). До создания vault ключи остаются незашифрованными — см. README.',
         '',
         'Коды и детали — в `docs/known-issues-deferred.md`, разделы 12–13.',
     ].join('\n'),
@@ -63,7 +65,7 @@ const BODIES: Record<string, string> = {
         '- Singleton `ArgumentGraphService` — cross-session clobber (W6-014 закрыт, P1-6).',
         '- Feature-flag UI: безопасный flatten через `flattenFeatureFlags()` (W6-018 закрыт).',
         '- ReDoS-риски: защита `isReDoSPattern()` в пользовательских regex (W6-023 закрыт).',
-        '- CI: deploy-гейт без тестов, `test:stable` неполный, `--ignore-scripts` (W4-001/002/036) — открыто.',
+        '- CI: деплой уже гейтится quality/build/test/coverage/e2e; открыто — расширение `test:stable` и отказ от `--ignore-scripts` (W4-001/002/036).',
         '- Prompt-versioning: 156 unversioned «You are…» (W4-041 закрыт, P0-4).',
         '- Retrieval: O(N) сканы, recall-перезапись (W8-012/013/014/015; P1-7 пропущен по решению пользователя).',
     ].join('\n'),
@@ -101,8 +103,12 @@ const BODIES: Record<string, string> = {
     'dev-status-blocked': [
         'Заблокировано / требует продуктового решения:',
         '',
-        '- Passphrase-vault + ключи в IndexedDB (12.1/12.2 в карте отложенных).',
-        '- Права/роли: admin-гейт для AUTOPILOT, authz-рефакторинги (W2-001/002/017/018).',
+        '- Права/роли: модель RBAC (admin / user / observer), admin-гейт для AUTOPILOT, authz-рефакторинги (W2-001/002/017/018, W4-044).',
+        '- Внешний сервис CSAM/модерации изображений (W7-UGC-009) — выбор провайдера и юридическая оценка.',
+        '- Протокол федерации A2A — внутренний или внешний стандарт (до 01.03.2027).',
+        '- i18n-стратегия — полный RU/EN или EN-каркас с RU-fallback (до 15.02.2027).',
+        '',
+        'Passphrase-vault (12.1/12.2) закрыт 07.11.2026 — больше не блокер.',
     ].join('\n'),
     'dev-status-roadmaps': [
         'Направления (актуализировано 2026-11-15):',
@@ -137,6 +143,10 @@ export const DEV_STATUS_ARTICLES: WikiArticle[] = ENTRIES.map((entry) => {
 - \`npm test\` — весь набор (vitest run).
 - \`npm run test:stable\` — курируемый набор для CI: ядро (stores/hooks/events/workers), ключевые сервисы, LLM-декораторы, wiki-тесты, панели памяти и провайдеров, каталог моделей, эмбеддинги.
 - Локально стабильный пул — \`forks\` (\`--pool=forks\`). Пул \`vmThreads\` не подходит: в нём нет \`crypto.subtle\`, из-за чего падают security/key-vault тесты. При большом параллелизме пул forks может не поднять воркер (\`Failed to start forks worker\`) — это флаки окружения, конкретные файлы проходят по отдельности.
+
+## Релизный гейт
+
+Обязательные проверки, блокирующие деплой: \`test:stable\` (включая \`key-vault-migration.integration.test.ts\` — миграция legacy-профиля, заблокированный vault, экспорт без утечек), \`test:coverage\`, \`e2e\`, \`check:circular-kernel\`, \`docs:health\` и синхронизация wiki. Полная матрица тестов запускается отдельной задачей CI; критические сценарии ключей должны присутствовать в \`test:stable\`.
 
 ## Что закрыто недавно
 

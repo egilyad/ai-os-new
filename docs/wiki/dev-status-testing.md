@@ -12,6 +12,10 @@
 - `npm run test:stable` — курируемый набор для CI: ядро (stores/hooks/events/workers), ключевые сервисы, LLM-декораторы, wiki-тесты, панели памяти и провайдеров, каталог моделей, эмбеддинги.
 - Локально стабильный пул — `forks` (`--pool=forks`). Пул `vmThreads` не подходит: в нём нет `crypto.subtle`, из-за чего падают security/key-vault тесты. При большом параллелизме пул forks может не поднять воркер (`Failed to start forks worker`) — это флаки окружения, конкретные файлы проходят по отдельности.
 
+## Релизный гейт
+
+Обязательные проверки, блокирующие деплой: `test:stable` (включая `key-vault-migration.integration.test.ts` — миграция legacy-профиля, заблокированный vault, экспорт без утечек), `test:coverage`, `e2e`, `check:circular-kernel`, `docs:health` и синхронизация wiki. Полная матрица тестов запускается отдельной задачей CI; критические сценарии ключей должны присутствовать в `test:stable`.
+
 ## Что закрыто недавно
 
 - `src/components/ChatPanel/ChatPanel.test.tsx` — был сломан: мок `useChatStore` не имел `getState()`, панель поиска сообщений поднимала message-index сервис без зарегистрированной БД, а ожидания устарели (кнопки режимов исполнения уехали в RoomPanel). Тест починен и включён в `test:stable`.

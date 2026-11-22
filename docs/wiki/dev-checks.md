@@ -22,7 +22,7 @@
 | Внутренние ссылки | `docs:health` | битых: 0 |
 | Схема стандарта | `docs:health` | проблем: 0 |
 | Манифест | `docs:health` | проблем: 0 |
-| Полнота статей | `docs:health` | неполных: 12 |
+| Полнота статей | `docs:health` | неполных: 11 |
 | README → вики | `docs:health` | битых: 0; паритет RU/EN: 0 |
 | Синхронизация генерации | CI «Wiki docs in sync» | `git diff --exit-code` по docs/wiki и src/generated |
 | Сборка и типы | CI (tsc -b, ESLint) | по job «quality» |

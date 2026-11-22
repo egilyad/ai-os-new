@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 569,
+    "documents": 570,
     "byCategory": {
       "repo": 40,
-      "top": 127,
+      "top": 128,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 145,
+      "mixed": 146,
       "ru": 359
     }
   },
@@ -57,9 +57,9 @@
       "path": ".superagents/memory/context.md",
       "category": "repo",
       "language": "mixed",
-      "title": "Контекст: SuperAgents OS — 2026-11-13",
-      "bytes": 2188,
-      "hash": "b1606360f29372b0804a70fd079ed7d0c2b15bdb"
+      "title": "Контекст: SuperAgents OS — 2026-11-22",
+      "bytes": 2106,
+      "hash": "19444fa69c80c7629a9da3a9ec8a71526b1b25ec"
     },
     {
       "path": ".superagents/README.md",
@@ -1510,6 +1510,14 @@
       "hash": "6fcb31f8fa6faee36d48a858022518272623e6ad"
     },
     {
+      "path": "docs/sessions/2026-11-22-key-vault-integration-and-p0-status.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-22 — key-vault-integration-and-p0-status",
+      "bytes": 5842,
+      "hash": "dbc7e6408bdcf1140b802bf30fe2953c32ba0b87"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2451,7 +2459,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "a0b65789f341be18b6fd05ffabe842402aadc6a8"
+      "hash": "ba77a491856245b430a5ee6d5f03b9f369ca129c"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2667,7 +2675,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "6533c6f4a5fa6b7af11785c6dc24c9bd39a5ee4e"
+      "hash": "75cbd936356b6199aff25673d0ed37e49f8c9dfd"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2714,8 +2722,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Заблокированные задачи",
-      "bytes": 1331,
-      "hash": "fe72269b8271a399597d197a35984224259b6bde"
+      "bytes": 1778,
+      "hash": "4243242626b911927ef7bd14845cc9db8afe179a"
     },
     {
       "path": "docs/wiki/dev-status-bugs.md",
@@ -2730,16 +2738,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Критические проблемы",
-      "bytes": 1788,
-      "hash": "b92ffebcbc5e3cd812aa016ec4797e54331b6fe2"
+      "bytes": 2242,
+      "hash": "76928437ad4b709a7ca85038eb58fc4fc1c6e9db"
     },
     {
       "path": "docs/wiki/dev-status-debt.md",
       "category": "wiki",
       "language": "ru",
       "title": "Технический долг",
-      "bytes": 1930,
-      "hash": "7b420e76a9306b70b3c5017e9cdc49d8c242180b"
+      "bytes": 1985,
+      "hash": "b387e2356ec72243eaed5b9b10f90bd324e942a6"
     },
     {
       "path": "docs/wiki/dev-status-docs.md",
@@ -2778,8 +2786,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Состояние тестирования",
-      "bytes": 3388,
-      "hash": "d40f4378d5e272eea978b8c5e8ef8515d6149bce"
+      "bytes": 4004,
+      "hash": "60c74081200d173ebb9fd106534f28d0451121db"
     },
     {
       "path": "docs/wiki/dev-store-catalog.md",
@@ -4578,8 +4586,8 @@
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 53379,
-      "hash": "fec0e07c92f52456f2ea31b1b303ee64bc20cf3b"
+      "bytes": 53683,
+      "hash": "3db0307a4edaf1fff07b9218fe992bc22faf1c13"
     },
     {
       "path": "src/kernel/DEPENDENCY_MAP.md",

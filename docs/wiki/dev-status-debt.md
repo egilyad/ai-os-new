@@ -10,7 +10,7 @@
 - Singleton `ArgumentGraphService` — cross-session clobber (W6-014 закрыт, P1-6).
 - Feature-flag UI: безопасный flatten через `flattenFeatureFlags()` (W6-018 закрыт).
 - ReDoS-риски: защита `isReDoSPattern()` в пользовательских regex (W6-023 закрыт).
-- CI: deploy-гейт без тестов, `test:stable` неполный, `--ignore-scripts` (W4-001/002/036) — открыто.
+- CI: деплой уже гейтится quality/build/test/coverage/e2e; открыто — расширение `test:stable` и отказ от `--ignore-scripts` (W4-001/002/036).
 - Prompt-versioning: 156 unversioned «You are…» (W4-041 закрыт, P0-4).
 - Retrieval: O(N) сканы, recall-перезапись (W8-012/013/014/015; P1-7 пропущен по решению пользователя).
 
