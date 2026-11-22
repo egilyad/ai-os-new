@@ -26,6 +26,7 @@ import ChatExportOverlay from './ChatExportOverlay';
 
 import { iconBtnMuted } from '../../styles/common';
 import { DEFAULT_MODELS } from './chat-panel-utils';
+import { markModelsRefreshed, shouldRefreshModels } from './models-refresh-cache';
 
 const ChatPanel: React.FC = () => {
     const { activeKeys } = useKeyList();
@@ -34,18 +35,22 @@ const ChatPanel: React.FC = () => {
         activeKeysRef.current = activeKeys;
     }, [activeKeys]);
 
-    // Авто-discover моделей: для ключей без availableModels делаем одноразовый
-    // debounced refresh (не чаще, чем один раз на ключ за сессию).
+    // Авто-discover моделей: ключи без списка или с устаревшим списком
+    // обновляются не чаще одного раза в сутки на ключ.
     const modelsRefreshRequestedRef = useRef<Set<string>>(new Set());
     useEffect(() => {
-        const missing = activeKeys.filter(
-            (k) => !k.availableModels || k.availableModels.length === 0,
+        const stale = activeKeys.filter(
+            (k) =>
+                !k.availableModels ||
+                k.availableModels.length === 0 ||
+                shouldRefreshModels(k.id, k.createdAt),
         );
-        const fresh = missing.filter((k) => !modelsRefreshRequestedRef.current.has(k.id));
+        const fresh = stale.filter((k) => !modelsRefreshRequestedRef.current.has(k.id));
         if (fresh.length === 0) return;
         for (const k of fresh) modelsRefreshRequestedRef.current.add(k.id);
         const timer = setTimeout(() => {
             void Promise.allSettled(fresh.map((k) => keyService.refreshModels(k.id))).then(() => {
+                for (const k of fresh) markModelsRefreshed(k.id);
                 refreshKeyStore();
             });
         }, 1500);
