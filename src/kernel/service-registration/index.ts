@@ -104,6 +104,7 @@ import { registerPhase103 } from './phase103-human-feedback';
 import { registerPhase104 } from './phase104-execution-replay';
 import { registerPhase105 } from './phase105-hierarchical-plan';
 import { registerPhase106 } from './phase106-reply-budget';
+import { registerPhase107 } from './phase107-steering';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -220,6 +221,7 @@ export function registerServices(
     registerPhase104(helpers, ctx);
     registerPhase105(helpers, ctx);
     registerPhase106(helpers, ctx);
+    registerPhase107(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
