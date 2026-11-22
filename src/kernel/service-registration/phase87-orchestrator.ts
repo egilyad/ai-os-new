@@ -49,6 +49,7 @@ export const registerPhase87: Phase = ({ register }) => {
                   }
                 : undefined,
             c.get('missionMetricsService'),
+            c.get('missionLedgerService'),
         );
     });
 };

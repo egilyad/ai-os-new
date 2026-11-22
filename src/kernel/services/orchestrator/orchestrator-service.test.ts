@@ -120,6 +120,27 @@ describe('OrchestratorService', () => {
         expect(result.artifacts.map((a) => a.nodeId)).toEqual(['t1', 't2', 't3']);
     });
 
+    it('feeds mission facts into a ledger when one is configured', async () => {
+        const ledger = {
+            start: vi.fn(() => 'ledger-test'),
+            get: vi.fn(),
+            addFact: vi.fn(),
+            setTasks: vi.fn(),
+            recordStep: vi.fn(() => false),
+            finish: vi.fn(),
+            init: vi.fn(async () => {}),
+            destroy: vi.fn(async () => {}),
+        };
+        const svc = new OrchestratorService(events, undefined, undefined, ledger as never);
+        const result = await svc.run('Goal', async (node) => `result-${node.id}`);
+        expect(result.status).toBe('completed');
+        expect(ledger.start).toHaveBeenCalledWith('Goal');
+        expect(ledger.setTasks).toHaveBeenCalled();
+        expect(ledger.addFact).toHaveBeenCalledTimes(3);
+        expect(ledger.recordStep).toHaveBeenCalledTimes(3);
+        expect(ledger.finish).toHaveBeenCalledWith('ledger-test');
+    });
+
     it('runWithDispatcher passes assigned agents into the executor', async () => {
         const svc = new OrchestratorService(events);
         const dispatcher = {

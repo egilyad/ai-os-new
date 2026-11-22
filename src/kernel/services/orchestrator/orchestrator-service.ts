@@ -17,6 +17,7 @@ import type {
 import type { IEventBus } from '../../types/interfaces';
 import type { DispatchAssignment } from '../../contracts/dispatcher';
 import type { IMissionMetricsService } from '../../contracts/mission-metrics';
+import type { IMissionLedgerService } from '../../contracts/mission-ledger';
 const MAX_NODES = 12;
 const MAX_CONCURRENCY = 3;
 
@@ -30,6 +31,7 @@ export class OrchestratorService implements IOrchestratorService {
             chat(messages: Array<{ role: string; content: string }>): Promise<{ content: string }>;
         },
         private metrics?: IMissionMetricsService,
+        private ledger?: IMissionLedgerService,
     ) {}
 
     async init(): Promise<void> {}
@@ -177,6 +179,18 @@ export class OrchestratorService implements IOrchestratorService {
     ): Promise<MissionResult> {
         const goal = plan.goal;
         const startedAt = Date.now();
+        const ledgerId = this.ledger?.start(goal);
+        if (ledgerId && this.ledger) {
+            this.ledger.setTasks(
+                ledgerId,
+                plan.nodes.map((n) => ({
+                    id: n.id,
+                    description: n.description,
+                    status: n.status === 'done' ? 'done' : 'pending',
+                    dependsOn: [...n.dependsOn],
+                })),
+            );
+        }
         let firstArtifactMs = 0;
         const outputs: Record<string, string> = {};
         const artifacts: MissionArtifact[] = [];
@@ -230,6 +244,10 @@ export class OrchestratorService implements IOrchestratorService {
                         };
                         artifacts.push(artifact);
                         artifactsByNode.set(node.id, artifact);
+                        if (ledgerId && this.ledger) {
+                            this.ledger.addFact(ledgerId, artifact.content.slice(0, 200), node.id);
+                            this.ledger.recordStep(ledgerId, node.id, true);
+                        }
                         node.status = 'done';
                         node.result = artifact.content;
                         outputs[node.id] = artifact.content;
@@ -237,6 +255,8 @@ export class OrchestratorService implements IOrchestratorService {
                     } catch (e) {
                         node.status = 'failed';
                         node.result = e instanceof Error ? e.message : String(e);
+                        if (ledgerId && this.ledger)
+                            this.ledger.recordStep(ledgerId, node.id, false);
                         failedNodeIds.push(node.id);
                     }
                 }),
@@ -265,6 +285,7 @@ export class OrchestratorService implements IOrchestratorService {
             firstArtifactMs,
             durationMs: Date.now() - startedAt,
         });
+        if (ledgerId) this.ledger?.finish(ledgerId);
         return { missionId: plan.id, goal, status, outputs, artifacts, failedNodeIds };
     }
 }
