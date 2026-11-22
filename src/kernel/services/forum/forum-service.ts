@@ -25,6 +25,8 @@ const DEFAULT_LIMITS = {
     maxPostsPerMinute: 10,
 };
 
+let lastPostCreatedAt = 0;
+
 /**
  * Agent Forum — async persistent threads orchestrator (plan §6).
  *
@@ -109,7 +111,8 @@ export class ForumService implements IForumService {
         await this.enforceFloodBudget(author, topicId);
 
         const id = genId('post');
-        const now = Date.now();
+        const now = Math.max(Date.now(), lastPostCreatedAt + 1);
+        lastPostCreatedAt = now;
         const post: Post = {
             id,
             topicId,
