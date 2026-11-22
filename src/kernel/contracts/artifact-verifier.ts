@@ -34,6 +34,7 @@ export interface RefinementComparison {
     outcome:
         | 'ACCEPTED_SCORE_INCREASE'
         | 'REJECTED_SCORE_DECREASE'
+        | 'REJECTED_CRITICAL_DEGRADATION'
         | 'REJECTED_DEGRADATION'
         | 'ACCEPTED_NEUTRAL_IMPROVEMENT';
     /** True when the patch must be reverted (score decreased or axes degraded). */

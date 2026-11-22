@@ -28,6 +28,17 @@ describe('ArtifactVerifierService', () => {
         expect(r.deltas['correctness']).toBe(2);
     });
 
+    it('compare: rejects overall increase when a critical axis collapses', () => {
+        const svc = new ArtifactVerifierService();
+        const r = svc.compare(
+            { overall: 6, axes: { correctness: 8, clarity: 8 } },
+            { overall: 7, axes: { correctness: 2, clarity: 3 } },
+        );
+        expect(r.outcome).toBe('REJECTED_CRITICAL_DEGRADATION');
+        expect(r.revert).toBe(true);
+        expect(r.reasoning).toContain('correctness');
+    });
+
     it('compare: reverts when overall drops', () => {
         const svc = new ArtifactVerifierService();
         const r = svc.compare({ overall: 7 }, { overall: 5 });

@@ -162,10 +162,21 @@ export class ArtifactVerifierService implements IArtifactVerifierService {
             else if (delta < 0) totalDrop += Math.abs(delta);
         }
 
+        // Critical axes must not silently collapse behind a higher overall
+        // score (e.g. correctness 8 → 2 while Overall 6 → 7).
+        const criticalAxes = ['correctness', 'evidence', 'safety', 'validity'];
+        const criticalDrop = criticalAxes
+            .filter((axis) => (deltas[axis] ?? 0) < -1)
+            .map((axis) => `${axis}: ${deltas[axis]!.toFixed(1)}`);
+
         let outcome: RefinementComparison['outcome'];
         let revert: boolean;
         let reasoning: string;
-        if (after.overall > before.overall) {
+        if (criticalDrop.length > 0) {
+            outcome = 'REJECTED_CRITICAL_DEGRADATION';
+            revert = true;
+            reasoning = `Critical axis degraded despite overall change: ${criticalDrop.join(', ')}`;
+        } else if (after.overall > before.overall) {
             outcome = 'ACCEPTED_SCORE_INCREASE';
             revert = false;
             reasoning = `Overall improved ${before.overall} → ${after.overall}`;

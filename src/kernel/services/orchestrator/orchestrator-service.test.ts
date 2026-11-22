@@ -107,10 +107,23 @@ describe('OrchestratorService', () => {
         expect(seen).toContain('report:artifact-t2');
     });
 
+    it('normalizes a mismatched artifact nodeId to the real DAG node', async () => {
+        const svc = new OrchestratorService(events);
+        const result = await svc.run('Goal', async () => ({
+            nodeId: 'forged-node-id',
+            type: 'json' as const,
+            content: `{}`,
+            createdAt: Date.now(),
+        }));
+        expect(result.artifacts.every((a) => a.nodeId !== 'forged-node-id')).toBe(true);
+        expect(result.artifacts[0]!.meta?.['claimedNodeId']).toBe('forged-node-id');
+        expect(result.artifacts.map((a) => a.nodeId)).toEqual(['t1', 't2', 't3']);
+    });
+
     it('runWithDispatcher passes assigned agents into the executor', async () => {
         const svc = new OrchestratorService(events);
         const dispatcher = {
-            assign: vi.fn((nodes) =>
+            assign: vi.fn((nodes: Array<{ id: string }>) =>
                 nodes.map((n) => ({
                     nodeId: n.id,
                     agent: { id: `agent-${n.id}`, role: 'researcher' },

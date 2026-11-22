@@ -207,7 +207,10 @@ export class OrchestratorService implements IOrchestratorService {
                             dependencyOutputs,
                             dependencyArtifacts,
                         });
-                        const artifact: MissionArtifact =
+                        // The DAG is the authority on node identity: never trust
+                        // a nodeId supplied by the executor. Mismatches are
+                        // normalized to the actual node and recorded in meta.
+                        const rawArtifact: MissionArtifact =
                             typeof result === 'string'
                                 ? {
                                       nodeId: node.id,
@@ -216,6 +219,15 @@ export class OrchestratorService implements IOrchestratorService {
                                       createdAt: Date.now(),
                                   }
                                 : result;
+                        const idMismatch = rawArtifact.nodeId !== node.id;
+                        const artifact: MissionArtifact = {
+                            ...rawArtifact,
+                            nodeId: node.id,
+                            meta: {
+                                ...(rawArtifact.meta ?? {}),
+                                ...(idMismatch ? { claimedNodeId: rawArtifact.nodeId } : {}),
+                            },
+                        };
                         artifacts.push(artifact);
                         artifactsByNode.set(node.id, artifact);
                         node.status = 'done';
