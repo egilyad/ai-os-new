@@ -86,6 +86,7 @@ import { registerPhase85 } from './phase85-literature';
 import { registerPhase86 } from './phase86-topic-graph';
 import { registerPhase87 } from './phase87-orchestrator';
 import { registerPhase88 } from './phase88-artifact-verifier';
+import { registerPhase89 } from './phase89-termination';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -184,6 +185,7 @@ export function registerServices(
     registerPhase86(helpers, ctx);
     registerPhase87(helpers, ctx);
     registerPhase88(helpers, ctx);
+    registerPhase89(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
