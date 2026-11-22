@@ -99,6 +99,7 @@ import { registerPhase98 } from './phase98-durable-run';
 import { registerPhase99 } from './phase99-environment-rules';
 import { registerPhase100 } from './phase100-mnestic';
 import { registerPhase101 } from './phase101-model-router';
+import { registerPhase102 } from './phase102-workflow-memory';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -210,6 +211,7 @@ export function registerServices(
     registerPhase99(helpers, ctx);
     registerPhase100(helpers, ctx);
     registerPhase101(helpers, ctx);
+    registerPhase102(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';
