@@ -13,6 +13,8 @@ import type {
     MissionPlan,
     MissionResult,
     MissionArtifact,
+    NodePolicy,
+    CancellationRequest,
 } from '../../contracts/orchestrator';
 import type { IEventBus } from '../../types/interfaces';
 import type { DispatchAssignment } from '../../contracts/dispatcher';
@@ -32,7 +34,20 @@ export class OrchestratorService implements IOrchestratorService {
         },
         private metrics?: IMissionMetricsService,
         private ledger?: IMissionLedgerService,
+        private policies: Record<string, NodePolicy> = {},
     ) {}
+    private cancellation: CancellationRequest | null = null;
+    private resultCache = new Map<string, MissionArtifact>();
+
+    /** Cooperatively stop an in-flight mission with a human-readable reason. */
+    cancel(reason: string): void {
+        this.cancellation = { reason, requestedAt: Date.now() };
+    }
+
+    /** Get the active cancellation request, if any. */
+    getCancellation(): CancellationRequest | null {
+        return this.cancellation;
+    }
 
     async init(): Promise<void> {}
 
@@ -178,6 +193,8 @@ export class OrchestratorService implements IOrchestratorService {
         executor: MissionExecutor,
     ): Promise<MissionResult> {
         const goal = plan.goal;
+        this.cancellation = null;
+        this.resultCache.clear();
         const startedAt = Date.now();
         const ledgerId = this.ledger?.start(goal);
         if (ledgerId && this.ledger) {
@@ -199,6 +216,7 @@ export class OrchestratorService implements IOrchestratorService {
         let remaining = [...plan.nodes];
 
         while (remaining.length > 0) {
+            if (this.cancellation) break;
             const ready = remaining.filter((n) =>
                 n.dependsOn.every((d) => plan.nodes.find((x) => x.id === d)?.status === 'done'),
             );
@@ -215,12 +233,40 @@ export class OrchestratorService implements IOrchestratorService {
                         const art = artifactsByNode.get(depId);
                         if (art) dependencyArtifacts.push(art);
                     }
+                    const policy = this.policies[node.id] ?? {};
+                    const cacheKey = policy.cacheKey
+                        ? policy.cacheKey(node, dependencyOutputs)
+                        : undefined;
+                    const cached = cacheKey ? this.resultCache.get(cacheKey) : undefined;
                     try {
-                        const result = await executor(node, {
-                            goal,
-                            dependencyOutputs,
-                            dependencyArtifacts,
-                        });
+                        let rawResult: string | MissionArtifact;
+                        if (cached) {
+                            rawResult = cached;
+                        } else {
+                            const attempts = Math.max(1, policy.maxAttempts ?? 1);
+                            let lastError: unknown;
+                            for (let attempt = 0; attempt < attempts; attempt++) {
+                                if (this.cancellation) throw new Error('mission cancelled');
+                                try {
+                                    rawResult = await executor(node, {
+                                        goal,
+                                        dependencyOutputs,
+                                        dependencyArtifacts,
+                                    });
+                                    lastError = undefined;
+                                    break;
+                                } catch (e) {
+                                    lastError = e;
+                                    if (attempt + 1 < attempts && policy.retryDelayMs) {
+                                        await new Promise((r) =>
+                                            setTimeout(r, policy.retryDelayMs),
+                                        );
+                                    }
+                                }
+                            }
+                            if (lastError) throw lastError;
+                        }
+                        const result = rawResult!;
                         // The DAG is the authority on node identity: never trust
                         // a nodeId supplied by the executor. Mismatches are
                         // normalized to the actual node and recorded in meta.
@@ -244,6 +290,7 @@ export class OrchestratorService implements IOrchestratorService {
                         };
                         artifacts.push(artifact);
                         artifactsByNode.set(node.id, artifact);
+                        if (cacheKey) this.resultCache.set(cacheKey, artifact);
                         if (ledgerId && this.ledger) {
                             this.ledger.addFact(ledgerId, artifact.content.slice(0, 200), node.id);
                             this.ledger.recordStep(ledgerId, node.id, true);
@@ -268,7 +315,9 @@ export class OrchestratorService implements IOrchestratorService {
         // A mission with unexecuted nodes is NOT completed — otherwise a
         // malformed/cyclic plan would silently report success.
         const status =
-            failedNodeIds.length === 0 && remaining.length === 0 ? 'completed' : 'failed';
+            failedNodeIds.length === 0 && remaining.length === 0 && !this.cancellation
+                ? 'completed'
+                : 'failed';
         this.events.emit('orchestrator:mission-finished', {
             missionId: plan.id,
             goal,

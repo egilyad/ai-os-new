@@ -141,6 +141,27 @@ describe('OrchestratorService', () => {
         expect(ledger.finish).toHaveBeenCalledWith('ledger-test');
     });
 
+    it('retries a failing node according to its policy', async () => {
+        const svc = new OrchestratorService(events, undefined, undefined, undefined, {
+            t1: { maxAttempts: 2 },
+        });
+        let attempts = 0;
+        const result = await svc.run('Goal', async (node) => {
+            if (node.id === 't1' && attempts++ === 0) throw new Error('flaky');
+            return 'ok';
+        });
+        expect(result.status).toBe('completed');
+        expect(attempts).toBe(2);
+    });
+
+    it('cooperative cancel stops the mission with a reason', async () => {
+        const svc = new OrchestratorService(events);
+        void svc.cancel('user abort');
+        expect(svc.getCancellation()?.reason).toBe('user abort');
+        const result = await svc.run('Goal', async () => 'ok');
+        expect(result.status).toBe('failed');
+    });
+
     it('runWithDispatcher passes assigned agents into the executor', async () => {
         const svc = new OrchestratorService(events);
         const dispatcher = {

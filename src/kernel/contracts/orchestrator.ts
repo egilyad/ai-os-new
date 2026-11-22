@@ -19,6 +19,20 @@ export interface MissionPlan {
     createdAt: number;
 }
 
+/** Per-node execution policy (LangGraph-style retry/cache). */
+export interface NodePolicy {
+    maxAttempts?: number;
+    retryDelayMs?: number;
+    /** Cache key derived from node + dependency outputs. */
+    cacheKey?: (node: MissionNode, dependencyOutputs: Record<string, string>) => string;
+}
+
+/** Reason for cooperative cancellation (ChatDev-style). */
+export interface CancellationRequest {
+    reason: string;
+    requestedAt: number;
+}
+
 /**
  * Typed artifact passed between mission nodes (PaperOrchestra-style:
  * plan → bibliography → draft → reviewed manuscript as first-class objects).
