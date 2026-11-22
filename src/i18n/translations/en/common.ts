@@ -160,6 +160,7 @@ const common: Record<string, string> = {
     'palette.section.actions': 'Actions',
     'palette.section.agents': 'Agents',
     'palette.section.topics': 'Forum topics',
+    'palette.section.failures': 'Failed runs',
     'palette.action.newScenario': 'New scenario',
     'palette.action.newDebate': 'New debate',
     'palette.action.newWorkflow': 'New workflow',

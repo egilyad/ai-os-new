@@ -12,13 +12,14 @@ import {
     Users,
     Bookmark,
     Hash,
+    XCircle,
 } from 'lucide-react';
 import { NAV_SECTIONS } from '../route-registry';
 import type { TranslationKey } from '../i18n/translations';
 import { safeJsonParse } from '../kernel/utils/safe-json';
 import { ssrSafeStorage } from '../kernel/utils/ssr-storage';
 import { agentService } from '../kernel/instances/services-core';
-import { forumService } from '../kernel/instances/services-extras';
+import { forumService, runHistoryService } from '../kernel/instances/services-extras';
 
 // ─── Fuzzy match helper ───────────────────────────────────────────────────────
 function fuzzyScore(pattern: string, text: string): number {
@@ -262,9 +263,33 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose, t
             cancelled = true;
         };
     }, [open, t]);
+    const [failureItems, setFailureItems] = useState<PaletteItem[]>([]);
+    useEffect(() => {
+        if (!open) return;
+        let cancelled = false;
+        runHistoryService
+            .listFailures()
+            .then((failures) => {
+                if (cancelled) return;
+                setFailureItems(
+                    failures.slice(0, 30).map((f) => ({
+                        id: `failure-${f.runId}-${f.nodeId}`,
+                        label: `${f.nodeId}: ${f.error}`,
+                        path: 'diagnostics',
+                        section: t('palette.section.failures'),
+                        color: '#ef4444',
+                        icon: <XCircle size={16} />,
+                    })),
+                );
+            })
+            .catch(() => undefined);
+        return () => {
+            cancelled = true;
+        };
+    }, [open, t]);
     const allItems = useMemo(
-        () => [...staticItems, ...agentItems, ...topicItems],
-        [staticItems, agentItems, topicItems],
+        () => [...staticItems, ...agentItems, ...topicItems, ...failureItems],
+        [staticItems, agentItems, topicItems, failureItems],
     );
     const recentPaths = useMemo(() => getRecent(), []);
     const recentItems = useMemo(

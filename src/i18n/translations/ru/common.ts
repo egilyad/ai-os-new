@@ -160,6 +160,7 @@ const common: Record<string, string> = {
     'palette.section.actions': 'Действия',
     'palette.section.agents': 'Агенты',
     'palette.section.topics': 'Темы форума',
+    'palette.section.failures': 'Отказы запусков',
     'palette.action.newScenario': 'Новый сценарий',
     'palette.action.newDebate': 'Новый дебат',
     'palette.action.newWorkflow': 'Новый рабочий процесс',

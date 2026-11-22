@@ -1,5 +1,6 @@
 import { lazyService } from '../service-helper';
 import type { IForumService } from '../contracts/forum';
+import type { IRunHistoryService } from '../contracts/run-history';
 import type { IWikiBrainService } from '../contracts/wiki-brain';
 import type { IMemoryGraphService } from '../contracts/viz/memory-graph';
 import type { IArchitectureGraphService } from '../contracts/viz/architecture-graph';
@@ -77,10 +78,7 @@ import type { IInvocationEngineService } from '../contracts/invocation';
 import type { ICrewService, IAgentForgeService } from '../contracts/crew';
 import type { ICouncilService } from '../contracts/council';
 import type { IGraphService } from '../contracts/graph';
-import type {
-    ILtMemoryService,
-    ISharedContextService,
-} from '../contracts/persona';
+import type { ILtMemoryService, ISharedContextService } from '../contracts/persona';
 import type { PersonaRepository } from '../dal/persona-repository';
 import type {
     IAuditService,
@@ -99,29 +97,13 @@ import type {
     IGatewayService,
 } from '../contracts/interop';
 import type { InteropRepository } from '../dal/interop-repository';
-import type {
-    ICogMemoryService,
-    IMetaAgentService,
-    IStrategyService,
-} from '../contracts/meta';
+import type { ICogMemoryService, IMetaAgentService, IStrategyService } from '../contracts/meta';
 import type { MetaRepository } from '../dal/meta-repository';
-import type {
-    IEcosystemService,
-    IGovernanceService,
-    IProvenanceService,
-} from '../contracts/trust';
+import type { IEcosystemService, IGovernanceService, IProvenanceService } from '../contracts/trust';
 import type { TrustRepository } from '../dal/trust-repository';
-import type {
-    IEvalService,
-    IFrontierOpsService,
-    ISimulationService,
-} from '../contracts/frontier';
+import type { IEvalService, IFrontierOpsService, ISimulationService } from '../contracts/frontier';
 import type { FrontierRepository } from '../dal/frontier-repository';
-import type {
-    IKnowledgeService,
-    IToolRunnerService,
-    ITrainingService,
-} from '../contracts/parity';
+import type { IKnowledgeService, IToolRunnerService, ITrainingService } from '../contracts/parity';
 import type { ParityRepository } from '../dal/parity-repository';
 import type {
     IAutonomyService,
@@ -369,6 +351,7 @@ import type { CrewRepository } from '../dal/crew-repository';
 export const scenarioRepository = lazyService<ScenarioRepository>('scenarioRepository');
 export const directorRepository = lazyService<DirectorRepository>('directorRepository');
 export const forumService = lazyService<IForumService>('forumService');
+export const runHistoryService = lazyService<IRunHistoryService>('runHistoryService');
 export const lensEngine = lazyService<ILensEngineService>('lensEngine');
 export const crystalVault = lazyService<ICrystalVaultService>('crystalVault');
 export const junctionEngine = lazyService<IJunctionEngineService>('junctionEngine');
@@ -389,7 +372,9 @@ export const opsRepository = lazyService<OpsRepository>('opsRepository');
 export const auditService = lazyService<IAuditService>('auditService');
 export const wikiBrainService = lazyService<IWikiBrainService>('wikiBrainService');
 export const memoryGraphService = lazyService<IMemoryGraphService>('memoryGraphService');
-export const architectureGraphService = lazyService<IArchitectureGraphService>('architectureGraphService');
+export const architectureGraphService = lazyService<IArchitectureGraphService>(
+    'architectureGraphService',
+);
 export const hierarchyService = lazyService<IHierarchyService>('hierarchyService');
 export const toolGovernanceService = lazyService<IToolGovernanceService>('toolGovernanceService');
 export const sandboxBrokerService = lazyService<ISandboxBrokerService>('sandboxBrokerService');
@@ -458,7 +443,8 @@ export const codeAgentService = lazyService<ICodeAgentService>('codeAgentService
 export const assistantService = lazyService<IAssistantService>('assistantService');
 export const gumService = lazyService<IGumService>('gumService');
 export const appBuilderService = lazyService<IAppBuilderService>('appBuilderService');
-export const builderAgent = lazyService<import('../contracts/builder').IBuilderAgentService>('builderAgent');
+export const builderAgent =
+    lazyService<import('../contracts/builder').IBuilderAgentService>('builderAgent');
 export const ideService = lazyService<IIdeService>('ideService');
 export const promptHubService = lazyService<IPromptHubService>('promptHubService');
 export const ontologyService = lazyService<IOntologyService>('ontologyService');
@@ -469,9 +455,13 @@ export const computerService = lazyService<IComputerService>('computerService');
 export const searchService = lazyService<ISearchService>('searchService');
 export const codeExecService = lazyService<ICodeExecService>('codeExecService');
 export const browserHarnessService =
-    lazyService<import('../contracts/browser-harness').IBrowserHarnessService>('browserHarnessService');
+    lazyService<import('../contracts/browser-harness').IBrowserHarnessService>(
+        'browserHarnessService',
+    );
 export const browserUseService =
-    lazyService<import('../services/browser/browser-use-service').BrowserUseService>('browserUseService');
+    lazyService<import('../services/browser/browser-use-service').BrowserUseService>(
+        'browserUseService',
+    );
 export const computerUseLoopService =
     lazyService<import('../services/computer/computer-use-loop-service').ComputerUseLoopService>(
         'computerUseLoopService',
@@ -596,23 +586,33 @@ export const mcpDeepService = lazyService<IMcpDeepService>('mcpDeepService');
 export const filesApiService = lazyService<IFilesApiService>('filesApiService');
 export const cacheControlService = lazyService<ICacheControlService>('cacheControlService');
 export const projectManagerService = lazyService<IProjectManagerService>('projectManagerService');
-export const projectWorkspaceService = lazyService<IProjectWorkspaceService>('projectWorkspaceService');
+export const projectWorkspaceService =
+    lazyService<IProjectWorkspaceService>('projectWorkspaceService');
 export const agentProjectRuntime = lazyService<IAgentProjectRuntime>('agentProjectRuntime');
 export const websitePreviewService = lazyService<IWebsitePreviewService>('websitePreviewService');
 export const browserInspectorService = lazyService<IQABrowserInspector>('browserInspectorService');
-export const multiAgentProjectService = lazyService<IMultiAgentProjectService>('multiAgentProjectService');
+export const multiAgentProjectService = lazyService<IMultiAgentProjectService>(
+    'multiAgentProjectService',
+);
 export const pythonRunnerService = lazyService<IPythonRunnerService>('pythonRunnerService');
-export const projectObservabilityService = lazyService<IProjectObservabilityService>('projectObservabilityService');
+export const projectObservabilityService = lazyService<IProjectObservabilityService>(
+    'projectObservabilityService',
+);
 export const projectMemoryService = lazyService<IProjectMemoryService>('projectMemoryService');
 export const approvalService = lazyService<IApprovalService>('approvalService');
 export const artifactService = lazyService<IArtifactService>('artifactService');
-export const projectTemplateService = lazyService<IProjectTemplateService>('projectTemplateService');
-export const projectDebateIntegration = lazyService<IProjectDebateIntegration>('projectDebateIntegration');
+export const projectTemplateService =
+    lazyService<IProjectTemplateService>('projectTemplateService');
+export const projectDebateIntegration = lazyService<IProjectDebateIntegration>(
+    'projectDebateIntegration',
+);
 export const autonomyOrchestrator = lazyService<IAutonomyOrchestrator>('autonomyOrchestrator');
 export const autonomyRunner = lazyService<IAutonomyRunner>('autonomyRunner');
-export const projectInvocationBridge = lazyService<IProjectInvocationBridge>('projectInvocationBridge');
+export const projectInvocationBridge =
+    lazyService<IProjectInvocationBridge>('projectInvocationBridge');
 export const channelService = lazyService<IChannelService>('channelService');
-export const dynamicWorkflowService = lazyService<IDynamicWorkflowService>('dynamicWorkflowService');
+export const dynamicWorkflowService =
+    lazyService<IDynamicWorkflowService>('dynamicWorkflowService');
 export const routineService = lazyService<IRoutineService>('routineService');
 export const agentViewService = lazyService<IAgentViewService>('agentViewService');
 export const orgChartService = lazyService<IOrgChartService>('orgChartService');

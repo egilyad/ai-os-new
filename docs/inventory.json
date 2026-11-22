@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 578,
+    "documents": 579,
     "byCategory": {
       "repo": 40,
-      "top": 136,
+      "top": 137,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 151,
-      "ru": 362
+      "ru": 363
     }
   },
   "duplicates": {
@@ -1526,6 +1526,14 @@
       "hash": "0ed72123284df5023e72902fcabb878567f3c1f9"
     },
     {
+      "path": "docs/sessions/2026-11-22-command-palette-failures.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-22 — command-palette-failures",
+      "bytes": 4155,
+      "hash": "64dd89c48ddd81c22c8f4d82a7b1056db87e1301"
+    },
+    {
       "path": "docs/sessions/2026-11-22-e2e-run-history.md",
       "category": "top",
       "language": "ru",
@@ -2523,7 +2531,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "a52beeddec64637af254b93fd5819f34d68aaf53"
+      "hash": "ca93429d6f8d52fffe152c13d1580ed61f9ae219"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2739,7 +2747,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "e510e2584e6e53f4f73b1fe391dd550b34d58940"
+      "hash": "263eb40906226235250e1649b11414ec769499ae"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2930,8 +2938,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 60481,
-      "hash": "3048d872f64a85c049bffed7f93b38eca592337c"
+      "bytes": 60620,
+      "hash": "899bef2efb34845792641538bf57524a412cc1f8"
     },
     {
       "path": "docs/wiki/docs-standard.md",
