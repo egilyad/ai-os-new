@@ -6,7 +6,7 @@ node ./node_modules/lint-staged/bin/lint-staged.js
 
 node scripts/gen-reality-map.mjs
 node scripts/gen-docs-inventory.mjs
-git add docs/wiki/dev-reality-map.md docs/inventory.json src/generated/wiki-docs-inventory.ts
+git add docs/wiki/dev-reality-map.md docs/wiki/docs-inventory.md docs/inventory.json src/generated/wiki-docs-inventory.ts
 
 # Type-check intentionally runs in CI (`tsc -b --noEmit`): it is too heavy
 # to block every local commit (see BLD-C3).

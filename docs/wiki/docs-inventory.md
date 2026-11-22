@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-docs-inventory.mjs` из отслеживаемых git-файлов `docs/**/*.md`.
 > Машиночитаемая версия — `docs/inventory.json`. Не редактировать вручную.
 
-Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **540** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
+Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **569** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
 Две генерируемые страницы-самоотчёта (`docs-health`, `docs-inventory`) исключены, чтобы числа не зависели от самих отчётов.
 
 ## По категориям
@@ -19,17 +19,17 @@
 | Категория | Документов |
 | --- | --- |
 | audits | 25 |
-| repo | 12 |
+| repo | 40 |
 | top | 127 |
-| wiki | 376 |
+| wiki | 377 |
 
 ## По языку
 
 | Язык | Документов |
 | --- | --- |
-| en | 40 |
-| mixed | 142 |
-| ru | 358 |
+| en | 65 |
+| mixed | 145 |
+| ru | 359 |
 
 _Основной язык подробной документации — русский (`ru`)._
 
@@ -37,8 +37,10 @@ _Основной язык подробной документации — ру�
 
 Не найдено.
 
-## Совпадающие заголовки (12)
+## Совпадающие заголовки (15)
 
+- «01 — system architecture»: `.superagents/skills/superagents-architecture/Chapters/01-system-architecture.md`, `docs/01-system-architecture.md`
+- «superagents os — project structure»: `.superagents/skills/superagents-architecture/Chapters/superagents-os-project-structure.md`, `docs/STRUCTURE.md`
 - «карта готовности панелей — superagents os (`egilyad/ai-os-new`)»: `docs/arhive-research/новое/Карта-готовности-панелей-SuperAgents-OS.md`, `docs/audits/waves/map-01-requirements.md`
 - «карта доступности возможностей — capability accessibility map»: `docs/arhive-research/новое/Карта-доступности-возможностей-SuperAgents-OS.md`, `docs/audits/waves/map-08-capability-accessibility.md`
 - «карта использования ресурсов — resource consumption map»: `docs/arhive-research/новое/Карта-использования-ресурсов-SuperAgents-OS.md`, `docs/audits/waves/map-10-resource-consumption.md`
@@ -51,6 +53,7 @@ _Основной язык подробной документации — ру�
 - «карта функциональных пробелов — capability gap map»: `docs/arhive-research/новое/Карта-функциональных-пробелов-SuperAgents-OS.md`, `docs/audits/waves/map-06-capability-gap.md`
 - «каталог тестов»: `docs/wiki/dev-tests-catalog.md`, `docs/wiki/testing-catalog.md`
 - «панель: исследовательский движок»: `docs/wiki/panel-research-engine.md`, `docs/wiki/panel-research.md`
+- «разработчикам: обзор и слои»: `.superagents/skills/superagents-architecture/Chapters/разработчикам-обзор-и-слои.md`, `docs/wiki/dev-overview.md`
 
 ## Код-сущности (существующие авто-каталоги)
 
