@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 588,
+    "documents": 589,
     "byCategory": {
       "repo": 40,
-      "top": 146,
+      "top": 147,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 155,
-      "ru": 368
+      "ru": 369
     }
   },
   "duplicates": {
@@ -1662,6 +1662,14 @@
       "hash": "11ebc762f293fd68b97ba9731fd671a825c3a14c"
     },
     {
+      "path": "docs/sessions/2026-11-23-roundtrip-serializer.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-23 — roundtrip-serializer",
+      "bytes": 3300,
+      "hash": "c789c05a12255fb38a890c355daaeca6ebc7a3c3"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2603,7 +2611,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "45f1a5d48710751e41e62580dc6e7cb1a309a009"
+      "hash": "3b649ad7202a1c53964cc7586892ce65bcb51c40"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2819,7 +2827,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "74d6af0986603bb964dee940077e05495eda6694"
+      "hash": "a4a05ac81b3c0ac245bf77f77b95e63ce8220931"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3010,8 +3018,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 61847,
-      "hash": "28dd39be51a4c0e5b9ca04aad3631196f5471773"
+      "bytes": 61976,
+      "hash": "4bcddb15f91dddbd881b61d201eaea847c520987"
     },
     {
       "path": "docs/wiki/docs-standard.md",
