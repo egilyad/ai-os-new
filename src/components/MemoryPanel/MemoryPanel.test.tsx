@@ -1,5 +1,6 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { memoryService } from '../../kernel/instances';
 
 const mockMemories = [
     {
@@ -31,6 +32,7 @@ vi.mock('../../kernel/instances', () => ({
     },
     memoryService: {
         getMemories: vi.fn(() => mockMemories),
+        storeBatch: vi.fn(async () => {}),
         search: vi.fn(() => Promise.resolve(mockMemories.slice(0, 2))),
         deleteMemory: vi.fn(() => Promise.resolve()),
         clear: vi.fn(() => Promise.resolve()),
@@ -98,6 +100,7 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'memory.subtitle': 'Explore and manage memory entries',
                 'memory.wipe_index': 'Wipe Index',
                 'memory.export_vectors': 'Export Vectors',
+                'memory.import_vectors': 'Import Vectors',
                 'memory.index_params': 'Index Parameters',
                 'memory.knowledge_growth': 'Knowledge Growth',
                 'memory.entries_label': 'Memory Entries',
@@ -216,5 +219,54 @@ describe('MemoryPanel', () => {
             b.textContent?.match(/^(fact|observation|config)$/i),
         );
         expect(typeBadges.length).toBeGreaterThan(0);
+    });
+
+    it('импортирует валидированный round-trip файл', async () => {
+        const MemoryPanel = (await import('./MemoryPanel')).default;
+        render(<MemoryPanel />);
+        await screen.findByText('Vector Memory Mesh');
+
+        const json = JSON.stringify({
+            format: 'superagents-roundtrip',
+            version: 2,
+            kind: 'memory',
+            exportedAt: '2026-11-23T00:00:00Z',
+            payload: [
+                {
+                    id: 'new1',
+                    content: 'from file',
+                    metadata: { source: 'import', type: 'fact', timestamp: 1, importance: 0.5 },
+                },
+            ],
+        });
+        const file = { name: 'memory.json', text: async () => json } as File;
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        expect(input).toBeTruthy();
+        fireEvent.change(input, { target: { files: [file] } });
+
+        await waitFor(() =>
+            expect(memoryService.storeBatch).toHaveBeenCalledWith(
+                expect.arrayContaining([expect.objectContaining({ id: 'new1' })]),
+            ),
+        );
+    });
+
+    it('отвергает файл чужого вида', async () => {
+        const MemoryPanel = (await import('./MemoryPanel')).default;
+        render(<MemoryPanel />);
+        await screen.findByText('Vector Memory Mesh');
+        const json = JSON.stringify({
+            format: 'superagents-roundtrip',
+            version: 2,
+            kind: 'debates',
+            exportedAt: '2026-11-23T00:00:00Z',
+            payload: [],
+        });
+        const file = { name: 'debates.json', text: async () => json } as File;
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        fireEvent.change(input, { target: { files: [file] } });
+
+        await waitFor(() => expect(screen.getByText(/Expected memory/)).toBeTruthy());
+        expect(memoryService.storeBatch).not.toHaveBeenCalled();
     });
 });

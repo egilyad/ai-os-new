@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 589,
+    "documents": 590,
     "byCategory": {
       "repo": 40,
-      "top": 147,
+      "top": 148,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 155,
+      "mixed": 156,
       "ru": 369
     }
   },
@@ -1622,6 +1622,14 @@
       "hash": "a67cd0c072807c14b5a6a8ab577d7bd68df0c8ae"
     },
     {
+      "path": "docs/sessions/2026-11-23-memory-roundtrip-pilot.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-23 — memory-roundtrip-pilot",
+      "bytes": 3969,
+      "hash": "b67c458a46db92f3522182f3e843a2aa19b28092"
+    },
+    {
       "path": "docs/sessions/2026-11-23-modal-a11y-audit.md",
       "category": "top",
       "language": "mixed",
@@ -2611,7 +2619,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "3b649ad7202a1c53964cc7586892ce65bcb51c40"
+      "hash": "81fda4ddc11068a340eb04a8424760aecca338b7"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2827,7 +2835,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "a4a05ac81b3c0ac245bf77f77b95e63ce8220931"
+      "hash": "d98fa799c8c94be98a947acf8517e995c300f785"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3018,8 +3026,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 61976,
-      "hash": "4bcddb15f91dddbd881b61d201eaea847c520987"
+      "bytes": 62107,
+      "hash": "0095ba14abb9f7b91114e4d0f018d48b81fac4a1"
     },
     {
       "path": "docs/wiki/docs-standard.md",

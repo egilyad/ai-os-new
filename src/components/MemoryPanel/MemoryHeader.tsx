@@ -1,4 +1,5 @@
-import { Database, Trash2, Download } from 'lucide-react';
+import { useRef } from 'react';
+import { Database, Trash2, Download, Upload } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import {
     flexGap3,
@@ -10,11 +11,13 @@ import {
 interface MemoryHeaderProps {
     onWipe: () => void;
     onExport: () => void;
+    onImport: (file: File) => void;
     onSeedDemo?: () => void;
 }
 
-const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onSeedDemo }) => {
+const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onImport, onSeedDemo }) => {
     const { t } = useTranslation();
+    const fileRef = useRef<HTMLInputElement>(null);
     return (
         <div style={sectionHeaderBottom}>
             <div>
@@ -24,6 +27,26 @@ const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onSeedDem
                 <p style={pageSubtitleMuted}>{t('memory.subtitle')}</p>
             </div>
             <div style={flexGap3}>
+                <input
+                    ref={fileRef}
+                    type="file"
+                    accept="application/json,.json"
+                    style={{ display: 'none' }}
+                    aria-label={t('memory.import_vectors')}
+                    onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) onImport(file);
+                        e.target.value = '';
+                    }}
+                />
+                <button
+                    onClick={() => fileRef.current?.click()}
+                    className="btn-secondary"
+                    style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+                    aria-label={t('memory.import_vectors')}
+                >
+                    <Upload size={16} aria-hidden="true" /> {t('memory.import_vectors')}
+                </button>
                 {onSeedDemo && (
                     <button
                         onClick={onSeedDemo}

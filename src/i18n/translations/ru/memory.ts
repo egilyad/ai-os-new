@@ -121,6 +121,7 @@ const memory: Record<string, string> = {
     'memory.error_search': 'Не удалось выполнить поиск',
     'memory.error_wipe': 'Не удалось стереть',
     'memory.export_vectors': 'Экспорт векторов',
+    'memory.import_vectors': 'Импорт векторов',
     'memory.fragments_added': 'Добавлено фрагментов',
     'memory.importance_min': 'Мин. важность',
     'memory.index_params': 'Параметры индекса',

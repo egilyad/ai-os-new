@@ -123,6 +123,7 @@ const memory: Record<string, string> = {
     'memory.delete_title': 'Delete Memory',
     'memory.delete_confirm': 'Delete this memory entry?',
     'memory.export_vectors': 'Export Vectors',
+    'memory.import_vectors': 'Import Vectors',
     'memory.error_search': 'Search failed',
     'memory.error_wipe': 'Failed to wipe index',
     'memory.error_delete': 'Failed to delete entry',

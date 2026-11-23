@@ -26,6 +26,8 @@ import MemoryTimeline from './MemoryTimeline';
 import { KnowledgeGraphView } from '../viz/KnowledgeGraphView';
 import { memoryGraphService } from '../../kernel/instances';
 import { downloadText } from '../../shared/utils/file-transfer';
+import { parseRoundtrip, serializeRoundtrip } from '../../kernel/utils/roundtrip';
+import { memoryPayloadSchema } from '../../kernel/utils/roundtrip-schemas';
 
 const MemoryPanel: React.FC = () => {
     const { confirm, ConfirmDialog } = useConfirm();
@@ -238,7 +240,7 @@ const MemoryPanel: React.FC = () => {
             // Full index, never the search view: exporting 5 hits as
             // "vectors" was the lie this fixes.
             const full = memoryService.getMemories();
-            const exportData = JSON.stringify(full, null, 2);
+            const exportData = serializeRoundtrip('memory', full);
             const filename = `memory-export-${new Date().toISOString().slice(0, 10)}.json`;
             downloadText(filename, exportData);
             eventBus.emit(EVENTS.NOTIFICATION, {
@@ -249,6 +251,27 @@ const MemoryPanel: React.FC = () => {
             LOGGER.warn('Export failed', String(err));
             if (isMountedRef.current) {
                 setError(t('memory.error_export'));
+                clearError();
+            }
+        }
+    };
+
+    const handleImportVectors = async (file: File) => {
+        try {
+            const json = await file.text();
+            const parsed = parseRoundtrip(json, 'memory', memoryPayloadSchema);
+            if (!parsed.ok) throw new Error(parsed.error);
+            await memoryService.storeBatch(parsed.payload);
+            setMemories(memoryService.getMemories());
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Imported ${parsed.payload.length} memories`,
+                type: 'success',
+            });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            LOGGER.warn('Import failed', message);
+            if (isMountedRef.current) {
+                setError(message);
                 clearError();
             }
         }
@@ -291,7 +314,12 @@ const MemoryPanel: React.FC = () => {
                 overflowY: 'auto',
             }}
         >
-            <MemoryHeader onWipe={handleClear} onExport={handleExportVectors} onSeedDemo={() => void handleSeedDemo()} />
+            <MemoryHeader
+                onWipe={handleClear}
+                onExport={handleExportVectors}
+                onImport={(file) => void handleImportVectors(file)}
+                onSeedDemo={() => void handleSeedDemo()}
+            />
             <MemoryErrorAlert error={error} onDismiss={() => setError(null)} />
 
             <div

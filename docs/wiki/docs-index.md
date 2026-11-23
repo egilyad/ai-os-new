@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (587 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (588 документов)
 
 ## Вики по разделам
 
@@ -192,6 +192,7 @@
 - [2026-11-23 — domain-notification-bridge](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-domain-notification-bridge.md)
 - [2026-11-23 — failure-card-diagnostics](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-failure-card-diagnostics.md)
 - [2026-11-23 — focus-trap-a11y](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-focus-trap-a11y.md)
+- [2026-11-23 — focus-visible-css](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-focus-visible-css.md)
 - [2026-11-23 — modal-a11y-audit](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-modal-a11y-audit.md)
 - [2026-11-23 — notification-inbox](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-notification-inbox.md)
 - [2026-11-23 — notification-toasts](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-notification-toasts.md)
