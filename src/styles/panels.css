@@ -4764,3 +4764,8 @@
   border: 1px solid var(--border);
   color: var(--text-main);
 }
+
+:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
+}
