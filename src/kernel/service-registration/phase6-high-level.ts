@@ -45,6 +45,7 @@ import { resolveDebateStoreAdapters } from './debate-store-adapters';
 import { EventRecorder } from '../services/event-sourcing/event-recorder';
 import { NotificationWebhookService } from '../services/notification-webhook-service';
 import { NotificationInboxService } from '../services/notification-inbox-service';
+import { DomainNotificationBridge } from '../services/domain-notification-bridge';
 import { CompromiseWebhookService } from '../services/compromise-webhook-service';
 import { ConsistencyChecker } from '../services/consistency-checker';
 import { TopologyManager } from '../services/topology-manager';
@@ -209,6 +210,11 @@ export const registerPhase6: Phase = (helpers, ctx) => {
                 eventBus: c.get<IEventBus>('eventBus'),
                 database: c.get<IDatabaseService>('database'),
             }),
+    );
+
+    register(
+        'domainNotificationBridge',
+        (c) => new DomainNotificationBridge({ eventBus: c.get<IEventBus>('eventBus') }),
     );
 
     register(
