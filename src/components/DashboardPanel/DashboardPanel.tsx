@@ -11,6 +11,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
 import type { SystemState } from '../../types/metrics';
 import DashboardHeader from './DashboardHeader';
+import OverviewHubs from '../OverviewHubs';
 import GetStartedPanel from './GetStartedPanel';
 import QuickActionBar from './QuickActionBar';
 import CriticalAlertBanner from './CriticalAlertBanner';
@@ -128,19 +129,72 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
         >
             <DashboardHeader checkAllHealth={checkAllHealth} onNavigate={onNavigate} />
 
+            <OverviewHubs onNavigate={onNavigate} />
+
             <GetStartedPanel
                 show={providerCounts.active === 0 && keys.length === 0}
                 onNavigate={onNavigate}
             />
 
             {showAgentsEmpty && (
-                <div style={{ display: 'flex', gap: '1rem', padding: '1.25rem', borderRadius: 14, border: '1px solid rgba(139,92,246,0.25)', background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.08))', alignItems: 'center' }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>🤖</div>
-                    <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, color: 'var(--slate-50)', fontSize: '0.95rem' }}>{t('onboarding.agents_get_started_title') ?? 'Create your first agent'}</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--slate-400)', marginTop: 2 }}>{t('onboarding.agents_get_started_body') ?? 'Agents are your AI workforce. Create one to start debates, chats, and tasks.'}</div>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '1rem',
+                        padding: '1.25rem',
+                        borderRadius: 14,
+                        border: '1px solid rgba(139,92,246,0.25)',
+                        background:
+                            'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.08))',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 44,
+                            height: 44,
+                            borderRadius: 12,
+                            background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                        }}
+                    >
+                        🤖
                     </div>
-                    <button onClick={() => onNavigate('agents')} style={{ padding: '0.55rem 1.1rem', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', color: 'white', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>{t('onboarding.create_agent') ?? 'Create Agent'}</button>
+                    <div style={{ flex: 1 }}>
+                        <div
+                            style={{
+                                fontWeight: 700,
+                                color: 'var(--slate-50)',
+                                fontSize: '0.95rem',
+                            }}
+                        >
+                            {t('onboarding.agents_get_started_title') ?? 'Create your first agent'}
+                        </div>
+                        <div
+                            style={{ fontSize: '0.8rem', color: 'var(--slate-400)', marginTop: 2 }}
+                        >
+                            {t('onboarding.agents_get_started_body') ??
+                                'Agents are your AI workforce. Create one to start debates, chats, and tasks.'}
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => onNavigate('agents')}
+                        style={{
+                            padding: '0.55rem 1.1rem',
+                            borderRadius: 10,
+                            border: 'none',
+                            background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+                            color: 'white',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                        }}
+                    >
+                        {t('onboarding.create_agent') ?? 'Create Agent'}
+                    </button>
                 </div>
             )}
 
@@ -177,7 +231,10 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                         fontWeight: 700,
                         fontSize: '0.82rem',
                         border: 'var(--1px solid var(--border-default))',
-                        background: viewMode === 'desktop' ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(255,255,255,0.04)',
+                        background:
+                            viewMode === 'desktop'
+                                ? 'linear-gradient(90deg, #3b82f6, #2563eb)'
+                                : 'rgba(255,255,255,0.04)',
                         color: viewMode === 'desktop' ? 'white' : 'var(--slate-300)',
                     }}
                 >
@@ -192,7 +249,10 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                         fontWeight: 700,
                         fontSize: '0.82rem',
                         border: 'var(--1px solid var(--border-default))',
-                        background: viewMode === 'cards' ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)' : 'rgba(255,255,255,0.04)',
+                        background:
+                            viewMode === 'cards'
+                                ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)'
+                                : 'rgba(255,255,255,0.04)',
                         color: viewMode === 'cards' ? 'white' : 'var(--slate-300)',
                     }}
                 >
@@ -208,8 +268,17 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
 
             <RuntimeMetricsView pattern="llm.*" limit={6} title="LLM runtime metrics" />
             <RuntimeMetricsView pattern="agent.*" limit={6} title="Agent runtime metrics" />
-            <div style={{ padding: '1rem', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
-                <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--slate-200)' }}>Cognitive provenance</div>
+            <div
+                style={{
+                    padding: '1rem',
+                    borderRadius: 14,
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg-elevated)',
+                }}
+            >
+                <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--slate-200)' }}>
+                    Cognitive provenance
+                </div>
                 <ProvenancePath />
             </div>
 

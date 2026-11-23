@@ -356,6 +356,7 @@ export const runHistoryService = lazyService<IRunHistoryService>('runHistoryServ
 export const notificationInboxService = lazyService<INotificationInboxService>(
     'notificationInboxService',
 );
+export { OverviewHubService } from '../services/overview-hub-service';
 export const lensEngine = lazyService<ILensEngineService>('lensEngine');
 export const crystalVault = lazyService<ICrystalVaultService>('crystalVault');
 export const junctionEngine = lazyService<IJunctionEngineService>('junctionEngine');
