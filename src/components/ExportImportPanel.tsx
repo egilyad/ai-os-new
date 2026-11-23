@@ -1,8 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PanelLoader from './PanelLoader';
 import { encryptExportPayload, decryptExportPayload } from './ExportImportPanel/export-crypto';
+import { EXPORT_VERSION, validateExportVersion } from './ExportImportPanel/export-version';
 import type { RoleCategory } from '../kernel/types/role-types';
-import type { DebateSessionRecord, DebateVerdictRecord } from '../kernel/contracts/storage/debate-store';
+import type {
+    DebateSessionRecord,
+    DebateVerdictRecord,
+} from '../kernel/contracts/storage/debate-store';
 
 interface ExportSection {
     id: string;
@@ -146,18 +150,15 @@ const ExportImportPanel: React.FC = () => {
                     const m = await loadServices();
                     const store = m.storageLayer?.debates;
                     if (!store) return 'Debate import unavailable (storage layer missing)';
-                    const sessions = (Array.isArray(data.debates)
-                        ? data.debates
-                        : []) as DebateSessionRecord[];
-                    const verdicts = (Array.isArray(data.verdicts)
-                        ? data.verdicts
-                        : []) as DebateVerdictRecord[];
+                    const sessions = (
+                        Array.isArray(data.debates) ? data.debates : []
+                    ) as DebateSessionRecord[];
+                    const verdicts = (
+                        Array.isArray(data.verdicts) ? data.verdicts : []
+                    ) as DebateVerdictRecord[];
                     const { imported, skipped } = await store.importSessions(sessions);
                     const importedIds = sessions.slice(0, imported).map((s) => s.id);
-                    const verdictImported = await store.importVerdicts(
-                        verdicts,
-                        importedIds,
-                    );
+                    const verdictImported = await store.importVerdicts(verdicts, importedIds);
                     return `Imported ${imported} debate session(s) (${skipped} skipped as existing), ${verdictImported} verdict(s)`;
                 },
             ),
@@ -215,7 +216,9 @@ const ExportImportPanel: React.FC = () => {
                         const title = typeof w.title === 'string' ? w.title : '';
                         if (!title) continue;
                         const steps = Array.isArray(w.steps)
-                            ? (w.steps as Array<Record<string, unknown>>).map(({ id: _id, ...rest }) => rest)
+                            ? (w.steps as Array<Record<string, unknown>>).map(
+                                  ({ id: _id, ...rest }) => rest,
+                              )
                             : [];
                         await m.workflowService.create({
                             title,
@@ -272,21 +275,34 @@ const ExportImportPanel: React.FC = () => {
                         const meta = (r.metadata as Record<string, unknown> | undefined) ?? {};
                         await m.roleService.addRole({
                             name,
-                            description: typeof r.description === 'string' ? r.description : undefined,
-                            systemPrompt: typeof r.systemPrompt === 'string' ? r.systemPrompt : undefined,
+                            description:
+                                typeof r.description === 'string' ? r.description : undefined,
+                            systemPrompt:
+                                typeof r.systemPrompt === 'string' ? r.systemPrompt : undefined,
                             baseTemperature:
-                                typeof r.baseTemperature === 'number' ? r.baseTemperature : undefined,
-                            capabilities: Array.isArray(r.capabilities) ? (r.capabilities as string[]) : [],
-                            permissions: Array.isArray(r.permissions) ? (r.permissions as string[]) : [],
+                                typeof r.baseTemperature === 'number'
+                                    ? r.baseTemperature
+                                    : undefined,
+                            capabilities: Array.isArray(r.capabilities)
+                                ? (r.capabilities as string[])
+                                : [],
+                            permissions: Array.isArray(r.permissions)
+                                ? (r.permissions as string[])
+                                : [],
                             deniedPermissions: Array.isArray(r.deniedPermissions)
                                 ? (r.deniedPermissions as string[])
                                 : undefined,
                             icon: typeof r.icon === 'string' ? r.icon : undefined,
                             priority: typeof r.priority === 'number' ? r.priority : undefined,
-                            parentRoleId: typeof r.parentRoleId === 'string' ? r.parentRoleId : undefined,
+                            parentRoleId:
+                                typeof r.parentRoleId === 'string' ? r.parentRoleId : undefined,
                             metadata: {
-                                category: (typeof meta.category === 'string' ? meta.category : 'custom') as RoleCategory,
-                                tags: Array.isArray(meta.tags) ? (meta.tags as string[]) : undefined,
+                                category: (typeof meta.category === 'string'
+                                    ? meta.category
+                                    : 'custom') as RoleCategory,
+                                tags: Array.isArray(meta.tags)
+                                    ? (meta.tags as string[])
+                                    : undefined,
                                 author: typeof meta.author === 'string' ? meta.author : undefined,
                             },
                         });
@@ -310,9 +326,11 @@ const ExportImportPanel: React.FC = () => {
                     let count = 0;
                     for (const c of list as Array<Record<string, unknown>>) {
                         const content = c.content as Record<string, unknown> | undefined;
-                        const statement = typeof content?.statement === 'string' ? content.statement : '';
+                        const statement =
+                            typeof content?.statement === 'string' ? content.statement : '';
                         if (!statement) continue;
-                        const provenance = (c.provenance as Record<string, unknown> | undefined) ?? {};
+                        const provenance =
+                            (c.provenance as Record<string, unknown> | undefined) ?? {};
                         await m.crystalVault.propose({
                             content: {
                                 statement,
@@ -367,7 +385,7 @@ const ExportImportPanel: React.FC = () => {
         setResult(null);
         try {
             const data: Record<string, unknown> = {
-                version: '1.0.0',
+                version: EXPORT_VERSION,
                 exportedAt: new Date().toISOString(),
             };
             const failed: string[] = [];
@@ -436,6 +454,8 @@ const ExportImportPanel: React.FC = () => {
                 if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
                     throw new Error('Expected a JSON object');
                 }
+                const versionCheck = validateExportVersion(parsed as Record<string, unknown>);
+                if (!versionCheck.ok) throw new Error(versionCheck.error);
                 if ((parsed as Record<string, unknown>).encrypted === true) {
                     setPendingEncrypted(raw);
                     setImportJson(null);
@@ -586,7 +606,14 @@ const ExportImportPanel: React.FC = () => {
                             </label>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.75rem',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                        }}
+                    >
                         <label
                             style={{
                                 display: 'flex',
@@ -731,7 +758,14 @@ const ExportImportPanel: React.FC = () => {
                         </div>
                     )}
                     {pendingEncrypted && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'center' }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.4rem',
+                                alignItems: 'center',
+                            }}
+                        >
                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                                 Файл зашифрован — введи пароль от экспорта
                             </div>

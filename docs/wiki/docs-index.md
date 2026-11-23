@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (592 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (593 документов)
 
 ## Вики по разделам
 
@@ -199,6 +199,7 @@
 - [2026-11-23 — notification-toasts](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-notification-toasts.md)
 - [2026-11-23 — overview-hubs-ui](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-overview-hubs-ui.md)
 - [2026-11-23 — overview-hubs](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-overview-hubs.md)
+- [2026-11-23 — permissions-roundtrip](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-permissions-roundtrip.md)
 - [2026-11-23 — providers-roundtrip](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-providers-roundtrip.md)
 - [2026-11-23 — roundtrip-dedup-modes](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-roundtrip-dedup-modes.md)
 - [2026-11-23 — roundtrip-serializer](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-roundtrip-serializer.md)

@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 594,
+    "documents": 595,
     "byCategory": {
       "repo": 40,
-      "top": 152,
+      "top": 153,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 158,
-      "ru": 371
+      "ru": 372
     }
   },
   "duplicates": {
@@ -1598,6 +1598,14 @@
       "hash": "4011a1e85afca4febbcf2bd942aece510991380f"
     },
     {
+      "path": "docs/sessions/2026-11-23-export-version-guard.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-23 — export-version-guard",
+      "bytes": 3636,
+      "hash": "081cfea811ce342517e24032d0bbe63e1f0fc953"
+    },
+    {
       "path": "docs/sessions/2026-11-23-failure-card-diagnostics.md",
       "category": "top",
       "language": "ru",
@@ -2651,7 +2659,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "8cad8975eaa9d0711f9fa915f7579e9534ed43d1"
+      "hash": "a8bd625b41485fa6e6fed42b23dec515efc4e26e"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2867,7 +2875,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "741e239e0babcea2aaab1ca66108418bd9f78788"
+      "hash": "e856abf59c99638662ca948f53660ced691f8f03"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3058,8 +3066,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 62659,
-      "hash": "31c29e2dd9fdcfd97151a3ddd7ba302060acebd6"
+      "bytes": 62798,
+      "hash": "9c1a316e9316ae8c12a72bff11a4f91bd2bb5990"
     },
     {
       "path": "docs/wiki/docs-standard.md",
