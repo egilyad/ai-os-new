@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { parseRoundtrip, serializeRoundtrip, ROUNDTRIP_VERSION } from './roundtrip';
+import { mergeById, parseRoundtrip, serializeRoundtrip, ROUNDTRIP_VERSION } from './roundtrip';
 
 const Payload = z.object({ items: z.array(z.object({ id: z.string() })) });
 
@@ -43,6 +43,27 @@ describe('roundtrip serializer', () => {
             ok: false,
             error: 'Payload does not match schema',
         });
+    });
+
+    it('дедуплицирует записи по id в режимах merge и replace', () => {
+        const existing = [
+            { id: 'a', value: 1 },
+            { id: 'b', value: 2 },
+        ];
+        const incoming = [
+            { id: 'a', value: 99 },
+            { id: 'c', value: 3 },
+            { id: 'c', value: 4 },
+        ];
+        expect(mergeById(existing, incoming, 'merge')).toEqual([
+            { id: 'a', value: 1 },
+            { id: 'b', value: 2 },
+            { id: 'c', value: 4 },
+        ]);
+        expect(mergeById(existing, incoming, 'replace')).toEqual([
+            { id: 'a', value: 99 },
+            { id: 'c', value: 4 },
+        ]);
     });
 
     it('применяет миграции старых версий', () => {

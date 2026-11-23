@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Database, Trash2, Download, Upload } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import type { ImportMode } from '../../kernel/utils/roundtrip';
 import {
     flexGap3,
     pageSubtitleMuted,
@@ -12,10 +13,19 @@ interface MemoryHeaderProps {
     onWipe: () => void;
     onExport: () => void;
     onImport: (file: File) => void;
+    importMode: ImportMode;
+    onImportModeChange: (mode: ImportMode) => void;
     onSeedDemo?: () => void;
 }
 
-const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onImport, onSeedDemo }) => {
+const MemoryHeader: React.FC<MemoryHeaderProps> = ({
+    onWipe,
+    onExport,
+    onImport,
+    importMode,
+    onImportModeChange,
+    onSeedDemo,
+}) => {
     const { t } = useTranslation();
     const fileRef = useRef<HTMLInputElement>(null);
     return (
@@ -39,6 +49,15 @@ const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onImport,
                         e.target.value = '';
                     }}
                 />
+                <select
+                    value={importMode}
+                    onChange={(e) => onImportModeChange(e.target.value as ImportMode)}
+                    aria-label={t('memory.import_mode')}
+                    style={{ padding: '0.45rem', borderRadius: 8 }}
+                >
+                    <option value="merge">{t('memory.import_merge')}</option>
+                    <option value="replace">{t('memory.import_replace')}</option>
+                </select>
                 <button
                     onClick={() => fileRef.current?.click()}
                     className="btn-secondary"

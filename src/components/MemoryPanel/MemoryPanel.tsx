@@ -26,7 +26,12 @@ import MemoryTimeline from './MemoryTimeline';
 import { KnowledgeGraphView } from '../viz/KnowledgeGraphView';
 import { memoryGraphService } from '../../kernel/instances';
 import { downloadText } from '../../shared/utils/file-transfer';
-import { parseRoundtrip, serializeRoundtrip } from '../../kernel/utils/roundtrip';
+import {
+    mergeById,
+    parseRoundtrip,
+    serializeRoundtrip,
+    type ImportMode,
+} from '../../kernel/utils/roundtrip';
 import { memoryPayloadSchema } from '../../kernel/utils/roundtrip-schemas';
 
 const MemoryPanel: React.FC = () => {
@@ -47,6 +52,7 @@ const MemoryPanel: React.FC = () => {
     const [isLoading, setIsLoading] = useState(memories.length === 0);
     const { t } = useTranslation();
     const { isMobile } = useResponsive();
+    const [importMode, setImportMode] = useState<ImportMode>('merge');
     const [error, setError] = useState<string | null>(null);
     const clearError = useAutoClearError(setError);
     const isMountedRef = useRef(true);
@@ -261,7 +267,9 @@ const MemoryPanel: React.FC = () => {
             const json = await file.text();
             const parsed = parseRoundtrip(json, 'memory', memoryPayloadSchema);
             if (!parsed.ok) throw new Error(parsed.error);
-            await memoryService.storeBatch(parsed.payload);
+            const merged = mergeById(memoryService.getMemories(), parsed.payload, importMode);
+            if (importMode === 'replace') await memoryService.clear();
+            await memoryService.storeBatch(merged);
             setMemories(memoryService.getMemories());
             eventBus.emit(EVENTS.NOTIFICATION, {
                 message: `Imported ${parsed.payload.length} memories`,
@@ -318,6 +326,8 @@ const MemoryPanel: React.FC = () => {
                 onWipe={handleClear}
                 onExport={handleExportVectors}
                 onImport={(file) => void handleImportVectors(file)}
+                importMode={importMode}
+                onImportModeChange={setImportMode}
                 onSeedDemo={() => void handleSeedDemo()}
             />
             <MemoryErrorAlert error={error} onDismiss={() => setError(null)} />

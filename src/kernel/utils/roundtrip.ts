@@ -28,6 +28,24 @@ export function serializeRoundtrip<T>(kind: string, payload: T, now = new Date()
     );
 }
 
+export type ImportMode = 'merge' | 'replace';
+
+export function mergeById<T extends { id: string }>(
+    existing: T[],
+    incoming: T[],
+    mode: ImportMode,
+): T[] {
+    if (mode === 'replace') {
+        const byId = new Map<string, T>();
+        for (const item of incoming) byId.set(item.id, item);
+        return [...byId.values()];
+    }
+    const known = new Set(existing.map((item) => item.id));
+    const fresh = new Map<string, T>();
+    for (const item of incoming) if (!known.has(item.id)) fresh.set(item.id, item);
+    return [...existing, ...fresh.values()];
+}
+
 export function parseRoundtrip<T>(
     json: string,
     kind: string,

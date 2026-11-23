@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (588 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (589 документов)
 
 ## Вики по разделам
 
@@ -198,6 +198,7 @@
 - [2026-11-23 — notification-toasts](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-notification-toasts.md)
 - [2026-11-23 — overview-hubs-ui](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-overview-hubs-ui.md)
 - [2026-11-23 — overview-hubs](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-overview-hubs.md)
+- [2026-11-23 — roundtrip-serializer](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-roundtrip-serializer.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
 - [🪪 SuperAgents OS — Digital System Passport](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_PASSPORT.md)

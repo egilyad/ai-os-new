@@ -101,6 +101,9 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'memory.wipe_index': 'Wipe Index',
                 'memory.export_vectors': 'Export Vectors',
                 'memory.import_vectors': 'Import Vectors',
+                'memory.import_mode': 'Import mode',
+                'memory.import_merge': 'Merge',
+                'memory.import_replace': 'Replace',
                 'memory.index_params': 'Index Parameters',
                 'memory.knowledge_growth': 'Knowledge Growth',
                 'memory.entries_label': 'Memory Entries',
@@ -249,6 +252,36 @@ describe('MemoryPanel', () => {
                 expect.arrayContaining([expect.objectContaining({ id: 'new1' })]),
             ),
         );
+    });
+
+    it('режим replace очищает индекс перед записью', async () => {
+        const MemoryPanel = (await import('./MemoryPanel')).default;
+        render(<MemoryPanel />);
+        await screen.findByText('Vector Memory Mesh');
+        const select = screen.getByLabelText('Import mode') as HTMLSelectElement;
+        fireEvent.change(select, { target: { value: 'replace' } });
+
+        const json = JSON.stringify({
+            format: 'superagents-roundtrip',
+            version: 2,
+            kind: 'memory',
+            exportedAt: '2026-11-23T00:00:00Z',
+            payload: [
+                {
+                    id: 'm1',
+                    content: 'replaced',
+                    metadata: { source: 'import', type: 'fact', timestamp: 1, importance: 0.5 },
+                },
+            ],
+        });
+        const file = { name: 'memory.json', text: async () => json } as File;
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+        fireEvent.change(input, { target: { files: [file] } });
+
+        await waitFor(() => expect(memoryService.clear).toHaveBeenCalled());
+        expect(memoryService.storeBatch).toHaveBeenCalledWith([
+            expect.objectContaining({ id: 'm1', content: 'replaced' }),
+        ]);
     });
 
     it('отвергает файл чужого вида', async () => {
