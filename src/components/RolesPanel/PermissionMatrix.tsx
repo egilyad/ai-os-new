@@ -737,9 +737,26 @@ export const PermissionMatrix: React.FC<PermissionMatrixProps> = ({ roles, onUpd
                                                                     data-perm-cell="true"
                                                                     data-row={row}
                                                                     data-col={ci}
+                                                                    role="button"
+                                                                    tabIndex={0}
+                                                                    aria-label={`${role.name}: ${perm}`}
+                                                                    aria-pressed={has}
                                                                     onClick={() =>
                                                                         togglePerm(role.id, perm)
                                                                     }
+                                                                    onKeyDown={(e) => {
+                                                                        if (
+                                                                            e.key === 'Enter' ||
+                                                                            e.key === ' '
+                                                                        ) {
+                                                                            e.preventDefault();
+                                                                            e.stopPropagation();
+                                                                            togglePerm(
+                                                                                role.id,
+                                                                                perm,
+                                                                            );
+                                                                        }
+                                                                    }}
                                                                     style={{
                                                                         display: 'flex',
                                                                         alignItems: 'center',

@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 595,
+    "documents": 596,
     "byCategory": {
       "repo": 40,
-      "top": 153,
+      "top": 154,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 158,
+      "mixed": 159,
       "ru": 372
     }
   },
@@ -1678,6 +1678,14 @@
       "hash": "11ebc762f293fd68b97ba9731fd671a825c3a14c"
     },
     {
+      "path": "docs/sessions/2026-11-23-permission-matrix-a11y.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-23 — permission-matrix-a11y",
+      "bytes": 3044,
+      "hash": "50dbcf77ce06b7cfed4f897c3e16f53309a97709"
+    },
+    {
       "path": "docs/sessions/2026-11-23-permissions-roundtrip.md",
       "category": "top",
       "language": "ru",
@@ -2659,7 +2667,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "a8bd625b41485fa6e6fed42b23dec515efc4e26e"
+      "hash": "d6e1c5d862da304e7816b15457e7801558c25863"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2875,7 +2883,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "e856abf59c99638662ca948f53660ced691f8f03"
+      "hash": "aae6155dff99c4acd7ba0c9e0aa398498cb60e30"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3066,8 +3074,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 62798,
-      "hash": "9c1a316e9316ae8c12a72bff11a4f91bd2bb5990"
+      "bytes": 62937,
+      "hash": "30ecca8e1a7835444bd8b134ad28081910a7d19e"
     },
     {
       "path": "docs/wiki/docs-standard.md",
