@@ -3,8 +3,16 @@ import { render, act } from '@testing-library/react';
 import { type ReactNode } from 'react';
 import { useFocusTrap } from './useFocusTrap';
 
-function Trap({ active, children }: { active: boolean; children?: ReactNode }) {
-    const ref = useFocusTrap(active);
+function Trap({
+    active,
+    children,
+    onEscape,
+}: {
+    active: boolean;
+    children?: ReactNode;
+    onEscape?: () => void;
+}) {
+    const ref = useFocusTrap(active, onEscape);
     return (
         <div ref={ref} data-testid="trap">
             {children}
@@ -148,6 +156,42 @@ describe('useFocusTrap', () => {
         unmount();
         expect(removeSpy).toHaveBeenCalled();
         expect(document.activeElement).toBe(previouslyFocused);
+    });
+
+    it('вызывает onEscape по Escape', () => {
+        const onEscape = vi.fn();
+        const { getByTestId } = render(
+            <Trap active onEscape={onEscape}>
+                <button id="b">ok</button>
+            </Trap>,
+        );
+        const container = getByTestId('trap');
+        const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+        const preventSpy = vi.spyOn(event, 'preventDefault');
+        act(() => {
+            container.dispatchEvent(event);
+        });
+        expect(onEscape).toHaveBeenCalled();
+        expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('видит новые фокусируемые элементы после монтирования', () => {
+        const { getByTestId, rerender } = render(<Trap active />);
+        rerender(
+            <Trap active>
+                <input id="a" />
+                <button id="b">ok</button>
+            </Trap>,
+        );
+        const container = getByTestId('trap');
+        const input = container.querySelector('#a') as HTMLInputElement;
+        const button = container.querySelector('#b') as HTMLButtonElement;
+        button.focus();
+        const inputFocusSpy = vi.spyOn(input, 'focus');
+        act(() => {
+            container.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+        });
+        expect(inputFocusSpy).toHaveBeenCalled();
     });
 
     it('attaches the trap when toggled from inactive to active', () => {

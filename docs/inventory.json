@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 583,
+    "documents": 584,
     "byCategory": {
       "repo": 40,
-      "top": 141,
+      "top": 142,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 153,
-      "ru": 365
+      "ru": 366
     }
   },
   "duplicates": {
@@ -1606,6 +1606,14 @@
       "hash": "443f6e62b4b2e7a0e0ef1db015bcaf31722c3b13"
     },
     {
+      "path": "docs/sessions/2026-11-23-focus-trap-a11y.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-23 — focus-trap-a11y",
+      "bytes": 3547,
+      "hash": "7e579528f85c1d1954e401b615185ca842e53915"
+    },
+    {
       "path": "docs/sessions/2026-11-23-notification-inbox.md",
       "category": "top",
       "language": "mixed",
@@ -2563,7 +2571,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "04a2ad67608a5e57f3ab639625ea94a8de9492a0"
+      "hash": "f892dd71f5651e679dff871c77be1cff39632098"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2779,7 +2787,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "4d88476761646ced6393e612c12ecef7bbe65325"
+      "hash": "cf0ddd01de6f55886f87197f24d234ab2cec9f48"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2970,8 +2978,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 61184,
-      "hash": "326b3766346c624b54a94e87475dcb70cdb470e7"
+      "bytes": 61319,
+      "hash": "581ea0aa75ead0516f02420d0421e19011f7c347"
     },
     {
       "path": "docs/wiki/docs-standard.md",
