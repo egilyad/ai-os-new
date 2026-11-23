@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { usePolling } from './Common/usePolling';
 import {
     Activity,
@@ -14,7 +15,7 @@ import {
     Clock,
     Globe,
 } from 'lucide-react';
-import { diagnosticService, kernel } from '../kernel/instances';
+import { diagnosticService, kernel, runHistoryService } from '../kernel/instances';
 import { rootLogger } from '../kernel/instances';
 import { useTranslation } from '../i18n/useTranslation';
 import ModuleInfo from './ModuleInfo';
@@ -37,6 +38,13 @@ const CARD: React.CSSProperties = {
     backdropFilter: 'blur(12px)',
 };
 
+interface FailureDetail {
+    runId: string;
+    nodeId: string;
+    error: string;
+    timestamp: number;
+}
+
 const DiagnosticPanel: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars -- i18n reserved for future use
     const { t: _t } = useTranslation();
@@ -46,8 +54,43 @@ const DiagnosticPanel: React.FC = () => {
     const [running, setRunning] = useState(false);
     const [sessionId, setSessionId] = useState('');
     const [sessionIssues, setSessionIssues] = useState<CognitiveIssue[]>([]);
+    const [searchParams] = useSearchParams();
+    const failureParam = searchParams.get('failure');
+    const [failureDetail, setFailureDetail] = useState<FailureDetail | null>(null);
 
     const [kernelState, setKernelState] = useState<SystemState>(() => kernel.getState());
+
+    useEffect(() => {
+        if (!failureParam) {
+            setFailureDetail(null); // eslint-disable-line react-hooks/set-state-in-effect
+            return;
+        }
+        const sep = failureParam.indexOf(':');
+        if (sep < 0) return;
+        const runId = failureParam.slice(0, sep);
+        const nodeId = failureParam.slice(sep + 1);
+        let cancelled = false;
+        runHistoryService
+            .get(runId)
+            .then((record) => {
+                if (cancelled || !record) return;
+                const step = record.steps.find(
+                    (s) => s.nodeId === nodeId && typeof s.output['error'] === 'string',
+                );
+                if (step) {
+                    setFailureDetail({
+                        runId,
+                        nodeId,
+                        error: String(step.output['error']),
+                        timestamp: step.timestamp,
+                    });
+                }
+            })
+            .catch(() => undefined);
+        return () => {
+            cancelled = true;
+        };
+    }, [failureParam]);
 
     const refresh = useCallback(() => {
         try {
@@ -107,6 +150,34 @@ const DiagnosticPanel: React.FC = () => {
                 System-wide health diagnostics, active issues, and diagnostic history
             </p>
 
+            {failureDetail && (
+                <div style={{ ...CARD, borderLeft: '3px solid var(--error)', marginBottom: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                        <AlertTriangle size={16} color="var(--error)" />
+                        <span
+                            style={{
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.08em',
+                                color: 'var(--slate-500)',
+                            }}
+                        >
+                            Failed run
+                        </span>
+                    </div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                        {failureDetail.nodeId}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--error)', marginTop: 4 }}>
+                        {failureDetail.error}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)', marginTop: 6 }}>
+                        {failureDetail.runId} · {new Date(failureDetail.timestamp).toLocaleString()}
+                    </div>
+                </div>
+            )}
+
             <div
                 style={{
                     display: 'grid',
@@ -164,9 +235,13 @@ const DiagnosticPanel: React.FC = () => {
                         }}
                     >
                         <span style={{ color: 'var(--slate-500)' }}>Sessions</span>
-                        <span style={{ color: 'var(--slate-300)' }}>{diagnostic?.sessionCount ?? 0}</span>
+                        <span style={{ color: 'var(--slate-300)' }}>
+                            {diagnostic?.sessionCount ?? 0}
+                        </span>
                         <span style={{ color: 'var(--slate-500)' }}>Providers</span>
-                        <span style={{ color: 'var(--slate-300)' }}>{diagnostic?.providerCount ?? 0}</span>
+                        <span style={{ color: 'var(--slate-300)' }}>
+                            {diagnostic?.providerCount ?? 0}
+                        </span>
                         <span style={{ color: 'var(--slate-500)' }}>Active Issues</span>
                         <span
                             style={{
@@ -404,11 +479,17 @@ const DiagnosticPanel: React.FC = () => {
                                         {issue.type}
                                     </span>
                                     <span
-                                        style={{ fontSize: '0.75rem', color: 'var(--slate-300)', flex: 1 }}
+                                        style={{
+                                            fontSize: '0.75rem',
+                                            color: 'var(--slate-300)',
+                                            flex: 1,
+                                        }}
                                     >
                                         {issue.message}
                                     </span>
-                                    <span style={{ fontSize: '0.65rem', color: 'var(--slate-500)' }}>
+                                    <span
+                                        style={{ fontSize: '0.65rem', color: 'var(--slate-500)' }}
+                                    >
                                         {new Date(issue.timestamp).toLocaleTimeString()}
                                     </span>
                                 </div>
@@ -482,7 +563,11 @@ const DiagnosticPanel: React.FC = () => {
                                         {issue.type}
                                     </span>
                                     <span
-                                        style={{ fontSize: '0.75rem', color: 'var(--slate-300)', flex: 1 }}
+                                        style={{
+                                            fontSize: '0.75rem',
+                                            color: 'var(--slate-300)',
+                                            flex: 1,
+                                        }}
                                     >
                                         {issue.message}
                                     </span>
@@ -537,7 +622,9 @@ const DiagnosticPanel: React.FC = () => {
                                 <span style={{ color: 'var(--slate-400)' }}>
                                     Score: {(r.score * 100).toFixed(0)}%
                                 </span>
-                                <span style={{ color: 'var(--slate-500)' }}>{r.issueCount} issues</span>
+                                <span style={{ color: 'var(--slate-500)' }}>
+                                    {r.issueCount} issues
+                                </span>
                                 <span style={{ color: 'var(--slate-600)', fontSize: '0.65rem' }}>
                                     {r.scope}
                                 </span>

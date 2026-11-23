@@ -275,7 +275,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose, t
                     failures.slice(0, 30).map((f) => ({
                         id: `failure-${f.runId}-${f.nodeId}`,
                         label: `${f.nodeId}: ${f.error}`,
-                        path: 'diagnostics',
+                        path: `diagnostics?failure=${encodeURIComponent(`${f.runId}:${f.nodeId}`)}`,
                         section: t('palette.section.failures'),
                         color: '#ef4444',
                         icon: <XCircle size={16} />,
