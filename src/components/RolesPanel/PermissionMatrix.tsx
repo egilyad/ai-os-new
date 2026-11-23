@@ -7,12 +7,15 @@ import {
     ChevronRight,
     Download,
     Copy,
+    Upload,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Role, RolePermission } from '../../types/role';
 import { DEFAULT_ROLE_PERMISSIONS } from '../../types/role';
 import { glassPanel } from '../../styles/common';
-import { rootLogger } from '../../kernel/instances';
+import { rootLogger, eventBus, EVENTS } from '../../kernel/instances';
+import { parseRoundtrip, serializeRoundtrip } from '../../kernel/utils/roundtrip';
+import { permissionsPayloadSchema } from '../../kernel/utils/roundtrip-schemas';
 const LOGGER = rootLogger.child('PermissionMatrix');
 
 const ALL_PERMISSIONS: RolePermission[] = [
@@ -80,6 +83,7 @@ export const PermissionMatrix: React.FC<PermissionMatrixProps> = ({ roles, onUpd
     const [isDragging, setIsDragging] = useState(false);
     const [showPresets, setShowPresets] = useState(false);
     const gridRef = useRef<HTMLDivElement>(null);
+    const fileRef = useRef<HTMLInputElement>(null);
 
     const toggleCategory = (cat: string) => {
         setCollapsedCategories((prev) => {
@@ -212,13 +216,48 @@ export const PermissionMatrix: React.FC<PermissionMatrixProps> = ({ roles, onUpd
     // Export
     const exportMatrix = () => {
         const data = roles.map((r) => ({ name: r.name, permissions: r.permissions }));
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const blob = new Blob([serializeRoundtrip('permissions', data)], {
+            type: 'application/json',
+        });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'permission-matrix.json';
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    const importMatrix = async (file: File) => {
+        try {
+            const raw = await file.text();
+            let entries = permissionsPayloadSchema.safeParse(JSON.parse(raw));
+            if (!entries.success) {
+                const envelope = parseRoundtrip(raw, 'permissions', permissionsPayloadSchema);
+                if (!envelope.ok) throw new Error(envelope.error);
+                entries = permissionsPayloadSchema.safeParse(envelope.payload);
+            }
+            const byName = new Map(roles.map((r) => [r.name, r]));
+            let applied = 0;
+            for (const entry of entries.data ?? []) {
+                const role = byName.get(entry.name);
+                if (!role) continue;
+                onUpdate(role.id, entry.permissions);
+                applied++;
+            }
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Imported permissions for ${applied} role(s)`,
+                type: applied > 0 ? 'success' : 'warning',
+            });
+        } catch (e) {
+            LOGGER.warn('Permission matrix import failed', e);
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Import failed: ${e instanceof Error ? e.message : String(e)}`.slice(
+                    0,
+                    200,
+                ),
+                type: 'error',
+            });
+        }
     };
 
     const copyMatrix = () => {
@@ -330,6 +369,36 @@ export const PermissionMatrix: React.FC<PermissionMatrixProps> = ({ roles, onUpd
                         }}
                     >
                         None
+                    </button>
+                    <input
+                        ref={fileRef}
+                        type="file"
+                        accept="application/json,.json"
+                        style={{ display: 'none' }}
+                        aria-label="Import permission matrix"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) void importMatrix(file);
+                            e.target.value = '';
+                        }}
+                    />
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            fileRef.current?.click();
+                        }}
+                        style={{
+                            padding: '0.3rem',
+                            borderRadius: 6,
+                            background: 'rgba(255,255,255,0.05)',
+                            border: 'var(--1px solid var(--border-default))',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                        }}
+                        title="Import JSON"
+                        aria-label="Import permission matrix"
+                    >
+                        <Upload size={14} />
                     </button>
                     <button
                         onClick={(e) => {

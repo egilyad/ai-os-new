@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+export const permissionsPayloadSchema = z.array(
+    z
+        .object({
+            name: z.string(),
+            permissions: z.array(z.string()),
+        })
+        .passthrough(),
+);
+
 export const providersPayloadSchema = z.array(
     z
         .object({

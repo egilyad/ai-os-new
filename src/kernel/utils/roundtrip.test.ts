@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { providersPayloadSchema } from './roundtrip-schemas';
+import { permissionsPayloadSchema, providersPayloadSchema } from './roundtrip-schemas';
 import { mergeById, parseRoundtrip, serializeRoundtrip, ROUNDTRIP_VERSION } from './roundtrip';
 
 const Payload = z.object({ items: z.array(z.object({ id: z.string() })) });
@@ -43,6 +43,20 @@ describe('roundtrip serializer', () => {
         expect(parseRoundtrip(json, 'memory', Payload)).toMatchObject({
             ok: false,
             error: 'Payload does not match schema',
+        });
+    });
+
+    it('проверяет схему матрицы прав', () => {
+        const json = serializeRoundtrip('permissions', [
+            { name: 'admin', permissions: ['system:admin'] },
+        ]);
+        expect(parseRoundtrip(json, 'permissions', permissionsPayloadSchema)).toMatchObject({
+            ok: true,
+            payload: [{ name: 'admin', permissions: ['system:admin'] }],
+        });
+        const bad = serializeRoundtrip('permissions', [{ name: 'admin', permissions: 'all' }]);
+        expect(parseRoundtrip(bad, 'permissions', permissionsPayloadSchema)).toMatchObject({
+            ok: false,
         });
     });
 
