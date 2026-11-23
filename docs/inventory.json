@@ -306,8 +306,8 @@
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Agent Guide",
-      "bytes": 9565,
-      "hash": "93984ab22bed623ee7d3cecdd0f93fe013f30b1d"
+      "bytes": 9652,
+      "hash": "5648f6b6a22fd9ef90cca23ae0d4be1ed52110e9"
     },
     {
       "path": "AUTONOMOUS_PROGRESS.md",
@@ -2571,7 +2571,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "f892dd71f5651e679dff871c77be1cff39632098"
+      "hash": "e6f316d84ee9e55eab107af0e8c56b3c8a3920e1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2787,7 +2787,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "cf0ddd01de6f55886f87197f24d234ab2cec9f48"
+      "hash": "9986ce4afe3a15e5b861d73af101d943376c5d98"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2978,8 +2978,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 61319,
-      "hash": "581ea0aa75ead0516f02420d0421e19011f7c347"
+      "bytes": 61468,
+      "hash": "c14bac38db7af8bad56f5bacceb7b6aeef5884a5"
     },
     {
       "path": "docs/wiki/docs-standard.md",
