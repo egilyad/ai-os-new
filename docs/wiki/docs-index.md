@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (579 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (580 документов)
 
 ## Вики по разделам
 
@@ -189,6 +189,7 @@
 - [2026-11-22 — provenance-graph-link](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-provenance-graph-link.md)
 - [2026-11-22 — run-history-provenance](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-run-history-provenance.md)
 - [2026-11-22 — runtime-history-wiring](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-runtime-history-wiring.md)
+- [2026-11-23 — failure-card-diagnostics](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-failure-card-diagnostics.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
 - [🪪 SuperAgents OS — Digital System Passport](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_PASSPORT.md)

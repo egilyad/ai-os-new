@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 581,
+    "documents": 582,
     "byCategory": {
       "repo": 40,
-      "top": 139,
+      "top": 140,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 152,
-      "ru": 364
+      "ru": 365
     }
   },
   "duplicates": {
@@ -1606,6 +1606,14 @@
       "hash": "d4ca508c8bd8fc41b4df56b5948b335a498e4a14"
     },
     {
+      "path": "docs/sessions/2026-11-23-notification-toasts.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-23 — notification-toasts",
+      "bytes": 3599,
+      "hash": "b7c5a4e7e4a4ca1715e124bd7f738954a6a9083a"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2547,7 +2555,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "1fbd6f111a4108b677db1c96eaa84e79d73d7ca9"
+      "hash": "dced31879846252e57a10d47d7078e937c07b7e3"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2763,7 +2771,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "c0c5c7cf4f0a9f844a3973391620e5599b593ec3"
+      "hash": "53b84a896ebf1bed34e354417114e2d4af9aeb44"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2954,8 +2962,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 60906,
-      "hash": "95b78a4db90d90f9a40ac4d82977ce99363150d0"
+      "bytes": 61051,
+      "hash": "ad20d31222b13076c2851a356936ec5f28809ef1"
     },
     {
       "path": "docs/wiki/docs-standard.md",
