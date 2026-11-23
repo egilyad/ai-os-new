@@ -10,6 +10,8 @@ import { useKeyStore } from '../../stores/useKeyStore';
 import { eventBus, EVENTS, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ProviderManagerContainer');
 import { safeJsonParse } from '../../kernel/utils/safe-json';
+import { parseRoundtrip, serializeRoundtrip } from '../../kernel/utils/roundtrip';
+import { providersPayloadSchema } from '../../kernel/utils/roundtrip-schemas';
 import { groupManager } from '../../kernel/instances';
 import { downloadText, readFileAsText } from '../../shared/utils/file-transfer';
 
@@ -71,7 +73,7 @@ const ProviderManagerContainer: React.FC = () => {
         try {
             const data = await exportKeys();
             const filename = `providers-export-${new Date().toISOString().slice(0, 10)}.json`;
-            downloadText(filename, data);
+            downloadText(filename, serializeRoundtrip('providers', safeJsonParse(data)));
             eventBus.emit(EVENTS.NOTIFICATION, {
                 message: 'Providers exported successfully',
                 type: 'success',
@@ -79,10 +81,11 @@ const ProviderManagerContainer: React.FC = () => {
         } catch (err) {
             // Export failure used to vanish silently — notify like the success path does.
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `Providers export failed: ${err instanceof Error ? err.message : String(err)}`.slice(
-                    0,
-                    200,
-                ),
+                message:
+                    `Providers export failed: ${err instanceof Error ? err.message : String(err)}`.slice(
+                        0,
+                        200,
+                    ),
                 type: 'error',
             });
         } finally {
@@ -98,9 +101,16 @@ const ProviderManagerContainer: React.FC = () => {
             try {
                 const raw = await readFileAsText(file);
                 if (!raw?.trim()) throw new Error('File is empty');
+                let content = raw;
+                const envelope = parseRoundtrip(raw, 'providers', providersPayloadSchema);
+                if (envelope.ok) {
+                    content = JSON.stringify(envelope.payload);
+                } else if (envelope.error !== 'Unknown export format') {
+                    throw new Error(envelope.error);
+                }
                 let parsed: unknown;
                 try {
-                    parsed = safeJsonParse(raw);
+                    parsed = safeJsonParse(content);
                 } catch {
                     throw new Error(
                         'Invalid JSON format. Expected a valid JSON array of provider objects.',
@@ -118,7 +128,7 @@ const ProviderManagerContainer: React.FC = () => {
                         `${missingFields.length} entr${missingFields.length === 1 ? 'y' : 'ies'} missing required fields (provider, label)`,
                     );
                 }
-                const count = await importKeys(raw);
+                const count = await importKeys(content);
                 // Only show success if keys were actually imported; vault-locked case already shows an error from importKeys
                 if (count > 0) {
                     eventBus.emit(EVENTS.NOTIFICATION, {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
+import { providersPayloadSchema } from './roundtrip-schemas';
 import { mergeById, parseRoundtrip, serializeRoundtrip, ROUNDTRIP_VERSION } from './roundtrip';
 
 const Payload = z.object({ items: z.array(z.object({ id: z.string() })) });
@@ -42,6 +43,22 @@ describe('roundtrip serializer', () => {
         expect(parseRoundtrip(json, 'memory', Payload)).toMatchObject({
             ok: false,
             error: 'Payload does not match schema',
+        });
+    });
+
+    it('проверяет схему провайдеров и сохраняет лишние поля', () => {
+        const json = serializeRoundtrip('providers', {
+            items: [{ provider: 'openai', label: 'main', key: 'sk-1' }],
+        });
+        const parsed = parseRoundtrip(json, 'providers', providersPayloadSchema);
+        // payload должен быть массивом — оболочка выше намеренно неверная
+        expect(parsed).toMatchObject({ ok: false });
+        const valid = serializeRoundtrip('providers', [
+            { provider: 'openai', label: 'main', key: 'sk-1' },
+        ]);
+        expect(parseRoundtrip(valid, 'providers', providersPayloadSchema)).toMatchObject({
+            ok: true,
+            payload: [{ provider: 'openai', label: 'main', key: 'sk-1' }],
         });
     });
 

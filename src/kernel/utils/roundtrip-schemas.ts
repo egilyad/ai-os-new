@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+export const providersPayloadSchema = z.array(
+    z
+        .object({
+            provider: z.string(),
+            label: z.string(),
+        })
+        .passthrough(),
+);
+
 export const memoryPayloadSchema = z.array(
     z
         .object({
