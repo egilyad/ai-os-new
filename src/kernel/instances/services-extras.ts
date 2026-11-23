@@ -1,6 +1,7 @@
 import { lazyService } from '../service-helper';
 import type { IForumService } from '../contracts/forum';
 import type { IRunHistoryService } from '../contracts/run-history';
+import type { INotificationInboxService } from '../contracts/notification-inbox';
 import type { IWikiBrainService } from '../contracts/wiki-brain';
 import type { IMemoryGraphService } from '../contracts/viz/memory-graph';
 import type { IArchitectureGraphService } from '../contracts/viz/architecture-graph';
@@ -352,6 +353,9 @@ export const scenarioRepository = lazyService<ScenarioRepository>('scenarioRepos
 export const directorRepository = lazyService<DirectorRepository>('directorRepository');
 export const forumService = lazyService<IForumService>('forumService');
 export const runHistoryService = lazyService<IRunHistoryService>('runHistoryService');
+export const notificationInboxService = lazyService<INotificationInboxService>(
+    'notificationInboxService',
+);
 export const lensEngine = lazyService<ILensEngineService>('lensEngine');
 export const crystalVault = lazyService<ICrystalVaultService>('crystalVault');
 export const junctionEngine = lazyService<IJunctionEngineService>('junctionEngine');

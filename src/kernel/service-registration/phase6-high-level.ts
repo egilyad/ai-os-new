@@ -44,6 +44,7 @@ import { AutoDebateService } from '../services/debate-runtime/auto-debate/auto-d
 import { resolveDebateStoreAdapters } from './debate-store-adapters';
 import { EventRecorder } from '../services/event-sourcing/event-recorder';
 import { NotificationWebhookService } from '../services/notification-webhook-service';
+import { NotificationInboxService } from '../services/notification-inbox-service';
 import { CompromiseWebhookService } from '../services/compromise-webhook-service';
 import { ConsistencyChecker } from '../services/consistency-checker';
 import { TopologyManager } from '../services/topology-manager';
@@ -202,6 +203,15 @@ export const registerPhase6: Phase = (helpers, ctx) => {
     );
 
     register(
+        'notificationInboxService',
+        (c) =>
+            new NotificationInboxService({
+                eventBus: c.get<IEventBus>('eventBus'),
+                database: c.get<IDatabaseService>('database'),
+            }),
+    );
+
+    register(
         'compromiseWebhookService',
         (c) =>
             new CompromiseWebhookService({
@@ -245,7 +255,11 @@ export const registerPhase6: Phase = (helpers, ctx) => {
             eventBus: c.get<IEventBus>('eventBus'),
             database: c.get<IDatabaseService>('database'),
         });
-        void svc.init().catch((e) => PhaseLOGGER.error('Phase6', 'AgentMarketplace init failed', { error: String(e) }));
+        void svc
+            .init()
+            .catch((e) =>
+                PhaseLOGGER.error('Phase6', 'AgentMarketplace init failed', { error: String(e) }),
+            );
         return svc;
     });
 
@@ -283,7 +297,11 @@ export const registerPhase6: Phase = (helpers, ctx) => {
             c.get<IDatabaseService>('database'),
             c.get<IEventBus>('eventBus'),
         );
-        void svc.init().catch((e) => PhaseLOGGER.error('Phase6', 'PersonaService init failed', { error: String(e) }));
+        void svc
+            .init()
+            .catch((e) =>
+                PhaseLOGGER.error('Phase6', 'PersonaService init failed', { error: String(e) }),
+            );
         return svc;
     });
 

@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (578 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (579 документов)
 
 ## Вики по разделам
 
@@ -181,6 +181,7 @@
 - [Роадмап: Rivals / Parity и паритет с аналогами](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmaps/ROADMAP_11_PARITY_RIVALS_ANALOGS.md)
 - [2026-11-22 — aci-computer-use-integration](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-aci-computer-use-integration.md)
 - [2026-11-22 — aci-sandbox-policy](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-aci-sandbox-policy.md)
+- [2026-11-22 — command-palette-failures](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-command-palette-failures.md)
 - [2026-11-22 — e2e-run-history](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-e2e-run-history.md)
 - [2026-11-22 — key-vault-integration-and-p0-status](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-key-vault-integration-and-p0-status.md)
 - [2026-11-22 — mission-run-integration](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-22-mission-run-integration.md)
