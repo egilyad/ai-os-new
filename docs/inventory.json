@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 593,
+    "documents": 594,
     "byCategory": {
       "repo": 40,
-      "top": 151,
+      "top": 152,
       "audits": 25,
       "wiki": 377
     },
     "byLanguage": {
       "en": 65,
       "mixed": 158,
-      "ru": 370
+      "ru": 371
     }
   },
   "duplicates": {
@@ -1686,6 +1686,14 @@
       "hash": "a940be8a91478639d35fc45c3a67b4d9adbbe664"
     },
     {
+      "path": "docs/sessions/2026-11-23-roles-search-test-fix.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-23 — roles-search-test-fix",
+      "bytes": 2774,
+      "hash": "9eacf19163e82c291c77d64159fcd764e78b3137"
+    },
+    {
       "path": "docs/sessions/2026-11-23-roundtrip-dedup-modes.md",
       "category": "top",
       "language": "mixed",
@@ -2643,7 +2651,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "b736bc40775162da9d2376fa4877b79eb311aa43"
+      "hash": "8cad8975eaa9d0711f9fa915f7579e9534ed43d1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2859,7 +2867,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "62f23f26010f01cb09c77125bfc3604516a89efc"
+      "hash": "741e239e0babcea2aaab1ca66108418bd9f78788"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3050,8 +3058,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 62524,
-      "hash": "fd3f7e7456c8c8f64c11bc635f6ad3a26dd67c97"
+      "bytes": 62659,
+      "hash": "31c29e2dd9fdcfd97151a3ddd7ba302060acebd6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
