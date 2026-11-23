@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1668,
-    "edges": 3023,
+    "nodes": 1670,
+    "edges": 3029,
     "byType": {
       "audit": 25,
-      "code": 743,
+      "code": 744,
       "test": 251,
       "panel": 272,
-      "article": 377
+      "article": 378
     },
     "byKind": {
       "audit_test": 26,
       "audit_mention": 64,
       "documents": 267,
       "test": 363,
-      "source": 1054,
-      "related": 1249
+      "source": 1056,
+      "related": 1253
     }
   },
   "nodes": [
@@ -1991,6 +1991,11 @@
       "id": "file:src/components/WikiPanel/wiki-articles.ts",
       "type": "code",
       "label": "src/components/WikiPanel/wiki-articles.ts"
+    },
+    {
+      "id": "file:src/components/WikiPanel/wiki-skillevaluator.ts",
+      "type": "code",
+      "label": "src/components/WikiPanel/wiki-skillevaluator.ts"
     },
     {
       "id": "file:src/components/WikiPanel/WikiPanel.test.tsx",
@@ -8078,6 +8083,13 @@
       "label": "Разработчикам: сервисы и lazyService",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-skillevaluator",
+      "type": "article",
+      "label": "NVIDIA SkillEvaluator — оценка агентных скиллов",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-status-active",
@@ -18850,6 +18862,36 @@
     {
       "from": "wiki:dev-services",
       "to": "wiki:dev-service-map",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "file:AGENTS.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "file:src/components/WikiPanel/wiki-skillevaluator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "wiki:dev-ci",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "wiki:dev-generators",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "wiki:dev-scripts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-skillevaluator",
+      "to": "wiki:dev-testing",
       "kind": "related"
     },
     {

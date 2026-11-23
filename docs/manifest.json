@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 76
+      "articles": 77
     }
   ],
   "articles": [
@@ -10291,6 +10291,35 @@
       "related": [
         "ci-architecture",
         "testing-architecture"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-skillevaluator",
+      "type": "article",
+      "slug": "dev-skillevaluator",
+      "title": "NVIDIA SkillEvaluator — оценка агентных скиллов",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "скиллы",
+        "оценка",
+        "CI",
+        "качество",
+        "безопасность",
+        "harness",
+        "skillevaluator"
+      ],
+      "sources": [
+        "AGENTS.md",
+        "src/components/WikiPanel/wiki-skillevaluator.ts"
+      ],
+      "related": [
+        "dev-ci",
+        "dev-testing",
+        "dev-scripts",
+        "dev-generators"
       ],
       "reviewed": null,
       "tests": []

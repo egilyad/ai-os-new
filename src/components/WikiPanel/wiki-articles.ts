@@ -26,6 +26,7 @@ import { RESEARCH_INDEX_ARTICLE } from './wiki-research-index';
 import { TECHNIQUE_ARTICLES } from './wiki-techniques';
 import { PANELS_EXTRA_ARTICLES } from './wiki-panels-extra';
 import { TESTING_ARTICLES } from './wiki-testing';
+import { SKILL_EVALUATOR_ARTICLE } from './wiki-skillevaluator';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -5023,6 +5024,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...PANELS_EXTRA_ARTICLES,
     ...PLUGINS_GUIDE_ARTICLES,
     ...TESTING_ARTICLES,
+    SKILL_EVALUATOR_ARTICLE,
 ];
 
 export function getAllArticles(): WikiArticle[] {
