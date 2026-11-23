@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Save } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { CrystalDomain, CrystalOriginKind } from '../../kernel/types/crystal-types';
@@ -66,6 +66,14 @@ const CrystalProposeModal: React.FC<CrystalProposeModalProps> = ({ onClose, onPr
         }
     };
 
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [onClose]);
+
     return (
         <div
             style={{
@@ -80,6 +88,9 @@ const CrystalProposeModal: React.FC<CrystalProposeModalProps> = ({ onClose, onPr
             onClick={onClose}
         >
             <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Propose crystal"
                 onClick={(e) => e.stopPropagation()}
                 style={{
                     width: 540,
@@ -100,7 +111,9 @@ const CrystalProposeModal: React.FC<CrystalProposeModalProps> = ({ onClose, onPr
                         marginBottom: '1rem',
                     }}
                 >
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                    <span
+                        style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}
+                    >
                         {t('lenses_crystal.propose')}
                     </span>
                     <button

@@ -52,6 +52,14 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
         };
     }, []);
 
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [onClose]);
+
     const handleCreate = async () => {
         if (passphrase.length < 8) {
             setError('Passphrase must be at least 8 characters');
@@ -111,6 +119,9 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
             >
                 <motion.div
                     className="w-[420px] max-w-[90vw] rounded-xl border border-zinc-700 bg-zinc-900 p-6 shadow-xl"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Vault settings"
                     onClick={(e) => e.stopPropagation()}
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -155,7 +166,11 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
                                     disabled={busy}
                                     className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50"
                                 >
-                                    {busy ? 'Working…' : mode === 'create' ? 'Create vault' : 'Unlock'}
+                                    {busy
+                                        ? 'Working…'
+                                        : mode === 'create'
+                                          ? 'Create vault'
+                                          : 'Unlock'}
                                 </button>
                             </div>
                         )}

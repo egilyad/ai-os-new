@@ -148,6 +148,14 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
     const isLocked = task.lockedBy && task.lockedUntil && task.lockedUntil > Date.now();
     const lockedLabels = allLabels.filter((l) => taskLabelIds.includes(l.id!));
 
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [onClose]);
+
     return (
         <div
             style={{
@@ -163,6 +171,9 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
             onClick={onClose}
         >
             <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Task details"
                 style={{
                     width: '100%',
                     maxWidth: 600,
