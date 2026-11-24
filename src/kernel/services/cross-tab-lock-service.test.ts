@@ -30,11 +30,10 @@ describe('DistributedLockService unload release (P-MED-8)', () => {
     it('destroy() detaches the unload listener', async () => {
         const acquired = await svc.acquire('chat:s2', { maxRetries: 0 });
         expect(acquired.lock).not.toBeNull();
-        svc.destroy();
+        await svc.destroy();
+        expect(await svc.getOwner('chat:s2')).toBeNull();
         // After destroy the service no longer tracks the lock; a late
         // unload must not throw or resurrect notifications.
-        expect(() =>
-            window.dispatchEvent(new Event('beforeunload')),
-        ).not.toThrow();
+        expect(() => window.dispatchEvent(new Event('beforeunload'))).not.toThrow();
     });
 });

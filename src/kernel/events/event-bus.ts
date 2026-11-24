@@ -139,8 +139,8 @@ export class EventBus implements IEventBus {
             const oldest = this.idempotencyCache.keys().next().value;
             if (oldest !== undefined) this.idempotencyCache.delete(oldest);
         }
-        this.idempotencyCache.set(cacheKey, now);
         this.emit(event, data);
+        this.idempotencyCache.set(cacheKey, now);
         return true;
     }
 
@@ -188,7 +188,8 @@ export class EventBus implements IEventBus {
         handlers.push(callback as Callback<unknown>);
         this.listenerMap.set(key, handlers);
         const unsub = () => this.off(event, callback);
-        const perEvent = this._unsubByCb.get(callback as Callback<unknown>) ?? new Map<string, () => void>();
+        const perEvent =
+            this._unsubByCb.get(callback as Callback<unknown>) ?? new Map<string, () => void>();
         perEvent.set(key, unsub);
         this._unsubByCb.set(callback as Callback<unknown>, perEvent);
         // H-06: Track unsubscribe so reset() can clean up all subscriptions

@@ -23,11 +23,15 @@ export function isStaleSessionWrite(
 ): boolean {
     const currentVersion = current?.version ?? 0;
     const incomingVersion = session?.version ?? 0;
-    // Treat version as authoritative: an incoming snapshot whose version is
-    // behind the DB is stale regardless of wall-clock, because the in-memory
-    // copy never carries the latest version back. Merging is far safer than
-    // a last-writer-wins overwrite across tabs.
-    return incomingVersion > 0 && incomingVersion < currentVersion;
+    // Version is authoritative only when both sides carry one. Real chats
+    // write version=0, so fall back to wall-clock there — otherwise a strictly
+    // older cross-tab snapshot would overwrite fresh data.
+    if (incomingVersion > 0 && currentVersion > 0) {
+        return incomingVersion < currentVersion;
+    }
+    const incomingTime = session?.updatedAt ?? 0;
+    const currentTime = current?.updatedAt ?? 0;
+    return currentTime > 0 && incomingTime < currentTime;
 }
 
 /**

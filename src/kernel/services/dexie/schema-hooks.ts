@@ -99,6 +99,34 @@ const rejectHook =
         }
     };
 
+function setPath(target: Record<string, unknown>, path: string, value: unknown): void {
+    const parts = path.split('.');
+    let current = target;
+    for (let i = 0; i < parts.length - 1; i++) {
+        const part = parts[i]!;
+        if (current[part] === null || typeof current[part] !== 'object') {
+            current[part] = {};
+        }
+        current = current[part] as Record<string, unknown>;
+    }
+    current[parts[parts.length - 1]!] = value;
+}
+
+export function applyMods(obj: unknown, mods: unknown): unknown {
+    if (!mods || typeof mods !== 'object' || Array.isArray(mods)) return obj;
+    let result: Record<string, unknown>;
+    try {
+        result = structuredClone(obj) as Record<string, unknown>;
+    } catch {
+        result = { ...(obj as Record<string, unknown>) };
+    }
+    for (const [key, value] of Object.entries(mods)) {
+        if (key.includes('.')) setPath(result, key, value);
+        else result[key] = value;
+    }
+    return result;
+}
+
 /**
  * Устанавливает Zod-хуки валидации на таблицы Dexie (creating/updating).
  * Вызывается из конструктора SuperAgentsDB после регистрации версий.
@@ -107,7 +135,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.memories.hook('creating', rejectHook(MemoryEntrySchema, 'MemoryEntry'));
     db.memories.hook('updating', (mods, _primKey, obj) => {
         try {
-            MemoryEntrySchema.parse({ ...obj, ...mods });
+            MemoryEntrySchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'MemoryEntry update validation FAILED', {
@@ -120,7 +148,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.cognitiveTraces.hook('creating', rejectHook(CognitiveTraceSchema, 'CognitiveTrace'));
     db.cognitiveTraces.hook('updating', (mods, _primKey, obj) => {
         try {
-            CognitiveTraceSchema.parse({ ...obj, ...mods });
+            CognitiveTraceSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'CognitiveTrace update validation FAILED', {
@@ -133,7 +161,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.sessions.hook('creating', rejectHook(ChatSessionSchema, 'ChatSession'));
     db.sessions.hook('updating', (mods, _primKey, obj) => {
         try {
-            ChatSessionSchema.parse({ ...obj, ...mods });
+            ChatSessionSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'ChatSession update validation FAILED', {
@@ -146,7 +174,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.notes.hook('creating', rejectHook(KeyNoteSchema, 'KeyNote'));
     db.notes.hook('updating', (mods, _primKey, obj) => {
         try {
-            KeyNoteSchema.parse({ ...obj, ...mods });
+            KeyNoteSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'KeyNote update validation FAILED');
@@ -157,7 +185,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.apiKeys.hook('creating', rejectHook(ApiKeySchema, 'ApiKey'));
     db.apiKeys.hook('updating', (mods, _primKey, obj) => {
         try {
-            ApiKeySchema.parse({ ...obj, ...mods });
+            ApiKeySchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'ApiKey update validation FAILED');
@@ -168,7 +196,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.roles.hook('creating', rejectHook(RoleSchema, 'Role'));
     db.roles.hook('updating', (mods, _primKey, obj) => {
         try {
-            RoleSchema.parse({ ...obj, ...mods });
+            RoleSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'Role update validation FAILED');
@@ -179,7 +207,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.traces.hook('creating', rejectHook(ExecutionTraceSchema, 'ExecutionTrace'));
     db.traces.hook('updating', (mods, _primKey, obj) => {
         try {
-            ExecutionTraceSchema.parse({ ...obj, ...mods });
+            ExecutionTraceSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'ExecutionTrace update validation FAILED');
@@ -190,7 +218,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.skills.hook('creating', rejectHook(CognitiveSkillSchema, 'CognitiveSkill'));
     db.skills.hook('updating', (mods, _primKey, obj) => {
         try {
-            CognitiveSkillSchema.parse({ ...obj, ...mods });
+            CognitiveSkillSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'CognitiveSkill update validation FAILED');
@@ -201,7 +229,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.connectors.hook('creating', rejectHook(ConnectorSchema, 'Connector'));
     db.connectors.hook('updating', (mods, _primKey, obj) => {
         try {
-            ConnectorSchema.parse({ ...obj, ...mods });
+            ConnectorSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'Connector update validation FAILED');
@@ -212,7 +240,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.keyValue.hook('creating', rejectHook(KeyValueSchema, 'KeyValue'));
     db.keyValue.hook('updating', (mods, _primKey, obj) => {
         try {
-            KeyValueSchema.parse({ ...obj, ...mods });
+            KeyValueSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch {
             LOGGER.error('DatabaseService', 'KeyValue update validation FAILED');
@@ -223,7 +251,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.debateSessions.hook('creating', rejectHook(DebateSessionRecordSchema, 'DebateSession'));
     db.debateSessions.hook('updating', (mods, _primKey, obj) => {
         try {
-            DebateSessionRecordSchema.parse({ ...obj, ...mods });
+            DebateSessionRecordSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'DebateSession update validation FAILED', {
@@ -236,7 +264,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.debateVerdicts.hook('creating', rejectHook(DebateVerdictRecordSchema, 'DebateVerdict'));
     db.debateVerdicts.hook('updating', (mods, _primKey, obj) => {
         try {
-            DebateVerdictRecordSchema.parse({ ...obj, ...mods });
+            DebateVerdictRecordSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'DebateVerdict update validation FAILED', {
@@ -249,7 +277,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.debateTimeline.hook('creating', rejectHook(DebateTimelineEntrySchema, 'DebateTimeline'));
     db.debateTimeline.hook('updating', (mods, _primKey, obj) => {
         try {
-            DebateTimelineEntrySchema.parse({ ...obj, ...mods });
+            DebateTimelineEntrySchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'DebateTimeline update validation FAILED', {
@@ -262,7 +290,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.debateOverrides.hook('creating', rejectHook(DebateOverrideSchema, 'DebateOverride'));
     db.debateOverrides.hook('updating', (mods, _primKey, obj) => {
         try {
-            DebateOverrideSchema.parse({ ...obj, ...mods });
+            DebateOverrideSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'DebateOverride update validation FAILED', {
@@ -275,7 +303,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.sessionLinks.hook('creating', rejectHook(SessionLinkSchema, 'SessionLink'));
     db.sessionLinks.hook('updating', (mods, _primKey, obj) => {
         try {
-            SessionLinkSchema.parse({ ...obj, ...mods });
+            SessionLinkSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'SessionLink update validation FAILED', {
@@ -288,7 +316,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.eventLog.hook('creating', rejectHook(EventLogEntrySchema, 'EventLog'));
     db.eventLog.hook('updating', (mods, _primKey, obj) => {
         try {
-            EventLogEntrySchema.parse({ ...obj, ...mods });
+            EventLogEntrySchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'EventLog update validation FAILED', { error: e });
@@ -299,7 +327,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.scenarios.hook('creating', rejectHook(ConversationScenarioSchema, 'ConversationScenario'));
     db.scenarios.hook('updating', (mods, _primKey, obj) => {
         try {
-            ConversationScenarioSchema.parse({ ...obj, ...mods });
+            ConversationScenarioSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'ConversationScenario update validation FAILED', {
@@ -312,7 +340,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.agemsTasks.hook('creating', rejectHook(AgemsTaskSchema, 'AgemsTask'));
     db.agemsTasks.hook('updating', (mods, _primKey, obj) => {
         try {
-            AgemsTaskSchema.parse({ ...obj, ...mods });
+            AgemsTaskSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'AgemsTask update validation FAILED', { error: e });
@@ -323,7 +351,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.taskComments.hook('creating', rejectHook(TaskCommentSchema, 'TaskComment'));
     db.taskComments.hook('updating', (mods, _primKey, obj) => {
         try {
-            TaskCommentSchema.parse({ ...obj, ...mods });
+            TaskCommentSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'TaskComment update validation FAILED', { error: e });
@@ -334,7 +362,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.labels.hook('creating', rejectHook(LabelSchema, 'Label'));
     db.labels.hook('updating', (mods, _primKey, obj) => {
         try {
-            LabelSchema.parse({ ...obj, ...mods });
+            LabelSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'Label update validation FAILED', { error: e });
@@ -345,7 +373,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.taskLabels.hook('creating', rejectHook(TaskLabelSchema, 'TaskLabel'));
     db.taskLabels.hook('updating', (mods, _primKey, obj) => {
         try {
-            TaskLabelSchema.parse({ ...obj, ...mods });
+            TaskLabelSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'TaskLabel update validation FAILED', { error: e });
@@ -356,7 +384,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.taskWorkProducts.hook('creating', rejectHook(TaskWorkProductSchema, 'TaskWorkProduct'));
     db.taskWorkProducts.hook('updating', (mods, _primKey, obj) => {
         try {
-            TaskWorkProductSchema.parse({ ...obj, ...mods });
+            TaskWorkProductSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'TaskWorkProduct update validation FAILED', {
@@ -369,7 +397,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
     db.taskTriggers.hook('creating', rejectHook(TaskTriggerSchema, 'TaskTrigger'));
     db.taskTriggers.hook('updating', (mods, _primKey, obj) => {
         try {
-            TaskTriggerSchema.parse({ ...obj, ...mods });
+            TaskTriggerSchema.parse(applyMods(obj, mods));
             return undefined;
         } catch (e) {
             LOGGER.error('DatabaseService', 'TaskTrigger update validation FAILED', { error: e });

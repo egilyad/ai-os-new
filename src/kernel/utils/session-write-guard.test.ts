@@ -20,12 +20,31 @@ describe('isStaleSessionWrite', () => {
     });
 
     it('accepts same-or-newer versions', () => {
-        expect(isStaleSessionWrite(session({ id: 's1', version: 5 }), session({ id: 's1', version: 5 }))).toBe(false);
-        expect(isStaleSessionWrite(session({ id: 's1', version: 6 }), session({ id: 's1', version: 5 }))).toBe(false);
+        expect(
+            isStaleSessionWrite(
+                session({ id: 's1', version: 5 }),
+                session({ id: 's1', version: 5 }),
+            ),
+        ).toBe(false);
+        expect(
+            isStaleSessionWrite(
+                session({ id: 's1', version: 6 }),
+                session({ id: 's1', version: 5 }),
+            ),
+        ).toBe(false);
     });
 
     it('accepts version-less snapshots (legacy) regardless of current version', () => {
-        expect(isStaleSessionWrite(session({ id: 's1' }), session({ id: 's1', version: 9 }))).toBe(false);
+        expect(isStaleSessionWrite(session({ id: 's1' }), session({ id: 's1', version: 9 }))).toBe(
+            false,
+        );
+    });
+
+    it('считает устаревшим version=0 с более ранним updatedAt', () => {
+        const incoming = session({ id: 's1', updatedAt: 100 });
+        const current = session({ id: 's1', updatedAt: 200 });
+        expect(isStaleSessionWrite(incoming, current)).toBe(true);
+        expect(isStaleSessionWrite(session({ id: 's1', updatedAt: 300 }), current)).toBe(false);
     });
 
     it('accepts writes when there is no current record', () => {

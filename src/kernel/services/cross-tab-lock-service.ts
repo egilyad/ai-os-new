@@ -328,7 +328,7 @@ export class DistributedLockService implements IDistributedLock {
         };
     }
 
-    destroy(): void {
+    async destroy(): Promise<void> {
         if (this._heartbeatTimer) {
             clearInterval(this._heartbeatTimer);
             this._heartbeatTimer = null;
@@ -337,16 +337,7 @@ export class DistributedLockService implements IDistributedLock {
             window.removeEventListener('beforeunload', this._unloadHandler);
             this._unloadHandler = null;
         }
-        // Release all held locks
-        for (const key of this._heldLocks.keys()) {
-            const resourceId = key.slice(LOCK_PREFIX.length) as LockResource;
-            this._notify({
-                resourceId,
-                ownerId: this._ownerId,
-                action: 'released',
-            });
-        }
-        this._heldLocks.clear();
+        await this._releaseAllOwned();
         this._listeners = [];
     }
 }

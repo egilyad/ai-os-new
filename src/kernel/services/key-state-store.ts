@@ -177,8 +177,10 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         // Route through the single coalesced writer so an immediate write can
         // never land after a staler snapshot from the debounced path.
         this._persistDirty = true;
-        if (!this.persistPromise) this.persist();
-        await this.persistPromise;
+        do {
+            if (!this.persistPromise) this.persist();
+            await this.persistPromise;
+        } while (this._persistDirty || this.persistPromise);
     }
 
     /**
@@ -237,17 +239,10 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
     }
 
     /** Ensure an entry exists for a key (used for runtime-added keys). */
-    private _ensureState(
-        id: string,
-        key: import('../types/metrics-types').ApiKey,
-    ): void {
+    private _ensureState(id: string, key: import('../types/metrics-types').ApiKey): void {
         if (this.states.has(id)) return;
         const status: KeyStatus =
-            key.status === 'active'
-                ? 'ready'
-                : key.status === 'error'
-                  ? 'broken'
-                  : 'unknown';
+            key.status === 'active' ? 'ready' : key.status === 'error' ? 'broken' : 'unknown';
         this.states.set(id, {
             id,
             provider: key.provider,

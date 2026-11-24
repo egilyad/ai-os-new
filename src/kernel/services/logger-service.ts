@@ -155,7 +155,7 @@ export class LoggerService implements ILogger {
             // P0-4: errors are stored sanitized so secrets can't reach the
             // buffer / IndexedDB persistence / exportLogs().
             error: sanitizeErrorEntry(err),
-            meta,
+            meta: meta ? (sanitizeObject(meta) as Record<string, unknown>) : undefined,
         };
 
         this.state.buffer.push(entry);
