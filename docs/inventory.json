@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 612,
+    "documents": 613,
     "byCategory": {
       "repo": 40,
-      "top": 168,
+      "top": 169,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 172,
+      "mixed": 173,
       "ru": 375
     }
   },
@@ -1830,6 +1830,14 @@
       "hash": "758150e5ce808597110002c127fe61d3c9afddfd"
     },
     {
+      "path": "docs/sessions/2026-11-24-ssot-keystate-cas.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — ssot-keystate-cas",
+      "bytes": 3139,
+      "hash": "4e06dd285dc51deff07d2349c5093e953787bb82"
+    },
+    {
       "path": "docs/sessions/2026-11-24-ssot-theme.md",
       "category": "top",
       "language": "mixed",
@@ -2779,7 +2787,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "92a9cbf372d515c84f3292ce96cedf3fe1956c1d"
+      "hash": "dd4c7a5f69436783d62104c528ef5384293d8d53"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2995,7 +3003,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "39c389234c5e276f85f8dcd95306d58f7cfac017"
+      "hash": "81bc25f0665fbfeb254fcfd70d145440474282cc"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3194,8 +3202,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 65014,
-      "hash": "9e985192e3bac4099f48441869d9e61c858dd272"
+      "bytes": 65149,
+      "hash": "711ff1a6504292f7431af69ef9521328a5959cf4"
     },
     {
       "path": "docs/wiki/docs-standard.md",

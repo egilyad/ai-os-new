@@ -115,6 +115,35 @@ describe('KeyStateStore', () => {
         await store.destroy();
     });
 
+    it('CAS-запись сохраняет более свежее состояние другой вкладки', async () => {
+        const remoteUpdatedAt = Date.now() + 100_000;
+        let stored: Array<{ id: string; state: KeyState }> = [
+            { id: 'k1', state: { ...state('k1'), updatedAt: remoteUpdatedAt } },
+        ];
+        let version = 1;
+        const casDb = {
+            getKv: async <T>(id: string): Promise<T | null> =>
+                id === KV_KEY ? (stored as T) : null,
+            setKv: async <T>(_id: string, value: T): Promise<void> => {
+                stored = value as Array<{ id: string; state: KeyState }>;
+            },
+            getKvCas: async <T>(_id: string) => ({ value: stored as T, version }),
+            setKvCas: async <T>(_id: string, value: T, expected: number) => {
+                if (expected !== version) return false;
+                stored = value as Array<{ id: string; state: KeyState }>;
+                version++;
+                return true;
+            },
+        };
+        const store = new KeyStateStore(fakeBus(), casDb);
+        await store.start();
+        await store.update('k1', { status: 'broken', healthScore: 10 });
+        const remote = stored.find((row) => row.id === 'k1');
+        expect(remote?.state.updatedAt).toBe(remoteUpdatedAt);
+        expect(remote?.state.status).toBe('ready');
+        expect(stored.some((row) => row.id === 'k1')).toBe(true);
+    });
+
     it('getForRouting filters blocked keys', async () => {
         const store = new KeyStateStore(bus, db);
         await store.start();

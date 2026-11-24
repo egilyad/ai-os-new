@@ -44,6 +44,8 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
     private database?: {
         getKv: <T>(id: string) => Promise<T | null>;
         setKv: <T>(id: string, value: T) => Promise<void>;
+        getKvCas?: <T>(id: string) => Promise<{ value: T | null; version: number }>;
+        setKvCas?: <T>(id: string, value: T, expectedVersion: number) => Promise<boolean>;
     };
     private persistPromise: Promise<void> | null = null;
     private _persistDirty = false;
@@ -55,6 +57,8 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         database?: {
             getKv: <T>(id: string) => Promise<T | null>;
             setKv: <T>(id: string, value: T) => Promise<void>;
+            getKvCas?: <T>(id: string) => Promise<{ value: T | null; version: number }>;
+            setKvCas?: <T>(id: string, value: T, expectedVersion: number) => Promise<boolean>;
         },
         private _lazyGetKeyIds?: () => string[],
     ) {
@@ -158,11 +162,29 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         this.persistPromise = (async () => {
             try {
                 this._persistDirty = false;
+                const db = this.database!;
+                if (db.getKvCas && db.setKvCas) {
+                    for (let attempt = 0; attempt < 3; attempt++) {
+                        const snapshot =
+                            await db.getKvCas<Array<{ id: string; state: KeyState }>>(
+                                KV_STATES_KEY,
+                            );
+                        const merged = new Map<string, KeyState>();
+                        for (const row of snapshot.value ?? []) merged.set(row.id, row.state);
+                        for (const [id, state] of this.states) {
+                            const prev = merged.get(id);
+                            if (!prev || state.updatedAt >= prev.updatedAt) merged.set(id, state);
+                        }
+                        const payload = [...merged.entries()].map(([id, state]) => ({ id, state }));
+                        if (await db.setKvCas(KV_STATES_KEY, payload, snapshot.version)) return;
+                    }
+                    rootLogger.warn('KeyStateStore', 'CAS exhausted — falling back to setKv');
+                }
                 const data = Array.from(this.states.entries()).map(([id, state]) => ({
                     id,
                     state,
                 }));
-                await this.database!.setKv(KV_STATES_KEY, data);
+                await db.setKv(KV_STATES_KEY, data);
             } catch (e) {
                 rootLogger.warn('KeyStateStore', 'Failed to persist states', { error: e });
             } finally {
