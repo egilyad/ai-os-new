@@ -3,7 +3,15 @@ import { GovernanceService } from './governance-service';
 
 function makeRepo() {
     const capabilities: Array<{ subject: string; capability: string; allow: boolean }> = [];
-    const policies: Array<{ id: string; name: string; action: string; subject: string; effect: string; enabled: boolean; priority: number }> = [];
+    const policies: Array<{
+        id: string;
+        name: string;
+        action: string;
+        subject: string;
+        effect: string;
+        enabled: boolean;
+        priority: number;
+    }> = [];
     const roles: Array<{ userId: string; role: string; scope: string }> = [];
     const trust = new Map<string, { score: number; interactions: number }>();
     return {
@@ -38,7 +46,7 @@ describe('GovernanceService', () => {
     it('grantCapability + checkCapability allow matching subject', async () => {
         const { repo, events, audit } = makeDeps();
         const svc = new GovernanceService(repo as never, events as never, audit as never);
-        await svc.grantCapability('agent-1', 'tool:web_search');
+        await svc.grantCapability('agent-1', 'tool:web_search', true, 'admin-user');
         await expect(svc.checkCapability('agent-1', 'tool:web_search')).resolves.toBe(true);
         await expect(svc.checkCapability('agent-1', 'tool:code_exec')).resolves.toBe(false);
     });
@@ -46,27 +54,56 @@ describe('GovernanceService', () => {
     it('evaluate defaults to deny when no rule matches (fail-closed)', async () => {
         const { repo, events, audit } = makeDeps();
         const svc = new GovernanceService(repo as never, events as never, audit as never);
-        await expect(svc.evaluate({ action: 'budget:spend', subject: 'agent-1' })).resolves.toEqual({
-            decision: 'deny',
-        });
+        await expect(svc.evaluate({ action: 'budget:spend', subject: 'agent-1' })).resolves.toEqual(
+            {
+                decision: 'deny',
+            },
+        );
     });
 
     it('evaluate deny beats allow at same action', async () => {
         const { repo, events, audit } = makeDeps();
         const svc = new GovernanceService(repo as never, events as never, audit as never);
-        await svc.addPolicy({ name: 'allow-spend', action: 'budget:spend', subject: '*', effect: 'allow', priority: 0 });
-        await svc.addPolicy({ name: 'deny-agent1', action: 'budget:spend', subject: 'agent-1', effect: 'deny', priority: 0 });
-        await expect(svc.evaluate({ action: 'budget:spend', subject: 'agent-1' })).resolves.toEqual({
-            decision: 'deny',
-            ruleId: expect.any(String),
-        });
+        await svc.addPolicy(
+            {
+                name: 'allow-spend',
+                action: 'budget:spend',
+                subject: '*',
+                effect: 'allow',
+                priority: 0,
+            },
+            'admin-user',
+        );
+        await svc.addPolicy(
+            {
+                name: 'deny-agent1',
+                action: 'budget:spend',
+                subject: 'agent-1',
+                effect: 'deny',
+                priority: 0,
+            },
+            'admin-user',
+        );
+        await expect(svc.evaluate({ action: 'budget:spend', subject: 'agent-1' })).resolves.toEqual(
+            {
+                decision: 'deny',
+                ruleId: expect.any(String),
+            },
+        );
     });
 
     it('assignRole enables matching human actions', async () => {
         const { repo, events, audit } = makeDeps();
         const svc = new GovernanceService(repo as never, events as never, audit as never);
-        await svc.assignRole('user-1', 'approver');
+        await svc.assignRole('user-1', 'approver', 'global', 'admin-user');
         await expect(svc.can('user-1', 'approve')).resolves.toBe(true);
         await expect(svc.can('user-1', 'direct')).resolves.toBe(false);
+    });
+
+    it('отвергает мутации без callerId', async () => {
+        const { repo, events, audit } = makeDeps();
+        const svc = new GovernanceService(repo as never, events as never, audit as never);
+        await expect(svc.grantCapability('agent-1', 'tool:web_search')).rejects.toThrow(/callerId/);
+        await expect(svc.assignRole('user-1', 'approver')).rejects.toThrow(/callerId/);
     });
 });

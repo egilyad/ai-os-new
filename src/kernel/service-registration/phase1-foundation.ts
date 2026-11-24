@@ -38,6 +38,7 @@ import type { IDeadLetterQueue } from '../contracts/dead-letter-queue';
 import { DistributedLockService } from '../services/cross-tab-lock-service';
 import type { IDistributedLock } from '../contracts/cross-tab-lock';
 import { EVENTS } from '../events/event-names';
+import { eventBus as coreEventBus } from '../events/event-bus';
 import { rootLogger } from '../services/logger-service';
 
 const LOGGER = rootLogger.child('Phase1Foundation');
@@ -280,6 +281,7 @@ export const registerPhase1: Phase = (helpers, ctx) => {
         dlq.init().catch((e) =>
             LOGGER.warn('DeadLetterQueue', 'init failed', { error: String(e) }),
         );
+        coreEventBus.setDeadLetterSink(dlq);
         return dlq as IDeadLetterQueue;
     });
 

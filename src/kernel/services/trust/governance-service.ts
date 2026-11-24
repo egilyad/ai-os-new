@@ -9,6 +9,7 @@ import type { IEventBus } from '../../types/interfaces';
 import type { TrustRepository } from '../../dal/trust-repository';
 import type { IGovernanceService } from '../../contracts/trust';
 import type { IAuditService } from '../../contracts/ops';
+import type { IAuthorizationService } from '../../contracts/authorization';
 import type {
     CapabilityGrant,
     GovAssignment,
@@ -45,7 +46,20 @@ export class GovernanceService implements IGovernanceService {
         private repo: TrustRepository,
         private events: IEventBus,
         private audit: IAuditService,
+        private authorization?: IAuthorizationService,
     ) {}
+
+    private async assertCanManage(callerId?: string): Promise<void> {
+        if (!callerId) throw new Error('governance mutation requires callerId');
+        if (this.authorization) {
+            await this.authorization.assertAllowed({
+                actor: callerId,
+                actorType: 'user',
+                action: 'governance:manage',
+                resource: 'governance',
+            });
+        }
+    }
 
     async init(): Promise<void> {
         LOGGER.info('Governance', 'init', {});
@@ -56,7 +70,13 @@ export class GovernanceService implements IGovernanceService {
     }
 
     // ── Capabilities ──
-    async grantCapability(subject: string, capability: string, allow = true): Promise<CapabilityGrant> {
+    async grantCapability(
+        subject: string,
+        capability: string,
+        allow = true,
+        callerId?: string,
+    ): Promise<CapabilityGrant> {
+        await this.assertCanManage(callerId);
         const grant: CapabilityGrant = {
             id: genId('cap'),
             subject,
@@ -65,13 +85,20 @@ export class GovernanceService implements IGovernanceService {
             createdAt: now(),
         };
         await this.repo.putCapability(grant);
-        await this.audit.append('governance', allow ? 'capability.granted' : 'capability.revoked', subject, capability);
+        await this.audit.append(
+            'governance',
+            allow ? 'capability.granted' : 'capability.revoked',
+            subject,
+            capability,
+        );
         return grant;
     }
 
     async checkCapability(subject: string, capability: string): Promise<boolean> {
         const grants = (await this.repo.listCapabilities()).filter(
-            (g) => subjectMatches(g.subject, subject) && (g.capability === capability || g.capability === '*'),
+            (g) =>
+                subjectMatches(g.subject, subject) &&
+                (g.capability === capability || g.capability === '*'),
         );
         let allowed = false;
         for (const g of grants) {
@@ -112,14 +139,18 @@ export class GovernanceService implements IGovernanceService {
     }
 
     // ── Policies ──
-    async addPolicy(input: {
-        name: string;
-        action: string;
-        subject?: string;
-        effect?: PolicyEffect;
-        limit?: number;
-        priority?: number;
-    }): Promise<PolicyRule> {
+    async addPolicy(
+        input: {
+            name: string;
+            action: string;
+            subject?: string;
+            effect?: PolicyEffect;
+            limit?: number;
+            priority?: number;
+        },
+        callerId?: string,
+    ): Promise<PolicyRule> {
+        await this.assertCanManage(callerId);
         const rule: PolicyRule = {
             id: genId('pol'),
             name: input.name,
@@ -132,17 +163,28 @@ export class GovernanceService implements IGovernanceService {
             createdAt: now(),
         };
         await this.repo.putPolicy(rule);
-        await this.audit.append('governance', 'policy.added', rule.id, `${rule.action}→${rule.effect}`);
+        await this.audit.append(
+            'governance',
+            'policy.added',
+            rule.id,
+            `${rule.action}→${rule.effect}`,
+        );
         this.events.emit(EVENTS.TRUST_POLICY, { policyId: rule.id, effect: rule.effect });
         return rule;
     }
 
-    async setPolicyEnabled(id: string, enabled: boolean): Promise<PolicyRule> {
+    async setPolicyEnabled(id: string, enabled: boolean, callerId?: string): Promise<PolicyRule> {
+        await this.assertCanManage(callerId);
         const rule = await this.repo.getPolicy(id);
         if (!rule) throw new Error(`Policy not found: ${id}`);
         rule.enabled = enabled;
         await this.repo.putPolicy(rule);
-        await this.audit.append('governance', enabled ? 'policy.enabled' : 'policy.disabled', id, rule.name);
+        await this.audit.append(
+            'governance',
+            enabled ? 'policy.enabled' : 'policy.disabled',
+            id,
+            rule.name,
+        );
         return rule;
     }
 
@@ -151,7 +193,8 @@ export class GovernanceService implements IGovernanceService {
         ruleId?: string;
     }> {
         const rules = (await this.repo.listPolicies()).filter(
-            (r) => r.enabled && r.action === input.action && subjectMatches(r.subject, input.subject),
+            (r) =>
+                r.enabled && r.action === input.action && subjectMatches(r.subject, input.subject),
         );
         // Highest priority first; deny beats allow at equal priority.
         for (const r of rules) {
@@ -162,7 +205,11 @@ export class GovernanceService implements IGovernanceService {
         }
         for (const r of rules) {
             if (r.effect === 'allow') {
-                if (input.action === 'budget:spend' && r.limit !== undefined && (input.amount ?? 0) > r.limit) {
+                if (
+                    input.action === 'budget:spend' &&
+                    r.limit !== undefined &&
+                    (input.amount ?? 0) > r.limit
+                ) {
                     return { decision: 'deny', ruleId: r.id };
                 }
                 return { decision: 'allow', ruleId: r.id };
@@ -174,7 +221,13 @@ export class GovernanceService implements IGovernanceService {
     }
 
     // ── Human roles ──
-    async assignRole(userId: string, role: HumanRole, scope = 'global'): Promise<GovAssignment> {
+    async assignRole(
+        userId: string,
+        role: HumanRole,
+        scope = 'global',
+        callerId?: string,
+    ): Promise<GovAssignment> {
+        await this.assertCanManage(callerId);
         const assignment: GovAssignment = {
             id: genId('gov'),
             userId,
@@ -192,7 +245,10 @@ export class GovernanceService implements IGovernanceService {
         return all.filter((r) => r.userId === userId);
     }
 
-    async can(userId: string, action: 'observe' | 'approve' | 'direct' | 'audit'): Promise<boolean> {
+    async can(
+        userId: string,
+        action: 'observe' | 'approve' | 'direct' | 'audit',
+    ): Promise<boolean> {
         const roles = await this.rolesOf(userId);
         return roles.some((r) => ROLE_CANDO[r.role].includes(action));
     }

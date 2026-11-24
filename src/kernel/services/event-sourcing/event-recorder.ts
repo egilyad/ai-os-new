@@ -55,6 +55,12 @@ function isNoisyEvent(event: string): boolean {
 
 export class EventRecorder {
     private events: RecordedEvent[] = [];
+    /** WAL entries are redacted/truncated snapshots — diagnostic only, never authoritative. */
+    private recoveredFromWal: RecordedEvent[] = [];
+
+    getRecoveredFromWal(): RecordedEvent[] {
+        return [...this.recoveredFromWal];
+    }
     private sequence = 0;
     private config: RecorderConfig;
     private unsub: (() => void) | null = null;
@@ -172,22 +178,13 @@ export class EventRecorder {
                         Array.isArray(recovered.events) &&
                         recovered.events.length > 0
                     ) {
-                        const before = this.events.length;
-                        for (const ev of recovered.events) {
-                            if (!this.events.some((e) => e.sequence === ev.sequence)) {
-                                this.events.push(ev);
-                            }
-                        }
-                        this.sequence = Math.max(this.sequence, recovered.sequence);
-                        this.events.sort((a, b) => a.sequence - b.sequence);
+                        this.recoveredFromWal = recovered.events
+                            .filter((ev) => !this.events.some((e) => e.sequence === ev.sequence))
+                            .sort((a, b) => a.sequence - b.sequence);
                         LOGGER.info(
                             'EventRecorder',
-                            `Recovered ${this.events.length - before} events from WAL`,
+                            `WAL contained ${this.recoveredFromWal.length} redacted snapshot(s) — kept as diagnostics only`,
                         );
-                        await this.store.save({
-                            events: [...this.events],
-                            sequence: this.sequence,
-                        });
                     }
                 }
             } catch (e) {

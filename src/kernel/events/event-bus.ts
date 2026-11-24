@@ -6,6 +6,7 @@ import { rootLogger } from '../services/logger-service';
 import { TraceContext } from '../services/trace-context';
 import { sanitizeObject } from '../utils/sanitize';
 import { EVENTS } from './event-names';
+import type { IDeadLetterQueue } from '../contracts/dead-letter-queue';
 export { EVENTS };
 
 const NOOP_LOGGER: ILogger = {
@@ -76,6 +77,11 @@ export class EventBus implements IEventBus {
     private deadLetterQueue: Array<{ event: string; data: unknown; reason: string; at: number }> =
         [];
     private static readonly MAX_DEAD_LETTER = 1000;
+    private deadLetterSink?: IDeadLetterQueue;
+
+    setDeadLetterSink(sink: IDeadLetterQueue): void {
+        this.deadLetterSink = sink;
+    }
 
     // HIGH-K3: replay buffer removed — nobody called replay() and STREAM_END payloads
     // (up to 1MB each × 100 = 100MB memory leak). If replay is needed later, implement with
@@ -334,6 +340,11 @@ export class EventBus implements IEventBus {
         this.deadLetterQueue.push({ event, data, reason, at: Date.now() });
         if (this.deadLetterQueue.length > EventBus.MAX_DEAD_LETTER) {
             this.deadLetterQueue.shift();
+        }
+        if (this.deadLetterSink) {
+            void this.deadLetterSink
+                .push({ event, payload: data, error: reason, retryCount: 0 })
+                .catch(() => undefined);
         }
     }
 

@@ -381,4 +381,23 @@ describe('EventBus', () => {
             expect(stats.totalCallbacks).toBe(1);
         });
     });
+
+    describe('dead letter sink', () => {
+        it('отправляет дропнутое событие в подключённый DLQ', () => {
+            const strictBus = makeBus(true);
+            const push = vi.fn(async () => undefined);
+            strictBus.setDeadLetterSink({ push } as never);
+            strictBus.registerValidator(e('test:dlq'), {
+                safeParse: () => ({ success: false, error: { issues: [{ message: 'bad' }] } }),
+            });
+            strictBus.emit(e('test:dlq'), { x: 1 });
+            expect(push).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    event: expect.stringContaining('test:dlq'),
+                    error: 'strict-validation',
+                    retryCount: 0,
+                }),
+            );
+        });
+    });
 });
