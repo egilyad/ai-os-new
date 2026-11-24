@@ -55,6 +55,7 @@ import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
 import { enqueueDbWrite } from './write-queue.mjs';
 import { timingSafeEqual, verifyWsUpgrade, verifyWsUpgradeCompanyHash } from './ws-auth.mjs';
+import { selectReplayEvents } from './sse-replay.mjs';
 import { handleTasksRequest, handleTasksSync } from './tasks-router.mjs';
 
 const PORT = parseInt(process.env.SYNC_PORT || '3001', 10);
@@ -156,6 +157,10 @@ function writeJson(res, status, data) {
 
 // M1.1: SSE live-events clients (additive, WS db_changed untouched)
 const sseClients = new Set();
+const sseMeta = new WeakMap();
+const SSE_REPLAY_LIMIT = 200;
+const sseBuffer = [];
+let sseSeq = 0;
 // P1-17: WS broadcast backpressure — skip consumers whose send queue is
 // already backed up (1 MiB), so one slow client cannot stall the event loop.
 const WS_MAX_BUFFERED_BYTES = 1024 * 1024;
@@ -185,11 +190,15 @@ function broadcastLive(type, payload) {
             /* ignore */
         }
     }
+    const eventId = String(++sseSeq);
+    const event = { id: eventId, message: msg, payload };
+    sseBuffer.push(event);
+    if (sseBuffer.length > SSE_REPLAY_LIMIT) sseBuffer.shift();
     for (const res of sseClients) {
         try {
-            // SSE auth is the shared bearer (no company binding) → global events only.
-            if (!clientMayReceive(null, payload)) continue;
-            res.write(`data: ${msg}\n\n`);
+            const companyId = sseMeta.get(res)?.companyId ?? null;
+            if (!clientMayReceive(companyId, payload)) continue;
+            res.write(`id: ${eventId}\ndata: ${msg}\n\n`);
         } catch {
             /* ignore */
         }
@@ -391,7 +400,27 @@ const server = http.createServer(async (req, res) => {
                 'Cache-Control': 'no-cache',
                 Connection: 'keep-alive',
             });
+            const companyId = req.syncCompanyId ?? null;
+            sseMeta.set(res, { companyId });
             res.write(`data: ${JSON.stringify({ type: 'connected', timestamp: Date.now() })}\n\n`);
+            const lastEventId = req.headers['last-event-id'];
+            if (typeof lastEventId === 'string' && lastEventId) {
+                const replay = selectReplayEvents(
+                    sseBuffer,
+                    lastEventId,
+                    companyId,
+                    clientMayReceive,
+                );
+                if (replay.missing) {
+                    res.write(
+                        `data: ${JSON.stringify({ type: 'resync_required', reason: 'event not in replay buffer', timestamp: Date.now() })}\n\n`,
+                    );
+                } else {
+                    for (const event of replay.events) {
+                        res.write(`id: ${event.id}\ndata: ${event.message}\n\n`);
+                    }
+                }
+            }
             sseClients.add(res);
             req.on('close', () => sseClients.delete(res));
             return;
