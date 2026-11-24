@@ -406,6 +406,16 @@ describe('SnapshotService', () => {
             expect(service.getReplayIndex()).toBe(-1);
         });
 
+        it('stopReplay возвращает состояние, бывшее до replay', () => {
+            service.startReplay();
+            const callsDuringReplay = (deps.kernel.loadState as ReturnType<typeof vi.fn>).mock.calls
+                .length;
+            service.stopReplay();
+            expect((deps.kernel.loadState as ReturnType<typeof vi.fn>).mock.calls.length).toBe(
+                callsDuringReplay + 1,
+            );
+        });
+
         it('getReplaySnapshot returns current snapshot', () => {
             service.startReplay();
             const snap = service.getReplaySnapshot();

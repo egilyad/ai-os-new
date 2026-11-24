@@ -79,6 +79,7 @@ export class SnapshotService {
     /** @internal C-94: Throttle guard — skip duplicate (traceId, nodeId) within 1s */
     private _lastStepTimestamps = new Map<string, number>();
     private _replaying = false;
+    private preReplayState: SystemSnapshot | null = null;
     /** Max step captures per second — prevents burst from COGNITIVE_STEP_COMPLETED */
     private static readonly STEP_THROTTLE_MS = 1000;
 
@@ -444,6 +445,27 @@ export class SnapshotService {
 
     startReplay(): boolean {
         if (this._replaying || this.snapshots.length === 0) return false;
+        if (!this.preReplayState) {
+            const top = this.deps.orchestrator.getActiveTopology();
+            const disabledNodes =
+                top?.nodes
+                    .filter((n) => this.deps.orchestrator.isNodeDisabled(n.id))
+                    .map((n) => n.id) ?? [];
+            this.preReplayState = {
+                id: crypto.randomUUID(),
+                traceId: 'replay',
+                stepId: 'pre',
+                timestamp: Date.now(),
+                schemaVersion: CURRENT_SCHEMA_VERSION,
+                label: 'pre-replay',
+                runtime: {
+                    kernel: this.deps.kernel.getState(),
+                    topology: top,
+                    disabledNodes,
+                    memoryCount: 0,
+                },
+            };
+        }
         this._replaying = true;
         this.replayIndex = 0;
         const ok = this.restore(this.snapshots[0]!);
@@ -471,8 +493,11 @@ export class SnapshotService {
     }
 
     stopReplay(): void {
+        const previous = this.preReplayState;
         this._replaying = false;
         this.replayIndex = -1;
+        this.preReplayState = null;
+        if (previous) this.restore(previous);
     }
 
     getReplayIndex(): number {
