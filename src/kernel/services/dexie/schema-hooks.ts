@@ -43,6 +43,11 @@ import {
     TaskLabelSchema,
     TaskWorkProductSchema,
     TaskTriggerSchema,
+    McpServerRecordSchema,
+    ToolGrantRecordSchema,
+    SandboxTicketRecordSchema,
+    MobileSessionRecordSchema,
+    PushNotificationRecordSchema,
 } from '../../types/schema-types';
 import type {
     AgemsTask,
@@ -52,6 +57,13 @@ import type {
     TaskWorkProduct,
     TaskTrigger,
 } from '../../types/agems-task';
+import type {
+    McpServer,
+    ToolGrant,
+    SandboxTicket,
+    MobileSession,
+    PushNotification,
+} from '../../types/ops-types';
 
 const LOGGER = rootLogger.child('DatabaseService');
 
@@ -84,6 +96,11 @@ export interface ValidationHookDb {
     taskLabels: Table<TaskLabel>;
     taskWorkProducts: Table<TaskWorkProduct>;
     taskTriggers: Table<TaskTrigger>;
+    mcpServers: Table<McpServer>;
+    toolGrants: Table<ToolGrant>;
+    sandboxTickets: Table<SandboxTicket>;
+    mobileSessions: Table<MobileSession>;
+    notifications: Table<PushNotification>;
 }
 
 const rejectHook =
@@ -125,6 +142,21 @@ export function applyMods(obj: unknown, mods: unknown): unknown {
         else result[key] = value;
     }
     return result;
+}
+
+function updatingHook(
+    schema: { parse: (data: unknown) => unknown },
+    label: string,
+    mods: unknown,
+    obj: unknown,
+): boolean | undefined {
+    try {
+        schema.parse(applyMods(obj, mods));
+        return undefined;
+    } catch (e) {
+        LOGGER.error('DatabaseService', `${label} update validation FAILED`, { error: e });
+        return false;
+    }
 }
 
 /**
@@ -404,4 +436,25 @@ export function installValidationHooks(db: ValidationHookDb): void {
             return false;
         }
     });
+
+    db.mcpServers.hook('creating', rejectHook(McpServerRecordSchema, 'McpServer'));
+    db.mcpServers.hook('updating', (mods, _primKey, obj) =>
+        updatingHook(McpServerRecordSchema, 'McpServer', mods, obj),
+    );
+    db.toolGrants.hook('creating', rejectHook(ToolGrantRecordSchema, 'ToolGrant'));
+    db.toolGrants.hook('updating', (mods, _primKey, obj) =>
+        updatingHook(ToolGrantRecordSchema, 'ToolGrant', mods, obj),
+    );
+    db.sandboxTickets.hook('creating', rejectHook(SandboxTicketRecordSchema, 'SandboxTicket'));
+    db.sandboxTickets.hook('updating', (mods, _primKey, obj) =>
+        updatingHook(SandboxTicketRecordSchema, 'SandboxTicket', mods, obj),
+    );
+    db.mobileSessions.hook('creating', rejectHook(MobileSessionRecordSchema, 'MobileSession'));
+    db.mobileSessions.hook('updating', (mods, _primKey, obj) =>
+        updatingHook(MobileSessionRecordSchema, 'MobileSession', mods, obj),
+    );
+    db.notifications.hook('creating', rejectHook(PushNotificationRecordSchema, 'PushNotification'));
+    db.notifications.hook('updating', (mods, _primKey, obj) =>
+        updatingHook(PushNotificationRecordSchema, 'PushNotification', mods, obj),
+    );
 }

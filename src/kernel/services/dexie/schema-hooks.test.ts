@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { applyMods } from './schema-hooks';
+import {
+    McpServerRecordSchema,
+    MobileSessionRecordSchema,
+    PushNotificationRecordSchema,
+} from '../../types/schema-types';
 
 describe('applyMods', () => {
     it('применяет dotted-path как вложенное обновление', () => {
@@ -16,5 +21,41 @@ describe('applyMods', () => {
             status: 'error',
         });
         expect(applyMods({ status: 'active' }, undefined)).toEqual({ status: 'active' });
+    });
+});
+
+describe('новые record-схемы', () => {
+    it('валидирует записи ops-таблиц', () => {
+        expect(
+            McpServerRecordSchema.safeParse({
+                id: 'm1',
+                name: 'local',
+                url: 'http://localhost:3000',
+                tools: [],
+                enabled: true,
+                createdAt: 1,
+                updatedAt: 1,
+            }).success,
+        ).toBe(true);
+        expect(
+            MobileSessionRecordSchema.safeParse({
+                id: 'mob1',
+                deviceName: 'phone',
+                pairingCode: '12345678',
+                status: 'pending',
+                createdAt: 1,
+                updatedAt: 1,
+            }).success,
+        ).toBe(true);
+        expect(
+            PushNotificationRecordSchema.safeParse({
+                id: 'n1',
+                title: 't',
+                body: 'b',
+                read: false,
+                createdAt: 1,
+            }).success,
+        ).toBe(true);
+        expect(MobileSessionRecordSchema.safeParse({ id: 'bad' }).success).toBe(false);
     });
 });

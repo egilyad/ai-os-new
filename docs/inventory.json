@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 615,
+    "documents": 616,
     "byCategory": {
       "repo": 40,
-      "top": 171,
+      "top": 172,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 175,
+      "mixed": 176,
       "ru": 375
     }
   },
@@ -1862,6 +1862,14 @@
       "hash": "e1926662ff0543fa176cc9142e6c32408a7000c1"
     },
     {
+      "path": "docs/sessions/2026-11-24-zod-hooks-coverage.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — zod-hooks-coverage",
+      "bytes": 3394,
+      "hash": "6fb2b05b1befaa559c3d3cc44316674b027ce1c1"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2803,7 +2811,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "ffc808df476575ed89b1b51fa9ffbecc5c441af1"
+      "hash": "5a4822184bca8bff6fbeb06eb25b70304ea66e88"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3019,7 +3027,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "2f6ff1868cfbfbd924df09da676db799aa11e714"
+      "hash": "ecbf5138003884b98fae65ffd5ec0fdb1e71b634"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3218,8 +3226,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 65397,
-      "hash": "9fcb538102c92002285951b11253a1bb4d4374b8"
+      "bytes": 65522,
+      "hash": "06fbafd140b1a0e3246a1d5d3d759eb02da303cf"
     },
     {
       "path": "docs/wiki/docs-standard.md",

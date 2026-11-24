@@ -774,3 +774,62 @@ export const TaskTriggerSchema = z.object({
     enabled: z.boolean(),
     createdAt: z.number(),
 });
+
+export const McpServerRecordSchema = z
+    .object({
+        id: z.string(),
+        name: z.string(),
+        url: z.string(),
+        tools: z.array(z.string()),
+        enabled: z.boolean(),
+        createdAt: z.number(),
+        updatedAt: z.number(),
+    })
+    .passthrough();
+
+export const ToolGrantRecordSchema = z
+    .object({
+        id: z.string(),
+        agentId: z.string(),
+        pattern: z.string(),
+        allow: z.boolean(),
+        createdAt: z.number(),
+    })
+    .passthrough();
+
+export const SandboxTicketRecordSchema = z
+    .object({
+        id: z.string(),
+        kind: z.enum(['browser', 'computer', 'code']),
+        agentId: z.string(),
+        purpose: z.string(),
+        status: z.enum(['requested', 'approved', 'running', 'done', 'denied', 'expired']),
+        ttlMs: z.number(),
+        createdAt: z.number(),
+        updatedAt: z.number(),
+    })
+    .passthrough();
+
+export const MobileSessionRecordSchema = z
+    .object({
+        id: z.string(),
+        deviceName: z.string(),
+        pairingCode: z.string(),
+        status: z.enum(['pending', 'paired', 'revoked']),
+        createdAt: z.number(),
+        updatedAt: z.number(),
+        expiresAt: z.number().optional(),
+        failedAttempts: z.number().optional(),
+    })
+    .passthrough();
+
+export const PushNotificationRecordSchema = z
+    .object({
+        id: z.string(),
+        title: z.string(),
+        body: z.string(),
+        actionRef: z.string().optional(),
+        read: z.boolean(),
+        createdAt: z.number(),
+    })
+    .passthrough();
