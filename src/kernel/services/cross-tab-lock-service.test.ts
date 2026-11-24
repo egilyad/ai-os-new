@@ -27,6 +27,20 @@ describe('DistributedLockService unload release (P-MED-8)', () => {
         expect(owner).toBeNull();
     });
 
+    it('fencing token растёт при takeover и обнуляет старый владелец', async () => {
+        const first = await svc.acquire('chat:s3', { ttl: 50, maxRetries: 0 });
+        expect(first.lock?.fencingToken).toBeGreaterThan(0);
+        await new Promise((r) => setTimeout(r, 80));
+
+        const other = new DistributedLockService('test-tab-2');
+        const takeover = await other.acquire('chat:s3', { ttl: 120_000, maxRetries: 0 });
+        expect(takeover.lock).not.toBeNull();
+        expect(takeover.lock!.fencingToken).toBe(first.lock!.fencingToken + 1);
+        expect(await svc.isFenceValid(first.lock!)).toBe(false);
+        expect(await other.isFenceValid(takeover.lock!)).toBe(true);
+        await other.destroy();
+    });
+
     it('destroy() detaches the unload listener', async () => {
         const acquired = await svc.acquire('chat:s2', { maxRetries: 0 });
         expect(acquired.lock).not.toBeNull();

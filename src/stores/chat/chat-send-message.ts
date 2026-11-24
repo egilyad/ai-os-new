@@ -60,13 +60,15 @@ export function createSendMessageHandler(
         const distLock = getDistributedLock();
         const lockResult = await distLock.acquire(`chat:${sessionId}`, { ttl: 120_000 });
         if (!lockResult.lock) {
-            LOGGER.warn('ChatStore', 'Failed to acquire chat lock, proceeding without lock', {
+            _sendQueue.delete(sessionId);
+            LOGGER.warn('ChatStore', 'Failed to acquire chat lock — send cancelled', {
                 error: lockResult.error,
             });
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: 'Failed to acquire chat lock — concurrent send may conflict',
-                type: 'warning',
+                message: 'Не удалось заблокировать сессию — отправка отменена, повторите попытку',
+                type: 'error',
             });
+            return;
         }
         try {
             currentHistory = (get().sessions.find((s) => s.id === sessionId)?.history ?? []).slice(
@@ -307,6 +309,13 @@ export function createSendMessageHandler(
                     message: `Chat history limit (${MAX_HISTORY} entries) reached — ${lostCount} older message(s) will be removed from context.`,
                     type: 'warning',
                 });
+            }
+
+            if (!(await distLock.isFenceValid(lockResult.lock))) {
+                LOGGER.warn('ChatStore', 'Lock fence lost before write — dropping stale send', {
+                    sessionId,
+                });
+                throw new Error('CANCELLED');
             }
 
             const sStore = resolveSessionStore();

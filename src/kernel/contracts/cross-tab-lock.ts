@@ -16,6 +16,8 @@ export interface LockAcquisition {
     readonly acquiredAt: number;
     readonly ttl: number;
     readonly heartbeatAt: number;
+    /** Monotonic generation — writes from a stale (taken-over) holder are rejected. */
+    readonly fencingToken: number;
 }
 
 export interface LockOptions {
@@ -43,6 +45,7 @@ export interface IDistributedLock {
     heartbeat(lock: LockAcquisition): Promise<boolean>;
     isLocked(resourceId: LockResource): Promise<boolean>;
     getOwner(resourceId: LockResource): Promise<string | null>;
+    isFenceValid(lock: LockAcquisition): Promise<boolean>;
     onEvent(listener: LockListener): () => void;
     destroy(): void;
 }

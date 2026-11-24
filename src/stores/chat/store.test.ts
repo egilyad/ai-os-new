@@ -39,6 +39,7 @@ const {
     const mockLock = {
         acquire: vi.fn(async () => ({ lock: { token: 't' }, error: null })),
         release: vi.fn(async () => {}),
+        isFenceValid: vi.fn(async () => true),
     };
     const mockExecutionGovernor = {
         start: vi.fn(() => ({ complete: vi.fn(), fail: vi.fn() })),
@@ -397,15 +398,15 @@ describe('useChatStore', () => {
         ).toBe(true);
     });
 
-    it('sendMessage proceeds without lock and warns on lock failure', async () => {
+    it('sendMessage отменяется при недоступном локе', async () => {
         mockLock.acquire.mockResolvedValue({ lock: null, error: 'busy' } as never);
         await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'hello');
-        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(1);
+        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(0);
         expect(
             emit.mock.calls.some(
                 ([ev, p]) =>
                     ev === E.NOTIFICATION &&
-                    (p as { message: string }).message.includes('Failed to acquire'),
+                    (p as { message: string }).message.includes('отменена'),
             ),
         ).toBe(true);
     });

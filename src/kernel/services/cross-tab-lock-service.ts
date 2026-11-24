@@ -20,9 +20,15 @@ function lockKey(resourceId: LockResource): string {
     return `${LOCK_PREFIX}${resourceId}`;
 }
 
-function parseLockRecord(
-    raw: unknown,
-): { ownerId: string; acquiredAt: number; ttl: number; heartbeatAt: number } | null {
+type LockRecord = {
+    ownerId: string;
+    acquiredAt: number;
+    ttl: number;
+    heartbeatAt: number;
+    fencingToken: number;
+};
+
+function parseLockRecord(raw: unknown): LockRecord | null {
     if (!raw || typeof raw !== 'string') return null;
     try {
         const parsed = JSON.parse(raw) as Record<string, unknown>;
@@ -39,18 +45,19 @@ function parseLockRecord(
             acquiredAt: parsed.acquiredAt,
             ttl: parsed.ttl,
             heartbeatAt: parsed.heartbeatAt,
+            fencingToken:
+                typeof parsed.fencingToken === 'number' && parsed.fencingToken > 0
+                    ? parsed.fencingToken
+                    : 1,
         };
     } catch {
         return null;
     }
 }
 
-function makeRecord(
-    ownerId: string,
-    ttl: number,
-): { ownerId: string; acquiredAt: number; ttl: number; heartbeatAt: number } {
+function makeRecord(ownerId: string, ttl: number, fencingToken: number): LockRecord {
     const now = Date.now();
-    return { ownerId, acquiredAt: now, ttl, heartbeatAt: now };
+    return { ownerId, acquiredAt: now, ttl, heartbeatAt: now, fencingToken };
 }
 
 export class DistributedLockService implements IDistributedLock {
@@ -204,6 +211,7 @@ export class DistributedLockService implements IDistributedLock {
                             acquiredAt: existing.acquiredAt,
                             ttl: existing.ttl,
                             heartbeatAt: updated.heartbeatAt,
+                            fencingToken: existing.fencingToken,
                         };
                         this._heldLocks.set(key, { resourceId, ttl: existing.ttl });
                         return { lock };
@@ -220,7 +228,8 @@ export class DistributedLockService implements IDistributedLock {
                     });
                 }
 
-                const record = makeRecord(this._ownerId, ttl);
+                const fencingToken = (existing?.fencingToken ?? 0) + 1;
+                const record = makeRecord(this._ownerId, ttl, fencingToken);
                 await db.keyValue.put({ id: key, value: JSON.stringify(record) });
                 const lock: LockAcquisition = {
                     resourceId,
@@ -228,6 +237,7 @@ export class DistributedLockService implements IDistributedLock {
                     acquiredAt: record.acquiredAt,
                     ttl: record.ttl,
                     heartbeatAt: record.heartbeatAt,
+                    fencingToken,
                 };
                 this._heldLocks.set(key, { resourceId, ttl });
                 this._ensureHeartbeat();
@@ -262,7 +272,11 @@ export class DistributedLockService implements IDistributedLock {
             await db.transaction('rw', db.keyValue, async () => {
                 const raw = await db.keyValue.get(key);
                 const existing = parseLockRecord(raw?.value);
-                if (existing && existing.ownerId === this._ownerId) {
+                if (
+                    existing &&
+                    existing.ownerId === this._ownerId &&
+                    existing.fencingToken === lock.fencingToken
+                ) {
                     await db.keyValue.delete(key);
                 }
             });
@@ -290,7 +304,11 @@ export class DistributedLockService implements IDistributedLock {
             return await db.transaction('rw', db.keyValue, async () => {
                 const raw = await db.keyValue.get(key);
                 const existing = parseLockRecord(raw?.value);
-                if (!existing || existing.ownerId !== this._ownerId) {
+                if (
+                    !existing ||
+                    existing.ownerId !== this._ownerId ||
+                    existing.fencingToken !== lock.fencingToken
+                ) {
                     this._heldLocks.delete(key);
                     this._notify({
                         resourceId: lock.resourceId,
@@ -306,6 +324,16 @@ export class DistributedLockService implements IDistributedLock {
         } catch {
             return false;
         }
+    }
+
+    async isFenceValid(lock: LockAcquisition): Promise<boolean> {
+        const record = await this._readLock(lock.resourceId);
+        return (
+            !!record &&
+            record.ownerId === lock.ownerId &&
+            record.fencingToken === lock.fencingToken &&
+            !this._isExpired(record)
+        );
     }
 
     async isLocked(resourceId: LockResource): Promise<boolean> {
