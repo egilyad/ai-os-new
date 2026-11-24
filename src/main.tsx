@@ -113,7 +113,10 @@ root.render(bootSplash);
 registerDebateStoreAdapters(defaultContainer);
 
 try {
-    await runtime.start();
+    const started = await runtime.start();
+    if (!started && runtime.getStatus().phase === 'error') {
+        throw new Error(runtime.getStatus().lastError ?? 'Runtime failed to start');
+    }
 } catch (e) {
     console.error('[BOOT] Runtime failed to start:', e);
     root.render(

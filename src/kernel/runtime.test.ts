@@ -22,6 +22,14 @@ describe('RuntimeManager', () => {
         expect(manager.getStatus().uptime).toBe(0);
     });
 
+    it('не перехватывает unhandledrejection у главного обработчика', () => {
+        const addSpy = vi.spyOn(window, 'addEventListener');
+        makeManager();
+        const types = addSpy.mock.calls.map((call) => call[0]);
+        expect(types).not.toContain('unhandledrejection');
+        addSpy.mockRestore();
+    });
+
     it('markServiceReady does not exceed the total (0 before start)', () => {
         const { manager } = makeManager();
         manager.markServiceReady();

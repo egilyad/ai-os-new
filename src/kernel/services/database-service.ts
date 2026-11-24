@@ -290,6 +290,11 @@ export class DatabaseService implements IDatabaseService {
             clearInterval(this._integrityTimer);
             this._integrityTimer = null;
         }
+        try {
+            ssrSafeStorage.setItem(DatabaseService.CLEAN_SHUTDOWN_KEY, new Date().toISOString());
+        } catch {
+            /* storage unavailable — startup will report a possible crash */
+        }
     }
     get apiKeys() {
         return getDexieDb().apiKeys;

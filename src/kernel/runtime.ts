@@ -38,20 +38,9 @@ export class RuntimeManager {
     private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
     private bootstrapper: SystemBootstrap;
     private container: IContainer;
-    private _unhandledRejectionHandler?: (event: PromiseRejectionEvent) => void;
-
     constructor(container: IContainer, bootstrapper: SystemBootstrap) {
         this.container = container;
         this.bootstrapper = bootstrapper;
-        if (typeof window !== 'undefined') {
-            this._unhandledRejectionHandler = (event: PromiseRejectionEvent) => {
-                event.preventDefault();
-                getLogger()?.error('Runtime', 'Unhandled promise rejection', {
-                    reason: event.reason,
-                });
-            };
-            window.addEventListener('unhandledrejection', this._unhandledRejectionHandler);
-        }
     }
 
     private startPromise: Promise<boolean> | null = null;
@@ -150,11 +139,6 @@ export class RuntimeManager {
         if (this.healthCheckInterval) {
             clearInterval(this.healthCheckInterval);
             this.healthCheckInterval = null;
-        }
-        // H-35: Remove unhandledrejection handler to prevent duplicate listeners on HMR
-        if (this._unhandledRejectionHandler && typeof window !== 'undefined') {
-            window.removeEventListener('unhandledrejection', this._unhandledRejectionHandler);
-            this._unhandledRejectionHandler = undefined;
         }
         await this.bootstrapper.shutdown();
         coreDatabase.destroy();

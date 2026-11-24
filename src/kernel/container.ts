@@ -48,6 +48,7 @@ export class Container implements IContainer {
 
     register<T>(id: ServiceIdentifier, instance: T): void {
         this.services.set(id, instance);
+        this.failedFactories.delete(id);
         // No duplicate order entries: re-registering (e.g. bootstrap retry)
         // must overwrite the instance, not queue a second destroy() in clear().
         if (!this.registrationOrder.includes(id)) {
@@ -62,11 +63,14 @@ export class Container implements IContainer {
             this.registrationOrder.push(id);
         }
         this.services.delete(id);
+        this.failedFactories.delete(id);
     }
 
     registerTransient<T>(id: ServiceIdentifier, factory: (container: IContainer) => T): void {
-        const exists = this.services.has(id) || this.factories.has(id) || this.transientFactories.has(id);
+        const exists =
+            this.services.has(id) || this.factories.has(id) || this.transientFactories.has(id);
         this.transientFactories.set(id, factory);
+        this.failedFactories.delete(id);
         if (!exists) {
             this.registrationOrder.push(id);
         }
@@ -198,7 +202,10 @@ export class Container implements IContainer {
             const instances = this.transientInstances.get(id);
             if (!instances) continue;
             for (const instance of instances.slice().reverse()) {
-                if (instance && typeof (instance as Record<string, unknown>).destroy === 'function') {
+                if (
+                    instance &&
+                    typeof (instance as Record<string, unknown>).destroy === 'function'
+                ) {
                     try {
                         await (instance as { destroy: () => Promise<void> | void }).destroy();
                     } catch (e) {

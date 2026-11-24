@@ -210,6 +210,15 @@ describe('Container', () => {
             expect(factory).toHaveBeenCalledTimes(1);
         });
 
+        it('registerFactory сбрасывает кэш упавшей фабрики', () => {
+            container.registerFactory('svc', () => {
+                throw new Error('old failure');
+            });
+            expect(() => container.get('svc')).toThrow('old failure');
+            container.registerFactory('svc', () => makeService({ name: 'new factory' }));
+            expect(container.get<MockService>('svc').name).toBe('new factory');
+        });
+
         it('retries after 5s TTL expires', () => {
             let attempt = 0;
             container.registerFactory('svc', () => {
