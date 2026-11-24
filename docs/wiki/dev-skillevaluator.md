@@ -110,6 +110,13 @@ skillevaluator harness-check ~/.config/opencode/skills
 skillevaluator quality-check ~/.config/opencode/skills -r json -o reports/quality
 ```
 
+## Внедрение в репозиторий (24.11)
+
+- Скиллы зеркалируются из `~/.config/opencode/skills` в `.opencode/skills` скриптом `npm run sync:skills` (`scripts/sync-agent-skills.mjs`); уже там лежит `github-workflow`.
+- Добавлен `.github/workflows/skill-checks.yml` на основе шаблона NVIDIA 1.0.1: проверяет `.opencode/skills` на PR и push в main, `min-score: 85`, `llm: false`, сканеры из общего образа.
+- Контрольный прогон перед включением: 9 скиллов, все проходят; минимум 87.2 (github-workflow, B), остальные 92.8 (A).
+- Tier 2 требует провайдера эмбеддингов (`SKILL_EVAL_EMBEDDING_PROVIDER` + ключ) — без ключа не запускается, поэтому в CI пока только Tier 1.
+
 ## Связь с нашей архитектурой
 
 SkillEvaluator закрывает то же место для **скиллов**, которое CI и тесты закрывают для кода: gating до merge + измерение реальной пользы. Это логичное продолжение наших контрольных точек: EventBus → inbox → run history → provenance graph → метрики качества.

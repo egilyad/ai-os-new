@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: Apache-2.0
+# Generated from NVIDIA/SkillEvaluator ci/bundles/1.0.1/skill-checks.yml.
+# Checks the mirrored agent skills in .opencode/skills on every PR and push to main.
+name: Skill checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  skills:
+    uses: NVIDIA/SkillEvaluator/.github/workflows/evaluate-skills.yml@c9369a7811bde083b550f2ac488222e8c388d7fd
+    with:
+      image: ghcr.io/nvidia/skillevaluator-tier1@sha256:fbff256df8f760019539d442b7cb533d7ec50efab37f4482b7b670e2e4b4189a
+      paths: .opencode/skills
+      min-score: 85
+      security-baselines: false
+      scan-mode: auto
+      llm: false

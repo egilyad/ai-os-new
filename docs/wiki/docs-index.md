@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (599 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (600 документов)
 
 ## Вики по разделам
 
@@ -207,6 +207,7 @@
 - [2026-11-23 — roundtrip-dedup-modes](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-roundtrip-dedup-modes.md)
 - [2026-11-23 — roundtrip-serializer](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-roundtrip-serializer.md)
 - [2026-11-23 — skillevaluator-wiki](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-23-skillevaluator-wiki.md)
+- [2026-11-24 — skill-quality-improvement](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-skill-quality-improvement.md)
 - [2026-11-24 — skillevaluator-pilot](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-skillevaluator-pilot.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
