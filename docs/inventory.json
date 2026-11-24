@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 622,
+    "documents": 623,
     "byCategory": {
       "repo": 40,
-      "top": 178,
+      "top": 179,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
       "mixed": 181,
-      "ru": 376
+      "ru": 377
     }
   },
   "duplicates": {
@@ -1838,6 +1838,14 @@
       "hash": "3b2b5c4eccfc81afb72a72a1e35bbc27e4927a6b"
     },
     {
+      "path": "docs/sessions/2026-11-24-memory-worker-chain.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-24 — memory-worker-chain",
+      "bytes": 2597,
+      "hash": "f3ac13540e70d111c4d066f702b94fae9cdfd429"
+    },
+    {
       "path": "docs/sessions/2026-11-24-persistent-budget-guard.md",
       "category": "top",
       "language": "mixed",
@@ -2859,7 +2867,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "52a8da02d19b17b4065eddac915e5ac06f8a02ec"
+      "hash": "6a1c344c3d1f86cc9f3db44b83fa61c21e896052"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3075,7 +3083,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "0d7805d3214b70d9bb214fc2915967f0ab5ffdb8"
+      "hash": "78a24d0f12d7d6cc2bef0479c02e83b730836e2c"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3274,8 +3282,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 66350,
-      "hash": "2bba091360c20cf88eedc917630c3a10f62a272d"
+      "bytes": 66467,
+      "hash": "287b0b2d61c9e01dadf65421b4e521709237a956"
     },
     {
       "path": "docs/wiki/docs-standard.md",

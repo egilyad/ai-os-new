@@ -250,7 +250,11 @@ async function handleMessage(event: MessageEvent): Promise<void> {
  */
 let chain: Promise<unknown> = Promise.resolve();
 self.onmessage = (event: MessageEvent) => {
-    chain = chain.then(() => handleMessage(event));
+    chain = chain
+        .then(() => handleMessage(event))
+        .catch((e) => {
+            console.error('[MemoryWorker] message handler failed', e);
+        });
 };
 
 self.onmessageerror = (event) => {
