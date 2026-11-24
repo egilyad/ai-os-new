@@ -3,6 +3,7 @@ import { KeyService, type KeyServiceDeps } from './key-service';
 import { EVENTS } from '../../events/event-names';
 import type { ApiKey } from '../../types/metrics-types';
 import type { IAdapterRegistry } from '../../contracts/provider-adapter';
+import { getDexieDb } from '../database-service';
 
 function makeEventBus() {
     return {
@@ -116,9 +117,29 @@ function keyInput(partial: {
 }
 
 describe('KeyService', () => {
+    it('clearAllData очищает все таблицы Dexie, а не только 16', async () => {
+        const { svc, eventBus } = makeService();
+        const db = getDexieDb();
+        await db.notifications.put({
+            id: 'notif-clear-all',
+            title: 't',
+            body: 'b',
+            read: false,
+            createdAt: Date.now(),
+        });
+        expect(await db.notifications.count()).toBe(1);
+
+        await svc.clearAllData();
+
+        expect(await db.notifications.count()).toBe(0);
+        expect(eventBus.emit).toHaveBeenCalledWith(EVENTS.CLEAR_DATA, undefined);
+    });
+
     it('addKey creates a key, persists it and notifies', async () => {
         const { svc, keyStore, eventBus } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         expect(added?.id).toBeTruthy();
         expect(added?.status).toBe('active');
         expect(added?.stats).toBeDefined();
@@ -154,9 +175,7 @@ describe('KeyService', () => {
     it('addKey rejects duplicate keys by fingerprint', async () => {
         const { svc } = makeService();
         await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'a' }));
-        const dup = await svc.addKey(
-            keyInput({ provider: 'groq', key: OPENAI_KEY, label: 'b' }),
-        );
+        const dup = await svc.addKey(keyInput({ provider: 'groq', key: OPENAI_KEY, label: 'b' }));
         expect(dup).toBeUndefined();
         expect(svc.getKeys()).toHaveLength(1);
         svc.destroy();
@@ -164,27 +183,23 @@ describe('KeyService', () => {
 
     it('removeKey removes the key, deletes it from the store and cleans adapter cache', async () => {
         const { svc, keyStore, eventBus, providerAdapterRegistry } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         await svc.removeKey(added!.id);
         expect(svc.getKey(added!.id)).toBeUndefined();
         expect(keyStore.deleteKey).toHaveBeenCalledWith(added!.id);
         expect(providerAdapterRegistry.invalidateCache).toHaveBeenCalledWith('openai');
-        expect(eventBus.emitOnce).toHaveBeenCalledWith(
-            EVENTS.KEY_REMOVED,
-            added!.id,
-            { id: added!.id },
-        );
+        expect(eventBus.emitOnce).toHaveBeenCalledWith(EVENTS.KEY_REMOVED, added!.id, {
+            id: added!.id,
+        });
         svc.destroy();
     });
 
     it('removeKey keeps adapter cache when other keys of the provider remain', async () => {
         const { svc, providerAdapterRegistry } = makeService();
-        const a = await svc.addKey(
-            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'a' }),
-        );
-        const b = await svc.addKey(
-            keyInput({ provider: 'openai', key: OPENAI_KEY_2, label: 'b' }),
-        );
+        const a = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'a' }));
+        const b = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY_2, label: 'b' }));
         await svc.removeKey(a!.id);
         expect(b).toBeDefined();
         expect(providerAdapterRegistry.invalidateCache).not.toHaveBeenCalled();
@@ -193,7 +208,9 @@ describe('KeyService', () => {
 
     it('updateKey patches fields and persists', async () => {
         const { svc, keyStore } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         await svc.updateKey(added!.id, { label: 'renamed', model: 'gpt-4o-mini' });
         expect(svc.getKey(added!.id)?.label).toBe('renamed');
         expect(svc.getKey(added!.id)?.model).toBe('gpt-4o-mini');
@@ -204,7 +221,9 @@ describe('KeyService', () => {
     it('canUseKey reflects registry and quota state', async () => {
         const { svc } = makeService();
         expect(svc.canUseKey('missing')).toEqual({ can: false, reason: 'Key not found' });
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         expect(svc.canUseKey(added!.id)).toEqual({ can: true });
         await svc.toggleKeyStatus(added!.id);
         expect(svc.canUseKey(added!.id)).toEqual({ can: false, reason: 'Key inactive' });
@@ -213,7 +232,9 @@ describe('KeyService', () => {
 
     it('recordUsage updates stats by provider and records failures', async () => {
         const { svc } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         svc.recordUsage('openai', 120, 500, 'gpt-4o-mini');
         let k = svc.getKey(added!.id)!;
         expect(k.stats.successCount).toBe(1);
@@ -231,12 +252,8 @@ describe('KeyService', () => {
 
     it('selectFromPool returns an active key; pool status counts keys', async () => {
         const { svc } = makeService();
-        const a = await svc.addKey(
-            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'a' }),
-        );
-        await svc.addKey(
-            keyInput({ provider: 'openai', key: OPENAI_KEY_2, label: 'b' }),
-        );
+        const a = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'a' }));
+        await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY_2, label: 'b' }));
         const picked = svc.selectFromPool('openai');
         expect(picked?.id).toBe(a!.id);
         expect(svc.getPoolStatus('openai').total).toBe(2);
@@ -246,7 +263,9 @@ describe('KeyService', () => {
 
     it('selectFromPool returns null when pool has no usable keys', async () => {
         const { svc } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         await svc.toggleKeyStatus(added!.id);
         expect(svc.selectFromPool('openai')).toBeNull();
         svc.destroy();
@@ -292,7 +311,9 @@ describe('KeyService', () => {
 
     it('pushHistory appends history entries', async () => {
         const { svc } = makeService();
-        const added = await svc.addKey(keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }));
+        const added = await svc.addKey(
+            keyInput({ provider: 'openai', key: OPENAI_KEY, label: 'main' }),
+        );
         svc.pushHistory(added!.id, 'quota_exceeded', 'tokens quota exceeded');
         const k = svc.getKey(added!.id)!;
         expect(k.history?.some((h) => h.action === 'quota_exceeded')).toBe(true);

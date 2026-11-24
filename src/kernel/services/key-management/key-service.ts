@@ -913,24 +913,7 @@ export class KeyService implements IKeyRotationManager {
             const { getDexieDb } = await import('../database-service');
             const db = getDexieDb();
             await db.transaction('rw', db.tables, async () => {
-                await Promise.all([
-                    db.keyValue.clear(),
-                    db.apiKeys.clear(),
-                    db.memories.clear(),
-                    db.sessions.clear(),
-                    db.roles.clear(),
-                    db.cognitiveTraces.clear(),
-                    db.traces.clear(),
-                    db.skills.clear(),
-                    db.connectors.clear(),
-                    db.debateSessions.clear(),
-                    db.debateVerdicts.clear(),
-                    db.debateTimeline.clear(),
-                    db.debateOverrides.clear(),
-                    db.sessionLinks.clear(),
-                    db.eventLog.clear(),
-                    db.notes.clear(),
-                ]);
+                await Promise.all(db.tables.map((table) => table.clear()));
             });
         } catch (e) {
             LOGGER.error('KeyService', 'clearAllData: Dexie clear failed', { error: e });

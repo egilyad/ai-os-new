@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 621,
+    "documents": 622,
     "byCategory": {
       "repo": 40,
-      "top": 177,
+      "top": 178,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 180,
+      "mixed": 181,
       "ru": 376
     }
   },
@@ -1742,6 +1742,14 @@
       "hash": "c879be1921733f951a85e2079668a65e8cf9be6d"
     },
     {
+      "path": "docs/sessions/2026-11-24-clear-all-tables.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — clear-all-tables",
+      "bytes": 2842,
+      "hash": "fcf4d50f3350cc66ed20670b35fcaf2e7d8fbaee"
+    },
+    {
       "path": "docs/sessions/2026-11-24-cross-tab-rate-limit.md",
       "category": "top",
       "language": "mixed",
@@ -2851,7 +2859,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "8cb283c0a42f0aa3187609903a135f215a327bfc"
+      "hash": "52a8da02d19b17b4065eddac915e5ac06f8a02ec"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3067,7 +3075,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "2b0ceaa2c775d8459f84b7de1e35afe6a17f3af5"
+      "hash": "0d7805d3214b70d9bb214fc2915967f0ab5ffdb8"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3266,8 +3274,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 66209,
-      "hash": "a3cf63d3b2b0cec721439d490ede87d9a7d4d1ec"
+      "bytes": 66350,
+      "hash": "2bba091360c20cf88eedc917630c3a10f62a272d"
     },
     {
       "path": "docs/wiki/docs-standard.md",

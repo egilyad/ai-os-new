@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (619 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (620 документов)
 
 ## Вики по разделам
 
@@ -211,6 +211,7 @@
 - [2026-11-24 — cross-tab-rate-limit](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-cross-tab-rate-limit.md)
 - [2026-11-24 — demo-provider](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-demo-provider.md)
 - [2026-11-24 — fencing-chat-lock](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-fencing-chat-lock.md)
+- [2026-11-24 — groq-shared-http-stack](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-groq-shared-http-stack.md)
 - [2026-11-24 — hotbugs-batch2](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-batch2.md)
 - [2026-11-24 — hotbugs-batch3](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-batch3.md)
 - [2026-11-24 — hotbugs-batch4](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-batch4.md)
