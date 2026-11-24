@@ -17,6 +17,7 @@ import {
 import { NAV_SECTIONS } from '../route-registry';
 import type { TranslationKey } from '../i18n/translations';
 import { safeJsonParse } from '../kernel/utils/safe-json';
+import { readStoredTheme, setTheme, type Theme } from '../kernel/utils/theme-preference';
 import { ssrSafeStorage } from '../kernel/utils/ssr-storage';
 import { agentService } from '../kernel/instances/services-core';
 import { forumService, runHistoryService } from '../kernel/instances/services-extras';
@@ -129,14 +130,11 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
             icon: <Search size={16} />,
             color: 'var(--warning)',
             action: () => {
-                const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = cur === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                try {
-                    localStorage.setItem('theme', next);
-                } catch {
-                    /* private mode */
-                }
+                const cur =
+                    readStoredTheme() ??
+                    (document.documentElement.getAttribute('data-theme') as Theme | null) ??
+                    'dark';
+                setTheme(cur === 'dark' ? 'light' : 'dark');
             },
         },
         {

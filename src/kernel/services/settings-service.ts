@@ -3,6 +3,7 @@ import { rootLogger } from './logger-service';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import { withTransaction } from '../utils/with-transaction';
+import { isTheme, setTheme } from '../utils/theme-preference';
 import type {
     ThemeConfig,
     NotificationPreferences,
@@ -307,10 +308,8 @@ export class SettingsService implements ISettingsService {
         if (changes.slaMode !== undefined) {
             this.deps.kernel.setSLAMode(changes.slaMode);
         }
-        if (changes.theme !== undefined) {
-            if (typeof document !== 'undefined') {
-                document.documentElement.setAttribute('data-theme', changes.theme);
-            }
+        if (isTheme(changes.theme)) {
+            setTheme(changes.theme);
         }
     }
 
