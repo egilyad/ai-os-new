@@ -10,6 +10,29 @@ const MAX_OUTPUT_BYTES = 256 * 1024;
 const MAX_TIMEOUT_MS = 120_000;
 const DEFAULT_TIMEOUT_MS = 30_000;
 
+const PROCESS_ALLOWLIST = new Set(
+    (process.env.ADAPTERS_PROCESS_ALLOWLIST || 'node')
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean),
+);
+const PROCESS_ENV_ALLOWLIST = [
+    'PATH',
+    'SystemRoot',
+    'ComSpec',
+    'TEMP',
+    'TMP',
+    'PATHEXT',
+    'NUMBER_OF_PROCESSORS',
+];
+const CHILD_ENV = Object.fromEntries(
+    PROCESS_ENV_ALLOWLIST.filter((key) => process.env[key] !== undefined).map((key) => [
+        key,
+        process.env[key],
+    ]),
+);
+CHILD_ENV.CI = '1';
+
 function clampTimeout(v) {
     const n = Number(v ?? DEFAULT_TIMEOUT_MS);
     if (!Number.isFinite(n) || n <= 0) return DEFAULT_TIMEOUT_MS;
@@ -167,6 +190,9 @@ const processAdapter = {
         if (!cfg || typeof cfg.command !== 'string' || !cfg.command.trim()) {
             return { ok: false, error: 'command is required' };
         }
+        if (!PROCESS_ALLOWLIST.has(cfg.command.trim().toLowerCase())) {
+            return { ok: false, error: `command not allowed: ${cfg.command}` };
+        }
         if (cfg.args !== undefined && !Array.isArray(cfg.args)) {
             return { ok: false, error: 'args must be an array' };
         }
@@ -179,10 +205,13 @@ const processAdapter = {
         return new Promise((resolve, reject) => {
             let child;
             try {
-                child = spawn(String(cfg.command), args, {
+                const command = String(cfg.command).trim().toLowerCase();
+                const binary = command === 'node' ? process.execPath : command;
+                child = spawn(binary, args, {
                     cwd: DATA_DIR,
                     shell: false,
                     timeout: timeoutMs,
+                    env: CHILD_ENV,
                     stdio: ['pipe', 'pipe', 'pipe'],
                 });
             } catch (e) {
