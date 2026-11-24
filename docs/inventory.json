@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 610,
+    "documents": 611,
     "byCategory": {
       "repo": 40,
-      "top": 166,
+      "top": 167,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 170,
+      "mixed": 171,
       "ru": 375
     }
   },
@@ -1798,6 +1798,14 @@
       "hash": "c065f0efb15adced51531f273ab46efc9a44c5a5"
     },
     {
+      "path": "docs/sessions/2026-11-24-hotbugs-http-tenant.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — hotbugs-http-tenant",
+      "bytes": 3580,
+      "hash": "3b2b5c4eccfc81afb72a72a1e35bbc27e4927a6b"
+    },
+    {
       "path": "docs/sessions/2026-11-24-skill-quality-improvement.md",
       "category": "top",
       "language": "mixed",
@@ -2763,7 +2771,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "cc21b76524942a5338dc3d5269a33a370192418f"
+      "hash": "cdb5bc2bea79b8f825582a70820f804519357815"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2979,7 +2987,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "5941a84cee247c7e4ae5bd31ea4d72ff1781007f"
+      "hash": "f3092ac8faf21c75a1ca42acc2d11771ea12f9e9"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3178,8 +3186,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 64764,
-      "hash": "d65466dccc3184d38f7bb809554275f12c46c113"
+      "bytes": 64889,
+      "hash": "0a5f1a35500da6502c1d2560fb2a1a70c9cdd094"
     },
     {
       "path": "docs/wiki/docs-standard.md",

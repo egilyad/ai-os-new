@@ -47,6 +47,10 @@ import {
     getCompanySyncSecretHash,
     verifyCompanySyncSecret,
 } from './company-store.mjs';
+import {
+    resolveCompanyFromBearer,
+    canAccessCompany as canAccessBoundCompany,
+} from './http-tenant.mjs';
 import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
 import { enqueueDbWrite } from './write-queue.mjs';
@@ -127,7 +131,21 @@ function checkRateLimit(ip) {
 function hasAuth(req) {
     const header = req.headers['authorization'] || '';
     if (!header.startsWith('Bearer ')) return false;
-    return timingSafeEqual(header.slice(7), AUTH_TOKEN);
+    const token = header.slice(7);
+    if (timingSafeEqual(token, AUTH_TOKEN)) return true;
+    const companyId = resolveCompanyFromBearer(token, (id) => ({
+        exists: getCompanySyncSecretHash(id) !== null,
+        verify: (candidate) => verifyCompanySyncSecret(id, candidate),
+    }));
+    if (companyId) {
+        req.syncCompanyId = companyId;
+        return true;
+    }
+    return false;
+}
+
+function canAccessCompany(req, companyId) {
+    return canAccessBoundCompany(req.syncCompanyId || null, companyId);
 }
 // timingSafeEqual lives in ws-auth.mjs (shared with upgrade auth).
 
@@ -836,6 +854,10 @@ const server = http.createServer(async (req, res) => {
                 writeJson(res, 404, { error: 'Company not found' });
                 return;
             }
+            if (!canAccessCompany(req, runsRoute[1])) {
+                writeJson(res, 403, { error: 'Forbidden' });
+                return;
+            }
             if (req.method === 'GET') {
                 writeJson(res, 200, {
                     runs: listRuns(runsRoute[1], {
@@ -900,6 +922,10 @@ const server = http.createServer(async (req, res) => {
                 writeJson(res, 404, { error: 'Run not found' });
                 return;
             }
+            if (!canAccessCompany(req, run.companyId)) {
+                writeJson(res, 403, { error: 'Forbidden' });
+                return;
+            }
             writeJson(res, 200, { run });
             return;
         }
@@ -913,6 +939,10 @@ const server = http.createServer(async (req, res) => {
             }
             if (!getCompany(approvalsRoute[1])) {
                 writeJson(res, 404, { error: 'Company not found' });
+                return;
+            }
+            if (!canAccessCompany(req, approvalsRoute[1])) {
+                writeJson(res, 403, { error: 'Forbidden' });
                 return;
             }
             if (req.method === 'GET') {
@@ -953,6 +983,10 @@ const server = http.createServer(async (req, res) => {
                 writeJson(res, 404, { error: 'Approval not found' });
                 return;
             }
+            if (!canAccessCompany(req, approval.companyId)) {
+                writeJson(res, 403, { error: 'Forbidden' });
+                return;
+            }
             writeJson(res, 200, { approval });
             return;
         }
@@ -968,10 +1002,23 @@ const server = http.createServer(async (req, res) => {
                 writeJson(res, 400, { error: 'Invalid JSON' });
                 return;
             }
+            const existingForComment = getApproval(approvalCommentRoute[1]);
+            if (!existingForComment) {
+                writeJson(res, 404, { error: 'Approval not found' });
+                return;
+            }
+            if (!canAccessCompany(req, existingForComment.companyId)) {
+                writeJson(res, 403, { error: 'Forbidden' });
+                return;
+            }
             try {
                 const approval = commentApproval(approvalCommentRoute[1], body);
                 if (!approval) {
                     writeJson(res, 404, { error: 'Approval not found' });
+                    return;
+                }
+                if (!canAccessCompany(req, approval.companyId)) {
+                    writeJson(res, 403, { error: 'Forbidden' });
                     return;
                 }
                 // P-MED-2: every other mutating approval route broadcasts —
@@ -996,6 +1043,15 @@ const server = http.createServer(async (req, res) => {
             const body = await readJsonBody(req).catch(() => null);
             if (!body) {
                 writeJson(res, 400, { error: 'Invalid JSON' });
+                return;
+            }
+            const existingForDecision = getApproval(approvalDecideRoute[1]);
+            if (!existingForDecision) {
+                writeJson(res, 404, { error: 'Approval not found' });
+                return;
+            }
+            if (!canAccessCompany(req, existingForDecision.companyId)) {
+                writeJson(res, 403, { error: 'Forbidden' });
                 return;
             }
             try {
@@ -1031,6 +1087,10 @@ const server = http.createServer(async (req, res) => {
                 writeJson(res, 404, { error: 'Company not found' });
                 return;
             }
+            if (!canAccessCompany(req, activityRoute[1])) {
+                writeJson(res, 403, { error: 'Forbidden' });
+                return;
+            }
             writeJson(res, 200, {
                 activity: listActivity(activityRoute[1], {
                     limit: parseInt(parsed.searchParams.get('limit') || '100', 10),
@@ -1044,6 +1104,10 @@ const server = http.createServer(async (req, res) => {
         if (exportRoute && req.method === 'GET') {
             if (!hasAuth(req)) {
                 writeJson(res, 401, { error: 'Unauthorized' });
+                return;
+            }
+            if (!canAccessCompany(req, exportRoute[1])) {
+                writeJson(res, 403, { error: 'Forbidden' });
                 return;
             }
             const manifest = exportCompany(exportRoute[1]);
@@ -1129,6 +1193,10 @@ const server = http.createServer(async (req, res) => {
             const run = getRun(executeRoute[1]);
             if (!run) {
                 writeJson(res, 404, { error: 'Run not found' });
+                return;
+            }
+            if (!canAccessCompany(req, run.companyId)) {
+                writeJson(res, 403, { error: 'Forbidden' });
                 return;
             }
             if (run.status !== 'running') {
