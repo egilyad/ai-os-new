@@ -30,13 +30,27 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const WORK_ROOT = path.resolve(process.env.CODE_RUNNER_WORK_DIR || path.join(REPO_ROOT, '.code-runner'));
 fs.mkdirSync(WORK_ROOT, { recursive: true });
 
-// Only explicit, non-shell binaries. npm/node invocations are allowed; the
-// actual project scripts run with cwd confined to WORK_ROOT.
-const ALLOWED = new Map([
-    ['node', process.execPath],
-    ['npm', process.platform === 'win32' ? 'npm.cmd' : 'npm'],
-    ['npx', process.platform === 'win32' ? 'npx.cmd' : 'npx'],
-]);
+// Only the Node binary itself — npm/npx can fetch and execute arbitrary code
+// and must never be reachable through an agent-supplied command.
+const ALLOWED = new Map([['node', process.execPath]]);
+
+const ENV_ALLOWLIST = [
+    'PATH',
+    'SystemRoot',
+    'ComSpec',
+    'TEMP',
+    'TMP',
+    'PATHEXT',
+    'NUMBER_OF_PROCESSORS',
+];
+const CHILD_ENV = Object.fromEntries(
+    ENV_ALLOWLIST.filter((key) => process.env[key] !== undefined).map((key) => [
+        key,
+        process.env[key],
+    ]),
+);
+CHILD_ENV.CI = '1';
+CHILD_ENV.NODE_ENV = 'production';
 
 function send(res, code, payload) {
     res.writeHead(code, { 'Content-Type': 'application/json' });
@@ -44,7 +58,8 @@ function send(res, code, payload) {
 }
 
 function authorized(req) {
-    if (TOKEN && (req.headers.authorization || '') !== `Bearer ${TOKEN}`) return false;
+    const tokenRequired = !!TOKEN || process.env.NODE_ENV === 'production' || HOST !== '127.0.0.1';
+    if (tokenRequired && (req.headers.authorization || '') !== `Bearer ${TOKEN}`) return false;
     const origin = req.headers.origin;
     if (origin) {
         try {
@@ -83,7 +98,7 @@ async function runCommand(body) {
     const startedAt = Date.now();
     try {
         return await new Promise((resolve) => {
-            const child = spawn(bin, args, { cwd, shell: false, env: { ...process.env, CI: '1' } });
+            const child = spawn(bin, args, { cwd, shell: false, env: CHILD_ENV });
             let stdout = '';
             let stderr = '';
             let done = false;

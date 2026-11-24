@@ -36,7 +36,11 @@ describe('code-runner sidecar', () => {
     before(async () => {
         child = spawn(process.execPath, ['server/code-runner-sidecar.mjs'], {
             cwd: REPO,
-            env: { ...process.env, CODE_RUNNER_PORT: String(PORT) },
+            env: {
+                ...process.env,
+                CODE_RUNNER_PORT: String(PORT),
+                SYNC_SECRET: 'sidecar-test-secret-do-not-leak',
+            },
             stdio: 'ignore',
         });
         for (let i = 0; i < 40; i++) {
@@ -81,6 +85,23 @@ describe('code-runner sidecar', () => {
         const res = await post({ cmd: 'bash', args: ['-c', 'echo hi'] });
         assert.equal(res.status, 400);
         assert.match(res.body.error, /not allowed/);
+    });
+
+    it('rejects npm/npx even though they are on PATH', async () => {
+        for (const cmd of ['npm', 'npx']) {
+            const res = await post({ cmd, args: ['-v'] });
+            assert.equal(res.status, 400);
+            assert.match(res.body.error, /not allowed/);
+        }
+    });
+
+    it('does not expose server secrets to spawned code', async () => {
+        const res = await post({
+            cmd: 'node',
+            args: ['-e', "process.stdout.write(process.env.SYNC_SECRET ? 'leaked' : 'none')"],
+        });
+        assert.equal(res.status, 200);
+        assert.equal(res.body.stdout, 'none');
     });
 
     it('rejects cwd outside the sandbox', async () => {
