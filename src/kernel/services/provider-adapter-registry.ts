@@ -55,6 +55,10 @@ export class ProviderAdapterRegistry implements IAdapterRegistry {
         }
     }
 
+    setBudgetGuard(guard: () => Promise<{ blocked: boolean; reason?: string }>): void {
+        this.factory.setBudgetGuard(guard);
+    }
+
     getAdapter(provider: string): IProviderAdapter | undefined {
         const normalized = provider.toLowerCase();
         if (this.adapters.has(normalized)) return this.adapters.get(normalized);
@@ -133,11 +137,7 @@ export class ProviderAdapterRegistry implements IAdapterRegistry {
             for (const k of [...this.adapters.keys()]) {
                 const base = k.replace(/#keyed$/, '');
                 const [p, f] = base.split('+');
-                if (
-                    k.toLowerCase() === n ||
-                    p?.toLowerCase() === n ||
-                    f?.toLowerCase() === n
-                ) {
+                if (k.toLowerCase() === n || p?.toLowerCase() === n || f?.toLowerCase() === n) {
                     this.adapters.delete(k);
                 }
             }

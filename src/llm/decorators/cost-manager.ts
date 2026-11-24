@@ -33,6 +33,7 @@ export interface CostManagerConfig {
     onExceeded?: 'block' | 'downgrade';
     downgradeModel?: string;
     logCosts: boolean;
+    budgetGuard?: () => Promise<{ blocked: boolean; reason?: string }>;
 }
 
 export interface CostRecord {
@@ -196,6 +197,16 @@ export class CostManagerDecorator extends BaseDecorator {
         signal?: AbortSignal,
         options?: SendMessageOptions,
     ): Promise<ProviderResponse> {
+        if (this.config.budgetGuard) {
+            const guard = await this.config.budgetGuard();
+            if (guard.blocked) {
+                throw new LLMError(
+                    guard.reason ?? `Persistent budget blocked for ${this.id}`,
+                    this.id,
+                    402,
+                );
+            }
+        }
         this.checkBudget(); // CRITICAL (Audit P0 Fix): Refresh budget status before checking
         const { model: resolvedModel, blocked } = this.handleBudgetExceeded(
             model,

@@ -27,6 +27,24 @@ describe('CostManagerDecorator', () => {
         expect(summary.byModel['test-model']?.requests).toBe(1);
     });
 
+    it('блокирует запрос по персистентному бюджету', async () => {
+        const inner = makeInner(100);
+        const guard = vi.fn(async () => ({
+            blocked: true,
+            reason: 'platform monthly limit exceeded',
+        }));
+        const cm = new CostManagerDecorator(inner, {
+            pricing: PRICING,
+            logCosts: false,
+            budgetGuard: guard,
+        });
+        await expect(cm.sendMessage(MESSAGES, 'test-model', 'sk-1')).rejects.toThrow(
+            /platform monthly limit exceeded/,
+        );
+        expect(guard).toHaveBeenCalled();
+        expect(vi.mocked(inner.sendMessage)).not.toHaveBeenCalled();
+    });
+
     it('blocks requests after the daily budget is exceeded', async () => {
         const inner = makeInner(100000);
         const cm = new CostManagerDecorator(inner, {

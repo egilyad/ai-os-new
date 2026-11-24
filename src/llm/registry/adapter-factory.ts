@@ -54,6 +54,11 @@ export class AdapterFactory {
     private adapters = new Map<string, LLMProviderAdapter>();
     readonly #rateLimiters = new Map<string, RateLimitDecorator>();
     readonly #circuitBreakers = new Map<string, CircuitBreakerDecorator>();
+    #budgetGuard?: () => Promise<{ blocked: boolean; reason?: string }>;
+
+    setBudgetGuard(guard: () => Promise<{ blocked: boolean; reason?: string }>): void {
+        this.#budgetGuard = guard;
+    }
 
     #config: AdapterFactoryConfig;
     #llmContext?: LLMContext;
@@ -217,7 +222,11 @@ export class AdapterFactory {
                 break;
             case 'mistral':
                 // C-01: no /proxy/mistral route — direct calls
-                adapter = new OpenAiCompatibleAdapter('mistral', 'https://api.mistral.ai/v1', false);
+                adapter = new OpenAiCompatibleAdapter(
+                    'mistral',
+                    'https://api.mistral.ai/v1',
+                    false,
+                );
                 break;
             case 'cohere':
                 // C-01: no /proxy/cohere route — direct calls
@@ -315,16 +324,17 @@ export class AdapterFactory {
         if (this.#config.priorityQueue)
             adapter = new PriorityQueueDecorator(adapter, this.#config.priorityQueueConfig);
         if (this.#config.costManager)
-            adapter = new CostManagerDecorator(adapter, { logCosts: true });
+            adapter = new CostManagerDecorator(adapter, {
+                logCosts: true,
+                budgetGuard: this.#budgetGuard,
+            });
         // P1-8: CompressRoute is now part of the default chain (applies only
         // to messages above the token threshold; tool-call payloads are left
         // untouched). Opt out with `compress: false`.
         if (this.#config.compress !== false)
             adapter = new CompressRouteDecorator(
                 adapter,
-                typeof this.#config.compress === 'object'
-                    ? this.#config.compress
-                    : undefined,
+                typeof this.#config.compress === 'object' ? this.#config.compress : undefined,
             );
         if (this.#config.cache)
             adapter = new CacheDecorator(

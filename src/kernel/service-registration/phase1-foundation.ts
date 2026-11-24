@@ -34,6 +34,7 @@ import { DebateOverrideRepository } from '../dal/debate-override-repository';
 import type { AdvisorService } from '../services/advisor-service';
 
 import { DeadLetterQueueService } from '../services/dead-letter-queue-service';
+import { agemsBudgetService } from '../services/agems-budget-service';
 import type { IDeadLetterQueue } from '../contracts/dead-letter-queue';
 import { DistributedLockService } from '../services/cross-tab-lock-service';
 import type { IDistributedLock } from '../contracts/cross-tab-lock';
@@ -165,6 +166,7 @@ export const registerPhase1: Phase = (helpers, ctx) => {
     // A-04: Registry is created inside factory so we can subscribe to events.
     register('providerAdapterRegistry', (c) => {
         const registry = new ProviderAdapterRegistry();
+        registry.setBudgetGuard(() => agemsBudgetService.checkPlatformBudget('default'));
         const eventBus = c.get<IEventBus>('eventBus');
         const unsubCb = eventBus.onSafe<{ provider: string; status: string }>(
             EVENTS.PROVIDER_CIRCUIT_BREAKER_SYNCED,

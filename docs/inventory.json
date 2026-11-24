@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 618,
+    "documents": 619,
     "byCategory": {
       "repo": 40,
-      "top": 174,
+      "top": 175,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 178,
+      "mixed": 179,
       "ru": 375
     }
   },
@@ -1822,6 +1822,14 @@
       "hash": "3b2b5c4eccfc81afb72a72a1e35bbc27e4927a6b"
     },
     {
+      "path": "docs/sessions/2026-11-24-persistent-budget-guard.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — persistent-budget-guard",
+      "bytes": 3547,
+      "hash": "c8ef2ec83b815ca8b3ada76f6db1460e40530bba"
+    },
+    {
       "path": "docs/sessions/2026-11-24-reaudit-batch1.md",
       "category": "top",
       "language": "mixed",
@@ -2827,7 +2835,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "fa52f9b0e803e94addc9cfa8ca63da56f48f1af4"
+      "hash": "704c38857553610ba3575a4769549b965212afd3"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3043,7 +3051,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "b29d3d606255f9ee0f44c1975febf5cd93fde1fe"
+      "hash": "9a2af8b9cd9667ee797373c3a7115a1a670b65bb"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3242,8 +3250,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 65786,
-      "hash": "cc0f1f749db47c621ffdc7e0a6eddc448f263b74"
+      "bytes": 65929,
+      "hash": "6718a3b0eb6ef866bc85cb1feea8d8f62ed3fe72"
     },
     {
       "path": "docs/wiki/docs-standard.md",
