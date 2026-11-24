@@ -370,9 +370,13 @@ class CrossTabStateSync implements ICrossTabStateSync {
                         if (kernelPayload.success)
                             this._eventBus.emit(EVENTS.KERNEL_UPDATED, kernelPayload.data);
                         else
-                            LOGGER.warn('CrossTabStateSync', 'malformed kernel-state-update payload', {
-                                issues: kernelPayload.error.issues,
-                            });
+                            LOGGER.warn(
+                                'CrossTabStateSync',
+                                'malformed kernel-state-update payload',
+                                {
+                                    issues: kernelPayload.error.issues,
+                                },
+                            );
                     }
                 } finally {
                     this._relaying = false;
@@ -561,6 +565,10 @@ class CrossTabStateSync implements ICrossTabStateSync {
             provider: state.provider,
             status: state.status,
         });
+    }
+
+    getRateLimit(provider: string, keyId: string): RateLimitState | null {
+        return this.localRateLimits.get(`${provider}:${keyId}`) ?? null;
     }
 
     updateRateLimit(state: RateLimitState): void {

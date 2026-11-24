@@ -21,4 +21,5 @@ export interface RateLimitState {
 export interface ICrossTabStateSync {
     updateCircuitBreaker(state: CircuitBreakerState): void;
     updateRateLimit(state: RateLimitState): void;
+    getRateLimit?(provider: string, keyId: string): RateLimitState | null;
 }

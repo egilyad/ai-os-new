@@ -99,7 +99,7 @@ export class RateLimitDecorator extends BaseDecorator {
             this.#maxTokens,
             this.#global.tokens + (globalElapsed / this.#refillInterval) * this.#refillRate,
         );
-        if (globalAvailable < 1) return false;
+        if (globalAvailable < 1 || this.remoteGlobalLimited(now)) return false;
         const providerId = this.getProviderId();
         // L-16: with per-key buckets, a keyless check is conservative — false
         // if ANY bucket for the provider is exhausted.
@@ -116,6 +116,13 @@ export class RateLimitDecorator extends BaseDecorator {
         return apiKey ? `${providerId}:k${fnv1a(apiKey).toString(36)}` : providerId;
     }
 
+    private remoteGlobalLimited(now: number): boolean {
+        const read = this.#crossTabStateSync?.getRateLimit;
+        if (!read) return false;
+        const state = read.call(this.#crossTabStateSync, 'unknown', this.inner.id);
+        return !!state && state.remaining < 1 && state.resetAt > now;
+    }
+
     private bucketAvailable(id: string, now: number): boolean {
         const pb = this.#perProvider.get(id);
         if (!pb) return true;
@@ -130,6 +137,13 @@ export class RateLimitDecorator extends BaseDecorator {
     private async checkRate(apiKey?: string): Promise<void> {
         if (this.#manualLimited) {
             throw new RetryableError('Rate limit manually forced', this.inner.id, 429);
+        }
+        if (this.remoteGlobalLimited(Date.now())) {
+            throw new RetryableError(
+                'Global rate limit reached in another tab',
+                this.inner.id,
+                429,
+            );
         }
         // L-16: bucket per provider+key (FNV-1a hash, not the key itself —
         // no key material at rest in the map). Previously all keys of one
@@ -174,6 +188,12 @@ export class RateLimitDecorator extends BaseDecorator {
         // Both available — consume atomically
         pb.tokens--;
         this.#global.tokens--;
+        this.#crossTabStateSync?.updateRateLimit({
+            provider: 'unknown',
+            keyId: this.inner.id,
+            remaining: this.#global.tokens,
+            resetAt: this.#global.tokens < 1 ? Date.now() + this.#refillInterval : Date.now(),
+        });
     }
 
     async sendMessage(

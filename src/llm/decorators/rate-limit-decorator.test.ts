@@ -25,6 +25,27 @@ describe('RateLimitDecorator', () => {
         expect(vi.mocked(inner.sendMessage)).toHaveBeenCalledTimes(2);
     });
 
+    it('не умножает лимит на число вкладок', async () => {
+        const inner = makeInner();
+        let shared = {
+            provider: 'unknown',
+            keyId: 'test',
+            remaining: 0,
+            resetAt: Date.now() + 60_000,
+        };
+        const sync = {
+            updateRateLimit: vi.fn((state: typeof shared) => {
+                shared = state;
+            }),
+            getRateLimit: vi.fn(() => shared),
+        };
+        const rl = new RateLimitDecorator(inner, 5, 0, 60_000, sync as never);
+        expect(rl.canSend()).toBe(false);
+        await expect(rl.sendMessage(MESSAGES, 'm', 'sk-1')).rejects.toThrow(/another tab/);
+        shared = { ...shared, resetAt: Date.now() - 1 };
+        expect(rl.canSend()).toBe(true);
+    });
+
     it('forceLimited blocks everything until reset', async () => {
         const inner = makeInner();
         const rl = new RateLimitDecorator(inner, 10, 0, 60000);
