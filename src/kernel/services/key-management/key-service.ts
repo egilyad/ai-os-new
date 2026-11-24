@@ -111,7 +111,11 @@ export class KeyService implements IKeyRotationManager {
 
     async init() {
         if (this._initialized) return;
+        await this.initializeOnce();
         this._initialized = true;
+    }
+
+    private async initializeOnce(): Promise<void> {
         await this.loadConfig();
         await this.unlockVault();
         await this.registry.loadKeys();

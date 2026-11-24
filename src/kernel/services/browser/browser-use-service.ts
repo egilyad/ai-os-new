@@ -25,6 +25,7 @@
 
 import type { IEventBus } from '../../types/interfaces';
 import { rootLogger } from '../logger-service';
+import { readSecret } from '../../utils/secret-storage';
 
 const LOGGER = rootLogger.child('BrowserUse');
 
@@ -85,11 +86,11 @@ function readDefaultConfig(): BrowserUseConfig {
         if (typeof localStorage !== 'undefined') {
             const sidecar = localStorage.getItem('browserUse.sidecarUrl');
             if (sidecar) cfg.sidecarUrl = sidecar;
-            const token = localStorage.getItem('browserUse.token');
+            const token = readSecret('browserUse.token');
             if (token) cfg.token = token;
             const gw = localStorage.getItem('companyGateway.url');
             if (gw) cfg.gatewayUrl = gw;
-            const secret = localStorage.getItem('companyGateway.secret');
+            const secret = readSecret('companyGateway.secret');
             if (secret) cfg.gatewaySecret = secret;
             const cid = localStorage.getItem('browserUse.companyId');
             if (cid) cfg.companyId = cid;

@@ -21,6 +21,7 @@ import type {
     ComputerActionResult,
 } from './computer-use-loop-service';
 import { rootLogger } from '../logger-service';
+import { readSecret } from '../../utils/secret-storage';
 
 const LOGGER = rootLogger.child('SidecarComputerExecutor');
 
@@ -50,11 +51,11 @@ function readDefaultConfig(): SidecarComputerConfig {
         if (typeof localStorage !== 'undefined') {
             const url = localStorage.getItem('browserUse.actUrl');
             if (url) cfg.actUrl = url;
-            const token = localStorage.getItem('browserUse.token');
+            const token = readSecret('browserUse.token');
             if (token) cfg.token = token;
             const gw = localStorage.getItem('companyGateway.url');
             if (gw) cfg.gatewayUrl = gw;
-            const secret = localStorage.getItem('companyGateway.secret');
+            const secret = readSecret('companyGateway.secret');
             if (secret) cfg.gatewaySecret = secret;
             const cid = localStorage.getItem('browserUse.companyId');
             if (cid) cfg.companyId = cid;

@@ -24,10 +24,10 @@ export class DeadLetterQueueService implements IDeadLetterQueue {
 
     async init(): Promise<void> {
         if (this._initialized) return;
-        this._initialized = true;
         try {
             const saved = await this.deps.getKv<DeadLetterEntry[]>(DLQ_STORAGE_KEY);
             if (saved) this.entries = saved;
+            this._initialized = true;
         } catch (e) {
             LOGGER.warn('DeadLetterQueue', 'Failed to load', { error: String(e) });
         }

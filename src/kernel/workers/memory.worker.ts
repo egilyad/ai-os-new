@@ -65,7 +65,11 @@ function pruneEntries(): void {
         for (const entry of removed) {
             vectors.delete(entry.id);
             try {
-                if (db) void oramaRemove(db as AnyOrama, entry.id);
+                if (db) {
+                    void oramaRemove(db as AnyOrama, entry.id).catch((e) => {
+                        LOGGER.warn('MemoryWorker', 'prune remove rejected', { error: e });
+                    });
+                }
             } catch (e) {
                 LOGGER.warn('MemoryWorker', 'prune remove error', { error: e });
             }
@@ -174,7 +178,11 @@ async function handleMessage(event: MessageEvent): Promise<void> {
                 entries = entries.filter((e) => e.id !== id);
                 vectors.delete(id);
                 try {
-                    if (db) void oramaRemove(db as AnyOrama, id);
+                    if (db) {
+                        void oramaRemove(db as AnyOrama, id).catch((e) => {
+                            LOGGER.warn('MemoryWorker', 'remove rejected', { error: e });
+                        });
+                    }
                 } catch (e) {
                     LOGGER.warn('MemoryWorker', 'remove error', { error: e });
                 }

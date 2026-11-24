@@ -45,7 +45,7 @@ const MAX_JOBS = 20;
 
 export class BatchProcessorService implements ILifecycle {
     private jobs: BatchJob[] = [];
-    private currentAbort: AbortController | null = null;
+    private aborts = new Map<string, AbortController>();
     private loaded = false;
     private deadLetterQueue?: IDeadLetterQueue;
 
@@ -58,7 +58,8 @@ export class BatchProcessorService implements ILifecycle {
     }
 
     async destroy(): Promise<void> {
-        this.cancelJob();
+        for (const controller of this.aborts.values()) controller.abort();
+        this.aborts.clear();
     }
 
     private async db(): Promise<import('../types/interfaces').IDatabaseService> {
@@ -115,7 +116,7 @@ export class BatchProcessorService implements ILifecycle {
         const { adapterRegistry, keyService, eventBus } =
             await import('../instances/core-references');
         const abortController = new AbortController();
-        this.currentAbort = abortController;
+        this.aborts.set(jobId, abortController);
 
         job.status = 'running';
         await this.persist();
@@ -211,7 +212,10 @@ export class BatchProcessorService implements ILifecycle {
                 // chunk on the job signal for the whole job lifetime.
                 let onAbort: (() => void) | null = null;
                 const timeout = new Promise<BatchResult>((_, reject) => {
-                    const t = setTimeout(() => reject(new Error('Task timeout')), TASK_TIMEOUT_MS);
+                    const t = setTimeout(() => {
+                        abortController.abort();
+                        reject(new Error('Task timeout'));
+                    }, TASK_TIMEOUT_MS);
                     onAbort = () => {
                         clearTimeout(t);
                         reject(new Error('Cancelled'));
@@ -251,15 +255,15 @@ export class BatchProcessorService implements ILifecycle {
             }
             job.completedAt = Date.now();
         } finally {
-            this.currentAbort = null;
+            this.aborts.delete(jobId);
         }
         await this.persist();
         return job;
     }
 
-    cancelJob(): void {
-        this.currentAbort?.abort();
-        this.currentAbort = null;
+    cancelJob(jobId: string): void {
+        this.aborts.get(jobId)?.abort();
+        this.aborts.delete(jobId);
     }
 
     async clearHistory(): Promise<void> {
