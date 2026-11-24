@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 602,
+    "documents": 604,
     "byCategory": {
       "repo": 40,
-      "top": 159,
+      "top": 160,
       "audits": 25,
-      "wiki": 378
+      "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 163,
-      "ru": 374
+      "mixed": 164,
+      "ru": 375
     }
   },
   "duplicates": {
@@ -1734,6 +1734,14 @@
       "hash": "1817ac2c87f82e941b771f74d38cf53ba4939a22"
     },
     {
+      "path": "docs/sessions/2026-11-24-backup-restore-guide.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — backup-restore-guide",
+      "bytes": 4296,
+      "hash": "c879be1921733f951a85e2079668a65e8cf9be6d"
+    },
+    {
       "path": "docs/sessions/2026-11-24-demo-provider.md",
       "category": "top",
       "language": "ru",
@@ -2635,7 +2643,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8586,
-      "hash": "7a5cee2aa26074522a97eecd3b5bbef1455d8467"
+      "hash": "456f2512f4638a189ff7773fe398a29037c3d88c"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2707,7 +2715,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "f327a2f30ce1fc32c576a7ba4d9ef1f6afff9484"
+      "hash": "4c7aeab186ba17911c9ff12c5aa529ee4cc1d186"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2835,7 +2843,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "d78a91cb64cf8c595287ae4eb7d2267c58abb255"
+      "hash": "8dc973fa30cad8fadfe52a89f7c965fd6a9c96dc"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2923,7 +2931,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "8d93aee73b13afa54cb002aca4ff6db9c78e4c01"
+      "hash": "60a26aab8192fa53cad01471586e2fb8045b5ba3"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3122,8 +3130,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 63735,
-      "hash": "bbb97e27e01ba1f9bb5bfb5d582fccc50ab6ddf8"
+      "bytes": 64103,
+      "hash": "6c8622f10dca7bf9add0038e842f396b9e438159"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3156,6 +3164,14 @@
       "title": "Разработчикам: структура и ворота",
       "bytes": 3405,
       "hash": "641753a579f0ac47283f518a653170b1018d282c"
+    },
+    {
+      "path": "docs/wiki/guide-backup-restore.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Резервное копирование и восстановление",
+      "bytes": 5925,
+      "hash": "1678e4f1104a0e6fb66988b8d9fa7956fcb0c429"
     },
     {
       "path": "docs/wiki/guide-work-modes.md",
@@ -4018,8 +4034,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 37863,
-      "hash": "8036d0c2474e00ed327b14006d3d8848c0676be1"
+      "bytes": 37983,
+      "hash": "db54fb300f0cb46de712846b5eab76a4dc25c913"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

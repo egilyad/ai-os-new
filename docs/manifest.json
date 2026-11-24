@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 10
+      "articles": 11
     },
     {
       "id": "panels",
@@ -10323,6 +10323,37 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:guide-backup-restore",
+      "type": "article",
+      "slug": "guide-backup-restore",
+      "title": "Резервное копирование и восстановление",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "бэкап",
+        "восстановление",
+        "экспорт",
+        "импорт",
+        "vault",
+        "данные"
+      ],
+      "sources": [
+        "src/components/ExportImportPanel.tsx",
+        "src/components/ExportImportPanel/export-version.ts",
+        "cli/superagents.mjs"
+      ],
+      "related": [
+        "comp-flow-restore",
+        "comp-security-crypto",
+        "comp-persistence",
+        "comp-key-management"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/ExportImportPanel/export-version.test.ts"
+      ]
     }
   ],
   "panels": [

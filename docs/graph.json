@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1670,
-    "edges": 3029,
+    "nodes": 1675,
+    "edges": 3037,
     "byType": {
       "audit": 25,
-      "code": 744,
-      "test": 251,
+      "code": 747,
+      "test": 252,
       "panel": 272,
-      "article": 378
+      "article": 379
     },
     "byKind": {
       "audit_test": 26,
       "audit_mention": 64,
       "documents": 267,
-      "test": 363,
-      "source": 1056,
-      "related": 1253
+      "test": 364,
+      "source": 1059,
+      "related": 1257
     }
   },
   "nodes": [
@@ -276,6 +276,11 @@
       "id": "file:AGENTS.md",
       "type": "code",
       "label": "AGENTS.md"
+    },
+    {
+      "id": "file:cli/superagents.mjs",
+      "type": "code",
+      "label": "cli/superagents.mjs"
     },
     {
       "id": "file:cli/tasks-mcp-server.mjs",
@@ -1003,9 +1008,24 @@
       "label": "src/components/ExceptionsPanel/ExceptionsPanel.tsx"
     },
     {
+      "id": "file:src/components/ExportImportPanel.tsx",
+      "type": "code",
+      "label": "src/components/ExportImportPanel.tsx"
+    },
+    {
       "id": "file:src/components/ExportImportPanel/",
       "type": "code",
       "label": "src/components/ExportImportPanel/"
+    },
+    {
+      "id": "file:src/components/ExportImportPanel/export-version.test.ts",
+      "type": "test",
+      "label": "src/components/ExportImportPanel/export-version.test.ts"
+    },
+    {
+      "id": "file:src/components/ExportImportPanel/export-version.ts",
+      "type": "code",
+      "label": "src/components/ExportImportPanel/export-version.ts"
     },
     {
       "id": "file:src/components/FederatedMemoryPanel",
@@ -8271,6 +8291,13 @@
       "type": "article",
       "label": "Разработчикам: структура и ворота",
       "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:guide-backup-restore",
+      "type": "article",
+      "label": "Резервное копирование и восстановление",
+      "section": "guide",
       "status": "verified"
     },
     {
@@ -19962,6 +19989,46 @@
     {
       "from": "wiki:for-developers",
       "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "file:cli/superagents.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "file:src/components/ExportImportPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "file:src/components/ExportImportPanel/export-version.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "file:src/components/ExportImportPanel/export-version.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "wiki:comp-flow-restore",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-backup-restore",
+      "to": "wiki:comp-security-crypto",
       "kind": "related"
     },
     {

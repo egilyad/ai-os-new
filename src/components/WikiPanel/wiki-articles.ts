@@ -27,6 +27,7 @@ import { TECHNIQUE_ARTICLES } from './wiki-techniques';
 import { PANELS_EXTRA_ARTICLES } from './wiki-panels-extra';
 import { TESTING_ARTICLES } from './wiki-testing';
 import { SKILL_EVALUATOR_ARTICLE } from './wiki-skillevaluator';
+import { BACKUP_GUIDE_ARTICLE } from './wiki-backup-guide';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -5025,6 +5026,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...PLUGINS_GUIDE_ARTICLES,
     ...TESTING_ARTICLES,
     SKILL_EVALUATOR_ARTICLE,
+    BACKUP_GUIDE_ARTICLE,
 ];
 
 export function getAllArticles(): WikiArticle[] {
