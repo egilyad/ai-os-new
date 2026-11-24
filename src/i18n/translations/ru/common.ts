@@ -135,6 +135,7 @@ const common: Record<string, string> = {
     'onboarding.api_key_placeholder': 'Введите API-ключ',
     'onboarding.back': 'Назад',
     'onboarding.dashboard_add_key': 'Добавить ключ',
+    'onboarding.dashboard_try_demo': 'Попробовать демо',
     'onboarding.dashboard_explore': 'Исследовать',
     'onboarding.dashboard_get_started_body': 'Начните с добавления API-ключа',
     'onboarding.dashboard_get_started_title': 'Начало работы',

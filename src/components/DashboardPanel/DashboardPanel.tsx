@@ -12,6 +12,7 @@ import ModuleInfo from '../ModuleInfo';
 import type { SystemState } from '../../types/metrics';
 import DashboardHeader from './DashboardHeader';
 import OverviewHubs from '../OverviewHubs';
+import { buildDemoKey, isDemoKey } from '../../kernel/utils/demo-mode';
 import GetStartedPanel from './GetStartedPanel';
 import QuickActionBar from './QuickActionBar';
 import CriticalAlertBanner from './CriticalAlertBanner';
@@ -27,6 +28,7 @@ interface DashboardPanelProps {
 
 const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
     const rawKeys = useKeyStore((s) => s.keys);
+    const addKey = useKeyStore((s) => s.addKey);
     const checkAllHealth = useKeyStore((s) => s.checkAllHealth);
     const keys = useMemo(() => rawKeys ?? [], [rawKeys]);
     const [systemState, setSystemState] = useState<SystemState>(() => kernel.getState());
@@ -134,6 +136,15 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
             <GetStartedPanel
                 show={providerCounts.active === 0 && keys.length === 0}
                 onNavigate={onNavigate}
+                onEnableDemo={() => {
+                    if (keys.some(isDemoKey)) return;
+                    void addKey(buildDemoKey()).then(() => {
+                        eventBus.emit(EVENTS.NOTIFICATION, {
+                            message: 'Demo provider enabled — no API key required',
+                            type: 'success',
+                        });
+                    });
+                }}
             />
 
             {showAgentsEmpty && (

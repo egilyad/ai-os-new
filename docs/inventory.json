@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 601,
+    "documents": 602,
     "byCategory": {
       "repo": 40,
-      "top": 158,
+      "top": 159,
       "audits": 25,
       "wiki": 378
     },
     "byLanguage": {
       "en": 65,
       "mixed": 163,
-      "ru": 373
+      "ru": 374
     }
   },
   "duplicates": {
@@ -1734,6 +1734,14 @@
       "hash": "1817ac2c87f82e941b771f74d38cf53ba4939a22"
     },
     {
+      "path": "docs/sessions/2026-11-24-demo-provider.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-24 — demo-provider",
+      "bytes": 4007,
+      "hash": "98331b5be8ff6844aa39de0bff9bd82ee0f8bf26"
+    },
+    {
       "path": "docs/sessions/2026-11-24-skill-quality-improvement.md",
       "category": "top",
       "language": "mixed",
@@ -2915,7 +2923,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "1c5b9600fe6447c1868c0827ebc3deb9771e440f"
+      "hash": "8d93aee73b13afa54cb002aca4ff6db9c78e4c01"
     },
     {
       "path": "docs/wiki/dev-routing.md",

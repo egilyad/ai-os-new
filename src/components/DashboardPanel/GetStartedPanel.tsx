@@ -6,9 +6,10 @@ import { useTranslation } from '../../i18n/useTranslation';
 interface GetStartedPanelProps {
     show: boolean;
     onNavigate: (page: string) => void;
+    onEnableDemo: () => void;
 }
 
-const GetStartedPanel: React.FC<GetStartedPanelProps> = ({ show, onNavigate }) => {
+const GetStartedPanel: React.FC<GetStartedPanelProps> = ({ show, onNavigate, onEnableDemo }) => {
     const { t } = useTranslation();
 
     return (
@@ -55,7 +56,13 @@ const GetStartedPanel: React.FC<GetStartedPanelProps> = ({ show, onNavigate }) =
                         >
                             {t('onboarding.dashboard_get_started_title')}
                         </div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--slate-400)', lineHeight: 1.5 }}>
+                        <div
+                            style={{
+                                fontSize: '0.85rem',
+                                color: 'var(--slate-400)',
+                                lineHeight: 1.5,
+                            }}
+                        >
                             {t('onboarding.dashboard_get_started_body')}
                         </div>
                     </div>
@@ -97,6 +104,24 @@ const GetStartedPanel: React.FC<GetStartedPanelProps> = ({ show, onNavigate }) =
                         >
                             <Key size={15} />
                             {t('onboarding.dashboard_add_key')}
+                        </button>
+                        <button
+                            onClick={() => {
+                                onEnableDemo();
+                                onNavigate('chat');
+                            }}
+                            style={{
+                                padding: '0.6rem 1.1rem',
+                                background: 'rgba(255,255,255,0.06)',
+                                border: '1px solid rgba(255,255,255,0.12)',
+                                borderRadius: 10,
+                                cursor: 'pointer',
+                                color: 'var(--slate-200)',
+                                fontSize: '0.85rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            {t('onboarding.dashboard_try_demo')}
                         </button>
                     </div>
                 </motion.div>

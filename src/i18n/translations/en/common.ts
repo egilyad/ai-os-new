@@ -135,6 +135,7 @@ const common: Record<string, string> = {
     'onboarding.api_key_placeholder': 'Api Key Placeholder',
     'onboarding.back': 'Back',
     'onboarding.dashboard_add_key': 'Dashboard Add Key',
+    'onboarding.dashboard_try_demo': 'Try demo (no key)',
     'onboarding.dashboard_explore': 'Dashboard Explore',
     'onboarding.dashboard_get_started_body': 'Dashboard Get Started Body',
     'onboarding.dashboard_get_started_title': 'Dashboard Get Started Title',
