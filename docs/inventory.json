@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 599,
+    "documents": 600,
     "byCategory": {
       "repo": 40,
-      "top": 156,
+      "top": 157,
       "audits": 25,
       "wiki": 378
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 161,
+      "mixed": 162,
       "ru": 373
     }
   },
@@ -1734,6 +1734,14 @@
       "hash": "1817ac2c87f82e941b771f74d38cf53ba4939a22"
     },
     {
+      "path": "docs/sessions/2026-11-24-skill-quality-improvement.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-24 — skill-quality-improvement",
+      "bytes": 3934,
+      "hash": "dd53bc57721ad655a49acdd3edb8ae37d664cb6c"
+    },
+    {
       "path": "docs/sessions/2026-11-24-skillevaluator-pilot.md",
       "category": "top",
       "language": "mixed",
@@ -2683,7 +2691,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "7f6bce41a8df95e20dc2caf2e3b1311584061430"
+      "hash": "8a59fdcf1b5e22be5a9c76d3347740e67a00af68"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2899,7 +2907,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "3edb3b5d44ca9163df32d3a5f715435b0266994c"
+      "hash": "39c930ace6ef121faf3a80664885c41bb3bfab6a"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -2938,8 +2946,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "NVIDIA SkillEvaluator — оценка агентных скиллов",
-      "bytes": 12404,
-      "hash": "1b1c8821e1dc26f3b3be3aa0562ab58cc57523fc"
+      "bytes": 12760,
+      "hash": "f54e83dfe7fa24c13fff0114ccc4171f7e1fe7ba"
     },
     {
       "path": "docs/wiki/dev-status-active.md",
@@ -3098,8 +3106,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 63451,
-      "hash": "d2d9ceb25448fd6994393e63ffa08009c36cdd74"
+      "bytes": 63588,
+      "hash": "65ccefe19abcbd17aa0437c71b34736263bab982"
     },
     {
       "path": "docs/wiki/docs-standard.md",
