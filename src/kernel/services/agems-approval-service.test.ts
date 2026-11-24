@@ -25,6 +25,18 @@ describe('AgemsApprovalService HITL guards', () => {
         await getDexieDb().approvalPolicies.clear();
     });
 
+    it('AUTOPILOT требует явную роль admin', async () => {
+        await expect(svc.setPreset('a1', 'AUTOPILOT')).rejects.toThrow(/admin/i);
+        await expect(svc.updatePolicy('a1', { preset: 'AUTOPILOT' })).rejects.toThrow(/admin/i);
+        const policy = await svc.setPreset('a1', 'AUTOPILOT', { callerRole: 'admin' });
+        expect(policy.preset).toBe('AUTOPILOT');
+    });
+
+    it('обычные пресеты не требуют admin', async () => {
+        const policy = await svc.setPreset('a1', 'SUPERVISED');
+        expect(policy.preset).toBe('SUPERVISED');
+    });
+
     it('request → resolve APPROVED works once', async () => {
         const req = await svc.requestApproval({
             agentId: 'a1',
@@ -48,7 +60,9 @@ describe('AgemsApprovalService HITL guards', () => {
             riskLevel: 'high',
         });
         await svc.resolve(req.id as number, 'APPROVED', undefined, 'human:1');
-        await expect(svc.resolve(req.id as number, 'REJECTED', 'oops', 'human:2')).rejects.toThrow(/already APPROVED/);
+        await expect(svc.resolve(req.id as number, 'REJECTED', 'oops', 'human:2')).rejects.toThrow(
+            /already APPROVED/,
+        );
         // Статус остался APPROVED, не перезаписан.
         const list = await svc.list('a1', 'APPROVED');
         expect(list).toHaveLength(1);
@@ -63,7 +77,9 @@ describe('AgemsApprovalService HITL guards', () => {
             riskLevel: 'high',
             expiresAt: Date.now() - 1000,
         });
-        await expect(svc.resolve(req.id as number, 'APPROVED', undefined, 'human:1')).rejects.toThrow(/expired/);
+        await expect(
+            svc.resolve(req.id as number, 'APPROVED', undefined, 'human:1'),
+        ).rejects.toThrow(/expired/);
         const expired = await svc.list('a1', 'EXPIRED');
         expect(expired).toHaveLength(1);
     });

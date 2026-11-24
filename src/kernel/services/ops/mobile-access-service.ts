@@ -21,8 +21,20 @@ function now(): number {
     return Date.now();
 }
 
+const PAIRING_TTL_MS = 5 * 60 * 1000;
+const MAX_PAIRING_ATTEMPTS = 5;
+
 function pairingCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    const bytes = new Uint32Array(1);
+    globalThis.crypto.getRandomValues(bytes);
+    return (10_000_000 + (bytes[0]! % 90_000_000)).toString();
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+    if (a.length !== b.length) return false;
+    let diff = 0;
+    for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diff === 0;
 }
 
 export interface MobileAccessDeps {
@@ -65,6 +77,8 @@ export class MobileAccessService implements IMobileAccessService {
             status: 'pending',
             createdAt: t,
             updatedAt: t,
+            expiresAt: t + PAIRING_TTL_MS,
+            failedAttempts: 0,
         };
         await this.repo.putSession(session);
         return session;
@@ -73,7 +87,22 @@ export class MobileAccessService implements IMobileAccessService {
     async pair(id: string, code: string): Promise<MobileSession> {
         const s = await this.require(id);
         if (s.status !== 'pending') throw new Error(`Session ${id} is ${s.status}`);
-        if (s.pairingCode !== code.trim()) {
+        if (s.expiresAt !== undefined && now() > s.expiresAt) {
+            s.status = 'revoked';
+            s.updatedAt = now();
+            await this.repo.putSession(s);
+            throw new Error(`Session ${id} expired`);
+        }
+        if ((s.failedAttempts ?? 0) >= MAX_PAIRING_ATTEMPTS) {
+            s.status = 'revoked';
+            s.updatedAt = now();
+            await this.repo.putSession(s);
+            throw new Error(`Session ${id} locked after failed attempts`);
+        }
+        if (!constantTimeEqual(s.pairingCode, code.trim())) {
+            s.failedAttempts = (s.failedAttempts ?? 0) + 1;
+            s.updatedAt = now();
+            await this.repo.putSession(s);
             await this.audit.append('mobile', 'pairing.failed', id, '');
             throw new Error('Invalid pairing code');
         }
@@ -97,7 +126,11 @@ export class MobileAccessService implements IMobileAccessService {
         return this.repo.listSessions();
     }
 
-    async notify(input: { title: string; body: string; actionRef?: string }): Promise<PushNotification> {
+    async notify(input: {
+        title: string;
+        body: string;
+        actionRef?: string;
+    }): Promise<PushNotification> {
         const n: PushNotification = {
             id: genId('notif'),
             title: input.title.slice(0, 160),

@@ -59,12 +59,20 @@ describe('permission middleware', () => {
         expect(result.reason).toContain('no approval channel');
     });
 
-    it('allows calls without an agent (system-level tools)', async () => {
+    it('не пропускает elevated-инструмент без агента и без authz', async () => {
         const permissions = createPermissionService();
         await permissions.init();
-        await permissions.setMode('agent-x', 'read-only');
         const pipeline = new ToolPipeline([createPermissionMiddleware(permissions)]);
         const result = await pipeline.runPre({ toolId: 't-code', input: null });
+        expect(result.decision).toBe('deny');
+        expect(result.reason).toContain('no approval channel');
+    });
+
+    it('разрешает системное чтение без агента', async () => {
+        const permissions = createPermissionService();
+        await permissions.init();
+        const pipeline = new ToolPipeline([createPermissionMiddleware(permissions)]);
+        const result = await pipeline.runPre({ toolId: 't-read-file', input: null });
         expect(result.decision).toBe('allow');
     });
 

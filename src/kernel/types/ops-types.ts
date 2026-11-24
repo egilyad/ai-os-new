@@ -101,6 +101,9 @@ export interface MobileSession {
     status: 'pending' | 'paired' | 'revoked';
     createdAt: number;
     updatedAt: number;
+    /** Pairing window (5 minutes by default). */
+    expiresAt?: number;
+    failedAttempts?: number;
 }
 
 export interface PushNotification {

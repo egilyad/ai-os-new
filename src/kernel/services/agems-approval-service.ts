@@ -15,7 +15,18 @@ export class AgemsApprovalService {
             .first()) as unknown as ApprovalPolicy | undefined;
     }
 
-    async setPreset(agentId: string, preset: ApprovalPreset): Promise<ApprovalPolicy> {
+    private assertPresetAllowed(preset: ApprovalPreset, callerRole?: string): void {
+        if (preset === 'AUTOPILOT' && callerRole !== 'admin') {
+            throw new Error('AUTOPILOT preset requires an explicit admin caller');
+        }
+    }
+
+    async setPreset(
+        agentId: string,
+        preset: ApprovalPreset,
+        opts?: { callerRole?: string },
+    ): Promise<ApprovalPolicy> {
+        this.assertPresetAllowed(preset, opts?.callerRole);
         const existing = await this.getPolicy(agentId);
         const defaults = PRESET_DEFAULTS[preset];
         const policy: ApprovalPolicy = {
@@ -130,7 +141,12 @@ export class AgemsApprovalService {
         return filtered.sort((a, b) => b.createdAt - a.createdAt);
     }
 
-    async updatePolicy(agentId: string, patch: Partial<ApprovalPolicy>): Promise<ApprovalPolicy> {
+    async updatePolicy(
+        agentId: string,
+        patch: Partial<ApprovalPolicy>,
+        opts?: { callerRole?: string },
+    ): Promise<ApprovalPolicy> {
+        if (patch.preset) this.assertPresetAllowed(patch.preset, opts?.callerRole);
         // W4-044: never allow auto-approval after < 60 minutes — a 0-minute
         // timeout with a FREE preset silently auto-approves destructive actions.
         if (patch.autoApproveAfterMin !== undefined) {
@@ -147,7 +163,7 @@ export class AgemsApprovalService {
             );
             return { ...existing, ...patch, updatedAt: Date.now() } as ApprovalPolicy;
         }
-        return this.setPreset(agentId, patch.preset ?? 'SUPERVISED').then(async (pol) => {
+        return this.setPreset(agentId, patch.preset ?? 'SUPERVISED', opts).then(async (pol) => {
             const { preset: _p, ...rest } = patch;
             void _p;
             if (Object.keys(rest).length) {

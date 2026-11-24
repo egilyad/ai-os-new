@@ -5,10 +5,7 @@ import type { AgentPermissionService } from '../permissions/permission-service';
 import { actionForTool } from '../../contracts/agent-permissions';
 import type { IToolApprovalService } from '../../contracts/tool-approval';
 import type { IAuthorizationService } from '../../contracts/authorization';
-import type {
-    ToolApprovalResolver,
-    ToolPipelineMiddleware,
-} from './tool-pipeline';
+import type { ToolApprovalResolver, ToolPipelineMiddleware } from './tool-pipeline';
 
 export interface PermissionActionResolver {
     (toolId: string): { action: string; resource: string };
@@ -47,6 +44,7 @@ export function createPermissionMiddleware(
             // SPEC_08: если подключён единый authorizationService — используем его
             // как первый decision point. deny из authz блокирует сразу; allow/ask
             // передаются дальше в permissionService (для записи денайлов/approval).
+            let authzAllowed = false;
             if (authorizationService) {
                 const authzDec = await authorizationService.evaluate({
                     actor: ctx.agentId ?? 'system',
@@ -55,11 +53,23 @@ export function createPermissionMiddleware(
                     resource: ctx.toolId,
                 });
                 if (authzDec.effect === 'deny') {
-                    return { kind: 'deny', reason: authzDec.reason ?? 'denied by authorization service' };
+                    return {
+                        kind: 'deny',
+                        reason: authzDec.reason ?? 'denied by authorization service',
+                    };
                 }
+                authzAllowed = authzDec.effect === 'allow';
             }
-            if (!ctx.agentId) return { kind: 'allow' };
             const { action, resource } = resolver(ctx.toolId);
+            if (!ctx.agentId && !authzAllowed) {
+                if (action === 'tool:read') return { kind: 'allow' };
+                return {
+                    kind: 'ask',
+                    reason: 'no agent identity — elevated tool requires approval',
+                    action,
+                    resource,
+                };
+            }
             const decision = await permissionService.evaluate(ctx.agentId, action, resource);
             switch (decision.effect) {
                 case 'allow':
