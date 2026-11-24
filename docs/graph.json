@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1675,
-    "edges": 3037,
+    "nodes": 1676,
+    "edges": 3039,
     "byType": {
       "audit": 25,
       "code": 747,
-      "test": 252,
+      "test": 253,
       "panel": 272,
       "article": 379
     },
@@ -16,7 +16,7 @@
       "audit_test": 26,
       "audit_mention": 64,
       "documents": 267,
-      "test": 364,
+      "test": 366,
       "source": 1059,
       "related": 1257
     }
@@ -4971,6 +4971,11 @@
       "id": "file:src/llm/gemini/gemini-types.ts",
       "type": "code",
       "label": "src/llm/gemini/gemini-types.ts"
+    },
+    {
+      "id": "file:src/llm/groq/groq-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/groq/groq-adapter.test.ts"
     },
     {
       "id": "file:src/llm/groq/groq-adapter.ts",
@@ -12513,6 +12518,11 @@
     },
     {
       "from": "wiki:comp-adapter-groq",
+      "to": "file:src/llm/groq/groq-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
       "to": "file:src/llm/groq/groq-adapter.ts",
       "kind": "source"
     },
@@ -15395,6 +15405,11 @@
       "from": "wiki:comp-llm-adapters",
       "to": "file:src/llm/gemini/gemini-adapter.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/groq/groq-adapter.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-llm-adapters",

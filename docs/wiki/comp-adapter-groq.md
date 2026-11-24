@@ -12,9 +12,9 @@
 
 ## Возможности
 
-- `GroqAdapter` (`BaseLLMAdapter`, НЕ OpenAiCompatible): использует SDK `groq-sdk` (не `LLMHttpClient`), `timeout=120000`, `maxRetries=2`, `dangerouslyAllowBrowser:true`.
-- Streaming: SSE с idle-guard 30 с и терминальным meta-chunk (finishReason/tokens/toolCalls).
-- `trimMessagesForGroq`: усечение истории свыше 6000 символов (`[Previous debate history summarized...]`).
+- `GroqAdapter` наследует `OpenAiCompatibleAdapter`: запросы идут через общий `LLMHttpClient` и `/proxy/groq` — SDK `groq-sdk` больше не создаёт отдельный путь мимо декораторов и SSRF-защиты.
+- Streaming и SSE обрабатываются общим HTTP-стеком.
+- Усечение истории — общее для OpenAI-совместимых адаптеров (`buildRequestBody`), отдельного `trimMessagesForGroq` нет.
 - `checkHealth` через `getAvailableModels`; `normalizeError` (401/403 → AuthError, 429 → RetryableError). `rotateKey` — **нет**.
 
 ## Реализация
