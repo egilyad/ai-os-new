@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, ShieldOff, CheckCircle2, XCircle } from 'lucide-react';
 import type {
     ExceptionTemplate,
@@ -7,6 +7,8 @@ import type {
 } from '../../kernel/types/exception-template';
 import { makeExceptionId } from '../../kernel/types/exception-template';
 import { loadTemplates, saveTemplates, toggleTemplate } from './exception-store';
+import { addVetoCount } from './veto-counts';
+import { eventBus, EVENTS } from '../../kernel/instances/events';
 
 const SCOPES: ExceptionScope[] = ['all', 'global', 'assistant', 'chat'];
 const MATCH_MODES: ExceptionMatchMode[] = ['contains', 'exact', 'regex'];
@@ -26,6 +28,13 @@ const matchLabel: Record<ExceptionMatchMode, string> = {
 
 const ExceptionsPanel: React.FC = () => {
     const [templates, setTemplates] = useState<ExceptionTemplate[]>(() => loadTemplates());
+    const [vetoCounts, setVetoCounts] = useState<Record<string, number>>({});
+
+    useEffect(() => {
+        return eventBus.on(EVENTS.VETO_TRIGGERED, (data: unknown) => {
+            setVetoCounts((prev) => addVetoCount(prev, data));
+        });
+    }, []);
 
     const [name, setName] = useState('');
     const [text, setText] = useState('');
@@ -234,6 +243,11 @@ const ExceptionsPanel: React.FC = () => {
                                 >
                                     <span style={badgeStyle}>{scopeLabel[t.scope]}</span>
                                     <span style={badgeStyle}>{matchLabel[t.matchMode]}</span>
+                                    {vetoCounts[t.id] ? (
+                                        <span style={badgeStyle}>
+                                            {vetoCounts[t.id]} срабатываний
+                                        </span>
+                                    ) : null}
                                 </div>
                             </div>
                             <button

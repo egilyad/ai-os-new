@@ -1,15 +1,11 @@
+import type { IVetoGate, VetoGateMatch, VetoSurface } from '../contracts/veto-gate';
 import type { ExceptionTemplate } from '../types/exception-template';
 import { isReDoSPattern } from '../utils/regex-safe';
 import { ssrSafeStorage } from '../utils/ssr-storage';
 
 const STORAGE_KEY = 'exceptions.templates';
 
-export interface VetoMatch {
-    templateId: string;
-    name: string;
-    text: string;
-    matchMode: ExceptionTemplate['matchMode'];
-}
+export type VetoMatch = VetoGateMatch;
 
 function matchesTemplate(output: string, template: ExceptionTemplate): boolean {
     switch (template.matchMode) {
@@ -32,7 +28,7 @@ function matchesTemplate(output: string, template: ExceptionTemplate): boolean {
 export function checkVeto(
     output: string,
     templates: ExceptionTemplate[],
-    surface: 'assistant' | 'chat',
+    surface: VetoSurface,
 ): VetoMatch[] {
     return templates
         .filter(
@@ -47,8 +43,8 @@ export function checkVeto(
         }));
 }
 
-export class VetoGateService {
-    check(output: string, surface: 'assistant' | 'chat' = 'chat'): VetoMatch[] {
+export class VetoGateService implements IVetoGate {
+    check(output: string, surface: VetoSurface = 'chat'): VetoMatch[] {
         let templates: ExceptionTemplate[] = [];
         try {
             const raw = ssrSafeStorage.getItem(STORAGE_KEY);

@@ -16,6 +16,7 @@
  * executions ask the human first.
  */
 import type { ILLMClientService } from '../../contracts/provider-adapter';
+import type { IVetoGate } from '../../contracts/veto-gate';
 import type { ChatMessage } from '../../types/llm-types';
 import type {
     AssistantAction,
@@ -80,17 +81,7 @@ export interface AssistantServiceDeps {
     actions: AssistantActionRegistry;
     knowledge: ProjectKnowledgeService;
     events: IEventBus;
-    vetoGate?: {
-        check(
-            output: string,
-            surface?: 'assistant' | 'chat',
-        ): Array<{
-            templateId: string;
-            name: string;
-            text: string;
-            matchMode: string;
-        }>;
-    };
+    vetoGate?: IVetoGate;
     /** Agent id the assistant acts as — its permission state decides the gate. */
     agentId: string;
     /** Human-readable name of that agent node. */

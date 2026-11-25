@@ -2,6 +2,7 @@ import type { ILLMClientService } from './provider-adapter';
 import type { ChatMessage, ProviderResponse, SendMessageOptions } from '../types/llm-types';
 import type { ILogger } from './logger';
 import type { IPromptSecurityService } from './prompt-security-types';
+import type { IVetoGate } from './veto-gate';
 
 export interface ChatServiceDeps {
     eventBus: {
@@ -11,17 +12,7 @@ export interface ChatServiceDeps {
         emitOnce: (event: string, key: string, data?: unknown) => boolean;
     };
     promptSecurityService: IPromptSecurityService;
-    vetoGate?: {
-        check(
-            output: string,
-            surface?: 'assistant' | 'chat',
-        ): Array<{
-            templateId: string;
-            name: string;
-            text: string;
-            matchMode: string;
-        }>;
-    };
+    vetoGate?: IVetoGate;
     keyService: {
         selectFromPool: (
             provider: string,
