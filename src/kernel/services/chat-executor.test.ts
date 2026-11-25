@@ -610,6 +610,9 @@ describe('ChatExecutor', () => {
     describe('stale request cleanup', () => {
         it('should abort requests older than TTL', async () => {
             vi.useFakeTimers();
+            const flushMicrotasks = async () => {
+                for (let i = 0; i < 20; i++) await Promise.resolve();
+            };
             const baseTime = Date.now();
             vi.setSystemTime(baseTime);
             let capturedSignal: AbortSignal | undefined;
@@ -624,11 +627,7 @@ describe('ChatExecutor', () => {
                             opts.signal.addEventListener(
                                 'abort',
                                 () => {
-                                    reject(
-                                        Object.assign(new DOMException('Aborted', 'AbortError'), {
-                                            name: 'AbortError',
-                                        }),
-                                    );
+                                    reject(new DOMException('Aborted', 'AbortError'));
                                 },
                                 { once: true },
                             );
@@ -636,21 +635,20 @@ describe('ChatExecutor', () => {
                     });
                 });
             const localExecutor = new ChatExecutor(deps, deps.llmClient);
-            localExecutor.handleMessage(makeRequest());
-            for (let i = 0; i < 200 && !capturedSignal; i++) {
-                await new Promise((r) => setImmediate(r));
+            try {
+                localExecutor.handleMessage(makeRequest());
+                await flushMicrotasks();
+                expect(capturedSignal).toBeDefined();
+                expect(capturedSignal!.aborted).toBe(false);
+                vi.setSystemTime(baseTime + 11 * 60 * 1000);
+                vi.advanceTimersByTime(61000);
+                await flushMicrotasks();
+                expect(capturedSignal!.aborted).toBe(true);
+                resolveSend(undefined);
+            } finally {
+                vi.useRealTimers();
+                localExecutor.destroy();
             }
-            expect(capturedSignal).toBeDefined();
-            expect(capturedSignal!.aborted).toBe(false);
-            vi.setSystemTime(baseTime + 11 * 60 * 1000);
-            vi.advanceTimersByTime(61000);
-            for (let i = 0; i < 200 && !capturedSignal?.aborted; i++) {
-                await new Promise((r) => setImmediate(r));
-            }
-            expect(capturedSignal!.aborted).toBe(true);
-            resolveSend(undefined);
-            vi.useRealTimers();
-            localExecutor.destroy();
         });
     });
 });

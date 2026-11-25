@@ -811,7 +811,6 @@ export class ChatExecutor {
                                 excludedProviders,
                             );
                             if (fallback) {
-                                excludedProviders.add(fallback.provider);
                                 currentProvider = fallback.provider;
                                 // C-23: no session creation in fallback path —
                                 // session is created only on actual success (line ~359)

@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 633,
+    "documents": 634,
     "byCategory": {
       "repo": 40,
-      "top": 189,
+      "top": 190,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 189,
+      "mixed": 190,
       "ru": 379
     }
   },
@@ -1934,6 +1934,14 @@
       "hash": "adc2a6298248e1e2a884a175348e6c508c01fa46"
     },
     {
+      "path": "docs/sessions/2026-11-25-chat-executor-test-fix.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-25 — chat-executor-test-fix",
+      "bytes": 3460,
+      "hash": "5b77c9df4b2973176a4577ac0eaeab4e18c5042c"
+    },
+    {
       "path": "docs/sessions/2026-11-25-crew-authz-guard.md",
       "category": "top",
       "language": "mixed",
@@ -2947,7 +2955,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "35b558f96b8edca3d5ec123ad7d0ee9eb851ae46"
+      "hash": "253d866413269a365a8cb13d2fc2126ef011af2c"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3163,7 +3171,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "99299f9923d544ad0747dd942251206cf625053c"
+      "hash": "22aa765ed8609c46133353ce05ff9e8b775f100f"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3362,8 +3370,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 67767,
-      "hash": "c266a9b79621299bbb527538cd5f66fdbc5316a5"
+      "bytes": 67892,
+      "hash": "8ed6751ba80b9db5dc6c9723479dd765be28d141"
     },
     {
       "path": "docs/wiki/docs-standard.md",
