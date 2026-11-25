@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1676,
-    "edges": 3039,
+    "nodes": 1677,
+    "edges": 3040,
     "byType": {
       "audit": 25,
       "code": 747,
-      "test": 253,
+      "test": 254,
       "panel": 272,
       "article": 379
     },
@@ -16,7 +16,7 @@
       "audit_test": 26,
       "audit_mention": 64,
       "documents": 267,
-      "test": 366,
+      "test": 367,
       "source": 1059,
       "related": 1257
     }
@@ -796,6 +796,11 @@
       "id": "file:src/components/ConfigHistoryView",
       "type": "code",
       "label": "src/components/ConfigHistoryView"
+    },
+    {
+      "id": "file:src/components/ConfigHistoryView.test.tsx",
+      "type": "test",
+      "label": "src/components/ConfigHistoryView.test.tsx"
     },
     {
       "id": "file:src/components/ConnectorsPanel/ConnectorsPanel.test.tsx",
@@ -21920,6 +21925,11 @@
       "from": "wiki:panel-history-audit",
       "to": "file:src/components/AuditLogView",
       "kind": "source"
+    },
+    {
+      "from": "wiki:panel-history-audit",
+      "to": "file:src/components/ConfigHistoryView.test.tsx",
+      "kind": "test"
     },
     {
       "from": "wiki:panel-history-audit",

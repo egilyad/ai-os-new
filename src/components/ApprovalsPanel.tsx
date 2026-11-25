@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { readGatewaySecret, writeGatewaySecret } from './Common/gatewaySecretStorage';
 import { useAutoClearError } from '../hooks/useAutoClearError';
+import { useConfirm } from '../hooks/useConfirm';
 import { RefreshCw, ShieldCheck, Loader2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -330,6 +331,7 @@ const ApprovalsPanel: React.FC = () => {
  * browser-use было негде подтвердить, кроме per-agent таба (ro2 §1.7).
  */
 function LocalAgentApprovals(): React.JSX.Element {
+    const { confirm, ConfirmDialog } = useConfirm();
     const [items, setItems] = useState<ApprovalRequest[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -367,6 +369,13 @@ function LocalAgentApprovals(): React.JSX.Element {
     async function bulk(status: 'APPROVED' | 'REJECTED'): Promise<void> {
         const ids = items.map((r) => r.id).filter((id): id is number => typeof id === 'number');
         if (ids.length === 0) return;
+        const approved = await confirm({
+            title: status === 'APPROVED' ? 'Approve all pending' : 'Reject all pending',
+            message: `Это действие затронет ${ids.length} заявок. Продолжить?`,
+            confirmLabel: status === 'APPROVED' ? 'Approve all' : 'Reject all',
+            variant: 'danger',
+        });
+        if (!approved) return;
         setError(null);
         try {
             await agemsApprovalService.bulkResolve(ids, status);
@@ -488,6 +497,7 @@ function LocalAgentApprovals(): React.JSX.Element {
                     </li>
                 ))}
             </ul>
+            <ConfirmDialog />
         </div>
     );
 }

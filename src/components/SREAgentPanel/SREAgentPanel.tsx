@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
+import { useConfirm } from '../../hooks/useConfirm';
 import { Bot, TrendingUp, Shield, Download, Send, Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { usePolling } from '../Common/usePolling';
@@ -22,6 +23,7 @@ import AlertItem from './AlertItem';
 const SREAgentPanel: React.FC = () => {
     const { t } = useTranslation();
     const [suggestions, setSuggestions] = useState<OptimizationSuggestion[]>([]);
+    const { confirm, ConfirmDialog } = useConfirm();
     const [alerts, setAlerts] = useState<SREAlert[]>([]);
     const [metrics, setMetrics] = useState<{
         avgLatency?: number;
@@ -131,35 +133,48 @@ const SREAgentPanel: React.FC = () => {
     // C-95: usePolling gates on document.hidden
     usePolling(refreshData, 5000);
 
-    const handleExecute = useCallback((id: string) => {
-        setError(null);
-        setExecutingId(id);
-        if (execTimeoutRef.current) clearTimeout(execTimeoutRef.current);
-        execTimeoutRef.current = setTimeout(() => {
-            execTimeoutRef.current = undefined;
+    const handleExecute = useCallback(
+        async (id: string) => {
+            const approved = await confirm({
+                title: 'Apply SRE fix',
+                message: 'Рекомендация будет применена к рабочей системе. Продолжить?',
+                confirmLabel: 'Apply',
+                variant: 'danger',
+            });
+            if (!approved) return;
+            setError(null);
+            setExecutingId(id);
+            if (execTimeoutRef.current) clearTimeout(execTimeoutRef.current);
+            execTimeoutRef.current = setTimeout(() => {
+                execTimeoutRef.current = undefined;
+                try {
+                    advisorService.executeFix(id);
+                } catch (e) {
+                    console.error('[SREAgentPanel] execute failed', e);
+                    setError(t('sre.error.execute'));
+                    clearError();
+                }
+                setExecutingId(null);
+            }, 500);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
+
+    const handleDismiss = useCallback(
+        (id: string) => {
+            setError(null);
             try {
-                advisorService.executeFix(id);
+                advisorService.dismissSuggestion(id);
             } catch (e) {
-                console.error('[SREAgentPanel] execute failed', e);
-                setError(t('sre.error.execute'));
+                console.error('[SREAgentPanel] dismiss failed', e);
+                setError(t('sre.error.dismiss'));
                 clearError();
             }
-            setExecutingId(null);
-        }, 500);
+        },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleDismiss = useCallback((id: string) => {
-        setError(null);
-        try {
-            advisorService.dismissSuggestion(id);
-        } catch (e) {
-            console.error('[SREAgentPanel] dismiss failed', e);
-            setError(t('sre.error.dismiss'));
-            clearError();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [clearError]);
+        [clearError],
+    );
 
     const handleRunAudit = useCallback(async () => {
         setError(null);
@@ -208,13 +223,21 @@ const SREAgentPanel: React.FC = () => {
         a.download = `sre-audit-${new Date().toISOString().slice(0, 10)}.md`;
         a.click();
         URL.revokeObjectURL(url);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedKeyId, keys]);
 
-    const handleAutoFixToggle = useCallback(() => {
+    const handleAutoFixToggle = useCallback(async () => {
         setError(null);
+        const cfg = advisorService.getConfig?.() ?? { enableAutoFix: false };
+        if (!cfg.enableAutoFix) {
+            const approved = await confirm({
+                title: 'Enable auto-fix',
+                message: 'SRE сможет применять исправления без подтверждения. Продолжить?',
+                confirmLabel: 'Enable',
+                variant: 'danger',
+            });
+            if (!approved) return;
+        }
         try {
-            const cfg = advisorService.getConfig?.() ?? { enableAutoFix: false };
             advisorService.updateConfig({ enableAutoFix: !cfg.enableAutoFix });
             setAutoFixEnabled(!cfg.enableAutoFix);
         } catch (e) {
@@ -313,7 +336,10 @@ const SREAgentPanel: React.FC = () => {
                         (provider) => {
                             const groupKeys = keys.filter((k) => k.provider === provider);
                             return (
-                                <optgroup key={provider} label={`${provider} (${groupKeys.length})`}>
+                                <optgroup
+                                    key={provider}
+                                    label={`${provider} (${groupKeys.length})`}
+                                >
                                     {groupKeys.map((k) => (
                                         <option key={k.id} value={k.id}>
                                             {k.label || k.id.slice(0, 8)} · {k.status}
@@ -439,7 +465,10 @@ const SREAgentPanel: React.FC = () => {
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && chatQuestion.trim()) void handleAsk();
                         }}
-                        placeholder={t('sre.ask_placeholder') ?? 'Например: есть ли критические проблемы с провайдерами?'}
+                        placeholder={
+                            t('sre.ask_placeholder') ??
+                            'Например: есть ли критические проблемы с провайдерами?'
+                        }
                         disabled={chatBusy}
                         aria-label={t('sre.ask') ?? 'Вопрос SRE-агенту'}
                         style={{
@@ -469,8 +498,14 @@ const SREAgentPanel: React.FC = () => {
                             cursor: chatBusy || !chatQuestion.trim() ? 'default' : 'pointer',
                         }}
                     >
-                        {chatBusy ? <Loader2 size={14} className="provider-spin" /> : <Send size={14} />}
-                        {chatBusy ? (t('sre.thinking') ?? 'Думаю…') : (t('sre.ask_submit') ?? 'Спросить')}
+                        {chatBusy ? (
+                            <Loader2 size={14} className="provider-spin" />
+                        ) : (
+                            <Send size={14} />
+                        )}
+                        {chatBusy
+                            ? (t('sre.thinking') ?? 'Думаю…')
+                            : (t('sre.ask_submit') ?? 'Спросить')}
                     </button>
                 </div>
                 {chatAnswer && (
@@ -494,6 +529,7 @@ const SREAgentPanel: React.FC = () => {
             </div>
 
             <ModuleInfo moduleKey="sre" />
+            <ConfirmDialog />
         </div>
     );
 };

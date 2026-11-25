@@ -41,7 +41,7 @@
   - Тесты: — (рядом с компонентом не найдены)
 - Панель `history` → маршрут `/history`
   - Компонент: `src/components/ConfigHistoryView`
-  - Тесты: — (рядом с компонентом не найдены)
+  - Тесты: `src/components/ConfigHistoryView.test.tsx`
 - Панель `time-machine` → маршрут `/time-machine`
   - Компонент: `src/components/TimeMachinePanel`
   - Тесты: — (рядом с компонентом не найдены)

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { History, RotateCcw, Activity, Camera, Clock, AlertTriangle } from 'lucide-react';
+import { useConfirm } from '../hooks/useConfirm';
 import { snapshotService } from '../kernel/instances';
 import { eventBus, EVENTS } from '../kernel/instances';
 import type { SystemSnapshot } from '../kernel/instances';
 
 const ConfigHistoryView: React.FC = () => {
+    const { confirm, ConfirmDialog } = useConfirm();
     const [snapshots, setSnapshots] = useState<SystemSnapshot[]>([]);
     const [restoring, setRestoring] = useState<string | null>(null);
     const [restoreError, setRestoreError] = useState<string | null>(null);
@@ -22,6 +24,13 @@ const ConfigHistoryView: React.FC = () => {
     }, []);
 
     const handleRestore = async (id: string) => {
+        const approved = await confirm({
+            title: 'Rollback configuration',
+            message: 'Текущая конфигурация будет полностью заменена выбранным снимком. Продолжить?',
+            confirmLabel: 'Rollback',
+            variant: 'danger',
+        });
+        if (!approved) return;
         setRestoring(id);
         try {
             const ok = snapshotService.restoreById(id);
@@ -63,7 +72,12 @@ const ConfigHistoryView: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <History size={20} color="#f59e0b" />
                     <h2
-                        style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: 'var(--slate-50)' }}
+                        style={{
+                            margin: 0,
+                            fontSize: '1.2rem',
+                            fontWeight: 800,
+                            color: 'var(--slate-50)',
+                        }}
                     >
                         Config History & Rollback
                     </h2>
@@ -212,7 +226,9 @@ const ConfigHistoryView: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-500)' }}>
+                    <div
+                        style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-500)' }}
+                    >
                         <Activity size={32} style={{ opacity: 0.3, marginBottom: '1rem' }} />
                         <div style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                             No Config History
@@ -224,6 +240,7 @@ const ConfigHistoryView: React.FC = () => {
                     </div>
                 )}
             </div>
+            <ConfirmDialog />
         </div>
     );
 };

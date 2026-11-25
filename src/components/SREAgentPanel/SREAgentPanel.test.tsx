@@ -80,9 +80,9 @@ describe('SREAgentPanel', () => {
         const Panel = (await import('./SREAgentPanel')).default;
         render(<Panel />);
         fireEvent.click(await screen.findByText('sre.execute'));
-        await waitFor(
-            () => expect(screen.getByText('sre.error.execute')).toBeDefined(),
-            { timeout: 3000 },
-        );
+        fireEvent.click(await screen.findByText('Apply'));
+        await waitFor(() => expect(screen.getByText('sre.error.execute')).toBeDefined(), {
+            timeout: 3000,
+        });
     });
 });

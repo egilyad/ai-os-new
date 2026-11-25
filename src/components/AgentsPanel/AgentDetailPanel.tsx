@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useConfirm } from '../../hooks/useConfirm';
 import { motion, AnimatePresence } from 'framer-motion';
 import { templateService, agentService } from '../../kernel/instances';
 import type { ISNode } from '../../kernel/contracts/topology';
@@ -459,6 +460,7 @@ function HierarchyTab({ agentId, agentName }: { agentId: string; agentName: stri
 }
 
 function ApprovalsTab({ agentId }: { agentId: string }) {
+    const { confirm, ConfirmDialog } = useConfirm();
     const [preset, setPreset] = useState<string>('—');
     const [pending, setPending] = useState<
         Array<{
@@ -493,11 +495,25 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
         setSelected((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
     const approve = async () => {
         if (!selected.length) return;
+        const approved = await confirm({
+            title: 'Approve selected',
+            message: `Одобрить ${selected.length} выбранных заявок?`,
+            confirmLabel: 'Approve',
+            variant: 'danger',
+        });
+        if (!approved) return;
         await approvalBulkService.bulkApprove(selected);
         void load();
     };
     const reject = async () => {
         if (!selected.length) return;
+        const approved = await confirm({
+            title: 'Reject selected',
+            message: `Отклонить ${selected.length} выбранных заявок? Причина: ${rejectReason}`,
+            confirmLabel: 'Reject',
+            variant: 'danger',
+        });
+        if (!approved) return;
         await approvalBulkService.bulkReject(selected, rejectReason);
         void load();
     };
@@ -815,6 +831,7 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
                     </div>
                 )}
             </div>
+            <ConfirmDialog />
         </div>
     );
 }

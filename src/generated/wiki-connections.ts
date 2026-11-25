@@ -2000,7 +2000,9 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "panelId": "history",
             "route": "/history",
             "component": "src/components/ConfigHistoryView",
-            "tests": []
+            "tests": [
+                "src/components/ConfigHistoryView.test.tsx"
+            ]
         },
         {
             "panelId": "time-machine",

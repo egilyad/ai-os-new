@@ -3445,7 +3445,9 @@
         "panel-settings"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/components/ConfigHistoryView.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-infra-meta",

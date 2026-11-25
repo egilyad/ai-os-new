@@ -2,6 +2,7 @@ import { Webhook } from 'lucide-react';
 import { notificationWebhookService } from '../../kernel/instances';
 import type { WebhookConfig, WebhookProvider, WebhookEventType } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useConfirm } from '../../hooks/useConfirm';
 import {
     flexCenterGap2,
     flexColGap3,
@@ -51,7 +52,20 @@ const AlertsTab: React.FC<AlertsTabProps> = ({
     providerOptions,
 }) => {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const list = Array.isArray(webhooks) ? webhooks : [];
+
+    const handleRemove = async (id: string, name: string) => {
+        const approved = await confirm({
+            title: 'Delete webhook',
+            message: `Удалить вебхук «${name}»? Сообщения больше не будут отправляться.`,
+            confirmLabel: 'Delete',
+            variant: 'danger',
+        });
+        if (!approved) return;
+        notificationWebhookService.removeWebhook(id);
+        setWebhooks(refreshWebhooks());
+    };
 
     return (
         <>
@@ -83,10 +97,7 @@ const AlertsTab: React.FC<AlertsTabProps> = ({
                                 background: 'var(--error-tint)',
                                 cursor: 'pointer',
                             }}
-                            onClick={() => {
-                                notificationWebhookService.removeWebhook(wh.id);
-                                setWebhooks(refreshWebhooks());
-                            }}
+                            onClick={() => void handleRemove(wh.id, wh.name)}
                         >
                             {t('settings.webhooks_remove')}
                         </button>
@@ -140,7 +151,11 @@ const AlertsTab: React.FC<AlertsTabProps> = ({
                     />
                     {!webhookForm.name && (
                         <span
-                            style={{ fontSize: '0.65rem', color: 'var(--error)', marginTop: '-0.5rem' }}
+                            style={{
+                                fontSize: '0.65rem',
+                                color: 'var(--error)',
+                                marginTop: '-0.5rem',
+                            }}
                         >
                             {t('settings.webhooks_name_required')}
                         </span>
@@ -159,7 +174,11 @@ const AlertsTab: React.FC<AlertsTabProps> = ({
                     />
                     {!webhookForm.url && (
                         <span
-                            style={{ fontSize: '0.65rem', color: 'var(--error)', marginTop: '-0.5rem' }}
+                            style={{
+                                fontSize: '0.65rem',
+                                color: 'var(--error)',
+                                marginTop: '-0.5rem',
+                            }}
                         >
                             {t('settings.webhooks_url_required')}
                         </span>
@@ -264,6 +283,7 @@ const AlertsTab: React.FC<AlertsTabProps> = ({
                     </button>
                 </div>
             </div>
+            <ConfirmDialog />
         </>
     );
 };

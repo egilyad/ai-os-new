@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (633 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (634 документов)
 
 ## Вики по разделам
 
@@ -232,6 +232,7 @@
 - [2026-11-24 — ssot-theme](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-ssot-theme.md)
 - [2026-11-24 — zod-hooks-coverage](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-zod-hooks-coverage.md)
 - [2026-11-25 — assistant-veto](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-assistant-veto.md)
+- [2026-11-25 — chat-executor-test-fix](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-chat-executor-test-fix.md)
 - [2026-11-25 — crew-authz-guard](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-crew-authz-guard.md)
 - [2026-11-25 — lens-compiler](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-lens-compiler.md)
 - [2026-11-25 — sidecar-ssrf-guard](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-sidecar-ssrf-guard.md)
