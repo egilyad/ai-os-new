@@ -154,6 +154,18 @@ export class MetricsCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.VETO_TRIGGERED, (data: unknown) => {
+                const d = data as { surface?: string; templateIds?: string[] };
+                this.metrics.inc('veto.triggered', 1, {
+                    surface: String(d?.surface ?? 'unknown'),
+                });
+                for (const templateId of d?.templateIds ?? []) {
+                    this.metrics.inc('veto.by_template', 1, { template: templateId });
+                }
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.PLUGIN_REGISTERED, () => {
                 this.metrics.inc('plugin.registered');
             }),

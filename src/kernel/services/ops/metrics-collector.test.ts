@@ -59,6 +59,22 @@ describe('MetricsCollector', () => {
         expect(metrics.snapshot()['memory.writes'].summary.sum).toBe(1);
     });
 
+    it('пишет veto.triggered/veto.by_template на chat:veto', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('chat:veto', {
+            requestId: 'r1',
+            surface: 'chat',
+            templateIds: ['exc-1'],
+            names: ['No promises'],
+        });
+        const snap = metrics.snapshot();
+        expect(snap['veto.triggered{surface=chat}'].summary.sum).toBe(1);
+        expect(snap['veto.by_template{template=exc-1}'].summary.sum).toBe(1);
+    });
+
     it('destroy отписывает подписки', () => {
         const events = makeEvents();
         const metrics = new MetricsService();
