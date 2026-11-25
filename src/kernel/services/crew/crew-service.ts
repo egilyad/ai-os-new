@@ -8,6 +8,7 @@
  *   Real LLM wiring comes in later waves; the service never imports LLM code.
  */
 import type { IEventBus } from '../../types/interfaces';
+import type { IAuthorizationService } from '../../contracts/authorization';
 import type { CrewRepository } from '../../dal/crew-repository';
 import type {
     AgentCard,
@@ -31,6 +32,7 @@ export interface CrewServiceDeps {
     repository: CrewRepository;
     eventBus: IEventBus;
     executor?: ICrewTaskExecutor;
+    authorization?: IAuthorizationService;
 }
 
 /** Default executor — deterministic, no network. Used until LLM wiring lands. */
@@ -61,16 +63,21 @@ export class CrewService implements ICrewService {
     private repo: CrewRepository;
     private events: IEventBus;
     private executor: ICrewTaskExecutor;
+    private authorization?: IAuthorizationService;
     private aborted = new Set<string>();
 
     constructor(deps: CrewServiceDeps) {
         this.repo = deps.repository;
         this.events = deps.eventBus;
         this.executor = deps.executor ?? new EchoExecutor();
+        this.authorization = deps.authorization;
         // A2: surface when crews are running on the deterministic echo executor
         // (no LLM) so it isn't silently mistaken for real intelligence.
         if (this.executor instanceof EchoExecutor) {
-            LOGGER.warn('CrewService', 'using deterministic EchoExecutor (no LLM) — tasks will not reason');
+            LOGGER.warn(
+                'CrewService',
+                'using deterministic EchoExecutor (no LLM) — tasks will not reason',
+            );
         }
     }
 
@@ -87,8 +94,23 @@ export class CrewService implements ICrewService {
         this.executor = executor;
     }
 
+    private async assertMutationAllowed(
+        action: string,
+        resource: string,
+        callerId?: string,
+    ): Promise<void> {
+        if (!this.authorization) return;
+        await this.authorization.assertAllowed({
+            actor: callerId ?? 'system',
+            actorType: callerId ? 'user' : 'service',
+            action,
+            resource,
+        });
+    }
+
     // ── CRUD ──
-    async createCrew(input: CreateCrewInput): Promise<Crew> {
+    async createCrew(input: CreateCrewInput, callerId?: string): Promise<Crew> {
+        await this.assertMutationAllowed('crew:create', 'crew', callerId);
         const t = now();
         const crewId = genId('crew');
         const roles: AgentRole[] = (input.roles ?? []).map((r) => ({
@@ -122,8 +144,7 @@ export class CrewService implements ICrewService {
 
         const taskIds: string[] = [];
         for (const taskInput of input.tasks ?? []) {
-            const resolvedAssignee =
-                roleIndex.get(taskInput.assigneeId) ?? taskInput.assigneeId;
+            const resolvedAssignee = roleIndex.get(taskInput.assigneeId) ?? taskInput.assigneeId;
             const task: CrewTask = {
                 id: genId('task'),
                 crewId,
@@ -133,7 +154,9 @@ export class CrewService implements ICrewService {
                 outputSchema: taskInput.outputSchema,
                 status: 'pending',
                 dependsOn: taskInput.dependsOn ? [...taskInput.dependsOn] : undefined,
-                contextTaskIds: taskInput.contextTaskIds ? [...taskInput.contextTaskIds] : undefined,
+                contextTaskIds: taskInput.contextTaskIds
+                    ? [...taskInput.contextTaskIds]
+                    : undefined,
                 humanInput: taskInput.humanInput,
                 createdAt: now(),
                 updatedAt: now(),
@@ -164,12 +187,14 @@ export class CrewService implements ICrewService {
         return this.repo.listCrews();
     }
 
-    async deleteCrew(id: string): Promise<void> {
+    async deleteCrew(id: string, callerId?: string): Promise<void> {
+        await this.assertMutationAllowed('crew:delete', id, callerId);
         await this.repo.deleteCrew(id);
         this.events.emit(EVENTS.CREW_DELETED, { crewId: id });
     }
 
-    async addRole(crewId: string, input: CreateRoleInput): Promise<AgentRole> {
+    async addRole(crewId: string, input: CreateRoleInput, callerId?: string): Promise<AgentRole> {
+        await this.assertMutationAllowed('crew:addRole', crewId, callerId);
         const crew = await this.repo.getCrew(crewId);
         if (!crew) throw new Error(`Crew not found: ${crewId}`);
         const t = now();
@@ -192,7 +217,8 @@ export class CrewService implements ICrewService {
         return role;
     }
 
-    async removeRole(crewId: string, roleId: string): Promise<void> {
+    async removeRole(crewId: string, roleId: string, callerId?: string): Promise<void> {
+        await this.assertMutationAllowed('crew:removeRole', crewId, callerId);
         const crew = await this.repo.getCrew(crewId);
         if (!crew) throw new Error(`Crew not found: ${crewId}`);
         crew.roles = crew.roles.filter((r) => r.id !== roleId);
@@ -200,7 +226,8 @@ export class CrewService implements ICrewService {
         await this.repo.putCrew(crew);
     }
 
-    async addTask(crewId: string, input: CreateTaskInput): Promise<CrewTask> {
+    async addTask(crewId: string, input: CreateTaskInput, callerId?: string): Promise<CrewTask> {
+        await this.assertMutationAllowed('crew:addTask', crewId, callerId);
         const crew = await this.repo.getCrew(crewId);
         if (!crew) throw new Error(`Crew not found: ${crewId}`);
         const t = now();
@@ -235,7 +262,8 @@ export class CrewService implements ICrewService {
     }
 
     // ── Run ──
-    async startCrew(crewId: string): Promise<CrewRunResult> {
+    async startCrew(crewId: string, callerId?: string): Promise<CrewRunResult> {
+        await this.assertMutationAllowed('crew:start', crewId, callerId);
         const crew = await this.repo.getCrew(crewId);
         if (!crew) throw new Error(`Crew not found: ${crewId}`);
         const tasks = await this.repo.listTasks(crewId);
@@ -254,7 +282,8 @@ export class CrewService implements ICrewService {
     async resumeCrew(crewId: string): Promise<CrewRunResult> {
         const crew = await this.repo.getCrew(crewId);
         if (!crew) throw new Error(`Crew not found: ${crewId}`);
-        if (crew.status !== 'paused') throw new Error(`Crew ${crewId} is ${crew.status} (not paused)`);
+        if (crew.status !== 'paused')
+            throw new Error(`Crew ${crewId} is ${crew.status} (not paused)`);
         const tasks = await this.repo.listTasks(crewId);
         const outputs: Record<string, string> = {};
         let context = '';
@@ -275,7 +304,8 @@ export class CrewService implements ICrewService {
     async submitHumanTask(crewId: string, taskId: string, output: string): Promise<CrewRunResult> {
         const task = await this.repo.getTask(taskId);
         if (!task || task.crewId !== crewId) throw new Error(`Task not found: ${taskId}`);
-        if (task.status !== 'awaiting_human') throw new Error(`Task ${taskId} is ${task.status} (not awaiting human)`);
+        if (task.status !== 'awaiting_human')
+            throw new Error(`Task ${taskId} is ${task.status} (not awaiting human)`);
         task.status = 'completed';
         task.output = output.slice(0, 12000);
         task.completedAt = now();
@@ -435,9 +465,7 @@ export class CrewService implements ICrewService {
         if (voters.length === 0) throw new Error('Consensual process needs at least 1 role');
         const ballots: string[] = [];
         for (const voter of voters) {
-            ballots.push(
-                await this.executor.execute({ crew, task, role: voter, context }),
-            );
+            ballots.push(await this.executor.execute({ crew, task, role: voter, context }));
         }
         const counts = new Map<string, { n: number; first: number }>();
         ballots.forEach((b, i) => {
@@ -488,7 +516,10 @@ export class CrewService implements ICrewService {
         const contains = schema['contains'];
         if (Array.isArray(contains)) {
             for (const needle of contains) {
-                if (typeof needle === 'string' && !output.toLowerCase().includes(needle.toLowerCase())) {
+                if (
+                    typeof needle === 'string' &&
+                    !output.toLowerCase().includes(needle.toLowerCase())
+                ) {
                     issues.push(`missing "${needle}"`);
                 }
             }
@@ -512,7 +543,8 @@ export class CrewService implements ICrewService {
         return parts.length > 0 ? parts.join('\n') + '\n' : '';
     }
 
-    async abortCrew(crewId: string): Promise<void> {
+    async abortCrew(crewId: string, callerId?: string): Promise<void> {
+        await this.assertMutationAllowed('crew:abort', crewId, callerId);
         this.aborted.add(crewId);
         const crew = await this.repo.getCrew(crewId);
         if (crew && crew.status === 'running') {
@@ -536,9 +568,7 @@ export class CrewService implements ICrewService {
         const pending = [...all];
         let guard = pending.length * 2 + 1;
         while (pending.length > 0 && guard-- > 0) {
-            const idx = pending.findIndex((t) =>
-                (t.dependsOn ?? []).every((d) => done.has(d)),
-            );
+            const idx = pending.findIndex((t) => (t.dependsOn ?? []).every((d) => done.has(d)));
             if (idx === -1) break; // cycle — keep remaining in current order
             const next = pending.splice(idx, 1)[0]!;
             out.push(next);

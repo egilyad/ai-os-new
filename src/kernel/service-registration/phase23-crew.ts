@@ -29,6 +29,9 @@ export const registerPhase23: Phase = ({ register }) => {
         const svc = new CrewService({
             repository: c.get<CrewRepository>('crewRepository'),
             eventBus: c.get<IEventBus>('eventBus'),
+            authorization: c.has('authorizationService')
+                ? c.get('authorizationService')
+                : undefined,
         });
         // GAP E.1 — real LLM execution when a provider is configured;
         // otherwise the deterministic echo executor stays (offline-first).
@@ -38,8 +41,16 @@ export const registerPhase23: Phase = ({ register }) => {
             const training = c.has('trainingService')
                 ? c.get<{ guideFor(role: string): Promise<string> }>('trainingService')
                 : undefined;
-            const toolRunner = c.has('toolRunnerService') ? c.get<{ runWithTools: (p: string, o?: unknown) => Promise<{ output: string }> }>('toolRunnerService') : undefined;
-            const toolCheck = c.has('toolGovernanceService') ? c.get<{ check: (a: string, t: string) => Promise<boolean> }>('toolGovernanceService') : undefined;
+            const toolRunner = c.has('toolRunnerService')
+                ? c.get<{ runWithTools: (p: string, o?: unknown) => Promise<{ output: string }> }>(
+                      'toolRunnerService',
+                  )
+                : undefined;
+            const toolCheck = c.has('toolGovernanceService')
+                ? c.get<{ check: (a: string, t: string) => Promise<boolean> }>(
+                      'toolGovernanceService',
+                  )
+                : undefined;
             svc.setExecutor(
                 new LlmCrewExecutor({
                     client: c.get<ILLMClientService>('llmClientService'),

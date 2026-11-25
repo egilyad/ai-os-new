@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (622 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (623 документов)
 
 ## Вики по разделам
 
@@ -220,6 +220,7 @@
 - [2026-11-24 — hotbugs-batch6](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-batch6.md)
 - [2026-11-24 — hotbugs-boot-and-container](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-boot-and-container.md)
 - [2026-11-24 — hotbugs-http-tenant](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-hotbugs-http-tenant.md)
+- [2026-11-24 — memory-worker-chain](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-memory-worker-chain.md)
 - [2026-11-24 — persistent-budget-guard](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-persistent-budget-guard.md)
 - [2026-11-24 — reaudit-batch1](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-reaudit-batch1.md)
 - [2026-11-24 — skill-quality-improvement](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-24-skill-quality-improvement.md)

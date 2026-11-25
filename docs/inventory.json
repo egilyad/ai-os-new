@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 624,
+    "documents": 625,
     "byCategory": {
       "repo": 40,
-      "top": 180,
+      "top": 181,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 182,
+      "mixed": 183,
       "ru": 377
     }
   },
@@ -1926,6 +1926,14 @@
       "hash": "6fb2b05b1befaa559c3d3cc44316674b027ce1c1"
     },
     {
+      "path": "docs/sessions/2026-11-25-crew-authz-guard.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-25 — crew-authz-guard",
+      "bytes": 3270,
+      "hash": "d9104b5d2dfc84017320b13addc8b74b1228cade"
+    },
+    {
       "path": "docs/sessions/2026-11-25-sidecar-ssrf-guard.md",
       "category": "top",
       "language": "mixed",
@@ -2875,7 +2883,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "d925cae0d124b2e6a361029af2787f41e48ae958"
+      "hash": "cff59aa8f3fe45853c9dd862dc68bf2ee2d5b387"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3091,7 +3099,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "e98d6e516c872a227ecf70258c6b5ae3a6a78a9d"
+      "hash": "c2fd8902e06df4bbc5f209e2b7652aa5b276332a"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3290,8 +3298,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 66596,
-      "hash": "1dccf4b3e8ea5c6cc70ce74bc6fa35e475e736aa"
+      "bytes": 66731,
+      "hash": "60f4e32c2c10b47d2952530d2f2ee1ecdb426891"
     },
     {
       "path": "docs/wiki/docs-standard.md",
