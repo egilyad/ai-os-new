@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (632 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (633 документов)
 
 ## Вики по разделам
 
@@ -236,6 +236,7 @@
 - [2026-11-25 — lens-compiler](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-lens-compiler.md)
 - [2026-11-25 — sidecar-ssrf-guard](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-sidecar-ssrf-guard.md)
 - [2026-11-25 — skill-checks-ci-fix](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-skill-checks-ci-fix.md)
+- [2026-11-25 — veto-contract-ui](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-contract-ui.md)
 - [2026-11-25 — veto-gate](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-gate.md)
 - [2026-11-25 — veto-metric](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-metric.md)
 - [2026-11-25 — veto-metrics-collector](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-metrics-collector.md)

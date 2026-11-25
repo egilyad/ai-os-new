@@ -6,6 +6,10 @@ import type { RoleTeam } from '../../kernel/contracts/role-team';
 
 const navMock = vi.hoisted(() => vi.fn());
 
+vi.mock('./TeamDetailsPanel', () => ({
+    default: ({ team }: { team: RoleTeam }) => <div data-testid="team-details">{team.name}</div>,
+}));
+
 vi.mock('react-router-dom', async (importOriginal) => {
     const actual = await importOriginal<typeof import('react-router-dom')>();
     return { ...actual, useNavigate: () => navMock };
@@ -70,6 +74,14 @@ describe('TeamsTab honesty (Zone 3)', () => {
         expect(screen.getByText('Sure?')).toBeDefined();
         fireEvent.click(screen.getByText('Sure?'));
         expect(svc.deleteTeam).toHaveBeenCalledWith('t1');
+    });
+
+    it('opens team details instead of deleting the team', () => {
+        const svc = makeSvc();
+        renderTab(svc);
+        fireEvent.click(screen.getByLabelText('View details of team Alpha'));
+        expect(svc.deleteTeam).not.toHaveBeenCalled();
+        expect(screen.getByTestId('team-details').textContent).toBe('Alpha');
     });
 
     it('surfaces team run failures inline', async () => {

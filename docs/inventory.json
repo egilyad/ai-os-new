@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 634,
+    "documents": 635,
     "byCategory": {
       "repo": 40,
-      "top": 190,
+      "top": 191,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 190,
+      "mixed": 191,
       "ru": 379
     }
   },
@@ -1974,6 +1974,14 @@
       "hash": "a8a29d5eb3f3d44a335770b99d51825a808bec14"
     },
     {
+      "path": "docs/sessions/2026-11-25-ux-audit-p0.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-25 — ux-audit-p0",
+      "bytes": 3607,
+      "hash": "4be89cd4d0a29674c5854b5efb1461fcf19a6697"
+    },
+    {
       "path": "docs/sessions/2026-11-25-veto-contract-ui.md",
       "category": "top",
       "language": "mixed",
@@ -2955,7 +2963,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "253d866413269a365a8cb13d2fc2126ef011af2c"
+      "hash": "db59cc310f4b8a4aba02ab2fa0f43ce00ed3e114"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3171,7 +3179,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "22aa765ed8609c46133353ce05ff9e8b775f100f"
+      "hash": "2bcf0f0f4e6c5a87aff290070d5f42c1b1597e2e"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3370,8 +3378,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 67892,
-      "hash": "8ed6751ba80b9db5dc6c9723479dd765be28d141"
+      "bytes": 68021,
+      "hash": "fac57846bf0975ced511912cefefa9797244141d"
     },
     {
       "path": "docs/wiki/docs-standard.md",

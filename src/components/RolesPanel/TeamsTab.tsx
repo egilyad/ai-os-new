@@ -166,7 +166,12 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                         >
                                             {tpl.name}
                                         </div>
-                                        <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
+                                        <div
+                                            style={{
+                                                fontSize: '0.7rem',
+                                                color: 'var(--slate-500)',
+                                            }}
+                                        >
                                             {tpl.recommendedRoles.length} roles · {tpl.domain}
                                         </div>
                                     </div>
@@ -250,355 +255,347 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                 })}
             </div>
 
-                <div style={{ marginTop: 24 }}>
+            <div style={{ marginTop: 24 }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        margin: '16px 0 12px',
+                        alignItems: 'center',
+                    }}
+                >
                     <div
                         style={{
                             display: 'flex',
-                            gap: 8,
-                            margin: '16px 0 12px',
-                            alignItems: 'center',
+                            background: 'rgba(255,255,255,0.04)',
+                            borderRadius: 8,
+                            padding: 2,
                         }}
                     >
-                        <div
-                            style={{
-                                display: 'flex',
-                                background: 'rgba(255,255,255,0.04)',
-                                borderRadius: 8,
-                                padding: 2,
-                            }}
-                        >
-                            <button
-                                onClick={() => setTeamsView('my-teams')}
-                                style={{
-                                    padding: '5px 12px',
-                                    borderRadius: 6,
-                                    border: 'none',
-                                    background:
-                                        teamsView === 'my-teams'
-                                            ? 'rgba(59,130,246,0.2)'
-                                            : 'transparent',
-                                    color: teamsView === 'my-teams' ? '#60a5fa' : '#94a3b8',
-                                    cursor: 'pointer',
-                                    fontSize: '0.78rem',
-                                    fontWeight: 600,
-                                }}
-                            >
-                                My Teams ({teams.length})
-                            </button>
-                            <button
-                                onClick={() => setTeamsView('marketplace')}
-                                style={{
-                                    padding: '5px 12px',
-                                    borderRadius: 6,
-                                    border: 'none',
-                                    background:
-                                        teamsView === 'marketplace'
-                                            ? 'rgba(16,185,129,0.2)'
-                                            : 'transparent',
-                                    color: teamsView === 'marketplace' ? '#10b981' : '#94a3b8',
-                                    cursor: 'pointer',
-                                    fontSize: '0.78rem',
-                                    fontWeight: 600,
-                                }}
-                            >
-                                Marketplace ({teamTemplates.length})
-                            </button>
-                        </div>
                         <button
-                            onClick={() => setShowWizard(true)}
+                            onClick={() => setTeamsView('my-teams')}
                             style={{
                                 padding: '5px 12px',
                                 borderRadius: 6,
-                                border: '1px solid rgba(16,185,129,0.4)',
-                                background: 'rgba(16,185,129,0.12)',
-                                color: '#34d399',
+                                border: 'none',
+                                background:
+                                    teamsView === 'my-teams'
+                                        ? 'rgba(59,130,246,0.2)'
+                                        : 'transparent',
+                                color: teamsView === 'my-teams' ? '#60a5fa' : '#94a3b8',
                                 cursor: 'pointer',
                                 fontSize: '0.78rem',
-                                fontWeight: 700,
-                                marginLeft: 'auto',
+                                fontWeight: 600,
                             }}
                         >
-                            + New team
+                            My Teams ({teams.length})
+                        </button>
+                        <button
+                            onClick={() => setTeamsView('marketplace')}
+                            style={{
+                                padding: '5px 12px',
+                                borderRadius: 6,
+                                border: 'none',
+                                background:
+                                    teamsView === 'marketplace'
+                                        ? 'rgba(16,185,129,0.2)'
+                                        : 'transparent',
+                                color: teamsView === 'marketplace' ? '#10b981' : '#94a3b8',
+                                cursor: 'pointer',
+                                fontSize: '0.78rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Marketplace ({teamTemplates.length})
                         </button>
                     </div>
+                    <button
+                        onClick={() => setShowWizard(true)}
+                        style={{
+                            padding: '5px 12px',
+                            borderRadius: 6,
+                            border: '1px solid rgba(16,185,129,0.4)',
+                            background: 'rgba(16,185,129,0.12)',
+                            color: '#34d399',
+                            cursor: 'pointer',
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            marginLeft: 'auto',
+                        }}
+                    >
+                        + New team
+                    </button>
+                </div>
 
-                    {teamsView === 'my-teams' && teams.length === 0 && (
-                        <div
-                            style={{
-                                textAlign: 'center',
-                                padding: 30,
-                                color: 'var(--slate-500)',
-                                fontSize: '0.85rem',
-                            }}
-                        >
-                            <Users size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
-                            <div>
-                                No teams yet. Create your first team from the templates below!
-                            </div>
-                        </div>
-                    )}
+                {teamsView === 'my-teams' && teams.length === 0 && (
+                    <div
+                        style={{
+                            textAlign: 'center',
+                            padding: 30,
+                            color: 'var(--slate-500)',
+                            fontSize: '0.85rem',
+                        }}
+                    >
+                        <Users size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
+                        <div>No teams yet. Create your first team from the templates below!</div>
+                    </div>
+                )}
 
-                    {teamsView === 'my-teams' && teams.length > 0 && (
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                                gap: 10,
-                            }}
-                        >
-                            {teams.map((tm) => (
+                {teamsView === 'my-teams' && teams.length > 0 && (
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                            gap: 10,
+                        }}
+                    >
+                        {teams.map((tm) => (
+                            <div
+                                key={tm.id}
+                                style={{
+                                    ...card,
+                                    borderLeft: `3px solid ${tm.color || '#64748b'}`,
+                                }}
+                            >
                                 <div
-                                    key={tm.id}
                                     style={{
-                                        ...card,
-                                        borderLeft: `3px solid ${tm.color || '#64748b'}`,
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'start',
                                     }}
                                 >
                                     <div
                                         style={{
                                             display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'start',
+                                            gap: 10,
+                                            alignItems: 'center',
                                         }}
                                     >
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                gap: 10,
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <span style={{ fontSize: '1.3rem' }}>
-                                                {tm.icon || '👥'}
-                                            </span>
-                                            <div>
-                                                <div
-                                                    style={{
-                                                        fontWeight: 600,
-                                                        color: 'var(--slate-200)',
-                                                        fontSize: '0.9rem',
-                                                    }}
-                                                >
-                                                    {tm.name}
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        fontSize: '0.7rem',
-                                                        color: 'var(--slate-400)',
-                                                    }}
-                                                >
-                                                    {tm.roleIds.length} members
-                                                </div>
+                                        <span style={{ fontSize: '1.3rem' }}>
+                                            {tm.icon || '👥'}
+                                        </span>
+                                        <div>
+                                            <div
+                                                style={{
+                                                    fontWeight: 600,
+                                                    color: 'var(--slate-200)',
+                                                    fontSize: '0.9rem',
+                                                }}
+                                            >
+                                                {tm.name}
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: '0.7rem',
+                                                    color: 'var(--slate-400)',
+                                                }}
+                                            >
+                                                {tm.roleIds.length} members
                                             </div>
                                         </div>
-                                        <button
-                                            onClick={() => handleDeleteTeam(tm.id)}
-                                            title={
-                                                confirmDeleteId === tm.id
-                                                    ? 'Click again to confirm deletion'
-                                                    : 'Delete team'
-                                            }
-                                            style={{
-                                                padding: '4px 8px',
-                                                borderRadius: 6,
-                                                border:
-                                                    confirmDeleteId === tm.id
-                                                        ? '1px solid rgba(239,68,68,0.6)'
-                                                        : 'none',
-                                                background:
-                                                    confirmDeleteId === tm.id
-                                                        ? 'rgba(239,68,68,0.25)'
-                                                        : 'var(--error-tint)',
-                                                color: 'var(--error)',
-                                                cursor: 'pointer',
-                                                fontSize: '0.65rem',
-                                                fontWeight: 700,
-                                            }}
-                                        >
-                                            {confirmDeleteId === tm.id ? (
-                                                'Sure?'
-                                            ) : (
-                                                <Trash2 size={14} />
-                                            )}
-                                        </button>
                                     </div>
+                                    <button
+                                        onClick={() => handleDeleteTeam(tm.id)}
+                                        aria-label={`Delete team ${tm.name}`}
+                                        title={
+                                            confirmDeleteId === tm.id
+                                                ? 'Click again to confirm deletion'
+                                                : 'Delete team'
+                                        }
+                                        style={{
+                                            padding: '4px 8px',
+                                            borderRadius: 6,
+                                            border:
+                                                confirmDeleteId === tm.id
+                                                    ? '1px solid rgba(239,68,68,0.6)'
+                                                    : 'none',
+                                            background:
+                                                confirmDeleteId === tm.id
+                                                    ? 'rgba(239,68,68,0.25)'
+                                                    : 'var(--error-tint)',
+                                            color: 'var(--error)',
+                                            cursor: 'pointer',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 700,
+                                        }}
+                                    >
+                                        {confirmDeleteId === tm.id ? 'Sure?' : <Trash2 size={14} />}
+                                    </button>
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: '0.75rem',
+                                        color: 'var(--slate-400)',
+                                        marginTop: 6,
+                                    }}
+                                >
+                                    {tm.description}
+                                </div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: 4,
+                                        flexWrap: 'wrap',
+                                        marginTop: 8,
+                                    }}
+                                >
+                                    <span
+                                        style={{
+                                            ...chip(
+                                                STRATEGY_COLORS[tm.coordinationStrategy] ||
+                                                    '#64748b',
+                                            ),
+                                            fontSize: '0.6rem',
+                                        }}
+                                    >
+                                        {tm.coordinationStrategy}
+                                    </span>
+                                    <span
+                                        style={{
+                                            ...chip('#64748b'),
+                                            fontSize: '0.6rem',
+                                        }}
+                                    >
+                                        {tm.metadata?.domain || 'custom'}
+                                    </span>
+                                </div>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: 4,
+                                        marginTop: 8,
+                                        flexWrap: 'wrap',
+                                    }}
+                                >
+                                    <button
+                                        onClick={() => setSelectedTeam(tm)}
+                                        aria-label={`View details of team ${tm.name}`}
+                                        style={{
+                                            padding: '4px 10px',
+                                            borderRadius: 6,
+                                            border: 'none',
+                                            background: 'rgba(99,102,241,0.12)',
+                                            color: '#818cf8',
+                                            cursor: 'pointer',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <BarChart3 size={11} /> Details
+                                    </button>
+                                    <button
+                                        onClick={() => setChatTeam(tm)}
+                                        style={{
+                                            padding: '4px 10px',
+                                            borderRadius: 6,
+                                            border: 'none',
+                                            background: 'rgba(139,92,246,0.12)',
+                                            color: 'var(--purple-muted)',
+                                            cursor: 'pointer',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <MessageSquare size={11} /> Chat
+                                    </button>
+                                    <button
+                                        onClick={() => handleTeamToDebate(tm)}
+                                        style={{
+                                            padding: '4px 10px',
+                                            borderRadius: 6,
+                                            border: 'none',
+                                            background: 'rgba(239,68,68,0.12)',
+                                            color: '#f87171',
+                                            cursor: 'pointer',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <Zap size={11} /> Debate
+                                    </button>
+                                </div>
+                                <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter task for team..."
+                                        value={taskInputs[tm.id] || ''}
+                                        onChange={(e) =>
+                                            setTaskInputs((prev) => ({
+                                                ...prev,
+                                                [tm.id]: e.target.value,
+                                            }))
+                                        }
+                                        style={{
+                                            flex: 1,
+                                            padding: '6px 10px',
+                                            borderRadius: 6,
+                                            border: 'var(--1px solid var(--border-default))',
+                                            background: 'var(--bg-main)',
+                                            color: 'var(--slate-200)',
+                                            fontSize: '0.75rem',
+                                        }}
+                                    />
+                                    <button
+                                        onClick={() => executeTeam(tm.id)}
+                                        disabled={
+                                            executingTeams.has(tm.id) || !taskInputs[tm.id]?.trim()
+                                        }
+                                        style={{
+                                            padding: '6px 12px',
+                                            borderRadius: 6,
+                                            border: 'none',
+                                            background: executingTeams.has(tm.id)
+                                                ? 'rgba(59,130,246,0.3)'
+                                                : 'rgba(59,130,246,0.2)',
+                                            color: executingTeams.has(tm.id)
+                                                ? '#93c5fd'
+                                                : '#60a5fa',
+                                            cursor: executingTeams.has(tm.id) ? 'wait' : 'pointer',
+                                            fontSize: '0.75rem',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 4,
+                                        }}
+                                    >
+                                        <Play size={12} /> Run
+                                    </button>
+                                </div>
+                                {execErrors[tm.id] && (
                                     <div
                                         style={{
-                                            fontSize: '0.75rem',
-                                            color: 'var(--slate-400)',
+                                            fontSize: '0.72rem',
+                                            color: '#fca5a5',
                                             marginTop: 6,
                                         }}
                                     >
-                                        {tm.description}
+                                        Run failed: {execErrors[tm.id]!.slice(0, 200)}
                                     </div>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            gap: 4,
-                                            flexWrap: 'wrap',
-                                            marginTop: 8,
-                                        }}
-                                    >
-                                        <span
-                                            style={{
-                                                ...chip(
-                                                    STRATEGY_COLORS[tm.coordinationStrategy] ||
-                                                        '#64748b',
-                                                ),
-                                                fontSize: '0.6rem',
-                                            }}
-                                        >
-                                            {tm.coordinationStrategy}
-                                        </span>
-                                        <span
-                                            style={{
-                                                ...chip('#64748b'),
-                                                fontSize: '0.6rem',
-                                            }}
-                                        >
-                                            {tm.metadata?.domain || 'custom'}
-                                        </span>
-                                    </div>
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            gap: 4,
-                                            marginTop: 8,
-                                            flexWrap: 'wrap',
-                                        }}
-                                    >
-                                        <button
-                                            onClick={() => handleDeleteTeam(tm.id)}
-                                            aria-label={`Delete team ${tm.name}`}
-                                            style={{
-                                                padding: '4px 10px',
-                                                borderRadius: 6,
-                                                border: 'none',
-                                                background: 'rgba(99,102,241,0.12)',
-                                                color: '#818cf8',
-                                                cursor: 'pointer',
-                                                fontSize: '0.65rem',
-                                                fontWeight: 600,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                            }}
-                                        >
-                                            <BarChart3 size={11} /> Details
-                                        </button>
-                                        <button
-                                            onClick={() => setChatTeam(tm)}
-                                            style={{
-                                                padding: '4px 10px',
-                                                borderRadius: 6,
-                                                border: 'none',
-                                                background: 'rgba(139,92,246,0.12)',
-                                                color: 'var(--purple-muted)',
-                                                cursor: 'pointer',
-                                                fontSize: '0.65rem',
-                                                fontWeight: 600,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                            }}
-                                        >
-                                            <MessageSquare size={11} /> Chat
-                                        </button>
-                                        <button
-                                            onClick={() => handleTeamToDebate(tm)}
-                                            style={{
-                                                padding: '4px 10px',
-                                                borderRadius: 6,
-                                                border: 'none',
-                                                background: 'rgba(239,68,68,0.12)',
-                                                color: '#f87171',
-                                                cursor: 'pointer',
-                                                fontSize: '0.65rem',
-                                                fontWeight: 600,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                            }}
-                                        >
-                                            <Zap size={11} /> Debate
-                                        </button>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter task for team..."
-                                            value={taskInputs[tm.id] || ''}
-                                            onChange={(e) =>
-                                                setTaskInputs((prev) => ({
-                                                    ...prev,
-                                                    [tm.id]: e.target.value,
-                                                }))
-                                            }
-                                            style={{
-                                                flex: 1,
-                                                padding: '6px 10px',
-                                                borderRadius: 6,
-                                                border: 'var(--1px solid var(--border-default))',
-                                                background: 'var(--bg-main)',
-                                                color: 'var(--slate-200)',
-                                                fontSize: '0.75rem',
-                                            }}
-                                        />
-                                        <button
-                                            onClick={() => executeTeam(tm.id)}
-                                            disabled={
-                                                executingTeams.has(tm.id) ||
-                                                !taskInputs[tm.id]?.trim()
-                                            }
-                                            style={{
-                                                padding: '6px 12px',
-                                                borderRadius: 6,
-                                                border: 'none',
-                                                background: executingTeams.has(tm.id)
-                                                    ? 'rgba(59,130,246,0.3)'
-                                                    : 'rgba(59,130,246,0.2)',
-                                                color: executingTeams.has(tm.id)
-                                                    ? '#93c5fd'
-                                                    : '#60a5fa',
-                                                cursor: executingTeams.has(tm.id)
-                                                    ? 'wait'
-                                                    : 'pointer',
-                                                fontSize: '0.75rem',
-                                                fontWeight: 600,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 4,
-                                            }}
-                                        >
-                                            <Play size={12} /> Run
-                                        </button>
-                                    </div>
-                                    {execErrors[tm.id] && (
-                                        <div
-                                            style={{
-                                                fontSize: '0.72rem',
-                                                color: '#fca5a5',
-                                                marginTop: 6,
-                                            }}
-                                        >
-                                            Run failed: {execErrors[tm.id]!.slice(0, 200)}
-                                        </div>
-                                    )}
-                                    {execResults[tm.id] &&
-                                        (() => {
-                                            const execData = execResults[tm.id]!;
-                                            return (
-                                                <TeamPipeline
-                                                    execution={execData}
-                                                    strategy={tm.coordinationStrategy}
-                                                />
-                                            );
-                                        })()}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                                )}
+                                {execResults[tm.id] &&
+                                    (() => {
+                                        const execData = execResults[tm.id]!;
+                                        return (
+                                            <TeamPipeline
+                                                execution={execData}
+                                                strategy={tm.coordinationStrategy}
+                                            />
+                                        );
+                                    })()}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {selectedTeam && (
                 <TeamDetailsPanel

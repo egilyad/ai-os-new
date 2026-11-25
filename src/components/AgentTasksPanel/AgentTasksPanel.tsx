@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
+import { useConfirm } from '../../hooks/useConfirm';
 import {
     MonitorPlay,
     Loader2,
@@ -64,14 +65,16 @@ let runSeq = 0;
  * - computer: визуальный CUA-loop через ComputerUseLoopService
  *   (медленно, попиксельно; провайдер anthropic / gemini-computer).
  *
- * HITL здесь — сама кнопка Run: человек видит полный текст задачи до
- * запуска. Для аудита создаём заявку и тут же закрываем её resolve'ом
- * с `ui:direct:tasks` — этот префикс мост игнорирует (иначе было бы
- * двойное исполнение: панель + bridge). См. approval-execution-bridge.
+ * HITL здесь — диалог подтверждения перед запуском computer-use: человек
+ * видит полный текст задачи и должен явно разрешить управление компьютером.
+ * Для аудита создаём заявку и закрываем её resolve'ом только после
+ * пользовательского подтверждения; resolverId `ui:direct:tasks` мост
+ * игнорирует (иначе было бы двойное исполнение: панель + bridge).
  * Настройка executor'а (sidecar URL) — в панели Approvals.
  */
 const AgentTasksPanel: React.FC = () => {
     const { t } = useTranslation();
+    const { confirm, ConfirmDialog } = useConfirm();
     const [capability, setCapability] = useState<Capability>('browser');
     const [provider, setProvider] = useState<ComputerUseProvider>('anthropic');
     const [agentId, setAgentId] = useState('ui-tasks');
@@ -217,6 +220,21 @@ const AgentTasksPanel: React.FC = () => {
         prov: ComputerUseProvider,
         turns: number,
     ): Promise<void> {
+        const approved = await confirm({
+            title: 'Approve computer use',
+            message: `Разрешить агенту управлять компьютером? Задача: ${text.slice(0, 200)}`,
+            confirmLabel: 'Approve',
+            cancelLabel: 'Cancel',
+            variant: 'danger',
+        });
+        if (!approved) {
+            pushHistory({
+                id,
+                status: 'error',
+                output: 'Computer use declined by user',
+            });
+            return;
+        }
         const req = await agemsApprovalService.requestApproval({
             agentId: agent,
             toolName: 'computer.use',
@@ -311,7 +329,7 @@ const AgentTasksPanel: React.FC = () => {
             await agemsApprovalService.resolve(
                 req.id as number,
                 'APPROVED',
-                undefined,
+                'user confirmed in tasks panel',
                 'ui:direct:tasks',
             );
             let res: Awaited<ReturnType<typeof browserUseService.act>>;
@@ -750,6 +768,7 @@ const AgentTasksPanel: React.FC = () => {
                     <div style={{ color: 'var(--slate-500)' }}>{t('tasks.empty')}</div>
                 )}
             </div>
+            <ConfirmDialog />
         </div>
     );
 };
