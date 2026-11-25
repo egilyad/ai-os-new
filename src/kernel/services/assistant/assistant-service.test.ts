@@ -83,6 +83,38 @@ describe('AssistantService', () => {
         );
     });
 
+    it('blocks the answer when the veto gate matches', async () => {
+        const llm = llmStub([{ content: 'Гарантирую результат' }]);
+        const events = makeEvents();
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events,
+            agentId: 'assistant',
+            vetoGate: {
+                check: (output: string, surface: string) =>
+                    output.includes('Гарантирую') && surface === 'assistant'
+                        ? [
+                              {
+                                  templateId: 'exc-1',
+                                  name: 'No promises',
+                                  text: 'Гарантирую',
+                                  matchMode: 'contains',
+                              },
+                          ]
+                        : [],
+            },
+        });
+
+        const result = await service.ask({ text: 'что решили?' });
+        expect(result.content).toBe('[Response blocked by exception]');
+        expect(events.emit).toHaveBeenCalledWith(
+            'chat:veto',
+            expect.objectContaining({ surface: 'assistant', templateIds: ['exc-1'] }),
+        );
+    });
+
     it('injects the four context layers into the prompt', async () => {
         const llm = llmStub([{ content: 'ok' }]);
         const memory = {

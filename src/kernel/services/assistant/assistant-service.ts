@@ -80,6 +80,17 @@ export interface AssistantServiceDeps {
     actions: AssistantActionRegistry;
     knowledge: ProjectKnowledgeService;
     events: IEventBus;
+    vetoGate?: {
+        check(
+            output: string,
+            surface?: 'assistant' | 'chat',
+        ): Array<{
+            templateId: string;
+            name: string;
+            text: string;
+            matchMode: string;
+        }>;
+    };
     /** Agent id the assistant acts as — its permission state decides the gate. */
     agentId: string;
     /** Human-readable name of that agent node. */
@@ -554,6 +565,28 @@ export class AssistantService {
         const rawFinal =
             cancelled && !loop.content.trim() ? 'Остановлено пользователем.' : loop.content;
         const finalContent = redactPii(rawFinal);
+
+        if (this.deps.vetoGate) {
+            const vetoes = this.deps.vetoGate.check(finalContent, 'assistant');
+            if (vetoes.length > 0) {
+                const reason = `Ответ ассистента заблокирован исключением: ${vetoes[0]!.name}`;
+                this.deps.events.emit(EVENTS.VETO_TRIGGERED, {
+                    requestId,
+                    surface: 'assistant',
+                    templateIds: vetoes.map((v) => v.templateId),
+                    names: vetoes.map((v) => v.name),
+                });
+                this.deps.events.emit(EVENTS.NOTIFICATION, {
+                    message: reason,
+                    type: 'warning',
+                });
+                return {
+                    content: '[Response blocked by exception]',
+                    toolCalls: used,
+                    rounds: loop.rounds,
+                };
+            }
+        }
 
         this.deps.events.emit(EVENTS.ASSISTANT_DONE, {
             requestId,

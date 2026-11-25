@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (629 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (630 документов)
 
 ## Вики по разделам
 
@@ -236,6 +236,7 @@
 - [2026-11-25 — sidecar-ssrf-guard](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-sidecar-ssrf-guard.md)
 - [2026-11-25 — skill-checks-ci-fix](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-skill-checks-ci-fix.md)
 - [2026-11-25 — veto-gate](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-gate.md)
+- [2026-11-25 — veto-metric](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-veto-metric.md)
 - [2026-11-25 — webhook-secret-session](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-11-25-webhook-secret-session.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)

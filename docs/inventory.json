@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 631,
+    "documents": 632,
     "byCategory": {
       "repo": 40,
-      "top": 187,
+      "top": 188,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 187,
+      "mixed": 188,
       "ru": 379
     }
   },
@@ -1926,6 +1926,14 @@
       "hash": "6fb2b05b1befaa559c3d3cc44316674b027ce1c1"
     },
     {
+      "path": "docs/sessions/2026-11-25-assistant-veto.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-25 — assistant-veto",
+      "bytes": 3362,
+      "hash": "adc2a6298248e1e2a884a175348e6c508c01fa46"
+    },
+    {
       "path": "docs/sessions/2026-11-25-crew-authz-guard.md",
       "category": "top",
       "language": "mixed",
@@ -2931,7 +2939,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "2ccba587c5d1dd839a83d5cf32040a14db913f7c"
+      "hash": "10c1f0e2ed56e2555a9d6dc8e5b368a914e4770f"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3147,7 +3155,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "eb6816c3271252fb13361674dade1e8e8e9268e8"
+      "hash": "611c0e5c55c9e67b6de110bc89c59a9d4806c58c"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3346,8 +3354,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 67507,
-      "hash": "5c5e76b979db840953df309d3da88e15cdeb9d17"
+      "bytes": 67626,
+      "hash": "b16aafd59e4af98d2a4332ecd0c7a5c7de0150be"
     },
     {
       "path": "docs/wiki/docs-standard.md",

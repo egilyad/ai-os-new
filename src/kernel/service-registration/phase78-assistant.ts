@@ -19,6 +19,7 @@ import type { ToolApprovalService } from '../services/tool-pipeline/tool-approva
 import type { AgentService } from '../services/agent-service';
 import type { ToolService } from '../services/tool-executor';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
+import { vetoGateService } from '../services/veto-gate-service';
 import { AssistantExamService } from '../services/assistant/assistant-exam-service';
 import { AssistantDiagnosisService } from '../services/assistant/assistant-diagnosis-service';
 import { AssistantViewService } from '../services/assistant/assistant-view-service';
@@ -571,11 +572,50 @@ export const registerPhase78: Phase = ({ register }) => {
                 topicGraph: c.has('topicGraphService')
                     ? {
                           createTopic: (title, description) =>
-                              c.get<{ createTopic(title: string, description: string): Promise<{ id: string; title: string }> }>('topicGraphService').createTopic(title, description),
+                              c
+                                  .get<{
+                                      createTopic(
+                                          title: string,
+                                          description: string,
+                                      ): Promise<{ id: string; title: string }>;
+                                  }>('topicGraphService')
+                                  .createTopic(title, description),
                           ingest: (topicId, payload) =>
-                              c.get<{ ingest(topicId: string, payload: { kind: string; ref: string; title: string; content: string }): Promise<{ status: string; stats: { newClaims: number; duplicates: number; conflicts: number; relations: number } }> }>('topicGraphService').ingest(topicId, payload),
+                              c
+                                  .get<{
+                                      ingest(
+                                          topicId: string,
+                                          payload: {
+                                              kind: string;
+                                              ref: string;
+                                              title: string;
+                                              content: string;
+                                          },
+                                      ): Promise<{
+                                          status: string;
+                                          stats: {
+                                              newClaims: number;
+                                              duplicates: number;
+                                              conflicts: number;
+                                              relations: number;
+                                          };
+                                      }>;
+                                  }>('topicGraphService')
+                                  .ingest(topicId, payload),
                           completeness: (topicId) =>
-                              c.get<{ completeness(topicId: string): Promise<{ totalClaims: number; uniqueConcepts: number; conflicts: number; sources: number; coverage: number }> }>('topicGraphService').completeness(topicId),
+                              c
+                                  .get<{
+                                      completeness(
+                                          topicId: string,
+                                      ): Promise<{
+                                          totalClaims: number;
+                                          uniqueConcepts: number;
+                                          conflicts: number;
+                                          sources: number;
+                                          coverage: number;
+                                      }>;
+                                  }>('topicGraphService')
+                                  .completeness(topicId),
                       }
                     : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
@@ -926,6 +966,7 @@ export const registerPhase78: Phase = ({ register }) => {
             actions: c.get<AssistantActionRegistry>('assistantActionRegistry'),
             knowledge: c.get<ProjectKnowledgeService>('projectKnowledgeService'),
             events: c.get<IEventBus>('eventBus'),
+            vetoGate: vetoGateService,
             agentId: ASSISTANT_AGENT_ID,
             agentLabel: 'Project Assistant',
             lifecycle: c.has('agentService')
