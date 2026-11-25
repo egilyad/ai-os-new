@@ -32,7 +32,6 @@ from __future__ import annotations
 
 import asyncio
 import base64
-import ipaddress
 import os
 import re
 import urllib.parse
@@ -107,7 +106,7 @@ DOMAIN_RE = re.compile(
     re.IGNORECASE,
 )
 
-BLOCKED_METADATA = ipaddress.ip_network("169.254.0.0/16")
+from ssrf_guard import is_blocked_host as _is_blocked_host
 
 
 class ExecuteRequest(BaseModel):
@@ -115,26 +114,6 @@ class ExecuteRequest(BaseModel):
     ticketId: Optional[str] = Field(default=None, max_length=120)
     maxSteps: Optional[int] = Field(default=15, ge=1, le=MAX_STEPS)
     allowedDomains: Optional[list[str]] = None
-
-
-def _is_blocked_host(host: str) -> Optional[str]:
-    """Возвращает причину блокировки или None."""
-    h = host.strip().lower().strip("[]")
-    if not h:
-        return "empty host"
-    try:
-        ip = ipaddress.ip_address(h)
-        if ip in BLOCKED_METADATA:
-            return "metadata endpoint blocked"
-        # 0.0.0.0/:: — не маршрутизируются, блокируем явно.
-        if ip.is_unspecified:
-            return "unspecified address blocked"
-        return None  # loopback/RFC1918 разрешены: sidecar в docker-сети, dev — на localhost
-    except ValueError:
-        pass
-    if h in ("localhost",) or h.endswith(".localhost") or h.endswith((".local", ".internal")):
-        return None  # dev-имена разрешены
-    return None
 
 
 def _check_url(url: str, allowed: Optional[list[str]]) -> str:
@@ -290,6 +269,12 @@ async def _run_agent(req: ExecuteRequest, allowed: Optional[list[str]]) -> dict[
     model = os.environ.get("BROWSER_USE_LLM_MODEL", "gpt-4o-mini")
     llm = _make_llm(provider, model)
     steps = req.maxSteps or 15
+    task = req.task
+    if allowed:
+        task = (
+            f"{task}\n\nOnly visit these domains: {', '.join(allowed)}. "
+            "Never navigate to internal, loopback or metadata addresses."
+        )
     try:
         # Локальный браузер по CDP (native Windows: системный Edge, иначе
         # Agent 30с ждёт свой и падает BrowserStartEvent timeout). В docker
@@ -299,9 +284,9 @@ async def _run_agent(req: ExecuteRequest, allowed: Optional[list[str]]) -> dict[
             from browser_use.browser.session import BrowserSession
 
             session = BrowserSession(cdp_url=cdp, is_local=cdp.startswith("http://127.0.0.1"))
-            agent = Agent(task=req.task, llm=llm, max_actions_per_step=5, browser_session=session)
+            agent = Agent(task=task, llm=llm, max_actions_per_step=5, browser_session=session)
         else:
-            agent = Agent(task=req.task, llm=llm, max_actions_per_step=5)
+            agent = Agent(task=task, llm=llm, max_actions_per_step=5)
         history = await agent.run(max_steps=steps)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"browser-use agent failed: {str(e)[:500]}")
@@ -394,8 +379,18 @@ async def _run_playwright_fallback(req: ExecuteRequest, allowed: Optional[list[s
         browser = await pw.chromium.launch(**_launch_kwargs())
         try:
             page = await browser.new_page(viewport={"width": 1280, "height": 800})
+
+            async def _guard_request(route):
+                try:
+                    _check_url(route.request.url, allowed)
+                    await route.continue_()
+                except HTTPException:
+                    await route.abort()
+
+            await page.route("**/*", _guard_request)
             try:
                 resp = await page.goto(target, wait_until="domcontentloaded", timeout=NAV_TIMEOUT_MS)
+                _check_url(page.url, allowed)
                 status = resp.status if resp else None
             except Exception as e:
                 raise HTTPException(status_code=502, detail=f"navigation failed: {str(e)[:300]}")
