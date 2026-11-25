@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 627,
+    "documents": 628,
     "byCategory": {
       "repo": 40,
-      "top": 183,
+      "top": 184,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
       "mixed": 184,
-      "ru": 378
+      "ru": 379
     }
   },
   "duplicates": {
@@ -1934,6 +1934,14 @@
       "hash": "d9104b5d2dfc84017320b13addc8b74b1228cade"
     },
     {
+      "path": "docs/sessions/2026-11-25-lens-compiler.md",
+      "category": "top",
+      "language": "ru",
+      "title": "2026-11-25 — lens-compiler",
+      "bytes": 3565,
+      "hash": "bf90b8b9a87fc8cda0854c7b8a10794892ba9b82"
+    },
+    {
       "path": "docs/sessions/2026-11-25-sidecar-ssrf-guard.md",
       "category": "top",
       "language": "mixed",
@@ -2899,7 +2907,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "4d77e6d4d16c71c391197c9a8610c3f02d3cfcd0"
+      "hash": "550c66069ab7c863a1e7fa7b5f27a2471f4b0db4"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3115,7 +3123,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "ca079364257e91b1403f5f97afe14564cff4a9f2"
+      "hash": "63030ca711f85e9ac75edf184482e74ce61d4277"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3314,8 +3322,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 66993,
-      "hash": "c138c1c086de50f9abaebc1c394d2fbd3882bab2"
+      "bytes": 67134,
+      "hash": "b56ad4534978cb0702f87a74856c9079812d4f9f"
     },
     {
       "path": "docs/wiki/docs-standard.md",
