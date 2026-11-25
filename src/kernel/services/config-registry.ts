@@ -1,4 +1,5 @@
 import type { ConfigRegistry, StorageConfigSection } from '../contracts/config-registry';
+import { readSecret, writeSecret } from '../utils/secret-storage';
 
 export const rawConfig: ConfigRegistry = {
     version: '1.0.0',
@@ -319,26 +320,15 @@ function buildConfigDefaults(): Readonly<ConfigRegistry> {
     // (single-user local-first app — it was only JS-heap obfuscation, not real auth)
     const adminToken = clone.security.adminToken || crypto.randomUUID();
     let webhookSecret = clone.security.webhookSecret;
-    // M-2, documented, not migrated: this secret lives in localStorage
-    // cleartext. Moving it (sessionStorage/IndexedDB) is theater today —
-    // compromise intake is manual-only (see P-CRIT-1: onWebhookRequest has
-    // no HTTP entry), so nothing automated consumes or verifies it, and an
-    // XSS attacker game-overs localStorage regardless. When a server-side
-    // webhook receiver lands, the secret must move to server env.
+    // The webhook secret is a bearer credential: keep it in sessionStorage
+    // with a one-time migration from the legacy localStorage copy. A real
+    // server-side receiver still has to move it to server env.
     if (!webhookSecret) {
         const STORAGE_KEY = 'superagents_webhook_secret';
-        try {
-            webhookSecret = localStorage.getItem(STORAGE_KEY) || undefined;
-        } catch {
-            /* storage unavailable — fall through */
-        }
+        webhookSecret = readSecret(STORAGE_KEY) || undefined;
         if (!webhookSecret) {
             webhookSecret = crypto.randomUUID();
-            try {
-                localStorage.setItem(STORAGE_KEY, webhookSecret);
-            } catch {
-                /* storage unavailable — use in-memory only */
-            }
+            writeSecret(STORAGE_KEY, webhookSecret);
         }
     }
     Object.defineProperty(clone.security, 'adminToken', {

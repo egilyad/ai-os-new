@@ -21,6 +21,13 @@ describe('secret storage', () => {
         expect(localStorage.getItem('companyGateway.secret')).toBeNull();
     });
 
+    it('вебхук-секрет мигрирует в sessionStorage', () => {
+        localStorage.setItem('superagents_webhook_secret', 'legacy-webhook-secret');
+        expect(readSecret('superagents_webhook_secret')).toBe('legacy-webhook-secret');
+        expect(sessionStorage.getItem('superagents_webhook_secret')).toBe('legacy-webhook-secret');
+        expect(localStorage.getItem('superagents_webhook_secret')).toBeNull();
+    });
+
     it('обычные настройки остаются в localStorage', () => {
         localStorage.setItem('browserUse.sidecarUrl', 'http://localhost:3100');
         expect(readSecret('browserUse.sidecarUrl')).toBe('http://localhost:3100');

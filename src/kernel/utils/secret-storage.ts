@@ -1,4 +1,8 @@
-const SECRET_KEYS = new Set(['browserUse.token', 'companyGateway.secret']);
+const SECRET_KEYS = new Set([
+    'browserUse.token',
+    'companyGateway.secret',
+    'superagents_webhook_secret',
+]);
 
 export function readSecret(key: string): string | null {
     if (!SECRET_KEYS.has(key)) {
