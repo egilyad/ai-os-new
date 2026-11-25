@@ -11,6 +11,17 @@ export interface ChatServiceDeps {
         emitOnce: (event: string, key: string, data?: unknown) => boolean;
     };
     promptSecurityService: IPromptSecurityService;
+    vetoGate?: {
+        check(
+            output: string,
+            surface?: 'assistant' | 'chat',
+        ): Array<{
+            templateId: string;
+            name: string;
+            text: string;
+            matchMode: string;
+        }>;
+    };
     keyService: {
         selectFromPool: (
             provider: string,
@@ -141,11 +152,7 @@ export interface ChatServiceDeps {
         selection?(
             agentId: string,
         ): { profileId?: string; tools?: string[]; deny?: string[] } | null;
-        invoke(
-            agentId: string,
-            name: string,
-            args?: Record<string, unknown>,
-        ): Promise<string>;
+        invoke(agentId: string, name: string, args?: Record<string, unknown>): Promise<string>;
     };
     freeTierLimits: Record<string, { requestsPerDay: number; tokensPerDay: number }>;
     executionGovernor?: {

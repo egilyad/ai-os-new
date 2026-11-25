@@ -21,6 +21,7 @@ import type { ProviderAdapterRegistry } from '../services/provider-adapter-regis
 import type { KeyStateStore } from '../services/key-state-store';
 import type { SettingsService } from '../services/settings-service';
 import { ConnectorService } from '../services/connector-service';
+import { vetoGateService } from '../services/veto-gate-service';
 import type { CacheService } from '../services/cache-service';
 import type { PolicyService } from '../services/policy-service';
 import type { RaceExecutor } from '../services/race-executor';
@@ -109,6 +110,7 @@ export const registerPhase6: Phase = (helpers, ctx) => {
                 asDeps<ConstructorParameters<typeof ChatExecutor>[0]>({
                     eventBus: c.get<IEventBus>('eventBus'),
                     promptSecurityService: c.get<PromptSecurityService>('promptSecurityService'),
+                    vetoGate: vetoGateService,
                     keyService: c.get<KeyService>('keyService'),
                     virtualKeyService: c.get<VirtualKeyService>('virtualKeyService'),
                     settingsService: c.get<SettingsService>('settingsService'),

@@ -632,6 +632,33 @@ export class ChatExecutor {
                             }
                         }
 
+                        if (result?.content && this.deps.vetoGate) {
+                            const vetoes = this.deps.vetoGate.check(result.content, 'chat');
+                            if (vetoes.length > 0) {
+                                const reason = `Ответ заблокирован исключением: ${vetoes[0]!.name}`;
+                                LOGGER.warn('ChatExecutor', 'Response blocked by veto gate', {
+                                    requestId,
+                                    templateIds: vetoes.map((v) => v.templateId),
+                                });
+                                this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                                    message: reason,
+                                    type: 'warning',
+                                });
+                                this.deps.eventBus.emit(EVENTS.MESSAGE_RESPONSE, {
+                                    id: `err-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
+                                    requestId,
+                                    provider: currentProvider,
+                                    model: effectiveModel,
+                                    keyId: req.keyId,
+                                    content: '[Response blocked by exception]',
+                                    latency: latencyMs,
+                                    status: 'error',
+                                    error: reason,
+                                } satisfies ChatResponse);
+                                return;
+                            }
+                        }
+
                         if (result && result.content !== undefined && result.content !== null) {
                             this.deps.eventBus.emit(EVENTS.MESSAGE_RESPONSE, {
                                 id: crypto.randomUUID(),
