@@ -213,6 +213,15 @@ export const EVENT_REGISTRY_GROUP_1 = {
     CHAT_CANCEL_MESSAGE: event('chat:cancel', z.object({ requestId: z.string() })),
     MESSAGE_RESPONSE: event('chat:response', ChatResponseSchema),
     CHAT_MESSAGE_RESPONSE: event('chat:response', ChatResponseSchema),
+    VETO_TRIGGERED: event(
+        'chat:veto',
+        z.object({
+            requestId: z.string(),
+            surface: z.enum(['assistant', 'chat']),
+            templateIds: z.array(z.string()),
+            names: z.array(z.string()),
+        }),
+    ),
     SELECT_MODEL: event('chat:model:select', z.object({ provider: z.string(), model: z.string() })),
     CHAT_SELECT_MODEL: event(
         'chat:model:select',

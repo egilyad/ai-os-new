@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 629,
+    "documents": 630,
     "byCategory": {
       "repo": 40,
-      "top": 185,
+      "top": 186,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 185,
+      "mixed": 186,
       "ru": 379
     }
   },
@@ -1966,6 +1966,14 @@
       "hash": "75ed89505b83a663f2f083e1d024a5c0bca6d20c"
     },
     {
+      "path": "docs/sessions/2026-11-25-veto-metric.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-25 — veto-metric",
+      "bytes": 2857,
+      "hash": "e504ad3e78180e0f396d4cc62b2d73290f91499a"
+    },
+    {
       "path": "docs/sessions/2026-11-25-webhook-secret-session.md",
       "category": "top",
       "language": "mixed",
@@ -2915,7 +2923,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "7d33391689211b454fb60aaefe9dd737d8f23f15"
+      "hash": "e4cad01f088540b46040b42001d94569c43290c1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3131,7 +3139,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "03b9d3488af536df4ff2220b1834d7e8360a0d6e"
+      "hash": "4e746ac7317cd548808d38c3b13770e553c163b0"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3330,8 +3338,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 67269,
-      "hash": "9cb8bd7a111dcab7a80253939ac573811c59fd46"
+      "bytes": 67392,
+      "hash": "b1c2d69e14695e97c434430f36771529718d3b56"
     },
     {
       "path": "docs/wiki/docs-standard.md",

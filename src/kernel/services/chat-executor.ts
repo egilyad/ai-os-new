@@ -644,6 +644,12 @@ export class ChatExecutor {
                                     message: reason,
                                     type: 'warning',
                                 });
+                                this.deps.eventBus.emit(EVENTS.VETO_TRIGGERED, {
+                                    requestId,
+                                    surface: 'chat',
+                                    templateIds: vetoes.map((v) => v.templateId),
+                                    names: vetoes.map((v) => v.name),
+                                });
                                 this.deps.eventBus.emit(EVENTS.MESSAGE_RESPONSE, {
                                     id: `err-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
                                     requestId,
