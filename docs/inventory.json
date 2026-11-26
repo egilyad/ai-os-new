@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 636,
+    "documents": 637,
     "byCategory": {
       "repo": 40,
-      "top": 192,
+      "top": 193,
       "audits": 25,
       "wiki": 379
     },
     "byLanguage": {
       "en": 65,
-      "mixed": 192,
+      "mixed": 193,
       "ru": 379
     }
   },
@@ -2030,6 +2030,14 @@
       "hash": "ecca79d74b2f70c7aad711a1af761b96481a14d7"
     },
     {
+      "path": "docs/sessions/2026-11-26-replay-checkpoint-fix.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "2026-11-26 — replay-checkpoint-fix",
+      "bytes": 4234,
+      "hash": "0d114bd4f779b96ca7d006a76e564739d808c661"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -2899,7 +2907,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8586,
-      "hash": "ff4358b3ea88c52c9db32c06c5e7d1aec518f3da"
+      "hash": "9f7d852af4caf00b3ae42ecf080e4c36041de839"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2971,7 +2979,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "774c34d998e55c7da3691894aa769fa71d44bf9d"
+      "hash": "2696df18685cd1acd05aa2059391f6b1ced2c058"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -3099,7 +3107,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "8f8a6a40d0b68cfba4081929d34a6560893b67f5"
+      "hash": "26317a048ceaf715ded51512b262dc38bfced1de"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -3187,7 +3195,7 @@
       "language": "ru",
       "title": "Карта реальности проекта",
       "bytes": 1883,
-      "hash": "e1f3ea58eaefdc2787daa52c5985e1909867adba"
+      "hash": "a1904fd01cc20ad8c5660a05a770cffa55154c7f"
     },
     {
       "path": "docs/wiki/dev-routing.md",
@@ -3386,8 +3394,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 68162,
-      "hash": "f81a18b629311352b192d4732cfc8bdc3973aaf8"
+      "bytes": 68281,
+      "hash": "957596079c6494d4f37d10e83b3f24d134b51fa3"
     },
     {
       "path": "docs/wiki/docs-standard.md",

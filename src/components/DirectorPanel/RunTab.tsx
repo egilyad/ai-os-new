@@ -188,7 +188,13 @@ const RunTab: React.FC<{ scenario?: ConversationScenario | null }> = ({ scenario
                         overflow: 'hidden',
                     }}
                 >
-                    <div style={{ height: '100%', width: `${progress}%`, background: 'var(--accent)' }} />
+                    <div
+                        style={{
+                            height: '100%',
+                            width: `${progress}%`,
+                            background: 'var(--accent)',
+                        }}
+                    />
                 </div>
                 <div style={{ fontSize: '0.75rem', opacity: 0.7, marginTop: 4 }}>
                     {t('director.run.progress')}: {plannedDone}/{plannedTotal}{' '}
@@ -250,7 +256,11 @@ const RunTab: React.FC<{ scenario?: ConversationScenario | null }> = ({ scenario
                             <option value="">{t('director.run.overrideParticipant')}</option>
                             {scenario.participants.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                    {resolveAgentIdentity(p.id, { resolver: agentService }).displayName} · {p.role}
+                                    {
+                                        resolveAgentIdentity(p.id, { resolver: agentService })
+                                            .displayName
+                                    }{' '}
+                                    · {p.role}
                                 </option>
                             ))}
                         </select>
@@ -300,6 +310,13 @@ const RunTab: React.FC<{ scenario?: ConversationScenario | null }> = ({ scenario
                                 <span style={{ opacity: 0.5, fontSize: '0.7rem' }}>
                                     {new Date(c.at).toLocaleTimeString()}
                                 </span>
+                                <button
+                                    type="button"
+                                    aria-label={`Restore checkpoint ${c.label || c.id}`}
+                                    onClick={() => controls.restoreCheckpoint(c.id)}
+                                >
+                                    Restore
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -324,7 +341,9 @@ const RunTab: React.FC<{ scenario?: ConversationScenario | null }> = ({ scenario
                                 </span>
                             )}
                             {e.success === false && (
-                                <span style={{ color: '#f87171', fontSize: '0.75rem', marginLeft: 8 }}>
+                                <span
+                                    style={{ color: '#f87171', fontSize: '0.75rem', marginLeft: 8 }}
+                                >
                                     {e.error}
                                 </span>
                             )}

@@ -17,6 +17,7 @@ const { controlsStub } = vi.hoisted(() => ({
         getSession: vi.fn((): unknown => undefined),
         checkpoint: vi.fn(() => 'cp1'),
         getCheckpoints: vi.fn(() => []),
+        restoreCheckpoint: vi.fn(() => true),
     },
 }));
 
@@ -262,5 +263,23 @@ describe('RunTab (B5.4c Run UI)', () => {
         });
         fireEvent.click(screen.getByText('Checkpoint'));
         expect(controlsStub.checkpoint).toHaveBeenCalledTimes(1);
+    });
+
+    it('restores a captured checkpoint from the list', async () => {
+        controlsStub.getCheckpoints.mockReturnValue([
+            {
+                id: 'cp-1',
+                at: 0,
+                label: 'after round 1',
+                cursor: 1,
+                history: [],
+                results: [],
+                status: 'paused',
+            },
+        ]);
+        const RunTab = (await import('./RunTab')).default;
+        render(<RunTab scenario={scenario} />);
+        fireEvent.click(screen.getByLabelText('Restore checkpoint after round 1'));
+        expect(controlsStub.restoreCheckpoint).toHaveBeenCalledWith('cp-1');
     });
 });

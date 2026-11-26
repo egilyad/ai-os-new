@@ -23,6 +23,8 @@ export interface DirectorControls {
     checkpoint(label?: string): string;
     /** List checkpoints captured for the current session. */
     getCheckpoints(): SessionCheckpoint[];
+    /** Rewind the live run to a captured checkpoint. */
+    restoreCheckpoint(id: string): boolean;
     /** Load persisted past runs (ConversationSession records) from Dexie. */
     loadHistory(): Promise<void>;
 }
@@ -54,6 +56,7 @@ export function createDirectorControls(
         getSession: () => service.getSession(),
         checkpoint: (label?: string) => service.checkpoint(label),
         getCheckpoints: () => service.getCheckpoints(),
+        restoreCheckpoint: (id: string) => service.restoreCheckpoint(id),
         loadHistory: () => useDirectorStore.getState().loadHistory(),
     };
 }

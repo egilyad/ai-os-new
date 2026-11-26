@@ -288,6 +288,30 @@ export class ConversationDirectorService implements IConversationDirectorService
         return this.session?.checkpoints ?? [];
     }
 
+    /**
+     * Rewind the live run to a captured checkpoint. The scenario blueprint is
+     * never touched; only the run's results, context history and cursor move.
+     */
+    restoreCheckpoint(id: string): boolean {
+        if (!this.session) {
+            throw new Error('ConversationDirectorService: no session loaded');
+        }
+        const checkpoint = this.session.checkpoints.find((c) => c.id === id);
+        if (!checkpoint) return false;
+        if (this.context) this.context.history = [...checkpoint.history];
+        this.session.results = [...checkpoint.results];
+        this.session.currentTurnIndex = checkpoint.cursor > 0 ? checkpoint.cursor - 1 : null;
+        this.session.currentParticipantId = null;
+        this.session.plannedDone = checkpoint.cursor;
+        this.setState('paused');
+        this.eventBus?.emit(EVENTS.CONVERSATION_PAUSED, {
+            sessionId: this.session.id,
+            checkpointId: id,
+        });
+        this.persist();
+        return true;
+    }
+
     /** Release bus subscriptions (call when the service is disposed). */
     destroy(): void {
         this.busUnsubs.forEach((u) => u());

@@ -323,6 +323,28 @@ describe('ConversationDirectorService (B3)', () => {
         expect(checkpoints[0]!.history).toHaveLength(2);
     });
 
+    it('restoreCheckpoint() rewinds the run and pauses it', async () => {
+        const scenario = makeScenario([turn('a', 'one'), turn('b', 'two')]);
+        const director = new ConversationDirectorService(
+            makeRepo(scenario),
+            makeEngine().engine,
+            undefined,
+            coreEventBus,
+        );
+        await director.loadScenario(scenario.id);
+        await director.run();
+        const cpId = director.checkpoint('rewind-here');
+
+        expect(director.restoreCheckpoint('missing')).toBe(false);
+        expect(director.restoreCheckpoint(cpId)).toBe(true);
+
+        const session = director.getSession()!;
+        expect(session.status).toBe('paused');
+        expect(session.results).toHaveLength(2);
+        expect(session.currentTurnIndex).toBe(1);
+        expect(session.plannedDone).toBe(2);
+    });
+
     it('B-10: getState() and Session.status share a single source of truth (no divergence)', async () => {
         const turns = [turn('a', 'one'), turn('b', 'two'), turn('c', 'three')];
         const scenario = makeScenario(turns);

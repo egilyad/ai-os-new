@@ -115,11 +115,11 @@ export class TimelinePlayer {
         const oldIndex = this.currentIndex;
         this.currentIndex--;
         const event = this.events[this.currentIndex]!;
-        if (this.status === 'completed') {
-            this.status = 'playing';
+        this.clearTimer();
+        if (this.status === 'playing' || this.status === 'completed') {
+            this.status = 'paused';
             this._onStatusChange?.(this.status);
         }
-        this.processNext();
         this._onRewind?.(oldIndex, this.currentIndex);
         this._onEvent?.(event, this.currentIndex);
         return event;
